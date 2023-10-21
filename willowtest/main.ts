@@ -27,9 +27,8 @@ export function spec_template<State extends Html5State>(
 ): Expression<State> {
   return html5(
     [
-      "jjjjjjjjjjj"
-      // html5_dependency_css("/styles.css"),
-      // title(`Willow Specifications - ${meta.title}`),
+      html5_dependency_css("/styles.css"),
+      title(`Willow Specifications - ${meta.title}`),
     ],
     [
       // main(
@@ -77,7 +76,7 @@ evaluate<OutState & Html5State>(
       },
       [
         p("Hello, world."),
-      ]
+      ],
     ),
   )),
   {

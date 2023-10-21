@@ -4,11 +4,11 @@ export type Attributes = Record<PropertyKey, string>;
 
 function mac<State>(tag_name: string, attributes: Attributes, is_non_void_element: boolean): Macro<State> {
     return new_macro(
-        (number_args, _state) => {
+        (args, _state) => {
             if (is_non_void_element) {
-                return [`<${tag_name} ${render_attributes()}>`, ...forward_args(number_args), `</${tag_name}>`];
+                return [`<${tag_name}${render_attributes()}>`, ...forward_args(args), `</${tag_name}>`];
             } else {
-                return `<${tag_name} ${render_attributes()} />`;
+                return `<${tag_name}${render_attributes()} />`;
             }
         }
     );
@@ -25,7 +25,7 @@ function mac<State>(tag_name: string, attributes: Attributes, is_non_void_elemen
             }
         }
 
-        return fragments.join(" ");
+        return fragments.length === 0 ? "" : ` ${fragments.join(" ")}`;
     }
 }
 

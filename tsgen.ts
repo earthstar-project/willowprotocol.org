@@ -1,8 +1,9 @@
 export type Expression<S> =
   | string // to become part of the output verbatim
-  | 0 // an argument
+  | (() => Expression<S>) // an argument
   | Expression<S>[] // process in order and concatenate the results
-  | Invocation<S>; // apply the macro to the arguments
+  | Invocation<S> // apply the macro to the arguments
+  | -1; // skip evaluating this, try again later
 
 export type Invocation<S> = {
   macro: Macro<S>;
@@ -10,7 +11,7 @@ export type Invocation<S> = {
 };
 
 export interface Macro<S> {
-  top_down(number_args: number, state: S): Expression<S>;
+  top_down(args: (() => Expression<S>)[], state: S): Expression<S>;
   bottom_up(fully_expanded: string, state: S): string;
   cleanup(is_final_invocation: boolean, state: S): void;
 }
@@ -19,7 +20,6 @@ export function evaluate<S>(expression: Expression<S>, state: S): string {
   let exp = expression;
   while (true) {
     const [evaluated, made_progress] = do_evaluate(exp, state, []);
-
     if (typeof evaluated === "string") {
       return evaluated;
     } else if (!made_progress) {
@@ -35,10 +35,15 @@ export function do_evaluate<S>(
   state: S,
   args: Expression<S>[],
 ): [Expression<S>, boolean] {
+  // console.log(state);
+  // console.log(expression);
+  // console.log("");
+  
+  
   if (typeof expression === "string") {
     return [expression, false];
-  } else if (typeof expression === "number") {
-    return do_evaluate(args[expression], state, args);
+  } else if (typeof expression === "function") {
+    return do_evaluate(expression(), state, args);
   } else if (Array.isArray(expression)) {
     let made_progress = false;
     let only_strings = true;
@@ -56,28 +61,40 @@ export function do_evaluate<S>(
     } else {
       return [all_evaluated, made_progress];
     }
+  } else if (expression === -1) {
+    return [expression, false];
   } else {
     const { macro, args } = expression;
-    const td = macro.top_down(args.length, state);
+    const args_to_td = args.map((_, i) => (() => args[i]));
+    const td = macro.top_down(args_to_td, state);
 
     if (td === -1) {
       return [expression, false];
+    }
+
+    const [expanded, _] = do_evaluate(td, state, args);
+    if (typeof expanded === "string") {
+      const bu = macro.bottom_up(expanded, state);
+      macro.cleanup(true, state);
+      return [bu, true];
     } else {
-      const [expanded, _] = do_evaluate(td, state, args);
-      if (typeof expanded === "string") {
-        const bu = macro.bottom_up(expanded, state);
-        macro.cleanup(true, state);
-        return [bu, true];
-      } else {
-        macro.cleanup(false, state);
-        return [expanded, true];
+      macro.cleanup(false, state);
+
+      if (!Array.isArray(expanded)) {
+        throw new Error("Huh, thought this is impossible =(");
       }
+
+      console.log(expanded);
+      return [{macro, args: <Expression<S>[]>expanded}, true];
+
+      
+      return [expanded, true];
     }
   }
 }
 
 export function new_macro<S>(
-  td?: (number_args: number, state: S) => Expression<S>,
+  td?: (args: (() => Expression<S>)[], state: S) => Expression<S>,
   bu?: (fully_expanded: string, state: S) => string,
   cu?: (is_final_invocation: boolean, state: S) => void,
 ): Macro<S> {
@@ -88,26 +105,24 @@ export function new_macro<S>(
   };
 }
 
-export function default_td<S>(number_args: number, _state: S): Expression<S> {
-  return forward_args(number_args);
+export function default_td<S>(args: (() => Expression<S>)[], _state: S): Expression<S> {
+  return forward_args(args);
 }
 
 export function default_bu<S>(fully_expanded: string, _state: S): string {
   return fully_expanded;
 }
 
-export function forward_args(number_args: number): number[] {
-    const r = [];
-    for (let i = 0; i < number_args; i++) {
-      r.push(i);
-    }
-    return r;
-  }
+export function forward_args<S>(args: (() => Expression<S>)[]): Expression<S>[] {
+  return args.map(a => a);
+}
 
   // Considers every array as an expression
   // deno-lint-ignore no-explicit-any
   export function is_expression(x: any): boolean {
-    if (typeof x === "number") {
+    if (typeof x === "function") {
+      return true;
+    } else if (x === -1) {
       return true;
     } else if (typeof x === "string") {
       return true;
