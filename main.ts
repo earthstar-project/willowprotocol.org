@@ -126,6 +126,7 @@ const tagnames = [
     "th",
     "thead",
     "time",
+    "title",
     "tr",
     "u",
     "ul",

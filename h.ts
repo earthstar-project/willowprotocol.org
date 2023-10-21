@@ -6,7 +6,7 @@ function mac<State>(tag_name: string, attributes: Attributes, is_non_void_elemen
     return new_macro(
         (number_args, _state) => {
             if (is_non_void_element) {
-                return [`${tag_name} ${render_attributes()}>`, ...forward_args(number_args), `</${tag_name}>`];
+                return [`<${tag_name} ${render_attributes()}>`, ...forward_args(number_args), `</${tag_name}>`];
             } else {
                 return `<${tag_name} ${render_attributes()} />`;
             }
@@ -1156,6 +1156,18 @@ export function time<State>(...args: any[]): Invocation<State> {
         return h("time", attributes, ...macro_args);
     } else {
         return h("time", {}, ...args);
+    }
+}
+
+export function title<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
+export function title<State>(...args: Expression<State>[]): Invocation<State>;
+// deno-lint-ignore no-explicit-any
+export function title<State>(...args: any[]): Invocation<State> {
+    if (args.length > 0 && !is_expression(args[0])) {
+        const [attributes, ...macro_args] = args;
+        return h("title", attributes, ...macro_args);
+    } else {
+        return h("title", {}, ...args);
     }
 }
 

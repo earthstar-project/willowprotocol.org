@@ -10,6 +10,16 @@ export interface OutState {
     current_path: string[]; // stack of path fragments that make up the current path
 }
 
+export function out_initial_state(): OutState {
+    return {
+        out_files: {
+            state: {},
+            children: new Map(),
+        },
+        current_path: [],
+    };
+}
+
 export type OutFile = {
     state: FileState,
     children: Map<string, OutFile /*directory*/> | null /*leaf*/,

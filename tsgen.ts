@@ -1,6 +1,6 @@
 export type Expression<S> =
   | string // to become part of the output verbatim
-  | number // an argument
+  | 0 // an argument
   | Expression<S>[] // process in order and concatenate the results
   | Invocation<S>; // apply the macro to the arguments
 
