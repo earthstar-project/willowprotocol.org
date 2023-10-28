@@ -1,0 +1,41 @@
+body {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+    font-size: 1.1rem;
+}
+
+a {
+    color: rgb(0, 155, 42);
+    transition: 100ms all;
+}
+
+a:hover {
+    color: rgb(0, 186, 50)
+}
+
+strong {
+    font-variant: all-small-caps;
+    font-weight: normal;
+}
+
+a[aria-disabled=true] {
+    color: grey;
+}
+
+a[aria-disabled=true]:hover {
+    color: grey;
+}
+
+main p,
+footer p,
+.aside p {
+    line-height: 1.45;
+}
+
+.aside {
+    color: var(--nearly-nearly-black);
+}
+
+.aside.long {
+    border: 1px solid var(--light-green);
+    border-width: 1px 0;
+}

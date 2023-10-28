@@ -1,0 +1,113 @@
+:root {
+    --padding-left: 2rem;
+    --padding-right: 2rem;
+    --padding-bottom: 4rem;
+    --padding-marginalia: 4rem;
+
+    --max-width-main: 32rem;
+    --max-width-marginalia: 18rem;
+    --max-width-slightlywide: calc(var(--max-width-main) + var(--padding-marginalia) + var(--max-width-marginalia));
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+}
+
+body {
+    padding-left: var(--padding-left);
+    padding-right: var(--padding-right);
+    padding-bottom: var(--padding-bottom);
+    padding-top: var(--padding-top);
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.container_main {
+    max-width: var(--max-width-slightlywide);
+    position: relative;
+    margin: auto;
+}
+
+.container_main>* {
+    max-width: var(--max-width-main);
+}
+
+.slightlywide {
+    position: relative;
+    width: var(--max-width-slightlywide);
+}
+
+.wide {
+    position: relative;
+    min-width: calc(100vw - calc(var(--padding-left) + var(--padding-right) + 0.5 * calc(100vw - var(--max-width-slightlywide))));
+}
+
+/* .aside {
+    float: right;
+    clear: right;
+    position: relative;
+    width: var(--max-width-marginalia);
+    margin-right: calc(-1 * calc(var(--padding-marginalia) + var(--max-width-marginalia)));
+    font-size: 0.9rem;
+    margin-bottom: 1em;
+    white-space: normal;
+} */
+
+/* Cannot use css variables here. TODO generate via the macro system. */
+@media (min-width: 56rem) {
+    .aside {
+        float: right;
+        clear: right;
+        position: relative;
+        width: var(--max-width-marginalia);
+        margin-right: calc(-1 * calc(var(--padding-marginalia) + var(--max-width-marginalia)));
+        font-size: 0.9rem;
+        margin-bottom: 1em;
+        white-space: normal;
+    }
+}
+
+/* Used to prevent linebreaks just before a sidenote indicator. */
+.nowrap {
+    white-space: nowrap;
+}
+
+.aside_counter {
+    vertical-align: super;
+    font-size: 0.7em;
+}
+
+.aside>.aside_counter {
+    margin-right: 0.2rem;
+}
+
+h1 img {
+    max-height: 5em;
+    max-width: 100%;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+/* header,
+main,
+nav,
+footer {
+    margin: auto;
+}
+
+main section {
+  margin: auto;
+}*/
+
+figure img {
+    max-width: 100%;
+}

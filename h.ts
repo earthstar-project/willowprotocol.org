@@ -1,12 +1,12 @@
-import { Expression, Macro, Invocation, new_macro, forward_args, is_expression } from "./tsgen.ts";
+import { Expression, Macro, Invocation, new_macro, is_expression } from "./tsgen.ts";
 
 export type Attributes = Record<PropertyKey, string>;
 
-function mac<State>(tag_name: string, attributes: Attributes, is_non_void_element: boolean): Macro<State> {
+function mac(tag_name: string, attributes: Attributes, is_non_void_element: boolean): Macro {
     return new_macro(
         (args, _state) => {
             if (is_non_void_element) {
-                return [`<${tag_name}${render_attributes()}>`, ...forward_args(args), `</${tag_name}>`];
+                return [`<${tag_name}${render_attributes()}>`, ...args, `</${tag_name}>`];
             } else {
                 return `<${tag_name}${render_attributes()} />`;
             }
@@ -29,108 +29,69 @@ function mac<State>(tag_name: string, attributes: Attributes, is_non_void_elemen
     }
 }
 
-export function h<State>(tag_name: string, attributes: Attributes = {}, ...args: Expression<State>[]): Invocation<State> {
-    return {
-        macro: mac(tag_name, attributes, true),
+export function h(tag_name: string, attributes: Attributes = {}, ...args: Expression[]): Expression {
+    return new Invocation(
+        mac(tag_name, attributes, true),
         args,
-    };
+    );
 }
 
-export function area<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("area", attributes, true),
-        args: [],
-    };
+export function area(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("area", attributes, true), []);
 }
 
-export function base<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("base", attributes, true),
-        args: [],
-    };
+export function base(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("base", attributes, true), []);
 }
 
-export function br<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("br", attributes, true),
-        args: [],
-    };
+export function br(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("br", attributes, true), []);
 }
 
-export function col<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("col", attributes, true),
-        args: [],
-    };
+export function col(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("col", attributes, true), []);
 }
 
-export function embed<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("embed", attributes, true),
-        args: [],
-    };
+export function embed(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("embed", attributes, true), []);
 }
 
-export function hr<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("hr", attributes, true),
-        args: [],
-    };
+export function hr(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("hr", attributes, true), []);
 }
 
-export function img<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("img", attributes, true),
-        args: [],
-    };
+export function img(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("img", attributes, true), []);
 }
 
-export function input<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("input", attributes, true),
-        args: [],
-    };
+export function input(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("input", attributes, true), []);
 }
 
-export function link<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("link", attributes, true),
-        args: [],
-    };
+export function link(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("link", attributes, true), []);
 }
 
-export function meta<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("meta", attributes, true),
-        args: [],
-    };
+export function meta(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("meta", attributes, true), []);
 }
 
-export function source<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("source", attributes, true),
-        args: [],
-    };
+export function source(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("source", attributes, true), []);
 }
 
-export function track<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("track", attributes, true),
-        args: [],
-    };
+export function track(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("track", attributes, true), []);
 }
 
-export function wbr<State>(attributes: Attributes = {}): Invocation<State> {
-    return {
-        macro: mac("wbr", attributes, true),
-        args: [],
-    };
+export function wbr(attributes: Attributes = {}): Expression {
+    return new Invocation(mac("wbr", attributes, true), []);
 }
 
-export function a<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function a<State>(...args: Expression<State>[]): Invocation<State>;
+export function a(attributes: Attributes, ...args: Expression[]): Expression;
+export function a(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function a<State>(...args: any[]): Invocation<State> {
+export function a(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("a", attributes, ...macro_args);
@@ -139,10 +100,10 @@ export function a<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function abbr<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;   
-export function abbr<State>(...args: Expression<State>[]): Invocation<State>;
+export function abbr(attributes: Attributes, ...args: Expression[]): Expression;   
+export function abbr(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function abbr<State>(...args: any[]): Invocation<State> {
+export function abbr(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("abbr", attributes, ...macro_args);
@@ -151,10 +112,10 @@ export function abbr<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function address<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function address<State>(...args: Expression<State>[]): Invocation<State>;
+export function address(attributes: Attributes, ...args: Expression[]): Expression;
+export function address(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function address<State>(...args: any[]): Invocation<State> {
+export function address(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("address", attributes, ...macro_args);
@@ -163,10 +124,10 @@ export function address<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function article<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function article<State>(...args: Expression<State>[]): Invocation<State>;
+export function article(attributes: Attributes, ...args: Expression[]): Expression;
+export function article(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function article<State>(...args: any[]): Invocation<State> {
+export function article(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("article", attributes, ...macro_args);
@@ -175,10 +136,10 @@ export function article<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function aside<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function aside<State>(...args: Expression<State>[]): Invocation<State>;
+export function aside(attributes: Attributes, ...args: Expression[]): Expression;
+export function aside(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function aside<State>(...args: any[]): Invocation<State> {
+export function aside(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("aside", attributes, ...macro_args);
@@ -187,10 +148,10 @@ export function aside<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function audio<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function audio<State>(...args: Expression<State>[]): Invocation<State>;
+export function audio(attributes: Attributes, ...args: Expression[]): Expression;
+export function audio(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function audio<State>(...args: any[]): Invocation<State> {
+export function audio(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("audio", attributes, ...macro_args);
@@ -199,10 +160,10 @@ export function audio<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function b<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function b<State>(...args: Expression<State>[]): Invocation<State>;
+export function b(attributes: Attributes, ...args: Expression[]): Expression;
+export function b(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function b<State>(...args: any[]): Invocation<State> {
+export function b(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("b", attributes, ...macro_args);
@@ -211,10 +172,10 @@ export function b<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function bdi<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function bdi<State>(...args: Expression<State>[]): Invocation<State>;
+export function bdi(attributes: Attributes, ...args: Expression[]): Expression;
+export function bdi(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function bdi<State>(...args: any[]): Invocation<State> {
+export function bdi(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("bdi", attributes, ...macro_args);
@@ -223,10 +184,10 @@ export function bdi<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function bdo<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function bdo<State>(...args: Expression<State>[]): Invocation<State>;
+export function bdo(attributes: Attributes, ...args: Expression[]): Expression;
+export function bdo(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function bdo<State>(...args: any[]): Invocation<State> {
+export function bdo(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("bdo", attributes, ...macro_args);
@@ -235,10 +196,10 @@ export function bdo<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function blockquote<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function blockquote<State>(...args: Expression<State>[]): Invocation<State>;
+export function blockquote(attributes: Attributes, ...args: Expression[]): Expression;
+export function blockquote(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function blockquote<State>(...args: any[]): Invocation<State> {
+export function blockquote(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("blockquote", attributes, ...macro_args);
@@ -247,10 +208,10 @@ export function blockquote<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function body_<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function body_<State>(...args: Expression<State>[]): Invocation<State>;
+export function body_(attributes: Attributes, ...args: Expression[]): Expression;
+export function body_(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function body_<State>(...args: any[]): Invocation<State> {
+export function body_(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("body", attributes, ...macro_args);
@@ -259,10 +220,10 @@ export function body_<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function button<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function button<State>(...args: Expression<State>[]): Invocation<State>;
+export function button(attributes: Attributes, ...args: Expression[]): Expression;
+export function button(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function button<State>(...args: any[]): Invocation<State> {
+export function button(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("button", attributes, ...macro_args);
@@ -271,10 +232,10 @@ export function button<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function canvas<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function canvas<State>(...args: Expression<State>[]): Invocation<State>;
+export function canvas(attributes: Attributes, ...args: Expression[]): Expression;
+export function canvas(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function canvas<State>(...args: any[]): Invocation<State> {
+export function canvas(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("canvas", attributes, ...macro_args);
@@ -283,10 +244,10 @@ export function canvas<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function caption<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function caption<State>(...args: Expression<State>[]): Invocation<State>;
+export function caption(attributes: Attributes, ...args: Expression[]): Expression;
+export function caption(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function caption<State>(...args: any[]): Invocation<State> {
+export function caption(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("caption", attributes, ...macro_args);
@@ -295,10 +256,10 @@ export function caption<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function cite<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function cite<State>(...args: Expression<State>[]): Invocation<State>;
+export function cite(attributes: Attributes, ...args: Expression[]): Expression;
+export function cite(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function cite<State>(...args: any[]): Invocation<State> {
+export function cite(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("cite", attributes, ...macro_args);
@@ -307,10 +268,10 @@ export function cite<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function code<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function code<State>(...args: Expression<State>[]): Invocation<State>;
+export function code(attributes: Attributes, ...args: Expression[]): Expression;
+export function code(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function code<State>(...args: any[]): Invocation<State> {
+export function code(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("code", attributes, ...macro_args);
@@ -319,10 +280,10 @@ export function code<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function colgroup<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function colgroup<State>(...args: Expression<State>[]): Invocation<State>;
+export function colgroup(attributes: Attributes, ...args: Expression[]): Expression;
+export function colgroup(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function colgroup<State>(...args: any[]): Invocation<State> {
+export function colgroup(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("colgroup", attributes, ...macro_args);
@@ -331,10 +292,10 @@ export function colgroup<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function command<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function command<State>(...args: Expression<State>[]): Invocation<State>;
+export function command(attributes: Attributes, ...args: Expression[]): Expression;
+export function command(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function command<State>(...args: any[]): Invocation<State> {
+export function command(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("command", attributes, ...macro_args);
@@ -343,10 +304,10 @@ export function command<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function datalist<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function datalist<State>(...args: Expression<State>[]): Invocation<State>;
+export function datalist(attributes: Attributes, ...args: Expression[]): Expression;
+export function datalist(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function datalist<State>(...args: any[]): Invocation<State> {
+export function datalist(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("datalist", attributes, ...macro_args);
@@ -355,10 +316,10 @@ export function datalist<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function dd<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function dd<State>(...args: Expression<State>[]): Invocation<State>;
+export function dd(attributes: Attributes, ...args: Expression[]): Expression;
+export function dd(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function dd<State>(...args: any[]): Invocation<State> {
+export function dd(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("dd", attributes, ...macro_args);
@@ -367,10 +328,10 @@ export function dd<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function del<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function del<State>(...args: Expression<State>[]): Invocation<State>;
+export function del(attributes: Attributes, ...args: Expression[]): Expression;
+export function del(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function del<State>(...args: any[]): Invocation<State> {
+export function del(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("del", attributes, ...macro_args);
@@ -379,10 +340,10 @@ export function del<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function details<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function details<State>(...args: Expression<State>[]): Invocation<State>;
+export function details(attributes: Attributes, ...args: Expression[]): Expression;
+export function details(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function details<State>(...args: any[]): Invocation<State> {
+export function details(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("details", attributes, ...macro_args);
@@ -391,10 +352,10 @@ export function details<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function dfn<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function dfn<State>(...args: Expression<State>[]): Invocation<State>;
+export function dfn(attributes: Attributes, ...args: Expression[]): Expression;
+export function dfn(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function dfn<State>(...args: any[]): Invocation<State> {
+export function dfn(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("dfn", attributes, ...macro_args);
@@ -403,10 +364,10 @@ export function dfn<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function div<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function div<State>(...args: Expression<State>[]): Invocation<State>;
+export function div(attributes: Attributes, ...args: Expression[]): Expression;
+export function div(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function div<State>(...args: any[]): Invocation<State> {
+export function div(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("div", attributes, ...macro_args);
@@ -415,10 +376,10 @@ export function div<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function dl<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function dl<State>(...args: Expression<State>[]): Invocation<State>;
+export function dl(attributes: Attributes, ...args: Expression[]): Expression;
+export function dl(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function dl<State>(...args: any[]): Invocation<State> {
+export function dl(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("dl", attributes, ...macro_args);
@@ -427,10 +388,10 @@ export function dl<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function dt<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function dt<State>(...args: Expression<State>[]): Invocation<State>;
+export function dt(attributes: Attributes, ...args: Expression[]): Expression;
+export function dt(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function dt<State>(...args: any[]): Invocation<State> {
+export function dt(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("dt", attributes, ...macro_args);
@@ -439,10 +400,10 @@ export function dt<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function em<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function em<State>(...args: Expression<State>[]): Invocation<State>;
+export function em(attributes: Attributes, ...args: Expression[]): Expression;
+export function em(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function em<State>(...args: any[]): Invocation<State> {
+export function em(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("em", attributes, ...macro_args);
@@ -451,10 +412,10 @@ export function em<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function fieldset<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function fieldset<State>(...args: Expression<State>[]): Invocation<State>;
+export function fieldset(attributes: Attributes, ...args: Expression[]): Expression;
+export function fieldset(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function fieldset<State>(...args: any[]): Invocation<State> {
+export function fieldset(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("fieldset", attributes, ...macro_args);
@@ -463,10 +424,10 @@ export function fieldset<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function figcaption<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function figcaption<State>(...args: Expression<State>[]): Invocation<State>;
+export function figcaption(attributes: Attributes, ...args: Expression[]): Expression;
+export function figcaption(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function figcaption<State>(...args: any[]): Invocation<State> {
+export function figcaption(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("figcaption", attributes, ...macro_args);
@@ -475,10 +436,10 @@ export function figcaption<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function figure<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function figure<State>(...args: Expression<State>[]): Invocation<State>;
+export function figure(attributes: Attributes, ...args: Expression[]): Expression;
+export function figure(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function figure<State>(...args: any[]): Invocation<State> {
+export function figure(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("figure", attributes, ...macro_args);
@@ -487,10 +448,10 @@ export function figure<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function footer<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function footer<State>(...args: Expression<State>[]): Invocation<State>;
+export function footer(attributes: Attributes, ...args: Expression[]): Expression;
+export function footer(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function footer<State>(...args: any[]): Invocation<State> {
+export function footer(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("footer", attributes, ...macro_args);
@@ -499,10 +460,10 @@ export function footer<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function form<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function form<State>(...args: Expression<State>[]): Invocation<State>;
+export function form(attributes: Attributes, ...args: Expression[]): Expression;
+export function form(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function form<State>(...args: any[]): Invocation<State> {
+export function form(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("form", attributes, ...macro_args);
@@ -511,10 +472,10 @@ export function form<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h1<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h1<State>(...args: Expression<State>[]): Invocation<State>;
+export function h1(attributes: Attributes, ...args: Expression[]): Expression;
+export function h1(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h1<State>(...args: any[]): Invocation<State> {
+export function h1(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h1", attributes, ...macro_args);
@@ -523,10 +484,10 @@ export function h1<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h2<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h2<State>(...args: Expression<State>[]): Invocation<State>;
+export function h2(attributes: Attributes, ...args: Expression[]): Expression;
+export function h2(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h2<State>(...args: any[]): Invocation<State> {
+export function h2(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h2", attributes, ...macro_args);
@@ -535,10 +496,10 @@ export function h2<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h3<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h3<State>(...args: Expression<State>[]): Invocation<State>;
+export function h3(attributes: Attributes, ...args: Expression[]): Expression;
+export function h3(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h3<State>(...args: any[]): Invocation<State> {
+export function h3(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h3", attributes, ...macro_args);
@@ -547,10 +508,10 @@ export function h3<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h4<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h4<State>(...args: Expression<State>[]): Invocation<State>;
+export function h4(attributes: Attributes, ...args: Expression[]): Expression;
+export function h4(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h4<State>(...args: any[]): Invocation<State> {
+export function h4(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h4", attributes, ...macro_args);
@@ -559,10 +520,10 @@ export function h4<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h5<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h5<State>(...args: Expression<State>[]): Invocation<State>;
+export function h5(attributes: Attributes, ...args: Expression[]): Expression;
+export function h5(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h5<State>(...args: any[]): Invocation<State> {
+export function h5(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h5", attributes, ...macro_args);
@@ -571,10 +532,10 @@ export function h5<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function h6<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function h6<State>(...args: Expression<State>[]): Invocation<State>;
+export function h6(attributes: Attributes, ...args: Expression[]): Expression;
+export function h6(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function h6<State>(...args: any[]): Invocation<State> {
+export function h6(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("h6", attributes, ...macro_args);
@@ -583,10 +544,10 @@ export function h6<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function head<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function head<State>(...args: Expression<State>[]): Invocation<State>;
+export function head(attributes: Attributes, ...args: Expression[]): Expression;
+export function head(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function head<State>(...args: any[]): Invocation<State> {
+export function head(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("head", attributes, ...macro_args);
@@ -595,10 +556,10 @@ export function head<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function header<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function header<State>(...args: Expression<State>[]): Invocation<State>;
+export function header(attributes: Attributes, ...args: Expression[]): Expression;
+export function header(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function header<State>(...args: any[]): Invocation<State> {
+export function header(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("header", attributes, ...macro_args);
@@ -607,10 +568,10 @@ export function header<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function html<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function html<State>(...args: Expression<State>[]): Invocation<State>;
+export function html(attributes: Attributes, ...args: Expression[]): Expression;
+export function html(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function html<State>(...args: any[]): Invocation<State> {
+export function html(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("html", attributes, ...macro_args);
@@ -619,10 +580,10 @@ export function html<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function i<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function i<State>(...args: Expression<State>[]): Invocation<State>;
+export function i(attributes: Attributes, ...args: Expression[]): Expression;
+export function i(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function i<State>(...args: any[]): Invocation<State> {
+export function i(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("i", attributes, ...macro_args);
@@ -631,10 +592,10 @@ export function i<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function iframe<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function iframe<State>(...args: Expression<State>[]): Invocation<State>;
+export function iframe(attributes: Attributes, ...args: Expression[]): Expression;
+export function iframe(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function iframe<State>(...args: any[]): Invocation<State> {
+export function iframe(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("iframe", attributes, ...macro_args);
@@ -643,10 +604,10 @@ export function iframe<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function ins<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function ins<State>(...args: Expression<State>[]): Invocation<State>;
+export function ins(attributes: Attributes, ...args: Expression[]): Expression;
+export function ins(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function ins<State>(...args: any[]): Invocation<State> {
+export function ins(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("ins", attributes, ...macro_args);
@@ -655,10 +616,10 @@ export function ins<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function kbd<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function kbd<State>(...args: Expression<State>[]): Invocation<State>;
+export function kbd(attributes: Attributes, ...args: Expression[]): Expression;
+export function kbd(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function kbd<State>(...args: any[]): Invocation<State> {
+export function kbd(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("kbd", attributes, ...macro_args);
@@ -667,10 +628,10 @@ export function kbd<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function keygen<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function keygen<State>(...args: Expression<State>[]): Invocation<State>;
+export function keygen(attributes: Attributes, ...args: Expression[]): Expression;
+export function keygen(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function keygen<State>(...args: any[]): Invocation<State> {
+export function keygen(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("keygen", attributes, ...macro_args);
@@ -679,10 +640,10 @@ export function keygen<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function label<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function label<State>(...args: Expression<State>[]): Invocation<State>;
+export function label(attributes: Attributes, ...args: Expression[]): Expression;
+export function label(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function label<State>(...args: any[]): Invocation<State> {
+export function label(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("label", attributes, ...macro_args);
@@ -691,10 +652,10 @@ export function label<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function legend<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function legend<State>(...args: Expression<State>[]): Invocation<State>;
+export function legend(attributes: Attributes, ...args: Expression[]): Expression;
+export function legend(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function legend<State>(...args: any[]): Invocation<State> {
+export function legend(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("legend", attributes, ...macro_args);
@@ -703,10 +664,10 @@ export function legend<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function li<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function li<State>(...args: Expression<State>[]): Invocation<State>;
+export function li(attributes: Attributes, ...args: Expression[]): Expression;
+export function li(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function li<State>(...args: any[]): Invocation<State> {
+export function li(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("li", attributes, ...macro_args);
@@ -715,10 +676,10 @@ export function li<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function main<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function main<State>(...args: Expression<State>[]): Invocation<State>;
+export function main(attributes: Attributes, ...args: Expression[]): Expression;
+export function main(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function main<State>(...args: any[]): Invocation<State> {
+export function main(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("main", attributes, ...macro_args);
@@ -727,10 +688,10 @@ export function main<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function map<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function map<State>(...args: Expression<State>[]): Invocation<State>;
+export function map(attributes: Attributes, ...args: Expression[]): Expression;
+export function map(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function map<State>(...args: any[]): Invocation<State> {
+export function map(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("map", attributes, ...macro_args);
@@ -739,10 +700,10 @@ export function map<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function mark<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function mark<State>(...args: Expression<State>[]): Invocation<State>;
+export function mark(attributes: Attributes, ...args: Expression[]): Expression;
+export function mark(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function mark<State>(...args: any[]): Invocation<State> {
+export function mark(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("mark", attributes, ...macro_args);
@@ -751,10 +712,10 @@ export function mark<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function menu<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function menu<State>(...args: Expression<State>[]): Invocation<State>;
+export function menu(attributes: Attributes, ...args: Expression[]): Expression;
+export function menu(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function menu<State>(...args: any[]): Invocation<State> {
+export function menu(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("menu", attributes, ...macro_args);
@@ -763,10 +724,10 @@ export function menu<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function meter<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function meter<State>(...args: Expression<State>[]): Invocation<State>;
+export function meter(attributes: Attributes, ...args: Expression[]): Expression;
+export function meter(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function meter<State>(...args: any[]): Invocation<State> {
+export function meter(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("meter", attributes, ...macro_args);
@@ -775,10 +736,10 @@ export function meter<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function nav<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function nav<State>(...args: Expression<State>[]): Invocation<State>;
+export function nav(attributes: Attributes, ...args: Expression[]): Expression;
+export function nav(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function nav<State>(...args: any[]): Invocation<State> {
+export function nav(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("nav", attributes, ...macro_args);
@@ -787,10 +748,10 @@ export function nav<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function object<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function object<State>(...args: Expression<State>[]): Invocation<State>;
+export function object(attributes: Attributes, ...args: Expression[]): Expression;
+export function object(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function object<State>(...args: any[]): Invocation<State> {
+export function object(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("object", attributes, ...macro_args);
@@ -799,10 +760,10 @@ export function object<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function ol<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function ol<State>(...args: Expression<State>[]): Invocation<State>;
+export function ol(attributes: Attributes, ...args: Expression[]): Expression;
+export function ol(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function ol<State>(...args: any[]): Invocation<State> {
+export function ol(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("ol", attributes, ...macro_args);
@@ -811,10 +772,10 @@ export function ol<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function optgroup<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function optgroup<State>(...args: Expression<State>[]): Invocation<State>;
+export function optgroup(attributes: Attributes, ...args: Expression[]): Expression;
+export function optgroup(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function optgroup<State>(...args: any[]): Invocation<State> {
+export function optgroup(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("optgroup", attributes, ...macro_args);
@@ -823,10 +784,10 @@ export function optgroup<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function option<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function option<State>(...args: Expression<State>[]): Invocation<State>;
+export function option(attributes: Attributes, ...args: Expression[]): Expression;
+export function option(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function option<State>(...args: any[]): Invocation<State> {
+export function option(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("option", attributes, ...macro_args);
@@ -835,10 +796,10 @@ export function option<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function output<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function output<State>(...args: Expression<State>[]): Invocation<State>;
+export function output(attributes: Attributes, ...args: Expression[]): Expression;
+export function output(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function output<State>(...args: any[]): Invocation<State> {
+export function output(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("output", attributes, ...macro_args);
@@ -847,10 +808,10 @@ export function output<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function p<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function p<State>(...args: Expression<State>[]): Invocation<State>;
+export function p(attributes: Attributes, ...args: Expression[]): Expression;
+export function p(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function p<State>(...args: any[]): Invocation<State> {
+export function p(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("p", attributes, ...macro_args);
@@ -859,10 +820,10 @@ export function p<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function param<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function param<State>(...args: Expression<State>[]): Invocation<State>;
+export function param(attributes: Attributes, ...args: Expression[]): Expression;
+export function param(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function param<State>(...args: any[]): Invocation<State> {
+export function param(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("param", attributes, ...macro_args);
@@ -871,10 +832,10 @@ export function param<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function pre<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function pre<State>(...args: Expression<State>[]): Invocation<State>;
+export function pre(attributes: Attributes, ...args: Expression[]): Expression;
+export function pre(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function pre<State>(...args: any[]): Invocation<State> {
+export function pre(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("pre", attributes, ...macro_args);
@@ -883,10 +844,10 @@ export function pre<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function progress<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function progress<State>(...args: Expression<State>[]): Invocation<State>;
+export function progress(attributes: Attributes, ...args: Expression[]): Expression;
+export function progress(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function progress<State>(...args: any[]): Invocation<State> {
+export function progress(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("progress", attributes, ...macro_args);
@@ -895,10 +856,10 @@ export function progress<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function q<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function q<State>(...args: Expression<State>[]): Invocation<State>;
+export function q(attributes: Attributes, ...args: Expression[]): Expression;
+export function q(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function q<State>(...args: any[]): Invocation<State> {
+export function q(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("q", attributes, ...macro_args);
@@ -907,10 +868,10 @@ export function q<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function rp<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function rp<State>(...args: Expression<State>[]): Invocation<State>;
+export function rp(attributes: Attributes, ...args: Expression[]): Expression;
+export function rp(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function rp<State>(...args: any[]): Invocation<State> {
+export function rp(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("rp", attributes, ...macro_args);
@@ -919,10 +880,10 @@ export function rp<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function rt<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function rt<State>(...args: Expression<State>[]): Invocation<State>;
+export function rt(attributes: Attributes, ...args: Expression[]): Expression;
+export function rt(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function rt<State>(...args: any[]): Invocation<State> {
+export function rt(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("rt", attributes, ...macro_args);
@@ -931,10 +892,10 @@ export function rt<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function ruby<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function ruby<State>(...args: Expression<State>[]): Invocation<State>;
+export function ruby(attributes: Attributes, ...args: Expression[]): Expression;
+export function ruby(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function ruby<State>(...args: any[]): Invocation<State> {
+export function ruby(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("ruby", attributes, ...macro_args);
@@ -943,10 +904,10 @@ export function ruby<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function s<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function s<State>(...args: Expression<State>[]): Invocation<State>;
+export function s(attributes: Attributes, ...args: Expression[]): Expression;
+export function s(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function s<State>(...args: any[]): Invocation<State> {
+export function s(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("s", attributes, ...macro_args);
@@ -955,10 +916,10 @@ export function s<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function samp<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function samp<State>(...args: Expression<State>[]): Invocation<State>;
+export function samp(attributes: Attributes, ...args: Expression[]): Expression;
+export function samp(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function samp<State>(...args: any[]): Invocation<State> {
+export function samp(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("samp", attributes, ...macro_args);
@@ -967,10 +928,10 @@ export function samp<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function section<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function section<State>(...args: Expression<State>[]): Invocation<State>;
+export function section(attributes: Attributes, ...args: Expression[]): Expression;
+export function section(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function section<State>(...args: any[]): Invocation<State> {
+export function section(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("section", attributes, ...macro_args);
@@ -979,10 +940,10 @@ export function section<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function select<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function select<State>(...args: Expression<State>[]): Invocation<State>;
+export function select(attributes: Attributes, ...args: Expression[]): Expression;
+export function select(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function select<State>(...args: any[]): Invocation<State> {
+export function select(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("select", attributes, ...macro_args);
@@ -991,10 +952,10 @@ export function select<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function small<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function small<State>(...args: Expression<State>[]): Invocation<State>;
+export function small(attributes: Attributes, ...args: Expression[]): Expression;
+export function small(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function small<State>(...args: any[]): Invocation<State> {
+export function small(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("small", attributes, ...macro_args);
@@ -1003,10 +964,10 @@ export function small<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function span<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function span<State>(...args: Expression<State>[]): Invocation<State>;
+export function span(attributes: Attributes, ...args: Expression[]): Expression;
+export function span(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function span<State>(...args: any[]): Invocation<State> {
+export function span(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("span", attributes, ...macro_args);
@@ -1015,10 +976,10 @@ export function span<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function strong<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function strong<State>(...args: Expression<State>[]): Invocation<State>;
+export function strong(attributes: Attributes, ...args: Expression[]): Expression;
+export function strong(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function strong<State>(...args: any[]): Invocation<State> {
+export function strong(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("strong", attributes, ...macro_args);
@@ -1027,10 +988,10 @@ export function strong<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function sub<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function sub<State>(...args: Expression<State>[]): Invocation<State>;
+export function sub(attributes: Attributes, ...args: Expression[]): Expression;
+export function sub(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function sub<State>(...args: any[]): Invocation<State> {
+export function sub(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("sub", attributes, ...macro_args);
@@ -1039,10 +1000,10 @@ export function sub<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function summary<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function summary<State>(...args: Expression<State>[]): Invocation<State>;
+export function summary(attributes: Attributes, ...args: Expression[]): Expression;
+export function summary(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function summary<State>(...args: any[]): Invocation<State> {
+export function summary(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("summary", attributes, ...macro_args);
@@ -1051,10 +1012,10 @@ export function summary<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function sup<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function sup<State>(...args: Expression<State>[]): Invocation<State>;
+export function sup(attributes: Attributes, ...args: Expression[]): Expression;
+export function sup(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function sup<State>(...args: any[]): Invocation<State> {
+export function sup(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("sup", attributes, ...macro_args);
@@ -1063,10 +1024,10 @@ export function sup<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function table<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function table<State>(...args: Expression<State>[]): Invocation<State>;
+export function table(attributes: Attributes, ...args: Expression[]): Expression;
+export function table(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function table<State>(...args: any[]): Invocation<State> {
+export function table(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("table", attributes, ...macro_args);
@@ -1075,10 +1036,10 @@ export function table<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function tbody<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function tbody<State>(...args: Expression<State>[]): Invocation<State>;
+export function tbody(attributes: Attributes, ...args: Expression[]): Expression;
+export function tbody(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function tbody<State>(...args: any[]): Invocation<State> {
+export function tbody(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("tbody", attributes, ...macro_args);
@@ -1087,10 +1048,10 @@ export function tbody<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function td<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function td<State>(...args: Expression<State>[]): Invocation<State>;
+export function td(attributes: Attributes, ...args: Expression[]): Expression;
+export function td(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function td<State>(...args: any[]): Invocation<State> {
+export function td(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("td", attributes, ...macro_args);
@@ -1099,10 +1060,10 @@ export function td<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function textarea<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function textarea<State>(...args: Expression<State>[]): Invocation<State>;
+export function textarea(attributes: Attributes, ...args: Expression[]): Expression;
+export function textarea(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function textarea<State>(...args: any[]): Invocation<State> {
+export function textarea(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("textarea", attributes, ...macro_args);
@@ -1111,10 +1072,10 @@ export function textarea<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function tfoot<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function tfoot<State>(...args: Expression<State>[]): Invocation<State>;
+export function tfoot(attributes: Attributes, ...args: Expression[]): Expression;
+export function tfoot(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function tfoot<State>(...args: any[]): Invocation<State> {
+export function tfoot(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("tfoot", attributes, ...macro_args);
@@ -1123,10 +1084,10 @@ export function tfoot<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function th<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function th<State>(...args: Expression<State>[]): Invocation<State>;
+export function th(attributes: Attributes, ...args: Expression[]): Expression;
+export function th(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function th<State>(...args: any[]): Invocation<State> {
+export function th(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("th", attributes, ...macro_args);
@@ -1135,10 +1096,10 @@ export function th<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function thead<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function thead<State>(...args: Expression<State>[]): Invocation<State>;
+export function thead(attributes: Attributes, ...args: Expression[]): Expression;
+export function thead(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function thead<State>(...args: any[]): Invocation<State> {
+export function thead(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("thead", attributes, ...macro_args);
@@ -1147,10 +1108,10 @@ export function thead<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function time<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function time<State>(...args: Expression<State>[]): Invocation<State>;
+export function time(attributes: Attributes, ...args: Expression[]): Expression;
+export function time(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function time<State>(...args: any[]): Invocation<State> {
+export function time(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("time", attributes, ...macro_args);
@@ -1159,10 +1120,10 @@ export function time<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function title<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function title<State>(...args: Expression<State>[]): Invocation<State>;
+export function title(attributes: Attributes, ...args: Expression[]): Expression;
+export function title(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function title<State>(...args: any[]): Invocation<State> {
+export function title(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("title", attributes, ...macro_args);
@@ -1171,10 +1132,10 @@ export function title<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function tr<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function tr<State>(...args: Expression<State>[]): Invocation<State>;
+export function tr(attributes: Attributes, ...args: Expression[]): Expression;
+export function tr(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function tr<State>(...args: any[]): Invocation<State> {
+export function tr(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("tr", attributes, ...macro_args);
@@ -1183,10 +1144,10 @@ export function tr<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function u<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function u<State>(...args: Expression<State>[]): Invocation<State>;
+export function u(attributes: Attributes, ...args: Expression[]): Expression;
+export function u(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function u<State>(...args: any[]): Invocation<State> {
+export function u(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("u", attributes, ...macro_args);
@@ -1195,10 +1156,10 @@ export function u<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function ul<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function ul<State>(...args: Expression<State>[]): Invocation<State>;
+export function ul(attributes: Attributes, ...args: Expression[]): Expression;
+export function ul(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function ul<State>(...args: any[]): Invocation<State> {
+export function ul(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("ul", attributes, ...macro_args);
@@ -1207,10 +1168,10 @@ export function ul<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function var_<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function var_<State>(...args: Expression<State>[]): Invocation<State>;
+export function var_(attributes: Attributes, ...args: Expression[]): Expression;
+export function var_(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function var_<State>(...args: any[]): Invocation<State> {
+export function var_(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("var", attributes, ...macro_args);
@@ -1219,10 +1180,10 @@ export function var_<State>(...args: any[]): Invocation<State> {
     }
 }
 
-export function video<State>(attributes: Attributes, ...args: Expression<State>[]): Invocation<State>;
-export function video<State>(...args: Expression<State>[]): Invocation<State>;
+export function video(attributes: Attributes, ...args: Expression[]): Expression;
+export function video(...args: Expression[]): Expression;
 // deno-lint-ignore no-explicit-any
-export function video<State>(...args: any[]): Invocation<State> {
+export function video(...args: any[]): Expression {
     if (args.length > 0 && !is_expression(args[0])) {
         const [attributes, ...macro_args] = args;
         return h("video", attributes, ...macro_args);

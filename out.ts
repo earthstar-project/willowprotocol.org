@@ -1,54 +1,66 @@
 import { join} from "https://deno.land/std@0.198.0/path/mod.ts";
 
-import { Expression, Invocation, default_bu, forward_args, new_macro } from "./tsgen.ts";
+import { Expression, Invocation,  new_macro, Context, State, location_of_callsite } from "./tsgen.ts";
+import { getLocationsFromError } from "./get_current_line.ts";
 
-// deno-lint-ignore no-explicit-any
-export type FileState = Record<PropertyKey, any>;
+export type PerFileState = State;
 
-export interface OutState {
+const statekey = Symbol();
+
+interface OutState {
     out_files: OutFile; // a tree of path fragments and the associated file state
     current_path: string[]; // stack of path fragments that make up the current path
 }
 
-export function out_initial_state(): OutState {
-    return {
+function out_state(ctx: Context): OutState {
+    const state = ctx.state.get(statekey);
+
+    if (state) {
+        return <OutState>state;
+    } else {
+        ctx.state.set(statekey, {
         out_files: {
             state: {},
             children: new Map(),
         },
         current_path: [],
-    };
+    });
+        return out_state(ctx);
+    }
 }
 
 export type OutFile = {
-    state: FileState,
+    state: PerFileState,
     children: Map<string, OutFile /*directory*/> | null /*leaf*/,
 }
 
-export function out_directory<State extends OutState>(path_fragment: string, ...args: Expression<State>[]): Invocation<State> {
-    let first_invocation = true;
+export function out_directory(path_fragment: string, ...args: Expression[]): Invocation {
+    let first_td = true;
 
-    const macro = new_macro<State>(
-        (args, state) => {
-            console.log(1111111);
-            
-            if (first_invocation) {
-                first_invocation = false;
-                
-                const current = resolve_path(state.out_files, state.current_path, 0);
+    const macro = new_macro(
+        undefined,
+        
+        (_, _ctx) => "",
+
+        // td
+        ctx => {
+            if (first_td) {
+                first_td = false;
+
+                const current = resolve_path(out_state(ctx).out_files, out_state(ctx).current_path, 0);
     
                 if (current.children === null) {
-                    throw new Error(`Cannot create directory ${path_fragment} at ${state.current_path.join("/")}
-    ${state.current_path.join("/")} is no directory.`);
+                    throw new Error(`Cannot create directory ${path_fragment} at ${out_state(ctx).current_path.join("/")}
+    ${out_state(ctx).current_path.join("/")} is no directory.`);
                 } else if (current.children.has(path_fragment)) {
-                    throw new Error(`Cannot create directory ${path_fragment} at ${state.current_path.join("/")}
+                    throw new Error(`Cannot create directory ${path_fragment} at ${out_state(ctx).current_path.join("/")}
 There already exists a file of this name.`);
                 }
-    
-                current.children.set(path_fragment, { state: {}, children: new Map()});
-                state.current_path.push(path_fragment);
 
-                const path = join(...state.current_path);
+                current.children.set(path_fragment, { state: new Map(), children: new Map()});
+                out_state(ctx).current_path.push(path_fragment);
+
+                const path = join(...out_state(ctx).current_path);
                 try {
                     Deno.removeSync(path, {recursive: true});
                 } catch (err) {
@@ -57,47 +69,53 @@ There already exists a file of this name.`);
                     }
                 }
                 Deno.mkdirSync(path, {recursive: true});
+            } else {
+                out_state(ctx).current_path.push(path_fragment);
             }
-
-            return forward_args(args);
         },
 
-        default_bu,
-
-        (_is_final_invocation, state) => {
-            console.log(`directory final ${_is_final_invocation}`);
-            state.current_path.pop();
-        }
+        // bu
+        ctx => {
+            out_state(ctx).current_path.pop();
+        },
     );
 
-    return { macro, args };
+    return new Invocation(macro, args, location_of_callsite());
 }
 
-export function out_file<State extends OutState>(path_fragment: string, ...args: Expression<State>[]): Invocation<State> {
-    let first_invocation = true;
+export function out_file(path_fragment: string, ...args: Expression[]): Invocation {
+    let first_td = true;
 
-    const macro = new_macro<State>(
-        (args, state) => {
-            console.log(2222222);
-            
-            
-            if (first_invocation) {
-                first_invocation = false;
-                
-                const current = resolve_path(state.out_files, state.current_path, 0);
+    const macro = new_macro(
+        undefined,
+        // (args, ctx) => {
+        //     return args;
+        // },
+
+        (fully_expanded, ctx) => {
+            Deno.writeTextFileSync(join(...out_state(ctx).current_path), fully_expanded);
+            return "";
+        },
+
+        // td
+        ctx => {
+            if (first_td) {
+                first_td = false;
+
+                const current = resolve_path(out_state(ctx).out_files, out_state(ctx).current_path, 0);
     
                 if (current.children === null) {
-                    throw new Error(`Cannot create file ${path_fragment} at ${state.current_path.join("/")}
-        ${state.current_path.join("/")} is no directory.`);
+                    throw new Error(`Cannot create file ${path_fragment} at ${out_state(ctx).current_path.join("/")}
+    ${out_state(ctx).current_path.join("/")} is no directory.`);
                 } else if (current.children.has(path_fragment)) {
-                    throw new Error(`Cannot create file ${path_fragment} at ${state.current_path.join("/")}
-    There already exists a file of this name.`);
+                    throw new Error(`Cannot create file ${path_fragment} at ${out_state(ctx).current_path.join("/")}
+There already exists a file of this name.`);
                 }
     
-                current.children.set(path_fragment, { state: {}, children: null});
-                state.current_path.push(path_fragment);
+                current.children.set(path_fragment, { state: new Map(), children: null});
+                out_state(ctx).current_path.push(path_fragment);
 
-                const path = join(...state.current_path);
+                const path = join(...out_state(ctx).current_path);
                 
                 try {
                     Deno.removeSync(path, {recursive: true});
@@ -106,25 +124,23 @@ export function out_file<State extends OutState>(path_fragment: string, ...args:
                         throw err;
                     }
                 }
+            } else {
+                out_state(ctx).current_path.push(path_fragment);
             }
-
-            return forward_args(args);
         },
 
-        (fully_expanded, state) => {
-            console.log("kkkkkkkkkk");
-            Deno.writeTextFileSync(join(...state.current_path), fully_expanded);
-            return fully_expanded;
-        },
-
-        (_is_final_invocation, state) => {
-            console.log(`file final ${_is_final_invocation}`);
-            
-            state.current_path.pop();
+        ctx => {
+            out_state(ctx).current_path.pop();
         }
     );
 
-    return { macro, args };
+    // ctx.register_invocation();
+    // console.log(getLocationsFromError(new Error()));
+    return new Invocation(macro, args, location_of_callsite());
+}
+
+export function curret_per_file_state(ctx: Context): PerFileState {
+    return resolve_path(out_state(ctx).out_files, out_state(ctx).current_path, 0).state;
 }
 
 function resolve_path(out_file: OutFile, path: string[], offset: number): OutFile {

@@ -1,0 +1,16 @@
+:root {
+    --light-green: rgb(156, 194, 149);
+    --green: rgb(28, 175, 0);
+    --dark-green: rgb(0, 94, 18);
+    --nearly-black: rgb(17, 17, 17);
+    --nearly-nearly-black: rgb(19, 50, 21);
+    --nearly-white: rgb(255, 253, 252);
+    --nearly-nearly-white: rgb(255, 252, 250)
+}
+
+body {
+    color: var(--nearly-black);
+    background: var(--nearly-white);
+    background-image: url('/draft-bg.png');
+    background-size: 240px;
+}

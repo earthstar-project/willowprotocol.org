@@ -1,0 +1,49 @@
+code {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    font-size: 0.8em;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 0.2em;
+    border-radius: 10%;
+    word-break: break-word
+}
+
+nav>ul {
+    display: flex;
+    gap: 1ch;
+    padding: 0;
+}
+
+nav ul li {
+    list-style: none;
+}
+
+footer {
+    border-top: 2px solid rgb(225, 225, 225);
+    margin: 5em auto 0 auto;
+    padding: 0.5em 0;
+}
+
+footer p {
+    font-variant-numeric: oldstyle-nums;
+}
+
+footer img {
+    max-width: 7em;
+}
+
+main ul li:has(> a) {
+    list-style-type: none;
+}
+
+main ul li:has(> a):after {
+    content: 'â†’';
+    margin-left: 0.5ch;
+}
+
+main ul li:has(> a[aria-disabled=true]):after {
+    content: 'â³'
+}
+
+ul {
+    padding-inline-start: 1.25em;
+  }
