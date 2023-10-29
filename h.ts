@@ -10,7 +10,11 @@ function mac(tag_name: string, attributes: Attributes, is_non_void_element: bool
             } else {
                 return `<${tag_name}${render_attributes()} />`;
             }
-        }
+        },
+        undefined,
+        undefined,
+        undefined,
+        3,
     );
 
     function render_attributes(): string {

@@ -46,4 +46,17 @@ main ul li:has(> a[aria-disabled=true]):after {
 
 ul {
     padding-inline-start: 1.25em;
-  }
+}
+
+h1 img {
+    max-height: 5em;
+    max-width: 100%;
+}
+
+li {
+    margin: 0.5em 0;
+}
+
+figure img {
+    max-width: 100%;
+}

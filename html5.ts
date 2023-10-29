@@ -65,7 +65,7 @@ export function html5(
                   if (is_head_done && is_body_done) {
                     return Array.from(html5_state(ctx).html5_dependencies).join("");
                   } else {
-                    return -1;
+                    return null;
                   }
                 }
               ),

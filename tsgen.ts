@@ -1,3 +1,5 @@
+import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
+
 import getCurrentLine, { Location } from "./get_current_line.ts";
 import { Stack, new_stack } from "./stack.ts";
 
@@ -9,8 +11,7 @@ export type Expression =
   | Argument // an argument
   | Expression[] // process in order and concatenate the results
   | Invocation // apply the macro to the arguments
-  | ExpandedMacro
-  | -1; // skip evaluating this, try again later
+  | ExpandedMacro;
 
 export class Argument {
   exp: Expression;
@@ -41,17 +42,17 @@ export class ExpandedMacro {
 }
 
 export class Macro {
-  expand: (args: Argument[], ctx: Context) => Expression;
+  expand: (args: Argument[], ctx: Context) => Expression | null;
   top_down: (ctx: Context) => void;
   bottom_up: (ctx: Context) => void;
-  finalize: (expanded: string, ctx: Context) => string;
+  finalize: (expanded: string, ctx: Context) => string | null;
   location?: Location;
 
   constructor(
-    expand: (args: Argument[], ctx: Context) => Expression,
+    expand: (args: Argument[], ctx: Context) => Expression | null,
     top_down: (ctx: Context) => void,
     bottom_up: (ctx: Context) => void,
-    finalize: (expanded: string, ctx: Context) => string,
+    finalize: (expanded: string, ctx: Context) => string | null,
     location?: Location,
   ) {
     this.expand = expand;
@@ -59,64 +60,69 @@ export class Macro {
     this.bottom_up = bottom_up;
     this.finalize = finalize;
     this.location = location;
-    // console.log(location);
   }
 }
 
 export class Context {
   public state: State;
-  private halted: boolean;
   public stack: Stack<Location>;
   public must_make_progress: boolean;
+  private halted: boolean;
+  private console: Console;
 
-  constructor(state: State) {
+  constructor(state: State, console_?: Console) {
     this.state = state;
-    this.halted = false;
     this.stack = new_stack();
     this.must_make_progress = false;
+    this.halted = false;
+    this.console = console_ ? console_ : console /*the global one*/;
   }
 
   // deno-lint-ignore no-explicit-any
   public warn(...data: any[]): void {
-    console.warn(...data);
+    this.console.warn(Colors.yellow("[warn]"), ...data);
   }
 
   // deno-lint-ignore no-explicit-any
   public error(...data: any[]): void {
-    console.error(...data);
+    this.console.error(Colors.red("[err]"), ...data);
   }
 
   // Terminate macro expansion.
   public halt(): void {
     this.halted = true;
-    log_trace(this.stack);
+    this.log_trace(this.stack);
   }
 
   // Returns whether macro expansion was halted prematurely.
   public did_halt(): boolean {
     return this.halted;
   }
+
+  log_trace(stack_: Stack<Location>) {
+    this.console.group("");
+    let stack = stack_;
+    while (!stack.is_empty()) {
+      this.console.log("at", format_location(stack.peek()!));
+      stack = stack.pop();
+    }
+    this.console.groupEnd();
+  }
 }
 
 export function format_location(location: Location): string {
-  return `${location.method} in ${location.file} line ${location.line}:${location.char}`;
+  return `${Colors.bold(Colors.italic(location.method))} in ${style_file(location.file)}${Colors.yellow(`:${location.line}:${location.char}`)}`;
 }
 
-function log_trace(stack_: Stack<Location>) {
-  console.group("macro stacktrace");
-  let stack = stack_;
-  while (!stack.is_empty()) {
-    console.log(format_location(stack.peek()!));
-    stack = stack.pop();
-  }
-  console.groupEnd();
+export function style_file(s: string): string {
+  return Colors.cyan(s);
 }
 
 let currently_evaluating = false;
 
-export function evaluate(expression: Expression): string | Context {
+export function evaluate(expression: Expression, console_?: Console): string | Context {
   currently_evaluating = true;  
-  const ctx = new Context(new Map());
+  const ctx = new Context(new Map(), console_);
   let exp = expression;
 
   while (!ctx.did_halt()) {
@@ -128,6 +134,7 @@ export function evaluate(expression: Expression): string | Context {
       if (ctx.must_make_progress) {
         currently_evaluating = false;
         ctx.error("Macro expansion did not terminate.");
+        // TODO log the leaf macros
         return ctx;
       } else {
         // Continue evaluating but set the must_make_progress flag.
@@ -174,8 +181,6 @@ export function do_evaluate(
     } else {
       return [all_evaluated, made_progress];
     }
-  } else if (expression === -1) {
-    return [expression, false];
   } else if (expression instanceof Invocation) {
     const { macro, args } = expression;
 
@@ -193,7 +198,7 @@ export function do_evaluate(
       ctx.stack = ctx.stack.pop();
     }
 
-    if (expanded === -1) {
+    if (expanded === null) {
       return [expression, false];
     } else {
       const [expanded_expanded, _] = do_evaluate(new ExpandedMacro(macro, expanded), ctx, args);
@@ -231,7 +236,12 @@ export function do_evaluate(
       if (macro.location) {
         ctx.stack = ctx.stack.pop();
       }
-      return [finalized, true];
+
+      if (finalized === null) {
+        return [expanded_expanded, false];
+      } else {
+        return [finalized, true];
+      }
     } else {
       macro.bottom_up(ctx);
       if (ctx.did_halt()) {
@@ -244,13 +254,14 @@ export function do_evaluate(
       return [new ExpandedMacro(macro, expanded_expanded), made_progress];
     }
   } else {
+    console.error(expression);
     throw new Error("unreachable, or so they thought...");
   }
 }
 
 export function new_macro(
-  expand: (args: Argument[], ctx: Context) => Expression = default_expand,
-  finalize: (expanded: string, ctx: Context) => string = default_finalize,
+  expand: (args: Argument[], ctx: Context) => (Expression | null) = default_expand,
+  finalize: (expanded: string, ctx: Context) => (string | null) = default_finalize,
   td: (ctx: Context) => void = default_td,
   bu: (ctx: Context) => void = default_bu,
   offset = 1,

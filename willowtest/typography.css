@@ -25,10 +25,9 @@ a[aria-disabled=true]:hover {
     color: grey;
 }
 
-main p,
-footer p,
-.aside p {
+p {
     line-height: 1.45;
+    margin: 1em 0;
 }
 
 .aside {
