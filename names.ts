@@ -38,7 +38,7 @@ export function get_name_kind(pns: PerNameState): string {
   return <string> pns.get(kind_key)!;
 }
 
-export function get_outout_file(pns: PerNameState): string[] {
+export function get_output_file(pns: PerNameState): string[] {
   return <string[]> pns.get(output_file_key)!;
 }
 
@@ -70,7 +70,7 @@ export function new_name(
 
   per_name_state.set(location_key, ctx.stack);
   per_name_state.set(kind_key, kind);
-  per_name_state.set(output_file_key, current_path(ctx));
+  per_name_state.set(output_file_key, [...current_path(ctx)]);
 
   return per_name_state;
 }

@@ -67,6 +67,7 @@ export class Context {
   public state: State;
   public stack: Stack<Location>;
   public must_make_progress: boolean;
+  public round: number;
   private halted: boolean;
   private console: Console;
 
@@ -74,6 +75,7 @@ export class Context {
     this.state = state;
     this.stack = new_stack();
     this.must_make_progress = false;
+    this.round = -1;
     this.halted = false;
     this.console = console_ ? console_ : console /*the global one*/;
   }
@@ -126,6 +128,7 @@ export function evaluate(expression: Expression, console_?: Console): string | C
   let exp = expression;
 
   while (!ctx.did_halt()) {
+    ctx.round += 1;
     const [evaluated, made_progress] = do_evaluate(exp, ctx, []);
     if (typeof evaluated === "string") {
       currently_evaluating = false;
@@ -303,7 +306,7 @@ export function is_expression(x: any): boolean {
     return true;
   } else if (Array.isArray(x)) {
     return true;
-  } else if (x instanceof Invocation || x instanceof ExpandedMacro) {
+  } else if (x instanceof Invocation || x instanceof ExpandedMacro || x instanceof Argument) {
     return true;
   } else {
     return false;

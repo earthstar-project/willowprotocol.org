@@ -38,3 +38,48 @@ p {
     border: 1px solid var(--light-green);
     border-width: 1px 0;
 }
+
+/* Definitions produced by the `def` macro. */
+dfn>a {
+    font-style: normal;
+    font-weight: bold;
+    color: #185ecc;
+    text-decoration: unset;
+}
+
+dfn>a:hover {
+    color: #185ecc;
+}
+
+/* References produced by the `r`, `rs`, `R`, and `Rs` macros. */
+a.ref {
+    color: unset;
+    text-decoration: underline dotted #497fff 2px;
+}
+
+/* Inline normative content, produced by the `normative` macro. */
+span.normative {
+    padding: 0 1ch;
+    background: radial-gradient(ellipse, rgb(210, 255, 143), #f2f2f2);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 18px;
+    border-bottom-left-radius: 11px;
+    box-decoration-break: clone;
+}
+
+/* A normative paragraph, produced by the `pnormative` macro. */
+/* p.normative {
+    border-left: var(--green) 8px solid;
+    padding-left: 1rem;
+    margin-left: calc(-1rem - 8px);
+    background: linear-gradient(to right, #e0ffd5, #fff);
+} */
+
+/* An informative paragraph, produced by the `pinformative` macro. */
+p.normative {
+    border-left: #0979c4 8px solid;
+    padding-left: 1rem;
+    margin-left: calc(-1rem - 8px);
+    background: linear-gradient(to right, #e3f3ff,#fff 16%);
+}
