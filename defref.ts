@@ -1,7 +1,9 @@
 import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
 import { new_name, PerNameState, try_resolve_name } from "./names.ts";
 import { dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
-import { link_name } from "./linkname.ts";
+import { get_root_directory, link_name } from "./linkname.ts";
+import { html5_dependency_js } from "./html5.ts";
+import { out_file_absolute } from "./out.ts";
 
 export interface Def {
   id: string;
@@ -28,13 +30,16 @@ export function def(
       const state = new_name(info_.id, "def", ctx);
       state?.set(def_key, info_);
 
-      return dfn(
-        link_name(
-          info_.id,
-          { id: info_.id },
-          text ? args[0] : get_singular(info_),
+      return [
+        dfn(
+          link_name(
+            info_.id,
+            { id: info_.id },
+            text ? args[0] : get_singular(info_),
+          ),
         ),
-      );
+        out_file_absolute([...get_root_directory(ctx), "previews", `${info_.id}.html`], "<p>I'm a preview oooooooooooo oooooooooo ooooooooooo ooooooooooo oooooooooo ooooooooooo oooooooooo oooooooooo oooooooo</p>"),
+      ];
     },
   );
 
@@ -44,28 +49,28 @@ export function def(
 export function r(
   id: string,
   text?: Expression,
-): Invocation {
+): Expression {
     return ref_invocation(get_singular, id, text);
 }
 
 export function rs(
     id: string,
     text?: Expression,
-  ): Invocation {
+  ): Expression {
       return ref_invocation(get_plural, id, text);
   }
 
   export function R(
     id: string,
     text?: Expression,
-  ): Invocation {
+  ): Expression {
       return ref_invocation(get_Singular, id, text);
   }
 
   export function Rs(
     id: string,
     text?: Expression,
-  ): Invocation {
+  ): Expression {
       return ref_invocation(get_Plural, id, text);
   }
 
@@ -73,25 +78,38 @@ function ref_invocation(
     noun_form: (d: Def) => string,
     id: string,
     text?: Expression,
-  ): Invocation {
+  ): Expression {
     const macro = new_macro(
       (args, ctx) => {
         const name = try_resolve_name(id, "def", ctx);
+        let the_link: Expression = "";
+        const attributes = {
+          class: "ref",
+          "data-preview": `/previews/${id}.html`,
+        };
         if (name) {
-          return link_name(
+          the_link = link_name(
             id,
-            { class: "ref" },
+            attributes,
             text ? args[0] : noun_form(get_def(name)),
           );
         } else if (ctx.must_make_progress) {
-          return link_name(
+          the_link = link_name(
             id,
-            { class: "ref" },
+            attributes,
             text ? args[0] : id,
           );
         } else {
           return null;
         }
+
+        return [
+          html5_dependency_js("/assets/floating-ui.core.min.js"),
+          html5_dependency_js("/assets/floating-ui.dom.min.js"),
+          html5_dependency_js("/assets/tooltips.js"),
+          html5_dependency_js("/assets/previews.js"),
+          the_link,
+        ];
       },
       undefined,
       undefined,

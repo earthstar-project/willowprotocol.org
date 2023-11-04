@@ -257,6 +257,54 @@ export function out_file(
   return new Invocation(macro, args);
 }
 
+export function out_file_absolute(
+  path_fragments: string[],
+  ...args: Expression[]
+): Invocation {
+  const the_path = join(...path_fragments);
+
+  let first_td = true;
+
+  const macro = new_macro(
+    undefined,
+    (fully_expanded, ctx) => {
+      try {
+        Deno.writeTextFileSync(
+          the_path,
+          fully_expanded,
+        );
+      } catch (err) {
+        ctx.error(
+          `Could not write file at ${style_file(the_path)}`,
+        );
+        ctx.error(err);
+        ctx.halt();
+      }
+      return "";
+    },
+    // td
+    (ctx) => {
+      if (first_td) {
+        first_td = false;
+        try {
+          Deno.removeSync(the_path, { recursive: true });
+        } catch (err) {
+          if (!(err instanceof Deno.errors.NotFound)) {
+            ctx.error(
+              `Could not clear (that is, delete) file at ${the_path}`,
+            );
+            ctx.error(err);
+            ctx.halt();
+            return "";
+          }
+        }
+      }
+    },
+  );
+
+  return new Invocation(macro, args);
+}
+
 export function copy_file(path_fragment: string): Invocation {
   let first_td = true;
 

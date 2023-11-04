@@ -101,6 +101,30 @@ body {
     display: none;
 }
 
+.preview {
+    background: var(--nearly-white);
+    box-shadow: 0px 0px 3px 4px #DDDDDD;
+    padding: 0.5rem;
+    max-width: calc(100vw + 1rem - ${opts.padding_left + opts.padding_right}rem);
+    position: absolute;
+}
+
+.preview .aside {
+    display: none;
+}
+
+.preview.previewwide {
+    max-width: calc(8px + 100vw - calc(var(--padding-left) + var(--padding-right) + 0.5 * calc(100vw - var(--max-width-slightlywide))));
+}
+
+.preview.previewslightlywide {
+    max-width: calc(var(--max-width-slightlywide) + 8px);
+}
+
+.preview_content>* {
+    margin: 0;
+}
+
 @media (min-width: ${opts.wide_and_margins()}rem) {
     .aside {
         display: initial;
@@ -126,6 +150,10 @@ body {
 
     .aside > .aside_counter {
         margin-right: 0.2rem;
+    }
+
+    .preview {
+        max-width: calc(${opts.max_width_main}rem + 1rem);
     }
 }`;
       }

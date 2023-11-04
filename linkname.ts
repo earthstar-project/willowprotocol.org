@@ -1,4 +1,5 @@
-import { relative } from "https://deno.land/std@0.204.0/path/mod.ts";
+import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
+import { basename, join, relative } from "https://deno.land/std@0.198.0/path/mod.ts";
 
 import {
   Context,
@@ -45,6 +46,10 @@ export function set_root_directory(logical_dir: string[]): Invocation {
   );
 
   return new Invocation(macro, []);
+}
+
+export function get_root_directory(ctx: Context): string[] {
+  return link_name_state(ctx).root;
 }
 
 export function link_name(

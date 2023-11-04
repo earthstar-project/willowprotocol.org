@@ -149,6 +149,7 @@ evaluate([
   set_root_directory(["build"]),
   out_directory(
     "build",
+    out_directory("previews"),
     out_file(
       "anotherfile.html",
       site_template({ title: "Hi", name: "testfoo" }, [
