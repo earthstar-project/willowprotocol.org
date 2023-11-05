@@ -1,9 +1,88 @@
-import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
+import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
+import {
+  Context,
+  ExpandedMacro,
+  Expression,
+  format_location,
+  Invocation,
+  new_macro,
+} from "./tsgen.ts";
 import { new_name, PerNameState, try_resolve_name } from "./names.ts";
-import { dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
+import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
-import { out_file_absolute } from "./out.ts";
+import { out_file_absolute, write_file_absolute } from "./out.ts";
+
+const previewkey = Symbol("Preview");
+
+interface PreviewState {
+  ids: Set<string> | null;
+  currently_defining: boolean;
+}
+
+function preview_state(ctx: Context): PreviewState {
+  const state = ctx.state.get(previewkey);
+
+  if (state) {
+    return <PreviewState> state;
+  } else {
+    ctx.state.set(previewkey, {
+      ids: null,
+      currently_defining: false,
+    });
+    return preview_state(ctx);
+  }
+}
+
+export function add_preview_id(id: string, ctx: Context): boolean {
+  const ids = preview_state(ctx).ids;
+
+  if (ids) {
+    ids.add(id);
+    return true;
+  } else {
+    ctx.warn(
+      `Did not create a preview for id ${style_def(id)} at ${
+        format_location(ctx.stack.peek()!)
+      }`,
+    );
+    ctx.warn(`    There was no containing preview scope.`);
+    return false;
+  }
+}
+
+export function preview_scope(...expressions: Expression[]): Invocation {
+  let previous_scope: Set<string> | null = null;
+
+  const macro = new_macro(
+    undefined,
+    (expanded, ctx) => {
+      const ids = preview_state(ctx).ids;
+
+      if (ids != null) {
+        for (const id of ids) {
+          write_file_absolute(
+            [...get_root_directory(ctx), "previews", `${id}.html`],
+            expanded,
+            ctx,
+          );
+        }
+      }
+
+      return expanded;
+    },
+    (ctx) => {
+      const state = preview_state(ctx);
+      previous_scope = state.ids;
+      state.ids = new Set();
+    },
+    (ctx) => {
+      preview_state(ctx).ids = previous_scope;
+    },
+  );
+
+  return new Invocation(macro, expressions);
+}
 
 export interface Def {
   id: string;
@@ -11,6 +90,7 @@ export interface Def {
   plural?: string;
   Singular?: string;
   Plural?: string;
+  clazz?: string;
 }
 
 const def_key = Symbol("Def");
@@ -22,25 +102,51 @@ export function get_def(name_state: PerNameState): Def {
 export function def(
   info: string | Def,
   text?: Expression,
+  preview?: Expression,
 ): Invocation {
   const info_: Def = (typeof info === "string") ? { id: info } : info;
 
   const macro = new_macro(
     (args, ctx) => {
-      const state = new_name(info_.id, "def", ctx);
-      state?.set(def_key, info_);
+      if (!preview_state(ctx).currently_defining) {
+        const state = new_name(info_.id, "def", ctx);
+        state?.set(def_key, info_);
+      }
+
+      const attributes: Attributes = {
+        id: info_.id,
+      };
+      if (info_.clazz) {
+        attributes.class = info_.clazz;
+      }
+
+      let manual_preview: Expression = "";
+      if (!preview_state(ctx).currently_defining) {
+        if (preview) {
+          manual_preview = out_file_absolute([
+            ...get_root_directory(ctx),
+            "previews",
+            `${info_.id}.html`,
+          ], preview);
+        } else {
+          add_preview_id(info_.id, ctx);
+        }
+      }
 
       return [
+        manual_preview,
         dfn(
           link_name(
             info_.id,
-            { id: info_.id },
+            attributes,
             text ? args[0] : get_singular(info_),
           ),
         ),
-        out_file_absolute([...get_root_directory(ctx), "previews", `${info_.id}.html`], "<p>I'm a preview oooooooooooo oooooooooo ooooooooooo ooooooooooo oooooooooo ooooooooooo oooooooooo oooooooooo oooooooo</p>"),
       ];
     },
+    undefined,
+    (ctx) => preview_state(ctx).currently_defining = true,
+    (ctx) => preview_state(ctx).currently_defining = false,
   );
 
   return new Invocation(macro, [text ? text : "never used"]);
@@ -50,75 +156,79 @@ export function r(
   id: string,
   text?: Expression,
 ): Expression {
-    return ref_invocation(get_singular, id, text);
+  return ref_invocation(get_singular, id, text);
 }
 
 export function rs(
-    id: string,
-    text?: Expression,
-  ): Expression {
-      return ref_invocation(get_plural, id, text);
-  }
+  id: string,
+  text?: Expression,
+): Expression {
+  return ref_invocation(get_plural, id, text);
+}
 
-  export function R(
-    id: string,
-    text?: Expression,
-  ): Expression {
-      return ref_invocation(get_Singular, id, text);
-  }
+export function R(
+  id: string,
+  text?: Expression,
+): Expression {
+  return ref_invocation(get_Singular, id, text);
+}
 
-  export function Rs(
-    id: string,
-    text?: Expression,
-  ): Expression {
-      return ref_invocation(get_Plural, id, text);
-  }
+export function Rs(
+  id: string,
+  text?: Expression,
+): Expression {
+  return ref_invocation(get_Plural, id, text);
+}
 
 function ref_invocation(
-    noun_form: (d: Def) => string,
-    id: string,
-    text?: Expression,
-  ): Expression {
-    const macro = new_macro(
-      (args, ctx) => {
-        const name = try_resolve_name(id, "def", ctx);
-        let the_link: Expression = "";
-        const attributes = {
-          class: "ref",
-          "data-preview": `/previews/${id}.html`,
-        };
-        if (name) {
-          the_link = link_name(
-            id,
-            attributes,
-            text ? args[0] : noun_form(get_def(name)),
-          );
-        } else if (ctx.must_make_progress) {
-          the_link = link_name(
-            id,
-            attributes,
-            text ? args[0] : id,
-          );
-        } else {
-          return null;
+  noun_form: (d: Def) => string,
+  id: string,
+  text?: Expression,
+): Expression {
+  const macro = new_macro(
+    (args, ctx) => {
+      const name = try_resolve_name(id, "def", ctx);
+      let the_link: Expression = "";
+      const attributes = {
+        class: "ref",
+        "data-preview": `/previews/${id}.html`,
+      };
+      if (name) {
+        const the_def = get_def(name);
+        if (the_def.clazz) {
+          attributes.class = `${attributes.class} ${the_def.clazz}`;
         }
+        the_link = link_name(
+          id,
+          attributes,
+          text ? args[0] : noun_form(the_def),
+        );
+      } else if (ctx.must_make_progress) {
+        the_link = link_name(
+          id,
+          attributes,
+          text ? args[0] : id,
+        );
+      } else {
+        return null;
+      }
 
-        return [
-          html5_dependency_js("/assets/floating-ui.core.min.js"),
-          html5_dependency_js("/assets/floating-ui.dom.min.js"),
-          html5_dependency_js("/assets/tooltips.js"),
-          html5_dependency_js("/assets/previews.js"),
-          the_link,
-        ];
-      },
-      undefined,
-      undefined,
-      undefined,
-      2,
-    );
-  
-    return new Invocation(macro, [text ? text : "never used"]);
-  }
+      return [
+        html5_dependency_js("/assets/floating-ui.core.min.js"),
+        html5_dependency_js("/assets/floating-ui.dom.min.js"),
+        html5_dependency_js("/assets/tooltips.js"),
+        html5_dependency_js("/assets/previews.js"),
+        the_link,
+      ];
+    },
+    undefined,
+    undefined,
+    undefined,
+    2,
+  );
+
+  return new Invocation(macro, [text ? text : "never used"]);
+}
 
 export function get_singular(d: Def): string {
   if (d.singular === undefined) {
@@ -154,4 +264,8 @@ export function get_Plural(d: Def): string {
 
 function naive_capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+export function style_def(s: string): string {
+  return Colors.green(s);
 }

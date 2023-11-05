@@ -414,6 +414,52 @@ export function copy_file(path_fragment: string): Invocation {
   return new Invocation(macro, []);
 }
 
+export function write_file_absolute(
+  path_fragments: string[],
+  content: string,
+  ctx: Context,
+): boolean {
+  const the_path = join(...path_fragments);
+
+  try {
+    Deno.writeTextFileSync(
+      the_path,
+      content,
+    );
+    return true;
+  } catch (err) {
+    ctx.error(
+      `Could not write file at ${style_file(the_path)}`,
+    );
+    ctx.error(err);
+    ctx.halt();
+    return false;
+  }
+}
+
+export function clear_file_absolute(
+  path_fragments: string[],
+  ctx: Context,
+): boolean {
+  const the_path = join(...path_fragments);
+
+  try {
+    Deno.removeSync(the_path, { recursive: true });
+    return true;
+  } catch (err) {
+    if (!(err instanceof Deno.errors.NotFound)) {
+      ctx.error(
+        `Could not clear (that is, delete) file at ${the_path}`,
+      );
+      ctx.error(err);
+      ctx.halt();
+      return false;
+    } else {
+      return true;
+    }
+  }
+}
+
 export function current_per_file_state(ctx: Context): PerFileState {
   return resolve_path(
     out_state(ctx).out_files,
