@@ -6,6 +6,7 @@ import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link } from "../main.ts";
 import { $ } from "../../katex.ts";
+import { Struct, pseudocode, hl_builtin } from "../../pseudocode.ts";
 
 export const sync: Expression = site_template(
     {
@@ -30,7 +31,7 @@ export const sync: Expression = site_template(
 
             pinformative("The WGPS provides a shared vocabulary for peers to communicate with, but nothing more. It cannot and does not force peers to use it efficiently or to use the most efficient data structures internally. That's a feature! Implementations can start off with inefficient but simple implementation choices and later replace those with better-scaling ones. Throughout that evolution, the implementations stay compatible with any other implementation, regardless of its degree of sophistication."),
 
-            pnormative("Throughout this specification, paragraphs styled like this one are normative. Implementations ", link("MUST", "https://datatracker.ietf.org/doc/html/rfc2119"), " adhere to all normative content. The other (informative) content is for human eyes only, don't show it to your computer."),
+            // pnormative("Throughout this specification, paragraphs styled like this one are normative. Implementations ", link("MUST", "https://datatracker.ietf.org/doc/html/rfc2119"), " adhere to all normative content. The other (informative) content is for human eyes only, don't show it to your computer."),
         ]),
 
         hsection("sync_concepts", "Concepts", [
@@ -41,7 +42,7 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_access", "Access Control", [
-                pinformative("The WGPS employs the access control mechanism outlined in the ", link_name("meadowcap", "meadowcap spec"), "."),
+                pinformative("The WGPS employs the access control mechanism outlined in the ", link_name("meadowcap_read_control", "meadowcap spec"), "."),
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
@@ -68,8 +69,60 @@ export const sync: Expression = site_template(
         ]),
         
         hsection("sync_parameters", "Parameters", [
+            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for private set intersection, access control, and product-based set reconciliation."),
+
+            pinformative(""),
+
+
+// ## Parameters
+
+// The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the parameters of both the core willow data model and of meadowcap. The WGPS also introduces some additional parameters for private set intersection<!-- and for product-based set reconciliation-->.
+
+// Private set intersection requires a type `PsiGroup` whose values are the members of a [finite cyclic groups suitable for key exchanges](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups), a type `PsiScalar` of scalars, and a function `psi_scalar_mutiplication(PsiGroup, PsiScalar) -> PsiGroup`. Further, we need *encoding functions* for `PsiGroup` and `PsiScalar`. Finally, we need a function `psi_id_to_group(NamespaceId) -> PsiGroup` that hashes arbitrary *namespace IDs* into `PsiGroup`.
+
+// As of writing (October 2023), the [X25519](https://en.wikipedia.org/wiki/Curve25519) elliptic curve is a suitable and secure cryptographic primitive. In terms of its implementation in the popular [libsodium](https://doc.libsodium.org/) library, `PsiGroup` is the type of integers of width `crypto_scalarmult_BYTES`, `PsiScalar` is the type of integers of width `crypto_scalarmult_SCALARBYTES`, and `psi_scalar_mutiplication` is libsodium's `crypto_scalarmult`.
+
+// <!-- Product-based set reconciliation requires the ability to hash arbitrary sets of entries into values of a type `Fingerprint` via a function `fingerprint(Set<Entry>) -> Fingerprint`. In order to allow for certain efficient implementation techniques, `fingerprint` is not an arbitrary protocol parameter but is constructed from some other protocol parameters.
+
+// First, we require a function `fingerprint_singleton(Entry) -> Fingerprint` that hashes an individual entry into the set `Fingerprint`. This hash function should take into account all aspects of the entry: modifying its *namespace ID*, *subspace ID*, *path*, *timestamp*, *length*, or *hash* should result in a completely different fingerprint.
+
+// <aside>The original paper on range-based set reconciliation does not require commutativity, because it only deals with one-dimensional data. In a multidimensional setting, there is no natural total ordering on the data space, so we cannot constrain the order in which the fingerprints of individual items are combined to a non-arbitrary order.</aside>
+
+// Second, we require an [associative](https://en.wikipedia.org/wiki/Associative_property), [commutative](https://en.wikipedia.org/wiki/Commutative_property) function `fingerprint_combine(Fingerprint, Fingerprint) -> Fingerprint` with a [neutral element](https://en.wikipedia.org/wiki/Identity_element) `fingerprint_neutral`.
+
+// Given these protocol parameters, the function `fingerprint` is defined as follows:
+
+// - applying `fingerprint` to the empty set yields `fingerprint_neutral`,
+// - applying `fingerprint` to a set containing exactly one entry `e` yields `fingerprint_singleton(e)`, and
+// - applying `fingerprint` to any other set yields the result of applying `fingerprint_singleton` to all members of the set individually and then combining the resulting fingerprints with `fingerprint_combine` (grouping and ordering do not matter because of associativity and commutativity respectively). -->
+
+// The final protocol parameters are used by the two peers to collaboratively agree on a random challenge to authenticate their read requests. This requires a natural number `commitment_length`, and a secure hash function `commitment_hash` that produces digests of `commitment_length` many bytes.
+
             
         ]),
+
+        // pseudocode(
+        //     new Struct({
+        //         id: "PsiReply",
+        //         comment: ["Look, a birb! ", r("logical_channel")],
+        //         fields: [
+        //             {
+        //                 id: "PsiReplyHandle",
+        //                 name: "handle",
+        //                 comment: "One birb, two birbs, three birbss, ... Many more birbs than would fit in a single line, so this comment will break to multiple lines. There's always space for more birbs.",
+        //                 rhs: hl_builtin("u64"),
+        //             },
+        //             {
+        //                 id: "PsiReplyGroupMember",
+        //                 name: "group_member",
+        //                 comment: "So many birbssssss!",
+        //                 rhs: r("PsiReply"),
+        //             }
+        //         ],
+        //     }),
+        // ),
+
+        // p("Referencing the ", r("PsiReply"), " struct and its ", r("PsiReplyHandle"), " field."),
 
         // pinformative("The WGPS uses the following ", rs("handle_type"), ":"),
     

@@ -99,6 +99,10 @@ export function get_def(name_state: PerNameState): Def {
   return name_state.get(def_key)!;
 }
 
+export function set_def(name_state: PerNameState, def: Def) {
+  name_state.set(def_key, def);
+}
+
 export function def(
   info: string | Def,
   text?: Expression,
@@ -110,7 +114,11 @@ export function def(
     (args, ctx) => {
       if (!preview_state(ctx).currently_defining) {
         const state = new_name(info_.id, "def", ctx);
-        state?.set(def_key, info_);
+        if (state === null) {
+          return "";
+        } else {
+          state?.set(def_key, info_);
+        }
       }
 
       const attributes: Attributes = {

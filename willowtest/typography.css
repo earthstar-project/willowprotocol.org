@@ -81,5 +81,15 @@ p.normative {
     border-left: #0979c4 8px solid;
     padding-left: 1rem;
     margin-left: calc(-1rem - 8px);
-    background: linear-gradient(to right, #e3f3ff,#fff 16%);
+    background: linear-gradient(to right, #e3f3ff, #fff 16%);
+}
+
+code, a.ref.type, a.ref.member {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    font-size: 0.8em;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 0.2em;
+    border-radius: 10%;
+    word-break: break-word;
+    text-decoration: inherit;
 }
