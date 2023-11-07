@@ -1,3 +1,4 @@
+import { def } from "../../../defref.ts";
 import { p } from "../../../h.ts";
 import { Expression } from "../../../tsgen.ts";
 import { site_template } from "../../main.ts";
@@ -5,10 +6,11 @@ import { site_template } from "../../main.ts";
 export const psi: Expression = site_template(
     {
         title: "Private Set Intersection",
-        name: "psi",
+        name: "private_set_intersection",
     },
     [
         p("TODO"),
+        def({id: "psi", singular: "private set intersection"}),
     ],
 );
 

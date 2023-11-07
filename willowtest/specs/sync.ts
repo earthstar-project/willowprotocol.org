@@ -81,7 +81,7 @@ export const sync: Expression = site_template(
         hsection("sync_protocol", "Protocol", [
             pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def("betty", "Betty"), " refers to the peer that accepted a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
 
-            pinformative(`Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something “is an error”. Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a mesage that does not fulfill these criteria, that is an error.`),
+            pinformative(`Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something “is an error”. Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a message that does not fulfill these criteria, that is an error.`),
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("commitment_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
@@ -100,10 +100,10 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "NamespaceHandle",
-                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states: ", lis(
-                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", link_name("psi", "private set intersection"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
+                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("aoi"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
+                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
                                 [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
-                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer's interest in the ", r("namespace"), ")."]), "(do not perform ", link_name("psi", "private set intersection"), ")"],
+                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer's interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
                             )],
                         },
                         {
@@ -156,23 +156,85 @@ export const sync: Expression = site_template(
 
             hsection("sync_messages", "Messages", [
                 pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
+                
+                hsection("bind_namespace_private", code("BindNamespacePrivate"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindNamespacePrivate",
+                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), " for performing ", r("psi"), "."],
+                            fields: [
+                                {
+                                    id: "BindNamespacePrivateGroupMember",
+                                    name: "group_member",
+                                    comment: ["The result of first applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), " and then performing scalar multiplication with ", r("scalar"), "."],
+                                    rhs: r("PsiGroup"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["In the color mixing metaphor, a ", r("BindNamespacePrivate"), " message corresponds to mixing a data color with one's secret color and sending the mixture to the other peer."]),
+                        "The ", r("BindNamespacePrivate"), " messages let peers submit a ", r("namespace"), " for ", r("psi"), " by transmitting the result of first applying ", r("psi_id_to_group"), " to the ", r("namespace"), " and then applying ", r("psi_scalar_multiplication"), " to the result and ", r("scalar"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePrivateGroupMember"), " in the ", r("psi_state_private_pending"), " state.",
+                    ]),
+                
+                    pinformative(R("BindNamespacePrivate"), " messages use the ", r("NamespaceChannel"), "."),
+                ]),
 
-                pseudocode(
-                    new Struct({
-                        id: "BindNamespacePublic",
-                        comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), ", skipping the hassle of ", link_name("psi", "private set intersection"), "."],
-                        fields: [
-                            {
-                                id: "BindNamespacePublicGroupMember",
-                                name: "group_member",
-                                comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), "."],
-                                rhs: r("PsiGroup"),
-                            }
-                        ],
-                    }),
-                ),
+                hsection("psi_reply", code("PsiReply"), [
+                    pseudocode(
+                        new Struct({
+                            id: "PsiReply",
+                            comment: ["Finalize ", r("psi"), " for a single ", r("namespace"), "."],
+                            fields: [
+                                {
+                                    id: "PsiReplyHandle",
+                                    name: "handle",
+                                    comment: ["The ", r("handle"), " of the ", r("BindNamespacePrivate"), " message which this finalizes."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "PsiReplyGroupMember",
+                                    name: "group_member",
+                                    comment: ["The result of performing scalar multiplication between the ", r("BindNamespacePrivateGroupMember"), " of the message that this is replying to and ", r("scalar"), "."],
+                                    rhs: r("PsiGroup"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["In the color mixing metaphor, a ", r("PsiReply"), " message corresponds to mixing one's secret color with a color mixture received from the other peer and sending the resultin color back."]),
+                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("namespace"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
+                    ]),
 
-                pinformative("The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("namespace_handle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state."),
+                    pinformative("The ", r("PsiReplyHandle"), " must refer to a ", r("NamespaceHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindNamespacePrivate"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("NamespaceHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("handle"), " binding to the ", r("PsiReplyGroupMember"), " of the message, and its state to ", r("psi_state_private_completed"), "."),
+                ]),
+
+                hsection("bind_namespace_public", code("BindNamespacePublic"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindNamespacePublic",
+                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), ", skipping the hassle of ", r("psi"), "."],
+                            fields: [
+                                {
+                                    id: "BindNamespacePublicGroupMember",
+                                    name: "group_member",
+                                    comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), "."],
+                                    rhs: r("PsiGroup"),
+                                },
+                            ],
+                        }),
+                    ),
+    
+                    pinformative([
+                        marginale(["In the color mixing metaphor, a ", r("BindNamespacePublic"), " message corresponds to sending a data color in the clear, with a small note attached that says “I trust you, here's a data color of mine.”"]),
+                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("namespace_handle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
+                    ]),
+
+                    pinformative(R("BindNamespacePublic"), " messages use the ", r("NamespaceChannel"), "."),
+                ]),
+
             ]),
         ]),
 
@@ -194,25 +256,9 @@ export const sync: Expression = site_template(
 
 // #### PsiReply
 
-// The **PsiReply** messages let peers complete the private set intersection process for a single namespace. The message references a prior non-public namespace handle and replies with the scalar product of that handle's `group_member` and the sender's *scalar*. The receiver then updates the `group_member` of the handle in question to the `group_member` from the `PsiReply` message, and updates the *psi state* of the handle to `PrivateComplete`.
 
-// ```rust
-// // This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
-// struct PsiReply {
-//   // The handle refers to a namespace binding that was bound by the receiver of this message.
-//   // It must be a handle whose `BindNamespace` message had set `is_public` to `false`.
-//   // At most one `PsiReply` message may be sent for any one handle.
-//   handle: u64,
-//   // `psi_scalar_mutiplication(previous, scalar)`, where `previous` is the `group_member` of the handle, and `scalar` is the scalar value that the sending peer chose during session initialization.
-//   group_member: PsiGroup,
-// }
-// ```
 
-// Intuitively, this message corresponds to mixing in the third color in our color mixing metaphor.
 
-// Taken together, `BindNamespace` and `PsiReply` implement private set intersection (and a way to bypass it via the `is_public` flag). Future messages that wish to reference a namespace id, do so by either specifying a single namespace handle of *psi state* `Public`, or by a specifying a pair of namespace handles (one bound by each peer), both of *psi state* `PrivateComplete` and of the same `group_member`.
-
-// *PsiReply* messages do not use any logical channel.
 
 // <!-- #### RevealCommitment
 

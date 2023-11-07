@@ -376,7 +376,7 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
       for (const [variant_id, rendered_variant] of pseudocode_state(ctx).variants) {
         write_file_absolute(
           [...get_root_directory(ctx), "previews", `${variant_id}.html`],
-          `<code class="pseudocode">${rendered_variant}</code><div>Variant of <a class="ref type" data-preview="/previews/${simple_enum.id}.html" href="/specs/sync/index.html#${simple_enum.id}">${enum_name}</a></div>`,
+          `<code class="pseudocode">${rendered_variant}</code><div>Enum variant of <a class="ref type" data-preview="/previews/${simple_enum.id}.html" href="/specs/sync/index.html#${simple_enum.id}">${enum_name}</a></div>`,
           ctx,
         );
       }
