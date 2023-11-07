@@ -90,7 +90,7 @@ function link_name_(
               style_file(format_location(ctx.stack.peek()!))
             }`,
           );
-          return a(attributes, id);
+          return a(attributes, contents.length > 0 ? contents : id);
         } else {
           return null;
         }

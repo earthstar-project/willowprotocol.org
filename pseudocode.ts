@@ -217,8 +217,9 @@ function render_struct(struct: Struct): Expression {
 
       const attributes: Attributes = {
         id: struct.id,
+        "data-preview": `/previews/${struct.id}.html`,
+        class: "type",
       };
-      attributes.class = "type";
 
       const type_name = dfn(
         link_name(
@@ -336,8 +337,9 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
 
       const attributes: Attributes = {
         id: simple_enum.id,
+        "data-preview": `/previews/${simple_enum.id}.html`,
+        class: "type",
       };
-      attributes.class = "type";
 
       const type_name = dfn(
         link_name(

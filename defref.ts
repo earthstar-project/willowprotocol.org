@@ -124,6 +124,7 @@ export function def_generic(
 
       const attributes: Attributes = {
         id: info_.id,
+        "data-preview": `/previews/${info_.id}.html`,
       };
       if (info_.clazz) {
         attributes.class = info_.clazz;

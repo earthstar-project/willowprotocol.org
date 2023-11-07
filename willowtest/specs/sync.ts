@@ -6,7 +6,7 @@ import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
-import { SimpleEnum, pseudocode, hl_builtin } from "../../pseudocode.ts";
+import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
 
 export const sync: Expression = site_template(
     {
@@ -85,7 +85,7 @@ export const sync: Expression = site_template(
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("commitment_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
-            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_size"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmmitted when explicitly requested."),
+            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_size"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmitted when explicitly requested."),
 
             pinformative("The next ", r("commitment_length"), " bytes a peer sends are the ", r("commitment_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
@@ -100,7 +100,11 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "NamespaceHandle",
-                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync."],
+                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states: ", lis(
+                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", link_name("psi", "private set intersection"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
+                                [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
+                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer's interest in the ", r("namespace"), ")."]), "(do not perform ", link_name("psi", "private set intersection"), ")"],
+                            )],
                         },
                         {
                             id: "CapabilityHandle",
@@ -144,42 +148,89 @@ export const sync: Expression = site_template(
                     ],
                 }),
             ),
-        ]),
 
 // - **reconciliation memory**: Memory for buffering reconciliation messages. When this resource is limited, peers should make progress on reconciliation in a narrow sub-product rather than to keep multiplying the number of concurrent *product fingerprints*. If the peers do not do this, reconciliation can deadlock.
 // - **entry memory**: Memory for buffering entry-transmission-related messages that arrive outside of set reconciliation. Persisting entries (and their payloads) as they arrive might take longer than reading the bytes from the network. Introducing a resource for receiving entry bytes makes it so that this cannot stall the other protocol functions.
 
 // It is worth pointing out that these resources are fairly course-grained. Peers cannot, for example, fine-tune which of several products will be reconciled first, or which of several payloads will be transmitted first. This is in the interest of overall simplicity and efficiency: using separate resources for separate payment requests, for example, would introduce some overhead. Willow appliations that require different priorities for different kinds of payloads, for example, if real-time constraints are involved, should use a more specialized communication protocol than the WGPS.
 
+            hsection("sync_messages", "Messages", [
+                pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
 
-        // pseudocode(
-        //     new Struct({
-        //         id: "PsiReply",
-        //         comment: ["Look, a birb! ", r("logical_channel")],
-        //         fields: [
-        //             {
-        //                 id: "PsiReplyHandle",
-        //                 name: "handle",
-        //                 comment: "One birb, two birbs, three birbss, ... Many more birbs than would fit in a single line, so this comment will break to multiple lines. There's always space for more birbs.",
-        //                 rhs: hl_builtin("u64"),
-        //             },
-        //             {
-        //                 id: "PsiReplyGroupMember",
-        //                 name: "group_member",
-        //                 comment: "So many birbssssss!",
-        //                 rhs: r("PsiReply"),
-        //             }
-        //         ],
-        //     }),
-        // ),
+                pseudocode(
+                    new Struct({
+                        id: "BindNamespacePublic",
+                        comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), ", skipping the hassle of ", link_name("psi", "private set intersection"), "."],
+                        fields: [
+                            {
+                                id: "BindNamespacePublicGroupMember",
+                                name: "group_member",
+                                comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), "."],
+                                rhs: r("PsiGroup"),
+                            }
+                        ],
+                    }),
+                ),
 
-        // p("Referencing the ", r("PsiReply"), " struct and its ", r("PsiReplyHandle"), " field."),
+                pinformative("The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("namespace_handle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state."),
+            ]),
+        ]),
 
-        // pinformative("The WGPS uses the following ", rs("handle_type"), ":"),
-    
-        // lis(
-        //     [def({ id: "namespace_handle", singular: "namespace handle"}), ": Peers inform each other about ", rs("namespace"), "they care about, or more precisely, they inform each other about members of the ", ],
-        // ),
+// The **BindNamespace** messages let peers bind handles for namespaces. To register the namespace `n`, a peer can either send `psi_scalar_mutiplication(psi_id_to_group(n), scalar)` to submit it into the private set intersection process, or it can simply send `psi_id_to_group(n)` in the open if it does not mind leaking its interest in `n`.
+
+// ```rust
+// // This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
+// struct BindNamespace {
+//   // If true, the namespace will be leaked to the other peer even if it does not yet have it.
+//   is_public: bool,
+//   // If `is_public`, this should be `psi_id_to_group(n)`, else `psi_scalar_mutiplication(psi_id_to_group(n), scalar)`.
+//   group_member: PsiGroup,
+// }
+// ```
+
+// The data bound to the *namespace handle* that this message registers consists of the `group_member` and a value of type `PsiState` (an enum of three variants `Public`, `PrivateIncomplete`, and `PrivateComplete`): `Public` if `is_public` and `PrivateIncomplete` otherwise.
+
+// Each *BindNamespace* message uses the *namespace channel*.
+
+// #### PsiReply
+
+// The **PsiReply** messages let peers complete the private set intersection process for a single namespace. The message references a prior non-public namespace handle and replies with the scalar product of that handle's `group_member` and the sender's *scalar*. The receiver then updates the `group_member` of the handle in question to the `group_member` from the `PsiReply` message, and updates the *psi state* of the handle to `PrivateComplete`.
+
+// ```rust
+// // This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
+// struct PsiReply {
+//   // The handle refers to a namespace binding that was bound by the receiver of this message.
+//   // It must be a handle whose `BindNamespace` message had set `is_public` to `false`.
+//   // At most one `PsiReply` message may be sent for any one handle.
+//   handle: u64,
+//   // `psi_scalar_mutiplication(previous, scalar)`, where `previous` is the `group_member` of the handle, and `scalar` is the scalar value that the sending peer chose during session initialization.
+//   group_member: PsiGroup,
+// }
+// ```
+
+// Intuitively, this message corresponds to mixing in the third color in our color mixing metaphor.
+
+// Taken together, `BindNamespace` and `PsiReply` implement private set intersection (and a way to bypass it via the `is_public` flag). Future messages that wish to reference a namespace id, do so by either specifying a single namespace handle of *psi state* `Public`, or by a specifying a pair of namespace handles (one bound by each peer), both of *psi state* `PrivateComplete` and of the same `group_member`.
+
+// *PsiReply* messages do not use any logical channel.
+
+// <!-- #### RevealCommitment
+
+// The **RevealCommitment** messages let peers determine the challenge they will use to validate read capabilities. This message must be sent at most once by each peer, and it *should* be sent immediately after receiving the `received_commitment` but not before.
+
+// A *RevealCommitment* message consists of `commitment_length` bytes. If these do not hash to the `received_commitment`, this is an error. Otherwise, set `challenge` to the xor of the received bytes and `nonce`. If the peer is Betty, flip every bit of `challenge`.
+
+// A peer may not send any of the subsequent message kinds before having sent its *RevealCommitment* message, unless explicitly stated otherwise.
+
+// #### RegisterCapability
+
+// The **RegisterCapability** messages let peers register handles for read capabilities.
+
+// A *RegisterCapability* message consists of a read *capability*, and a `signature` of type `AuthorSignature` over the `challenge`, issued by the *receiver* of the capability. Crucially, the encoding of the capability omits the *namespace IDs* of source capabilities. Instead, the *RegisterCapability* message contains *namespace handles* to identify the namespace: either a single handle of the sending peer to a namespace whose state is `Public`, or a pair of handles (one of the sending peer, one of the receiving peer) to two namespaces with identical group values and both of state `PrivateComplete`.
+
+// A *BindNamespace* message costs one *capability count* resource, and `n` *capability size* resources, where `n` is the size of the encoded capability (TODO make more precise).
+
+
     ],
 );
 
