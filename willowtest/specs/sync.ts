@@ -4,9 +4,9 @@ import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link } from "../main.ts";
-import { $ } from "../../katex.ts";
-import { Struct, pseudocode, hl_builtin } from "../../pseudocode.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value } from "../main.ts";
+import { $, $comma, $dot } from "../../katex.ts";
+import { SimpleEnum, pseudocode, hl_builtin } from "../../pseudocode.ts";
 
 export const sync: Expression = site_template(
     {
@@ -14,7 +14,7 @@ export const sync: Expression = site_template(
         name: "sync",
     },
     [
-        pinformative("The ", link_name("data_model", "willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronize data. In this document, we specify one possible way for performing synchronization: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "willow data model"), " and ", link_name("meadowcap", "meadowcap"), "."),
+        pinformative("The ", link_name("data_model", "willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronize data. In this document, we specify one possible way for performing synchronization: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
             pinformative("The WGPS aims to be appropriate for a variety of networking settings, particularly those of peer-to-peer systems where the replicating parties might not necessarily trust each other. Quite a bit of engineering went into the WGPS to satisfy the following requirements:"),
@@ -22,14 +22,14 @@ export const sync: Expression = site_template(
             lis(
                 "Incremental sync: peers can detect regions of shared data with relatively sparse communication to avoid redundant data transfer.",
                 "Partial sync: peers synchronize only those regions of data they both care about, at sub-namespace granularity.",
-                ["Access control: conformant peers only hand out data if the request ", link_name("meadowcap", "authorizes its access"), "."],
+                "Access control: conformant peers only hand out data if the request authorizes its access.",
                 "Private set intersection: peers can discover which namespaces they have in common without disclosing any non-common namespaces to each other.",
                 "Resource control: peers communicate (and enforce) their computational resource limits so as not to overload each other.",
                 "Transport independence: peers can communicate over arbitrary reliable, ordered, byte-oriented channels, whether tcp, quic, or unix pipe.",
                 "General efficiency: peers can make use of efficient implementation techniques, and the overall bandwidth consumption stays low.",
             ),
 
-            pinformative("The WGPS provides a shared vocabulary for peers to communicate with, but nothing more. It cannot and does not force peers to use it efficiently or to use the most efficient data structures internally. That's a feature! Implementations can start off with inefficient but simple implementation choices and later replace those with better-scaling ones. Throughout that evolution, the implementations stay compatible with any other implementation, regardless of its degree of sophistication."),
+            pinformative("The WGPS provides a shared vocabulary for peers to communicate with, but nothing more. It cannot and does not force peers to use it efficiently or to use the most efficient data structures internally. That is a feature! Implementations can start out with inefficient but simple implementation choices and later replace those with better-scaling ones. Throughout that evolution, the implementations stay compatible with any other implementation, regardless of its degree of sophistication."),
 
             // pnormative("Throughout this specification, paragraphs styled like this one are normative. Implementations ", link("MUST", "https://datatracker.ietf.org/doc/html/rfc2119"), " adhere to all normative content. The other (informative) content is for human eyes only, don't show it to your computer."),
         ]),
@@ -42,15 +42,15 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_access", "Access Control", [
-                pinformative("The WGPS employs the access control mechanism outlined in the ", link_name("meadowcap_read_control", "meadowcap spec"), "."),
+                pinformative("Peers only transfer data to peers that can prove that they are allowed to access that data. We describe how peers authenticate their requests ", link_name("access_control", "here"), "."),
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
-                pinformative("To synchronize data, peers specify any number of ", rs("aoi"), ". All ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("entry"), " that need to be synchronized."),
+                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". All ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("entry"), " that need to be synchronized."),
 
                 pinformative("The WGPS synchronizes these ", rs("aoi_intersection"), " via ", r("pbsr"), ", a technique we ", link_name("product_based_set_reconciliation", "explain in detail here"), "."),
 
-                pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
+                // pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
@@ -71,35 +71,86 @@ export const sync: Expression = site_template(
         hsection("sync_parameters", "Parameters", [
             pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for private set intersection, access control, and product-based set reconciliation."),
 
-            pinformative(""),
+            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_mutiplication", "psi_scalar_mutiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
 
+            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint", " of the empty set.")),
 
-// ## Parameters
-
-// The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the parameters of both the core willow data model and of meadowcap. The WGPS also introduces some additional parameters for private set intersection<!-- and for product-based set reconciliation-->.
-
-// Private set intersection requires a type `PsiGroup` whose values are the members of a [finite cyclic groups suitable for key exchanges](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups), a type `PsiScalar` of scalars, and a function `psi_scalar_mutiplication(PsiGroup, PsiScalar) -> PsiGroup`. Further, we need *encoding functions* for `PsiGroup` and `PsiScalar`. Finally, we need a function `psi_id_to_group(NamespaceId) -> PsiGroup` that hashes arbitrary *namespace IDs* into `PsiGroup`.
-
-// As of writing (October 2023), the [X25519](https://en.wikipedia.org/wiki/Curve25519) elliptic curve is a suitable and secure cryptographic primitive. In terms of its implementation in the popular [libsodium](https://doc.libsodium.org/) library, `PsiGroup` is the type of integers of width `crypto_scalarmult_BYTES`, `PsiScalar` is the type of integers of width `crypto_scalarmult_SCALARBYTES`, and `psi_scalar_mutiplication` is libsodium's `crypto_scalarmult`.
-
-// <!-- Product-based set reconciliation requires the ability to hash arbitrary sets of entries into values of a type `Fingerprint` via a function `fingerprint(Set<Entry>) -> Fingerprint`. In order to allow for certain efficient implementation techniques, `fingerprint` is not an arbitrary protocol parameter but is constructed from some other protocol parameters.
-
-// First, we require a function `fingerprint_singleton(Entry) -> Fingerprint` that hashes an individual entry into the set `Fingerprint`. This hash function should take into account all aspects of the entry: modifying its *namespace ID*, *subspace ID*, *path*, *timestamp*, *length*, or *hash* should result in a completely different fingerprint.
-
-// <aside>The original paper on range-based set reconciliation does not require commutativity, because it only deals with one-dimensional data. In a multidimensional setting, there is no natural total ordering on the data space, so we cannot constrain the order in which the fingerprints of individual items are combined to a non-arbitrary order.</aside>
-
-// Second, we require an [associative](https://en.wikipedia.org/wiki/Associative_property), [commutative](https://en.wikipedia.org/wiki/Commutative_property) function `fingerprint_combine(Fingerprint, Fingerprint) -> Fingerprint` with a [neutral element](https://en.wikipedia.org/wiki/Identity_element) `fingerprint_neutral`.
-
-// Given these protocol parameters, the function `fingerprint` is defined as follows:
-
-// - applying `fingerprint` to the empty set yields `fingerprint_neutral`,
-// - applying `fingerprint` to a set containing exactly one entry `e` yields `fingerprint_singleton(e)`, and
-// - applying `fingerprint` to any other set yields the result of applying `fingerprint_singleton` to all members of the set individually and then combining the resulting fingerprints with `fingerprint_combine` (grouping and ordering do not matter because of associativity and commutativity respectively). -->
-
-// The final protocol parameters are used by the two peers to collaboratively agree on a random challenge to authenticate their read requests. This requires a natural number `commitment_length`, and a secure hash function `commitment_hash` that produces digests of `commitment_length` many bytes.
-
-            
+            pinformative(link_name("access_control", "Access control"), " TODO ", def_parameter({id: "ReadCapability", plural: "ReadCapabilities"}), def_parameter("commitment_length"), def_parameter("commitment_hash")),            
         ]),
+
+        hsection("sync_protocol", "Protocol", [
+            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def("betty", "Betty"), " refers to the peer that accepted a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
+
+            pinformative(`Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something “is an error”. Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a mesage that does not fulfill these criteria, that is an error.`),
+
+            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("commitment_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
+
+            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_size"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmmitted when explicitly requested."),
+
+            pinformative("The next ", r("commitment_length"), " bytes a peer sends are the ", r("commitment_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
+
+            pinformative("After those initial transmissions, the protocol becomes a purely message-based protocol. There are several kinds of messages, which the peers create, encode as byte strings, and transmit mostly independently from each other."),
+
+            pinformative("The messages make use of the following ", rs("resource_handle"), ":"),
+
+            pseudocode(
+                new SimpleEnum({
+                    id: "HandleKind",
+                    comment: ["The different ", rs("resource_handle"), " employed by the ", r("WGPS"), "."],
+                    variants: [
+                        {
+                            id: "NamespaceHandle",
+                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync."],
+                        },
+                        {
+                            id: "CapabilityHandle",
+                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some ", rs("entry"), "."],
+                        },
+                        {
+                            id: "AreaOfInterestHandle",
+                            comment: [R("resource_handle"), " for ", rs("aoi"), " that peers wish to sync."],
+                        },
+                        {
+                            id: "PayloadRequestHandle",
+                            comment: [R("resource_handle"), " that controls the matching from ", r("payload"), "transmissions to ", r("payload"), " requests."],
+                        },
+                    ],
+                }),
+            ),
+
+            pinformative("The messages are divided across the following ", rs("logical_channel"), ":"),
+
+            pseudocode(
+                new SimpleEnum({
+                    id: "LogicalChannel",
+                    comment: ["The different ", rs("logical_channel"), " employed by the ", r("WGPS"), "."],
+                    variants: [
+                        {
+                            id: "NamespaceChannel",
+                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("NamespaceHandle"), "."],
+                        },
+                        {
+                            id: "CapabilityChannel",
+                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("CapabilityHandle"), "."],
+                        },
+                        {
+                            id: "AreaOfInterestChannel",
+                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("AreaOfInterestHandle"), "."],
+                        },
+                        {
+                            id: "PayloadRequestChannel",
+                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("PayloadRequestHandle"), "."],
+                        },
+                    ],
+                }),
+            ),
+        ]),
+
+// - **reconciliation memory**: Memory for buffering reconciliation messages. When this resource is limited, peers should make progress on reconciliation in a narrow sub-product rather than to keep multiplying the number of concurrent *product fingerprints*. If the peers do not do this, reconciliation can deadlock.
+// - **entry memory**: Memory for buffering entry-transmission-related messages that arrive outside of set reconciliation. Persisting entries (and their payloads) as they arrive might take longer than reading the bytes from the network. Introducing a resource for receiving entry bytes makes it so that this cannot stall the other protocol functions.
+
+// It is worth pointing out that these resources are fairly course-grained. Peers cannot, for example, fine-tune which of several products will be reconciled first, or which of several payloads will be transmitted first. This is in the interest of overall simplicity and efficiency: using separate resources for separate payment requests, for example, would introduce some overhead. Willow appliations that require different priorities for different kinds of payloads, for example, if real-time constraints are involved, should use a more specialized communication protocol than the WGPS.
+
 
         // pseudocode(
         //     new Struct({
@@ -134,76 +185,10 @@ export const sync: Expression = site_template(
 
 /*
 
-## Parameters
-
-The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the parameters of both the core willow data model and of meadowcap. The WGPS also introduces some additional parameters for private set intersection<!-- and for product-based set reconciliation-->.
-
-Private set intersection requires a type `PsiGroup` whose values are the members of a [finite cyclic groups suitable for key exchanges](https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups), a type `PsiScalar` of scalars, and a function `psi_scalar_mutiplication(PsiGroup, PsiScalar) -> PsiGroup`. Further, we need *encoding functions* for `PsiGroup` and `PsiScalar`. Finally, we need a function `psi_id_to_group(NamespaceId) -> PsiGroup` that hashes arbitrary *namespace IDs* into `PsiGroup`.
-
-As of writing (October 2023), the [X25519](https://en.wikipedia.org/wiki/Curve25519) elliptic curve is a suitable and secure cryptographic primitive. In terms of its implementation in the popular [libsodium](https://doc.libsodium.org/) library, `PsiGroup` is the type of integers of width `crypto_scalarmult_BYTES`, `PsiScalar` is the type of integers of width `crypto_scalarmult_SCALARBYTES`, and `psi_scalar_mutiplication` is libsodium's `crypto_scalarmult`.
-
-<!-- Product-based set reconciliation requires the ability to hash arbitrary sets of entries into values of a type `Fingerprint` via a function `fingerprint(Set<Entry>) -> Fingerprint`. In order to allow for certain efficient implementation techniques, `fingerprint` is not an arbitrary protocol parameter but is constructed from some other protocol parameters.
-
-First, we require a function `fingerprint_singleton(Entry) -> Fingerprint` that hashes an individual entry into the set `Fingerprint`. This hash function should take into account all aspects of the entry: modifying its *namespace ID*, *subspace ID*, *path*, *timestamp*, *length*, or *hash* should result in a completely different fingerprint.
-
-<aside>The original paper on range-based set reconciliation does not require commutativity, because it only deals with one-dimensional data. In a multidimensional setting, there is no natural total ordering on the data space, so we cannot constrain the order in which the fingerprints of individual items are combined to a non-arbitrary order.</aside>
-
-Second, we require an [associative](https://en.wikipedia.org/wiki/Associative_property), [commutative](https://en.wikipedia.org/wiki/Commutative_property) function `fingerprint_combine(Fingerprint, Fingerprint) -> Fingerprint` with a [neutral element](https://en.wikipedia.org/wiki/Identity_element) `fingerprint_neutral`.
-
-Given these protocol parameters, the function `fingerprint` is defined as follows:
-
-- applying `fingerprint` to the empty set yields `fingerprint_neutral`,
-- applying `fingerprint` to a set containing exactly one entry `e` yields `fingerprint_singleton(e)`, and
-- applying `fingerprint` to any other set yields the result of applying `fingerprint_singleton` to all members of the set individually and then combining the resulting fingerprints with `fingerprint_combine` (grouping and ordering do not matter because of associativity and commutativity respectively). -->
-
-The final protocol parameters are used by the two peers to collaboratively agree on a random challenge to authenticate their read requests. This requires a natural number `commitment_length`, and a secure hash function `commitment_hash` that produces digests of `commitment_length` many bytes.
 
 
 
 
-
-The WGPS uses the following types of data handles:
-
-- **namespace handles**: Peers need to inform each other about namespaces they care about, or more precisely, they inform each other about elements of the group used for private set intersection that correspond to the namespaces they care about.
-- Other handles will be added to the list as we expand to a feature-complete sync spec.
-<!-- - **capability handles**: Peers can notify each other of read capabilities they have. This way, each capability needs to be verified only once, and peers can accompany request of theirs with the handle of a capability that authorizes that request.
-- **area of interest handles**: Peers register their *areas of interest* with each other. Registering an *area of interest handle* involves presenting a *capability handle* for a capability that covers the *area of interest*. Reconciliation messages specify their *aaoi* by giving the pair of *area of interest handles* whose intersection is the *aaoi*.
-- **payload request handles**: Peers can issue several requests for payloads concurrently. The degree of concurrency and the matching of payload transmissions to payload requests are controlled via handles. -->
-
-The WGPS uses the following logical channels:
-
-- *namespace channel*: Used for controlling the inding of new *namespace handles*.
-- Other channels will be added to the list as we expand to a feature-complete sync spec.
-
-<!-- The WGPS uses the following *resources*:
-
-- **reconciliation memory**: Memory for buffering reconciliation messages. When this resource is limited, peers should make progress on reconciliation in a narrow sub-product rather than to keep multiplying the number of concurrent *product fingerprints*. If the peers do not do this, reconciliation can deadlock.
-- **entry memory**: Memory for buffering entry-transmission-related messages that arrive outside of set reconciliation. Persisting entries (and their payloads) as they arrive might take longer than reading the bytes from the network. Introducing a resource for receiving entry bytes makes it so that this cannot stall the other protocol functions.
-- **namespace count**: Tracks the number of namespace handles.
-- **capability count**: Tracks the number of capability handles.
-- **capability size**: Tracks the total size of all capabilities for which there are handles.
-- **area of interest count**: Tracks the number of area of interest handles.
-- **area of interest size**: Tracks the total size of all areas of interest for which there are handles.
-- **payload request count**: Tracks the number of payload request handles.
-- **payload request size**: Tracks the total size of all payload requests for which there are handles.
-
-It is worth pointing out that these resources are fairly course-grained. Peers cannot, for example, fine-tune which of several products will be reconciled first, or which of several payloads will be transmitted first. This is in the interest of overall simplicity and efficiency: using separate resources for separate payment requests, for example, would introduce some overhead. Willow appliations that require different priorities for different kinds of payloads, for example, if real-time constraints are involved, should use a more specialized communication protocol than the WGPS. -->
-
-## Protocol
-
-The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as *Alfie*, and the other peer as *Betty*.
-
-Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something "is an error". Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a mesage that does not fulfill these criteria, that is an error.
-
-Before any communication, each peer locally and independently generates a random value `scalar` of type `PsiScalar`. It is used for cryptographic purposes and must thus use a high-quality source of randomness.
-
-<!-- Before any communication, each peer locally and independently generates some random data: a `commitment_length` byte number `nonce`, and a random value `scalar` of type `PsiScalar`. Both are used for cryptographic purposes and must thus use high-quality sources of randomness.
-
-The first eight bytes each peer sends are a big-endian unsigned integer that indicates the maximum payload size for which the other peer may include the payload directly when transmitting an entry. All larger payloads can only be transmitted when explicitly requested.
-
-The next `commitment_length` bytes are `commitment_hash(nonce)`; we call the bytes that a peer received this way its `received_commitment`.
-
-After those initial `8 + commitment_length` bytes per peer, the protocol becomes a purely message-based protocol. There are several kinds of messages, which the peers create, encode as byte strings (the encodings are defined later), and transmit mostly independently from each other. -->
 
 ### Message Kinds
 

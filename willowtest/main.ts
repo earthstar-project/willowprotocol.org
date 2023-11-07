@@ -23,13 +23,14 @@ import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { def, r, rs } from "../defref.ts";
+import { Def, def, def_generic, preview_scope, r, rs } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
 import { resource_control } from "./specs/sync/resource_control.ts";
 import { psi } from "./specs/sync/psi.ts";
 import { product_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
+import { access_control } from "./specs/sync/access_control.ts";
 
 interface Document {
   title: string;
@@ -48,7 +49,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
           div(
             { class: "container_main" },
             main(
-              hsection(meta.name, {wide: true}, meta.title, args[0]),
+              hsection(meta.name, { wide: true }, meta.title, args[0]),
             ),
             footer(
               nav(
@@ -85,6 +86,28 @@ export function site_template(meta: Document, body: Expression): Invocation {
   return new Invocation(macro, [body]);
 }
 
+export function def_parameter(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param" }
+    : { ...info, clazz: "param" };
+  return def_generic(info_, text, preview);
+}
+
+export function def_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value" }
+    : { ...info, clazz: "value" };    
+  return def_generic(info_, text, preview);
+}
+
 function normative(
   ...body: Expression[]
 ): Invocation {
@@ -105,20 +128,18 @@ export function pnormative(
 
 export function pinformative(
   ...body: Expression[]
-): Invocation {
-  const macro = new_macro(
-    (args, _ctx) => p({ class: "informative" }, ...args),
-  );
-  return new Invocation(macro, body);
+): Expression {
+  return p({ class: "informative"}, preview_scope(...body));
 }
 
 export function lis(
   ...items: Expression[]
 ): Invocation {
   const macro = new_macro(
-    (args, _ctx) => ul(
-      ...(args.map(item => li(item))),
-    ),
+    (args, _ctx) =>
+      ul(
+        ...(args.map((item) => li(item))),
+      ),
   );
   return new Invocation(macro, items);
 }
@@ -138,7 +159,8 @@ export function out_index_directory(
   ...contents: Expression[]
 ): Invocation {
   const macro = new_macro(
-    (args, _ctx) => out_directory(path_fragment, out_file("index.html", ...args)),
+    (args, _ctx) =>
+      out_directory(path_fragment, out_file("index.html", ...args)),
   );
   return new Invocation(macro, contents);
 }
@@ -157,7 +179,7 @@ evaluate([
       ]),
     ),
     out_file(
-      "testspec.html",
+      "index.html",
       site_template(
         {
           title: "TestSpec",
@@ -265,9 +287,12 @@ evaluate([
         out_file("index.html", sync),
         out_index_directory("psi", psi),
         out_index_directory("resource-control", resource_control),
-        out_index_directory("product-based-set-reconciliation", product_based_set_reconciliation),
+        out_index_directory(
+          "product-based-set-reconciliation",
+          product_based_set_reconciliation,
+        ),
+        out_index_directory("access-control", access_control),
       ]),
     ]),
   ),
 ]);
-

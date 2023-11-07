@@ -53,6 +53,7 @@ export function add_preview_id(id: string, ctx: Context): boolean {
 
 export function preview_scope(...expressions: Expression[]): Invocation {
   let previous_scope: Set<string> | null = null;
+  const my_scope = new Set<string>();
 
   const macro = new_macro(
     undefined,
@@ -74,7 +75,7 @@ export function preview_scope(...expressions: Expression[]): Invocation {
     (ctx) => {
       const state = preview_state(ctx);
       previous_scope = state.ids;
-      state.ids = new Set();
+      state.ids = my_scope;
     },
     (ctx) => {
       preview_state(ctx).ids = previous_scope;
@@ -103,11 +104,11 @@ export function set_def(name_state: PerNameState, def: Def) {
   name_state.set(def_key, def);
 }
 
-export function def(
+export function def_generic(
   info: string | Def,
   text?: Expression,
   preview?: Expression,
-): Invocation {
+): Expression {
   const info_: Def = (typeof info === "string") ? { id: info } : info;
 
   const macro = new_macro(
@@ -158,6 +159,17 @@ export function def(
   );
 
   return new Invocation(macro, [text ? text : "never used"]);
+}
+
+export function def(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "def" }
+    : { ...info, clazz: "def" };    
+  return def_generic(info_, text, preview);
 }
 
 export function r(

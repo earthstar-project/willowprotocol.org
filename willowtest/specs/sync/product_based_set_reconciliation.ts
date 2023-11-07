@@ -38,3 +38,17 @@ export const product_based_set_reconciliation: Expression = site_template(
 
 // Alfie and Betty repeat reconciliation sessions until they manage to complete a session without a queue overflow. Once they have reached that state, they can immediately push any future entries they might receive to each other (except those received from the other of course). If at any point one of them receives entries faster than they can be forwarded again, that peer can again keep them in a queue, and initiate a new reconciliation pass if that queue overflows.
 // </aside>
+
+// <!-- Product-based set reconciliation requires the ability to hash arbitrary sets of entries into values of a type `Fingerprint` via a function `fingerprint(Set<Entry>) -> Fingerprint`. In order to allow for certain efficient implementation techniques, `fingerprint` is not an arbitrary protocol parameter but is constructed from some other protocol parameters.
+
+// First, we require a function `fingerprint_singleton(Entry) -> Fingerprint` that hashes an individual entry into the set `Fingerprint`. This hash function should take into account all aspects of the entry: modifying its *namespace ID*, *subspace ID*, *path*, *timestamp*, *length*, or *hash* should result in a completely different fingerprint.
+
+// <aside>The original paper on range-based set reconciliation does not require commutativity, because it only deals with one-dimensional data. In a multidimensional setting, there is no natural total ordering on the data space, so we cannot constrain the order in which the fingerprints of individual items are combined to a non-arbitrary order.</aside>
+
+// Second, we require an [associative](https://en.wikipedia.org/wiki/Associative_property), [commutative](https://en.wikipedia.org/wiki/Commutative_property) function `fingerprint_combine(Fingerprint, Fingerprint) -> Fingerprint` with a [neutral element](https://en.wikipedia.org/wiki/Identity_element) `fingerprint_neutral`.
+
+// Given these protocol parameters, the function `fingerprint` is defined as follows:
+
+// - applying `fingerprint` to the empty set yields `fingerprint_neutral`,
+// - applying `fingerprint` to a set containing exactly one entry `e` yields `fingerprint_singleton(e)`, and
+// - applying `fingerprint` to any other set yields the result of applying `fingerprint_singleton` to all members of the set individually and then combining the resulting fingerprints with `fingerprint_combine` (grouping and ordering do not matter because of associativity and commutativity respectively). -->
