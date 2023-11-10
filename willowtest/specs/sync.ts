@@ -156,6 +156,27 @@ export const sync: Expression = site_template(
 
             hsection("sync_messages", "Messages", [
                 pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
+
+                hsection("reveal_commitment", code("RevealCommitment"), [
+                    pseudocode(
+                        new Struct({
+                            id: "RevealCommitment",
+                            comment: ["Complete the ", link_name("commitment_scheme", "commitment scheme"), " for determining the ", r("challenge"), " for ", r("read_authentication"), "."],
+                            fields: [
+                                {
+                                    id: "RevealCommitmentNonce",
+                                    name: "nonce",
+                                    comment: ["The ", r("nonce"), " of the sender, encoded as a ", link("big-endian", "https://en.wikipedia.org/wiki/Endianness"), " ", link("unsigned integer", "https://en.wikipedia.org/w/index.php?title=Unsigned_integer"), "."],
+                                    rhs: ["[", hl_builtin("u8"), "; ", r("commitment_length"), "]"],
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("RevealCommitment"), " messages let peers settle on a ", r("challenge"), " for proving read access to any data. Each peer must send this message at most once, and a peer should not send this message before having fully received a ", r("received_commitment"), "."),
+
+                    pinformative("Upon receiving a ", r("RevealCommitment"), " message, a peer can determine its ", def_value({id: "value_challenge", singular: "challenge"}), ": for ", r("alfie"), ", ", r("value_challenge"), " is the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of his ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), ". For ", r("betty"), ", ", r("value_challenge"), " is the ", link("bitwise complement", "https://en.wikipedia.org/wiki/Bitwise_operation#NOT"), " of the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of her ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), "."),
+                ]),
                 
                 hsection("bind_namespace_private", code("BindNamespacePrivate"), [
                     pseudocode(
@@ -235,117 +256,52 @@ export const sync: Expression = site_template(
                     pinformative(R("BindNamespacePublic"), " messages use the ", r("NamespaceChannel"), "."),
                 ]),
 
+                hsection("bind_capability", code("BindCapability"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindCapability",
+                            comment: [R("handle_bind"), " a ", r("ReadCapability"), " to a ", r("capability_handle"), "."],
+                            fields: [
+                                {
+                                    id: "BindCapabilityCapability",
+                                    name: "capability",
+                                    comment: ["A ", r("ReadCapability"), " that the peer wishes to reference in future messages."],
+                                    rhs: r("ReadCapability"),
+                                },
+                                {
+                                    id: "BindCapabilitySignature",
+                                    name: "signature",
+                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " over the sender's ", r("value_challenge"), "."],
+                                    rhs: r("sync_signature"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["This message implicitly specifies the ", r("namespace"), " it pertains to, because every ", r("ReadCapability"), " belongs to a single ", r("namespace"), ". On the encoding layer, we ensure that this ", r("namespace"), " went through the set intersection process, by encoding ", rs("namespace"), " via ", rs("NamespaceHandle"), " exclusively."]),
+                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present  a valid ", r("sync_signature"), " over the ", r("received_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
+                    ]),
+                
+                    pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
+                ]),
+
             ]),
         ]),
 
-// The **BindNamespace** messages let peers bind handles for namespaces. To register the namespace `n`, a peer can either send `psi_scalar_mutiplication(psi_id_to_group(n), scalar)` to submit it into the private set intersection process, or it can simply send `psi_id_to_group(n)` in the open if it does not mind leaking its interest in `n`.
-
-// ```rust
-// // This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
-// struct BindNamespace {
-//   // If true, the namespace will be leaked to the other peer even if it does not yet have it.
-//   is_public: bool,
-//   // If `is_public`, this should be `psi_id_to_group(n)`, else `psi_scalar_mutiplication(psi_id_to_group(n), scalar)`.
-//   group_member: PsiGroup,
-// }
-// ```
-
-// The data bound to the *namespace handle* that this message registers consists of the `group_member` and a value of type `PsiState` (an enum of three variants `Public`, `PrivateIncomplete`, and `PrivateComplete`): `Public` if `is_public` and `PrivateIncomplete` otherwise.
-
-// Each *BindNamespace* message uses the *namespace channel*.
-
-// #### PsiReply
-
-
-
-
-
-// <!-- #### RevealCommitment
-
-// The **RevealCommitment** messages let peers determine the challenge they will use to validate read capabilities. This message must be sent at most once by each peer, and it *should* be sent immediately after receiving the `received_commitment` but not before.
-
-// A *RevealCommitment* message consists of `commitment_length` bytes. If these do not hash to the `received_commitment`, this is an error. Otherwise, set `challenge` to the xor of the received bytes and `nonce`. If the peer is Betty, flip every bit of `challenge`.
-
-// A peer may not send any of the subsequent message kinds before having sent its *RevealCommitment* message, unless explicitly stated otherwise.
-
 // #### RegisterCapability
-
-// The **RegisterCapability** messages let peers register handles for read capabilities.
 
 // A *RegisterCapability* message consists of a read *capability*, and a `signature` of type `AuthorSignature` over the `challenge`, issued by the *receiver* of the capability. Crucially, the encoding of the capability omits the *namespace IDs* of source capabilities. Instead, the *RegisterCapability* message contains *namespace handles* to identify the namespace: either a single handle of the sending peer to a namespace whose state is `Public`, or a pair of handles (one of the sending peer, one of the receiving peer) to two namespaces with identical group values and both of state `PrivateComplete`.
 
 // A *BindNamespace* message costs one *capability count* resource, and `n` *capability size* resources, where `n` is the size of the encoded capability (TODO make more precise).
+
+// Only after commitment reveal
 
 
     ],
 );
 
 /*
-
-
-
-
-
-
-### Message Kinds
-
-We now define the different kinds of messages. When we do not mention the logical channel that messages of a particular kind use, then these messages are control messages that do not belong to any logical channel.
-
-#### BindNamespace
-
-The **BindNamespace** messages let peers bind handles for namespaces. To register the namespace `n`, a peer can either send `psi_scalar_mutiplication(psi_id_to_group(n), scalar)` to submit it into the private set intersection process, or it can simply send `psi_id_to_group(n)` in the open if it does not mind leaking its interest in `n`.
-
-```rust
-// This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
-struct BindNamespace {
-  // If true, the namespace will be leaked to the other peer even if it does not yet have it.
-  is_public: bool,
-  // If `is_public`, this should be `psi_id_to_group(n)`, else `psi_scalar_mutiplication(psi_id_to_group(n), scalar)`.
-  group_member: PsiGroup,
-}
-```
-
-The data bound to the *namespace handle* that this message registers consists of the `group_member` and a value of type `PsiState` (an enum of three variants `Public`, `PrivateIncomplete`, and `PrivateComplete`): `Public` if `is_public` and `PrivateIncomplete` otherwise.
-
-Each *BindNamespace* message uses the *namespace channel*.
-
-#### PsiReply
-
-The **PsiReply** messages let peers complete the private set intersection process for a single namespace. The message references a prior non-public namespace handle and replies with the scalar product of that handle's `group_member` and the sender's *scalar*. The receiver then updates the `group_member` of the handle in question to the `group_member` from the `PsiReply` message, and updates the *psi state* of the handle to `PrivateComplete`.
-
-```rust
-// This supersedes the `Bind` message of the [resource control document](./resource-control) for namespace handles.
-struct PsiReply {
-  // The handle refers to a namespace binding that was bound by the receiver of this message.
-  // It must be a handle whose `BindNamespace` message had set `is_public` to `false`.
-  // At most one `PsiReply` message may be sent for any one handle.
-  handle: u64,
-  // `psi_scalar_mutiplication(previous, scalar)`, where `previous` is the `group_member` of the handle, and `scalar` is the scalar value that the sending peer chose during session initialization.
-  group_member: PsiGroup,
-}
-```
-
-Intuitively, this message corresponds to mixing in the third color in our color mixing metaphor.
-
-Taken together, `BindNamespace` and `PsiReply` implement private set intersection (and a way to bypass it via the `is_public` flag). Future messages that wish to reference a namespace id, do so by either specifying a single namespace handle of *psi state* `Public`, or by a specifying a pair of namespace handles (one bound by each peer), both of *psi state* `PrivateComplete` and of the same `group_member`.
-
-*PsiReply* messages do not use any logical channel.
-
-<!-- #### RevealCommitment
-
-The **RevealCommitment** messages let peers determine the challenge they will use to validate read capabilities. This message must be sent at most once by each peer, and it *should* be sent immediately after receiving the `received_commitment` but not before.
-
-A *RevealCommitment* message consists of `commitment_length` bytes. If these do not hash to the `received_commitment`, this is an error. Otherwise, set `challenge` to the xor of the received bytes and `nonce`. If the peer is Betty, flip every bit of `challenge`.
-
-A peer may not send any of the subsequent message kinds before having sent its *RevealCommitment* message, unless explicitly stated otherwise.
-
-#### RegisterCapability
-
-The **RegisterCapability** messages let peers register handles for read capabilities.
-
-A *RegisterCapability* message consists of a read *capability*, and a `signature` of type `AuthorSignature` over the `challenge`, issued by the *receiver* of the capability. Crucially, the encoding of the capability omits the *namespace IDs* of source capabilities. Instead, the *RegisterCapability* message contains *namespace handles* to identify the namespace: either a single handle of the sending peer to a namespace whose state is `Public`, or a pair of handles (one of the sending peer, one of the receiving peer) to two namespaces with identical group values and both of state `PrivateComplete`.
-
-A *BindNamespace* message costs one *capability count* resource, and `n` *capability size* resources, where `n` is the size of the encoded capability (TODO make more precise).
 
 #### RegisterAreaOfInterest
 

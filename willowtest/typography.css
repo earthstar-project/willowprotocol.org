@@ -1,6 +1,9 @@
 body, .normal_text {
-    font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
     font-size: 1.1rem;
+}
+
+body, .normal_text, code .aside {
+    font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
 }
 
 a {
