@@ -72,7 +72,7 @@ code dfn > a, code a.type, code a.member {
 .hl_doccom {
     color: var(--color-prettylights-syntax-comment);
     display: inline-block;
-    border-left: solid #f832bd 1rem;
+    border-left: solid #00000020 3px;
     padding-left: 0.25rem;
     text-decoration: inherit;
 }

@@ -116,7 +116,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "PayloadRequestHandle",
-                            comment: [R("resource_handle"), " that controls the matching from ", r("payload"), "transmissions to ", r("payload"), " requests."],
+                            comment: [R("resource_handle"), " that controls the matching from ", r("payload"), " transmissions to ", r("payload"), " requests."],
                         },
                     ],
                 }),
@@ -129,6 +129,10 @@ export const sync: Expression = site_template(
                     id: "LogicalChannel",
                     comment: ["The different ", rs("logical_channel"), " employed by the ", r("WGPS"), "."],
                     variants: [
+                        {
+                            id: "DataChannel",
+                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payloads"), " outside of ", r("pbsr"), "."],
+                        },
                         {
                             id: "NamespaceChannel",
                             comment: [R("logical_channel"), " for controlling the issuing of new ", rs("NamespaceHandle"), "."],
@@ -225,7 +229,7 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the color mixing metaphor, a ", r("PsiReply"), " message corresponds to mixing one's secret color with a color mixture received from the other peer and sending the resultin color back."]),
+                        marginale(["In the color mixing metaphor, a ", r("PsiReply"), " message corresponds to mixing one's secret color with a color mixture received from the other peer and sending the resulting color back."]),
                         "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("namespace"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
                     ]),
 
@@ -286,17 +290,132 @@ export const sync: Expression = site_template(
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
                 ]),
 
+                hsection("entry_push", code("EntryPush"), [
+                    pseudocode(
+                        new Struct({
+                            id: "EntryPush",
+                            comment: ["Unsolicitedly transmit an ", r("entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
+                            fields: [
+                                {
+                                    id: "EntryPushEntry",
+                                    name: "entry",
+                                    comment: ["The ", r("entry"), " to transmit."],
+                                    rhs: r("entry"),
+                                },
+                                {
+                                    id: "EntryPushAvailable",
+                                    name: "available_length",
+                                    comment: ["The number of consecutive bytes from the start of the ", r("entry"), "'s ", r("payload"), " that the sender has."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "EntryPushOffset",
+                                    name: "offset",
+                                    comment: ["The offset in the ", r("payload"), " in bytes at which ", r("payload"), " transmission will begin. If this is equal to the ", r("entry"), "'s ", r("entry_length"), ", the ", r("payload"), " will not be transmitted."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["The message's ", r("EntryPushAvailable"), " is informative metadata that peers may use to inform their communication, or they may simply ignore it."]),
+                        "The ", r("EntryPush"), " messages let peers transmit ", rs("entry"), " outside of ", r("pbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
+                    ]),
+
+                    pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), "'s ", r("entry_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
+                
+                    pinformative(R("EntryPush"), " messages use the ", r("DataChannel"), "."),
+                ]),
+
+                hsection("payload_push", code("PayloadPush"), [
+                    pseudocode(
+                        new Struct({
+                            id: "PayloadPush",
+                            comment: ["Unsolicitedly transmit some ", r("payload"), " bytes."],
+                            fields: [
+                                {
+                                    id: "PayloadPushAmount",
+                                    name: "amount",
+                                    comment: ["The number of transmitted bytes."],
+                                    rhs: hl_builtin("u16"),
+                                },
+                                {
+                                    id: "PayloadPushBytes",
+                                    name: "bytes",
+                                    comment: [r("PayloadPushAmount"), " many bytes, to be added to the ", r("payload"), " of the receiver's ", r("currently_received_entry"), " at offset ", r("currently_received_offset"), "."],
+                                    rhs: ["[", hl_builtin("u8"), "]"],
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("payloads"), "."),
+
+                    pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver's ", r("currently_received_offset"), " is less than or equal to the ", r("payload_size"), " of the receiver's ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
+
+                    pinformative("A ", r("PayloadPush"), " message may only be sent if the receiver has a well-defined ", r("currently_received_entry"), "."),
+                
+                    pinformative(R("PayloadPush"), " messages use the ", r("DataChannel"), "."),
+                ]),
+
+                hsection("bind_payload_request", code("BindPayloadRequest"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindPayloadRequest",
+                            comment: [R("handle_bind"), " an ", r("entry"), " to a ", r("PayloadRequestHandle"), " and request transmission of its ", r("payload"), " from an offset."],
+                            fields: [
+                                {
+                                    id: "BindPayloadRequestEntry",
+                                    name: "entry",
+                                    comment: ["The ", r("entry"), " to request."],
+                                    rhs: r("entry"),
+                                },
+                                {
+                                    id: "BindPayloadRequestOffset",
+                                    name: "offset",
+                                    comment: ["The offset in the ", r("payload"), " starting from which the sender would like to receive the ", r("payload"), " bytes."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "BindPayloadCapability",
+                                    name: "capability",
+                                    comment: ["A ", r("handle"), " for a ", r("ReadCapability"), " bound by the sender that grants them read access to the bound ", r("entry"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["If the receiver of a ", r("BindPayloadRequest"), " does not have the requested ", r("payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
+                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("RequestPayloadHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("handle_capability"), " to a ", r("ReadCapability"), " whose ", r("ganted_product"), " must ", r("product_contain"), " the requested ", r("entry"), ".",
+                    ]),
+                
+                    pinformative(R("BindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
+                ]),
+
+                hsection("payload_response", code("PayloadResponse"), [
+                    pseudocode(
+                        new Struct({
+                            id: "PayloadResponse",
+                            comment: ["Set up the state for replying to a ", r("BindPayloadRequest"), " message."],
+                            fields: [
+                                {
+                                    id: "PayloadResponseHandle",
+                                    name: "handle",
+                                    comment: ["The ", r("PayloadRequestHandle"), " to which to reply."],
+                                    rhs: r("entry"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("PayloadResponse"), " messages let peers reply to ", r("BindPayloadRequest"), " messages, by indicating that future ", r("PayloadPush"), " messages will pertain to the requested ", r("payload"), ". More precisely, upon receiving a ", r("PayloadResponse"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message's ", r("PayloadResponseHandle"), " is ", r("handle_bind", "bound"), "."),
+                ]),
+
             ]),
         ]),
-
-// #### RegisterCapability
-
-// A *RegisterCapability* message consists of a read *capability*, and a `signature` of type `AuthorSignature` over the `challenge`, issued by the *receiver* of the capability. Crucially, the encoding of the capability omits the *namespace IDs* of source capabilities. Instead, the *RegisterCapability* message contains *namespace handles* to identify the namespace: either a single handle of the sending peer to a namespace whose state is `Public`, or a pair of handles (one of the sending peer, one of the receiving peer) to two namespaces with identical group values and both of state `PrivateComplete`.
-
-// A *BindNamespace* message costs one *capability count* resource, and `n` *capability size* resources, where `n` is the size of the encoded capability (TODO make more precise).
-
-// Only after commitment reveal
-
 
     ],
 );
@@ -340,32 +459,6 @@ The **ProductAcknowledgment** messages let peers explicitly acknowledge that no 
 A *ProductAcknowledgment* message consists of a single *3d product*. Peers may only send *ProductAcknowledgment* messages whose 3d product is fully contained in a read capability of the receiver. The encoding layer enforces this by specifying the *3d product* of the *3d product* relative to the intersection of a pair of *area of interest handles* (one of the sending peer, one of the receiving peer).
 
 A *ProductAcknowledgment* message costs `n` *reconciliation memory* resources, where `n` is the size of the encoded message (TODO make more precise).
-
-#### EntryPush
-
-The **EntryPush** messages let peers transmit entries without prior product-based set reconciliation.
-
-An *EntryPush* message consists of a single *entry*. Peers may only send *EntryPush* messages whose entry is contained in a read capability of the receiver.
-
-An *EntryPush* message costs `n` *entry memory* resources, where `n` is the size of the encoded message (TODO make more precise).
-
-#### RequestPayload
-
-The **RequestPayload** messages let peers register *payload request handles*.
-
-A *RequestPayload* message consists of an entry, an offset `o` starting from which the payload should be transmitted, and an expected hash for the first `o` bytes of type `Digest`. Peers may only request entries that are contained in a read capability of the receiver.
-
-A *RequestPayload* message costs one *payload request count* resource, and `n` *payload request size* resources, where `n` is the length in bytes of the path of the entry.
-
-#### ReplyPayload
-
-The **ReplyPayload** messages let peers answer payload requests.
-
-<aside>If a peer does not have a requested payload and will not obtain it in the future either, it simply frees the handle of the request in question.</aside>
-
-A *ReplyPayload* message consists of a payload request handle, and either of some payload bytes for that request, or the information that the prefix specified with the request does not match.
-
-A *ReplyPayload* message costs `n` *entry memory* resources, where `n` is the size of the encoded message (TODO make more precise). -->
 
 ### Resource Control Messages
 

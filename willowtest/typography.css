@@ -86,7 +86,17 @@ p.normative {
     background: linear-gradient(to right, #e3f3ff, #fff 16%);
 }
 
-code, a.ref.type, a.ref.member, a.ref.variant {
+/* code, a.ref.type, a.ref.member, a.ref.variant {
+    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    font-size: 0.8em;
+    background: rgba(0, 0, 0, 0.03);
+    padding: 0.2em;
+    border-radius: 10%;
+    word-break: break-word;
+    text-decoration: inherit;
+} */
+
+code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
     font-size: 0.8em;
     background: rgba(0, 0, 0, 0.03);
@@ -96,6 +106,16 @@ code, a.ref.type, a.ref.member, a.ref.variant {
     text-decoration: inherit;
 }
 
+a.ref.def, dfn > a.def {
+    font-style: italic;
+}
+
+a.ref.param, dfn > a.param, a.ref.value, dfn > a.value, a.ref.def, dfn > a.def {
+    color: var(--nearly-black);
+    text-decoration: none;
+}
+
+/*
 a.ref.def, dfn > a.def {
     background: radial-gradient(ellipse, rgb(226, 253, 152),rgb(160, 158, 20));
 }
@@ -107,6 +127,7 @@ a.ref.param, dfn > a.param {
 a.ref.value, dfn > a.value {
     background: radial-gradient(ellipse, rgb(152, 253, 211),rgb(20, 85, 160));
 }
+*/
 
 /* since `important` is evil... */
 body .katex {
