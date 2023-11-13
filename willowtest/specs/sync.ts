@@ -1,5 +1,5 @@
 import { R, def, r, rs } from "../../defref.ts";
-import { code, em, p } from "../../h.ts";
+import { aside, code, em, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
@@ -264,7 +264,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindCapability",
-                            comment: [R("handle_bind"), " a ", r("ReadCapability"), " to a ", r("capability_handle"), "."],
+                            comment: [R("handle_bind"), " a ", r("ReadCapability"), " to a ", r("CapabilityHandle"), "."],
                             fields: [
                                 {
                                     id: "BindCapabilityCapability",
@@ -284,7 +284,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["This message implicitly specifies the ", r("namespace"), " it pertains to, because every ", r("ReadCapability"), " belongs to a single ", r("namespace"), ". On the encoding layer, we ensure that this ", r("namespace"), " went through the set intersection process, by encoding ", rs("namespace"), " via ", rs("NamespaceHandle"), " exclusively."]),
-                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present  a valid ", r("sync_signature"), " over the ", r("received_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
+                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over the ", r("received_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
                     ]),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
@@ -380,7 +380,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindPayloadCapability",
                                     name: "capability",
-                                    comment: ["A ", r("handle"), " for a ", r("ReadCapability"), " bound by the sender that grants them read access to the bound ", r("entry"), "."],
+                                    comment: ["A ", r("handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("entry"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
@@ -412,6 +412,52 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative("The ", r("PayloadResponse"), " messages let peers reply to ", r("BindPayloadRequest"), " messages, by indicating that future ", r("PayloadPush"), " messages will pertain to the requested ", r("payload"), ". More precisely, upon receiving a ", r("PayloadResponse"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message's ", r("PayloadResponseHandle"), " is ", r("handle_bind", "bound"), "."),
+                ]),
+
+                hsection("bind_aoi", code("BindAreaOfInterest"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindAreaOfInterest",
+                            comment: [R("handle_bind"), " an ", r("aoi"), " to a ", r("AreaOfInterestHandle"), "."],
+                            fields: [
+                                {
+                                    id: "BindAreaOfInterestAOI",
+                                    name: "area_of_interest",
+                                    comment: ["An ", r("aoi"), " that the peer wishes to reference in future messages."],
+                                    rhs: r("aoi"),
+                                },
+                                {
+                                    id: "BindAreaOfInterestCapability",
+                                    name: "authorization",
+                                    comment: ["A ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message's ", r("BindAreaOfInterestAOI"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "BindAreaOfInterestKnown",
+                                    name: "known_intersections",
+                                    comment: ["How many intersections with other ", rs("aoi"), " the sender knows about already."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative([
+                        marginale(["Development note: if we go for private product intersection, this message would become a ", code("BindAreaOfInterestPublic"), " message, and we would add ", code("BindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
+                        "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message's ", r("BindAreaOfInterestAOI"), ".",
+                    ]),
+
+                    aside({class: "long"}, [
+                        p("The ", r("BindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("BindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("aoi"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("BindAreaOfInterest"), " messages for overlapping ", rs("aoi"), ". If both peers, upon receiving the other's message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
+
+                        p("A simple workaround is to let ", r("alfie"), " be the only peer to initiate reconciliation. But this can introduce unnecessary delay when ", r("betty"), " sends a ", r("BindAreaOfInterest"), " message for which she already knows there are intersections with ", rs("aoi"), " that ", r("alfie"), " had previously ", r("handle_bind", "bound"), "."),
+
+                        p("In this situation, ", r("betty"), " sets the ", r("BindAreaOfInterestKnown"), " field of her ", r("BindAreaOfInterest"), " message to the number of reconciliation messages that she will send pertaining to her newly ", r("handle_bind", "bound"), " ", r("aoi"), ". ", R("alfie"), " should not initiate reconciliation based on the received message until he has also received ", r("BindAreaOfInterestKnown"), " many reconciliation messages pertaining to this ", r("aoi"), " from ", r("betty"), "."),
+
+                        p(R("betty"), " should never initiate reconciliation based on messages she receives, and when she initiates reconciliation pertaining to ", rs("aoi"), " she ", r("handle_bind", "binds"), " herself, she should meaningfully set the ", r("BindAreaOfInterestKnown"), "field. ", R("alfie"), " should set the ", r("BindAreaOfInterestKnown"), " field of all his ", r("BindAreaOfInterest"), " messages to zero, and eagerly initiate reconciliation sessions as long as he respects ", r("betty"), "'s ", r("BindAreaOfInterestKnown"), " fields."),
+                    ]),
+                
+                    pinformative(R("BindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
                 ]),
 
             ]),
