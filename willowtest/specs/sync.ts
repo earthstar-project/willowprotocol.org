@@ -130,6 +130,10 @@ export const sync: Expression = site_template(
                     comment: ["The different ", rs("logical_channel"), " employed by the ", r("WGPS"), "."],
                     variants: [
                         {
+                            id: "ReconciliationChannel",
+                            comment: [R("logical_channel"), " for performing ", r("pbsr"), "."],
+                        },
+                        {
                             id: "DataChannel",
                             comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payloads"), " outside of ", r("pbsr"), "."],
                         },
@@ -405,7 +409,7 @@ export const sync: Expression = site_template(
                                     id: "PayloadResponseHandle",
                                     name: "handle",
                                     comment: ["The ", r("PayloadRequestHandle"), " to which to reply."],
-                                    rhs: r("entry"),
+                                    rhs: hl_builtin("u64"),
                                 },
                             ],
                         }),
@@ -460,6 +464,111 @@ export const sync: Expression = site_template(
                     pinformative(R("BindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
                 ]),
 
+                hsection("product_fingerprint", code("ProductFingerprint"), [
+                    pseudocode(
+                        new Struct({
+                            id: "ProductFingerprint",
+                            comment: ["Send a fingerprint as part of ", r("pbsr"), "."],
+                            fields: [
+                                {
+                                    id: "ProductFingerprintProduct",
+                                    name: "product",
+                                    comment: ["The ", r("product"), " whose fingerprint is transmitted."],
+                                    rhs: r("product"),
+                                },
+                                {
+                                    id: "ProductFingerprintFingerprint",
+                                    name: "fingerprint",
+                                    comment: ["The fingerprint of the ", r("ProductFingerprintProduct"), "."],
+                                    rhs: r("Fingerprint"),
+                                },
+                                {
+                                    id: "ProductFingerprintSenderHandle",
+                                    name: "sender_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductFingerprintProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "ProductFingerprintReceiverHandle",
+                                    name: "receiver_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductFingerprintProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("ProductFingerprint"), " messages let peers initiate and progress ", r("pbsr"), ". Each ", r("ProductFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+
+                    pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+                ]),
+
+                hsection("product_confirmation", code("ProductConfirmation"), [
+                    pseudocode(
+                        new Struct({
+                            id: "ProductConfirmation",
+                            comment: ["Signal fingerprint equality as part of ", r("pbsr"), "."],
+                            fields: [
+                                {
+                                    id: "ProductConfirmationProduct",
+                                    name: "product",
+                                    comment: ["The ", r("product"), " in question."],
+                                    rhs: r("product"),
+                                },
+                                {
+                                    id: "ProductConfirmationSenderHandle",
+                                    name: "sender_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductConfirmationProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "ProductConfirmationReceiverHandle",
+                                    name: "receiver_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductConfirmationProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("ProductConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("pbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("product"), ".", marginale(["Upon sending or receiving a ", r("ProductConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("product"), " to the other peer."]), " Each ", r("ProductConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+
+                    pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+                ]),
+
+                hsection("sync_eagerness", code("Eagerness"), [
+                    pseudocode(
+                        new Struct({
+                            id: "Eagerness",
+                            comment: ["Express a preference whether the other peer should eaerly forward ", rs("payload"), " in the intersection of two ", rs("aoi"), "."],
+                            fields: [
+                                {
+                                    id: "EagernessEagerness",
+                                    name: "is_eager",
+                                    comment: ["Whether ", rs("payload"), " should be pushed."],
+                                    rhs: r("product"),
+                                },
+                                {
+                                    id: "EagernessSenderHandle",
+                                    name: "sender_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "EagernessReceiverHandle",
+                                    name: "receiver_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("payload"), " from the intersection of two ", rs("aoi"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
+
+                    pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+                ]),
+
             ]),
         ]),
 
@@ -468,19 +577,6 @@ export const sync: Expression = site_template(
 
 /*
 
-#### RegisterAreaOfInterest
-
-The **RegisterAreaOfInterest** messages let peers register handles for areas of interest.
-
-A *RegisterAreaOfInterest* message consists of an *area of interest*, and a *capability handle* of the sending peer to a capability whose *granted product* fully contains the area of interest.
-
-A *RegisterAreaOfInterest* message costs one *area of interest count* resource, and `n` *area of interest size* resources, where `n` is the size of the encoded area of interest (TODO make more precise).
-
-#### Eagerness
-
-The **Eagerness** messages let peers implement the [plumtree algorithm](https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf).
-
-An *Eagerness* message consists of a pair of *area of interest handles* (one of the sending peer, one of the receiving peer) with a non-empty intersection, and a boolean `is_eager`. If `is_eager`, the receiving peer should prefer to immediately transmit the payloads of any entries (below the maximum payload size threshold) in the intersection of the two areas of interest, otherwise it should prefer to transmit only the hash of the payloads. For intersections for which no *Eagerness* messages have been sent, peers should always prefer to transmit only the hash of the payloads.
 
 #### ProductItemSet
 
@@ -490,21 +586,7 @@ A *ProductItemSet* message consists of a single *product item set*. Peers may on
 
 A *ProductItemSet* message costs `n` *reconciliation memory* resources, where `n` is the size of the encoded message (TODO make more precise).
 
-#### ProductFingerprint
 
-The **ProductFingerprint** messages let peers detect fully reconciled products in the context of product-based set reconciliation.
-
-A *ProductFingerprint* message consists of a single *product fingerprint*. Peers may only send *ProductFingerprint* messages whose 3d product is fully contained in a read capability of the receiver. The encoding layer enforces this by specifying the *3d product* of the *product fingerprint* relative to the intersection of a pair of *area of interest handles* (one of the sending peer, one of the receiving peer).
-
-A *ProductFingerprint* message costs `n` *reconciliation memory* resources, where `n` is the size of the encoded message (TODO make more precise).
-
-#### ProductAcknowledgment
-
-The **ProductAcknowledgment** messages let peers explicitly acknowledge that no further work needs to be done to reconcile some 3d product.
-
-A *ProductAcknowledgment* message consists of a single *3d product*. Peers may only send *ProductAcknowledgment* messages whose 3d product is fully contained in a read capability of the receiver. The encoding layer enforces this by specifying the *3d product* of the *3d product* relative to the intersection of a pair of *area of interest handles* (one of the sending peer, one of the receiving peer).
-
-A *ProductAcknowledgment* message costs `n` *reconciliation memory* resources, where `n` is the size of the encoded message (TODO make more precise).
 
 ### Resource Control Messages
 
