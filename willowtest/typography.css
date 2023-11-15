@@ -7,12 +7,28 @@ body, .normal_text, code .aside {
 }
 
 a {
-    color: rgb(0, 155, 42);
+    color: var(--dark-green);
     transition: 100ms all;
 }
 
 a:hover {
-    color: rgb(0, 186, 50)
+    color: var(--green)
+}
+
+a[href]:not(:where(
+  /* exclude hash only links */
+  [href^="#"],
+  /* exclude relative but not double slash only links */
+  [href^="/"]:not([href^="//"]),
+  /* domains to exclude */
+  [href*="//willowprotocol.org"]
+)):after {
+  color: var(--nearly-black);
+  display: inline-block;
+  content: '↗';
+  font-family: ui-sans-serif;
+  margin-left: 0.5ch;
+  text-decoration: none;
 }
 
 strong {
@@ -50,7 +66,7 @@ p {
 /* Definitions produced by the `def` macro. */
 dfn>a {
     font-style: normal;
-    font-weight: bold;
+    font-weight: normal;
     color: #185ecc;
     text-decoration: unset;
 }
@@ -96,14 +112,44 @@ p.normative {
     text-decoration: inherit;
 } */
 
+a.ref, a.param, a.value {
+  color: var(--nearly-black);
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.2em;
+  border-radius: 3px;
+  white-space: nowrap; 
+}
+
+a.ref:hover, a.param:hover, a.value:hover {
+  color: var(--nearly-white);
+  background: var(--green)
+}
+
+a.def {
+  color: var(--nearly-black);
+}
+
+a.def:hover{
+  color: inherit;
+}
+
+
+
 code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
     font-size: 0.8em;
-    background: rgba(0, 0, 0, 0.03);
-    padding: 0.2em;
-    border-radius: 10%;
     word-break: break-word;
     text-decoration: inherit;
+}
+
+.pseudocode a.value, .pseudocode a.param, .pseudocode a.ref, .pseudocode a.def, .pseudocode a.ref.def {
+  color: inherit;
+  font-size: 1em;
+  background: none;
+  font-style: normal;
+  padding: 0;
+  text-decoration: underline;
+  text-decoration-style: dotted;
 }
 
 a.ref.def, dfn > a.def {
@@ -111,7 +157,7 @@ a.ref.def, dfn > a.def {
 }
 
 a.ref.param, dfn > a.param, a.ref.value, dfn > a.value, a.ref.def, dfn > a.def {
-    color: var(--nearly-black);
+    
     text-decoration: none;
 }
 
