@@ -28,6 +28,7 @@ a[href]:not(:where(
   content: '↗';
   font-family: ui-sans-serif;
   margin-left: 0.5ch;
+  font-family: 0.9em;
   text-decoration: none;
 }
 
@@ -114,9 +115,8 @@ p.normative {
 
 a.ref, a.param, a.value {
   color: var(--nearly-black);
-  background: rgba(0, 0, 0, 0.05);
-  padding: 0.2em;
-  border-radius: 3px;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--green);
   white-space: nowrap; 
 }
 
@@ -124,24 +124,18 @@ a.def {
   color: var(--nearly-black);
 }
 
-a.ref:hover, a.param:hover, a.value:hover {
-  color: var(--nearly-white);
-  background: var(--green)
-}
-
-
-
 a.def:hover {
   color: inherit;
 }
 
-
+a.ref:hover, a.param:hover, a.value:hover {
+  color: var(--green);
+}
 
 code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
     font-size: 0.8em;
     word-break: break-word;
-    text-decoration: inherit;
 }
 
 .pseudocode a.value, .pseudocode a.param, .pseudocode a.ref, .pseudocode a.def, .pseudocode a.ref.def {
@@ -156,11 +150,6 @@ code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref
 
 a.ref.def, dfn > a.def {
     font-style: italic;
-}
-
-a.ref.param, dfn > a.param, a.ref.value, dfn > a.value, a.ref.def, dfn > a.def {
-    
-    text-decoration: none;
 }
 
 /*
