@@ -149,7 +149,7 @@ export function link(
   href: string,
 ): Invocation {
   const macro = new_macro(
-    (args, _ctx) => a({ href }, args[0]),
+    (args, _ctx) => a({ href, class: "external" }, args[0]),
   );
   return new Invocation(macro, [display]);
 }
