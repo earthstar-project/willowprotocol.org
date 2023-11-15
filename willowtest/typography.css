@@ -120,16 +120,18 @@ a.ref, a.param, a.value {
   white-space: nowrap; 
 }
 
+a.def {
+  color: var(--nearly-black);
+}
+
 a.ref:hover, a.param:hover, a.value:hover {
   color: var(--nearly-white);
   background: var(--green)
 }
 
-a.def {
-  color: var(--nearly-black);
-}
 
-a.def:hover{
+
+a.def:hover {
   color: inherit;
 }
 
