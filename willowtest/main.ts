@@ -18,7 +18,7 @@ import {
   title,
   ul,
 } from "../h.ts";
-import { copy_file, out_directory, out_file } from "../out.ts";
+import { copy_file, out_directory, out_file, write_file_relative } from "../out.ts";
 import { read_file } from "../input.ts";
 import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
@@ -155,13 +155,13 @@ export function link(
   return new Invocation(macro, [display]);
 }
 
-function createEtags(...contents: Expression[]) {
+function create_etags(...contents: Expression[]) {
   const macro = new_macro(
     undefined,
     (expanded, ctx) => {
       const hash = createHash().update(expanded).digest("hex");
 
-      // out_file("etag", hash);
+      write_file_relative(["..", "etag"], hash, ctx);
 
       return expanded;
     },
@@ -178,7 +178,7 @@ export function out_index_directory(
     (args, _ctx) => {
       return out_directory(
         path_fragment,
-        out_file("index.html", createEtags(...args)),
+        out_file("index.html", create_etags(...args)),
       );
     },
   );
@@ -304,7 +304,7 @@ evaluate([
       out_index_directory("data-model", data_model),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [
-        out_file("index.html", sync),
+        out_file("index.html", create_etags(sync)),
         out_index_directory("psi", psi),
         out_index_directory("resource-control", resource_control),
         out_index_directory(

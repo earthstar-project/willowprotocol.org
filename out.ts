@@ -414,6 +414,29 @@ export function copy_file(path_fragment: string): Invocation {
   return new Invocation(macro, []);
 }
 
+export function write_file_relative(
+  path_fragments: string[],
+  content: string,
+  ctx: Context,
+): boolean {
+  const the_path = join(...out_state(ctx).current_path, ...path_fragments);
+
+  try {
+    Deno.writeTextFileSync(
+      the_path,
+      content,
+    );
+    return true;
+  } catch (err) {
+    ctx.error(
+      `Could not write file at ${style_file(the_path)}`,
+    );
+    ctx.error(err);
+    ctx.halt();
+    return false;
+  }
+}
+
 export function write_file_absolute(
   path_fragments: string[],
   content: string,
