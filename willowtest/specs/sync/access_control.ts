@@ -10,10 +10,8 @@ export const access_control: Expression = site_template(
     },
     [
         p("wip"),
-        // preview_scope(p("A ", def({ id: "resource_handle", singular: "resource handle"}), " is an important concept. Also, previews are working.")),
-        // p("Every ", def({ id: "logical_channel", singular: "logical channel"}, "logical channel", ["This tooltip was defined explicitly, rather than using the containing preview scope for the preview contents. It is the definition of a ", def({ id: "logical_channel", singular: "logical channel"}, "logical channel"), "."]), " is fun"),
-        
-        
-        // def({ id: "handle_type", singular: "handle type"}),
+        def({ id: "granted_product", singular: "granted product"}),
+        def({ id: "read_authentication", singular: "read authentication"}),
+        def({ id: "commitment_scheme", singular: "commitment scheme"}),
     ],
 );

@@ -71,11 +71,11 @@ export const sync: Expression = site_template(
         hsection("sync_parameters", "Parameters", [
             pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for private set intersection, access control, and product-based set reconciliation."),
 
-            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_mutiplication", "psi_scalar_mutiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
+            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
 
             pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint", " of the empty set.")),
 
-            pinformative(link_name("access_control", "Access control"), " TODO ", def_parameter({id: "ReadCapability", plural: "ReadCapabilities"}), def_parameter("commitment_length"), def_parameter("commitment_hash")),            
+            pinformative(link_name("access_control", "Access control"), " TODO ", def_parameter({id: "ReadCapability", plural: "ReadCapabilities"}), def_parameter("commitment_length"), def_parameter("commitment_hash"), def_parameter({ id: "sync_signature", singular: "SyncSignature"}), def(({ id: "sync_receiver", singular: "receiver"}))),            
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -85,7 +85,7 @@ export const sync: Expression = site_template(
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("commitment_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
-            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_size"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmitted when explicitly requested."),
+            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmitted when explicitly requested."),
 
             pinformative("The next ", r("commitment_length"), " bytes a peer sends are the ", r("commitment_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
@@ -135,7 +135,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payloads"), " outside of ", r("pbsr"), "."],
+                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payload"), " outside of ", r("pbsr"), "."],
                         },
                         {
                             id: "NamespaceChannel",
@@ -169,7 +169,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "RevealCommitment",
-                            comment: ["Complete the ", link_name("commitment_scheme", "commitment scheme"), " for determining the ", r("challenge"), " for ", r("read_authentication"), "."],
+                            comment: ["Complete the ", link_name("commitment_scheme", "commitment scheme"), " for determining the ", r("value_challenge"), " for ", r("read_authentication"), "."],
                             fields: [
                                 {
                                     id: "RevealCommitmentNonce",
@@ -181,7 +181,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("RevealCommitment"), " messages let peers settle on a ", r("challenge"), " for proving read access to any data. Each peer must send this message at most once, and a peer should not send this message before having fully received a ", r("received_commitment"), "."),
+                    pinformative("The ", r("RevealCommitment"), " messages let peers settle on a ", r("value_challenge"), " for proving read access to any data. Each peer must send this message at most once, and a peer should not send this message before having fully received a ", r("received_commitment"), "."),
 
                     pinformative("Upon receiving a ", r("RevealCommitment"), " message, a peer can determine its ", def_value({id: "value_challenge", singular: "challenge"}), ": for ", r("alfie"), ", ", r("value_challenge"), " is the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of his ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), ". For ", r("betty"), ", ", r("value_challenge"), " is the ", link("bitwise complement", "https://en.wikipedia.org/wiki/Bitwise_operation#NOT"), " of the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of her ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), "."),
                 ]),
@@ -190,7 +190,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindNamespacePrivate",
-                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), " for performing ", r("psi"), "."],
+                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("NamespaceHandle"), " for performing ", r("psi"), "."],
                             fields: [
                                 {
                                     id: "BindNamespacePrivateGroupMember",
@@ -244,7 +244,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindNamespacePublic",
-                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("namespace_handle"), ", skipping the hassle of ", r("psi"), "."],
+                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("NamespaceHandle"), ", skipping the hassle of ", r("psi"), "."],
                             fields: [
                                 {
                                     id: "BindNamespacePublicGroupMember",
@@ -258,7 +258,7 @@ export const sync: Expression = site_template(
     
                     pinformative([
                         marginale(["In the color mixing metaphor, a ", r("BindNamespacePublic"), " message corresponds to sending a data color in the clear, with a small note attached that says “I trust you, here's a data color of mine.”"]),
-                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("namespace_handle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
+                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("NamespaceHandle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
                     ]),
 
                     pinformative(R("BindNamespacePublic"), " messages use the ", r("NamespaceChannel"), "."),
@@ -279,7 +279,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindCapabilitySignature",
                                     name: "signature",
-                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " over the sender's ", r("value_challenge"), "."],
+                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " of the ", r("BindCapabilityCapability"), " over the sender's ", r("value_challenge"), "."],
                                     rhs: r("sync_signature"),
                                 },
                             ],
@@ -288,7 +288,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["This message implicitly specifies the ", r("namespace"), " it pertains to, because every ", r("ReadCapability"), " belongs to a single ", r("namespace"), ". On the encoding layer, we ensure that this ", r("namespace"), " went through the set intersection process, by encoding ", rs("namespace"), " via ", rs("NamespaceHandle"), " exclusively."]),
-                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over the ", r("received_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
+                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
                     ]),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
@@ -315,7 +315,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "EntryPushOffset",
                                     name: "offset",
-                                    comment: ["The offset in the ", r("payload"), " in bytes at which ", r("payload"), " transmission will begin. If this is equal to the ", r("entry"), "'s ", r("entry_length"), ", the ", r("payload"), " will not be transmitted."],
+                                    comment: ["The offset in the ", r("payload"), " in bytes at which ", r("payload"), " transmission will begin. If this is equal to the ", r("entry"), "'s ", r("payload_length"), ", the ", r("payload"), " will not be transmitted."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
@@ -327,7 +327,7 @@ export const sync: Expression = site_template(
                         "The ", r("EntryPush"), " messages let peers transmit ", rs("entry"), " outside of ", r("pbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
                     ]),
 
-                    pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), "'s ", r("entry_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
+                    pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), "'s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
                 
                     pinformative(R("EntryPush"), " messages use the ", r("DataChannel"), "."),
                 ]),
@@ -354,9 +354,9 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("payloads"), "."),
+                    pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("payload"), "."),
 
-                    pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver's ", r("currently_received_offset"), " is less than or equal to the ", r("payload_size"), " of the receiver's ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver's ", r("currently_received_offset"), " is less than or equal to the ", r("payload_length"), " of the receiver's ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
 
                     pinformative("A ", r("PayloadPush"), " message may only be sent if the receiver has a well-defined ", r("currently_received_entry"), "."),
                 
@@ -393,7 +393,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["If the receiver of a ", r("BindPayloadRequest"), " does not have the requested ", r("payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("RequestPayloadHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("handle_capability"), " to a ", r("ReadCapability"), " whose ", r("ganted_product"), " must ", r("product_contain"), " the requested ", r("entry"), ".",
+                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_product"), " must ", r("product_contain"), " the requested ", r("entry"), ".",
                     ]),
                 
                     pinformative(R("BindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
@@ -473,8 +473,8 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ProductFingerprintProduct",
                                     name: "product",
-                                    comment: ["The ", r("product"), " whose fingerprint is transmitted."],
-                                    rhs: r("product"),
+                                    comment: ["The ", r("3d_product"), " whose fingerprint is transmitted."],
+                                    rhs: r("3d_product"),
                                 },
                                 {
                                     id: "ProductFingerprintFingerprint",
@@ -512,8 +512,8 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ProductConfirmationProduct",
                                     name: "product",
-                                    comment: ["The ", r("product"), " in question."],
-                                    rhs: r("product"),
+                                    comment: ["The ", r("3d_product"), " in question."],
+                                    rhs: r("3d_product"),
                                 },
                                 {
                                     id: "ProductConfirmationSenderHandle",
@@ -531,7 +531,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("pbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("product"), ".", marginale(["Upon sending or receiving a ", r("ProductConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("product"), " to the other peer."]), " Each ", r("ProductConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ProductConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("pbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3d_product"), ".", marginale(["Upon sending or receiving a ", r("ProductConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("3d_product"), " to the other peer."]), " Each ", r("ProductConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
@@ -546,7 +546,7 @@ export const sync: Expression = site_template(
                                     id: "EagernessEagerness",
                                     name: "is_eager",
                                     comment: ["Whether ", rs("payload"), " should be pushed."],
-                                    rhs: r("product"),
+                                    rhs: r("3d_product"),
                                 },
                                 {
                                     id: "EagernessSenderHandle",

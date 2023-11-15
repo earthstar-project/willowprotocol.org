@@ -1,5 +1,6 @@
 import { def } from "../../defref.ts";
 import { p } from "../../h.ts";
+import { hsection } from "../../hsection.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template } from "../main.ts";
 
@@ -11,16 +12,21 @@ export const data_model: Expression = site_template(
     [
         p("wip"),
         def("namespace"),
+        def({ id: "namespace_id", singular: "namespace id" }),
         def("payload"),
         def({ id: "payload_length", singular: "payload length" }),
         def({ id: "payload_hash", singular: "payload hash", plural: "payload hashes" }),
         def({ id: "entry", plural: "entries" }),
         def({ id: "3d_product", singular: "3d-product" }),
+        def({ id: "product_contain", singular: "contain" }),
         def({ id: "aoi", singular: "area of interest", plural: "areas of interest"}),
         def({ id: "aoi_empty", singular: "empty"}),
         def({ id: "aoi_intersection", singular: "intersection"}),
         def({ id: "aoi_count_limit", singular: "count limit"}),
         def({ id: "aoi_size_limit", singular: "size limit"}),
+        def({ id: "encoding_function", singular: "encoding function" }),
+
+        hsection("willow_parameters", "Parameters", []),
     ],
 );
 

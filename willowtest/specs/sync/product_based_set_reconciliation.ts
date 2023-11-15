@@ -11,6 +11,7 @@ export const product_based_set_reconciliation: Expression = site_template(
     [
         p("wip"),
         def({ id: "pbsr", singular: "product-based set reconciliation"}),
+        def({ id: "entry_fingerprint", singular: "fingerprint"}),
     ],
 );
 
