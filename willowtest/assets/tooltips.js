@@ -1,10 +1,10 @@
 import {
+  autoUpdate,
   computePosition,
   flip,
-  shift,
-  offset,
   inline,
-  autoUpdate,
+  offset,
+  shift,
 } from "./floating-ui.dom.min.js";
 
 let body = document.querySelector("body");
@@ -23,17 +23,19 @@ const registry = [];
 }
 */
 export function register_tooltip_handler(handler) {
-  registry.push(handler)
+  registry.push(handler);
 }
 
 body.addEventListener("mouseover", (evt) => {
-  for (const {
-    selector,
-    start_delay,
-    preprocess_data,
-    render,
-    render_err,
-  } of registry) {
+  for (
+    const {
+      selector,
+      start_delay,
+      preprocess_data,
+      render,
+      render_err,
+    } of registry
+  ) {
     const data = selector(evt.target);
     if (data != undefined) {
       let do_not_display = false;
@@ -43,65 +45,77 @@ body.addEventListener("mouseover", (evt) => {
       evt.target.addEventListener("mouseleave", cancel_listener);
 
       Promise.all([
-        wait(start_delay ? start_delay : 400),
+        wait(start_delay ? start_delay : 300),
         preprocess_data
           ? preprocess_data(data)
-            .then(yay => {return {"ok": yay}})
-            .catch(nay => {return {"err": nay}})
-          : Promise.resolve({ok: data}),
+            .then((yay) => {
+              return { "ok": yay };
+            })
+            .catch((nay) => {
+              return { "err": nay };
+            })
+          : Promise.resolve({ ok: data }),
       ])
-      .then(([_, result]) => {
-        if (!do_not_display) {
-          evt.target.removeEventListener("mouseleave", cancel_listener);
+        .then(([_, result]) => {
+          if (!do_not_display) {
+            evt.target.removeEventListener("mouseleave", cancel_listener);
 
-          clean_stack();
-
-          const tooltip = {
-            clientX: evt.clientX,
-            clientY: evt.clientY,
-            ref: evt.target,
-            hovered: true,
-          };
-
-          const parent = leaf_tooltip();
-          if (parent) {
-            parent.child = tooltip;
-            tooltip.parent = parent;
-          } else {
-            root_tooltip = tooltip;
-            tooltip.parent = null;
-          }
-
-          tooltip.ref_onmouseenter = tooltip.ref.addEventListener("mouseenter", () => {
-            tooltip.hovered = true;
-          });
-          tooltip.ref_onmouseleave = tooltip.ref.addEventListener("mouseleave", () => {
-            tooltip.hovered = false;
-            schedule_tooltip_removal(tooltip);
-          });
-
-          const remove_tooltip = () => {
-            tooltip.hovered = false; // so that `clean_stack` removes it
             clean_stack();
+
+            const tooltip = {
+              clientX: evt.clientX,
+              clientY: evt.clientY,
+              ref: evt.target,
+              hovered: true,
+            };
+
+            const parent = leaf_tooltip();
+            if (parent) {
+              parent.child = tooltip;
+              tooltip.parent = parent;
+            } else {
+              root_tooltip = tooltip;
+              tooltip.parent = null;
+            }
+
+            tooltip.ref_onmouseenter = tooltip.ref.addEventListener(
+              "mouseenter",
+              () => {
+                tooltip.hovered = true;
+              },
+            );
+            tooltip.ref_onmouseleave = tooltip.ref.addEventListener(
+              "mouseleave",
+              () => {
+                tooltip.hovered = false;
+                schedule_tooltip_removal(tooltip);
+              },
+            );
+
+            const remove_tooltip = () => {
+              tooltip.hovered = false; // so that `clean_stack` removes it
+              clean_stack();
+            };
+
+            const tooltip_node = result.ok
+              ? render(result.ok, evt, remove_tooltip)
+              : render_err(result.err, evt, remove_tooltip);
+            tooltip_node.classList.add("tooltip");
+
+            tooltip_node.addEventListener("mouseenter", () => {
+              tooltip.hovered = true;
+            });
+            tooltip_node.addEventListener("mouseleave", () => {
+              tooltip.hovered = false;
+              schedule_tooltip_removal(tooltip);
+            });
+
+            tooltip.node = tooltip_node;
+            position_tooltip(tooltip);
+
+            body.appendChild(tooltip_node);
           }
-
-          const tooltip_node = result.ok ? render(result.ok, evt, remove_tooltip) : render_err(result.err, evt, remove_tooltip);
-          tooltip_node.classList.add("tooltip");
-
-          tooltip_node.addEventListener('mouseenter', () => {
-            tooltip.hovered = true;
-          });
-          tooltip_node.addEventListener("mouseleave", () => {
-            tooltip.hovered = false;
-            schedule_tooltip_removal(tooltip);
-          });
-
-          tooltip.node = tooltip_node;
-          position_tooltip(tooltip);
-
-          body.appendChild(tooltip_node);
-        }
-      });
+        });
 
       return;
     }
@@ -150,26 +164,26 @@ function clean_stack() {
 }
 
 function wait(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function schedule_tooltip_removal(tooltip) {
   wait(300)
-  .then(() => {
-    clean_stack();
-  });
+    .then(() => {
+      clean_stack();
+    });
 }
 
-function position_tooltip({clientX, clientY, ref: target, node: tooltip}) {
+function position_tooltip({ clientX, clientY, ref: target, node: tooltip }) {
   computePosition(target, tooltip, {
-    placement: 'top',
+    placement: "top",
     middleware: [
       offset(6),
       flip(),
-      inline({x: clientX, y: clientY}),
-      shift({padding: 5}),
+      inline({ x: clientX, y: clientY }),
+      shift({ padding: 5 }),
     ],
-  }).then(({x, y}) => {
+  }).then(({ x, y }) => {
     Object.assign(tooltip.style, {
       left: `${x}px`,
       top: `${y}px`,
