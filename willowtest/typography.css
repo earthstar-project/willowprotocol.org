@@ -27,8 +27,8 @@ a[href]:not(:where(
   display: inline-block;
   content: '↗';
   font-family: ui-sans-serif;
-  margin-left: 0.5ch;
-  font-family: 0.9em;
+  margin-left: 0.3ch;
+  font-size: 0.9em;
   text-decoration: none;
 }
 
@@ -116,12 +116,17 @@ p.normative {
 a.ref, a.param, a.value {
   color: var(--nearly-black);
   text-decoration-style: dotted;
-  text-decoration-color: var(--green);
+  text-decoration-color: rgb(112, 132, 132);
   white-space: nowrap; 
 }
 
 a.def {
   color: var(--nearly-black);
+  font-style: italic;
+}
+
+a.def.ref {
+  font-style: normal;
 }
 
 a.def:hover {
@@ -129,27 +134,34 @@ a.def:hover {
 }
 
 a.ref:hover, a.param:hover, a.value:hover {
-  color: var(--green);
+  background: rgba(255, 228, 0, 0.199);
+  padding: 0.2em 0;
+  text-decoration-color: var(--nearly-black);
+  border-radius: 5px;
 }
 
 code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-    font-size: 0.8em;
+    font-size: 0.9em;
     word-break: break-word;
 }
 
 .pseudocode a.value, .pseudocode a.param, .pseudocode a.ref, .pseudocode a.def, .pseudocode a.ref.def {
   color: inherit;
   font-size: 1em;
-  background: none;
   font-style: normal;
-  padding: 0;
   text-decoration: underline;
   text-decoration-style: dotted;
+  text-decoration-color: inherit;
 }
 
-a.ref.def, dfn > a.def {
-    font-style: italic;
+.defined_here {
+  color: var(--nearly-black);
+  text-decoration: none;
+  background: rgba(255, 228, 0, 0.309);
+  border-radius: 5px;
+  padding: 0.2em;
+  
 }
 
 /*

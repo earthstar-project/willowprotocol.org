@@ -62,9 +62,11 @@ export function preview_scope(...expressions: Expression[]): Invocation {
 
       if (ids != null) {
         for (const id of ids) {
+          const regex = new RegExp(`\<(.*id=\"${id}\".*class=")(.*)(".*)>`);
+
           write_file_absolute(
             [...get_root_directory(ctx), "previews", `${id}.html`],
-            expanded,
+            expanded.replace(regex, `id="${id}" class="defined-here"`),
             ctx,
           );
         }
@@ -169,7 +171,7 @@ export function def(
 ): Expression {
   const info_ = typeof info === "string"
     ? { id: info, clazz: "def" }
-    : { ...info, clazz: "def" };    
+    : { ...info, clazz: "def" };
   return def_generic(info_, text, preview);
 }
 

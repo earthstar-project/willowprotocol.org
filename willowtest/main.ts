@@ -1,3 +1,4 @@
+import { createHash } from "npm:sha256-uint8array";
 import { evaluate, Expression, Invocation, new_macro } from "../tsgen.ts";
 import { html5, html5_dependency_css } from "../html5.ts";
 import {
@@ -104,7 +105,7 @@ export function def_value(
 ): Expression {
   const info_ = typeof info === "string"
     ? { id: info, clazz: "value" }
-    : { ...info, clazz: "value" };    
+    : { ...info, clazz: "value" };
   return def_generic(info_, text, preview);
 }
 
@@ -129,7 +130,7 @@ export function pnormative(
 export function pinformative(
   ...body: Expression[]
 ): Expression {
-  return p({ class: "informative"}, preview_scope(...body));
+  return p({ class: "informative" }, preview_scope(...body));
 }
 
 export function lis(
@@ -154,13 +155,32 @@ export function link(
   return new Invocation(macro, [display]);
 }
 
+function createEtags(...contents: Expression[]) {
+  const macro = new_macro(
+    undefined,
+    (expanded, ctx) => {
+      const hash = createHash().update(expanded).digest("hex");
+
+      // out_file("etag", hash);
+
+      return expanded;
+    },
+  );
+
+  return new Invocation(macro, contents);
+}
+
 export function out_index_directory(
   path_fragment: string,
   ...contents: Expression[]
 ): Invocation {
   const macro = new_macro(
-    (args, _ctx) =>
-      out_directory(path_fragment, out_file("index.html", ...args)),
+    (args, _ctx) => {
+      return out_directory(
+        path_fragment,
+        out_file("index.html", createEtags(...args)),
+      );
+    },
   );
   return new Invocation(macro, contents);
 }
