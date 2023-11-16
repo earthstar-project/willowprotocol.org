@@ -1,4 +1,4 @@
-import { Rs, def, r, rs } from "../../defref.ts";
+import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
 import { code, em, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
@@ -17,12 +17,14 @@ export const data_model: Expression = site_template(
         hsection("willow_parameters", "Preliminaries", [
             pinformative("An instantiation of Willow must define concrete choices of the following parameters:"),
 
-            lis(
-                ["a natural number ", def_parameter("max_path_length"), " that denotes the maximum length of ", rs("path"), " (defined later),"],
-                ["sets ", def_parameter("NamespaceId"), ", ", def_parameter("SubspaceId"), ", ", def_parameter("AuthorizationToken"), ","],
-                ["a function ", def_parameter("hash_payload"), " from bytestrings to some fixed, ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " domain ", def_parameter("Digest"), ", and"],
-                ["a function ", def_parameter("is_authorized_write"), " from pairs of an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to booleans."],
-            ),
+            preview_scope(
+                lis(
+                    ["a natural number ", def_parameter("max_path_length"), " that denotes the maximum length of ", rs("path"), " (defined later),"],
+                    ["sets ", def_parameter("NamespaceId"), ", ", def_parameter("SubspaceId"), ", ", def_parameter("AuthorizationToken"), ","],
+                    ["a function ", def_parameter("hash_payload"), " from bytestrings to some fixed, ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " domain ", def_parameter("Digest"), ", and"],
+                    ["a function ", def_parameter("is_authorized_write"), " from pairs of an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to booleans."],
+                ),
+            ),            
         ]),
 
         hsection("data_model_concepts", "Concepts", [
@@ -34,18 +36,22 @@ export const data_model: Expression = site_template(
 
             pinformative("A ", def({ id: "record_identifier", singular: "record identifier" }), " is a triplet of"),
 
-            lis(
-                ["the ", r("namespace_id"), " of the namespace to which the ", r("entry"), " belongs,"],
-                ["the ", def({id: "subspace_id", singular: "subspace id"}), ", which is of type ", r("SubspaceId"), ", and"],
-                ["the ", def("path"), ", a bytestring of at most ", r("max_path_length"), " bytes."],
+            preview_scope(
+                lis(
+                    ["the ", r("namespace_id"), " of the namespace to which the ", r("entry"), " belongs,"],
+                    ["the ", def({id: "subspace_id", singular: "subspace id"}), ", which is of type ", r("SubspaceId"), ", and"],
+                    ["the ", def("path"), ", a bytestring of at most ", r("max_path_length"), " bytes."],
+                ),
             ),
 
             pinformative("A ", def("record"), " is a triplet of"),
 
-            lis(
-                ["the ", def("timestamp"), ", which is a 64 bit integer (interpreted as microseconds since the Unix epoch),", marginale(["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")])],
-                ["the ", def({id: "payload_length", singular: "payload length"}), ", a 64 bit unsigned integer, and"],
-                ["the ", def({ id: "payload_hash", singular: "payload hash", plural: "payload hashes" }), ", of type ", r("Digest"), "."],
+            preview_scope(
+                lis(
+                    ["the ", def("timestamp"), ", which is a 64 bit integer (interpreted as microseconds since the Unix epoch),", marginale(["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")])],
+                    ["the ", def({id: "payload_length", singular: "payload length"}), ", a 64 bit unsigned integer, and"],
+                    ["the ", def({ id: "payload_hash", singular: "payload hash", plural: "payload hashes" }), ", of type ", r("Digest"), "."],
+                ),
             ),
 
             pinformative("The ", r("payload_length"), " and ", r("payload_hash"), " of a ", r("record"), " are intended to be the length of some bytestring and its digest using the ", r("hash_payload"), " function. We call this bytestring the ", def("payload"), " of the ", r("record"), "."),
