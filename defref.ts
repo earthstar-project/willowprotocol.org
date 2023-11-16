@@ -62,11 +62,13 @@ export function preview_scope(...expressions: Expression[]): Invocation {
 
       if (ids != null) {
         for (const id of ids) {
-          const regex = new RegExp(`\<(.*id=\"${id}\".*class=")(.*)(".*)>`);
+          const regex = new RegExp(
+            `(<a[^>]*id="${id}"[^>]*class=")([^"]*)("{1}[^>]*>)`,
+          );
 
           write_file_absolute(
             [...get_root_directory(ctx), "previews", `${id}.html`],
-            expanded.replace(regex, `id="${id}" class="defined-here"`),
+            expanded.replace(regex, `$1$2 defined_here$3`),
             ctx,
           );
         }
