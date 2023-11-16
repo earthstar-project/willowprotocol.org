@@ -1,0 +1,11 @@
+{
+  "imports": {
+    "std/": "https://deno.land/std@0.204.0/",
+    "katex": "npm:katex@0.16.9",
+    "macro": "./tsgen.ts"
+  },
+  "tasks": {
+    "build": "cd willowtest && deno run --allow-read --allow-write main.ts",
+    "server": "deno run --allow-read --allow-net server.ts"
+  }
+}
