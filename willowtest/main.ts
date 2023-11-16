@@ -32,6 +32,7 @@ import { resource_control } from "./specs/sync/resource_control.ts";
 import { psi } from "./specs/sync/psi.ts";
 import { product_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
 import { access_control } from "./specs/sync/access_control.ts";
+import { timestamps_really } from "./specs/more/timestamps_really.ts";
 
 interface Document {
   title: string;
@@ -313,6 +314,9 @@ evaluate([
         ),
         out_index_directory("access-control", access_control),
       ]),
+    ]),
+    out_directory("more", [
+      out_index_directory("timestamps-really", timestamps_really),
     ]),
   ),
 ]);
