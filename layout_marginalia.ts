@@ -116,6 +116,7 @@ body {
     position: absolute;
     border: 1px solid #DDDDDD;
     border-left: 3px solid var(--green);
+    overflow: hidden;
 }
 
 .preview .aside {
