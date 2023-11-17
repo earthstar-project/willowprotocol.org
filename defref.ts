@@ -12,6 +12,7 @@ import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 import { out_file_absolute, write_file_absolute } from "./out.ts";
+import { createHash } from "npm:sha256-uint8array";
 
 const previewkey = Symbol("Preview");
 
@@ -66,9 +67,23 @@ export function preview_scope(...expressions: Expression[]): Invocation {
             `(<a[^>]*id="${id}"[^>]*class=")([^"]*)("{1}[^>]*>)`,
           );
 
+          const withDefinedHereClass = expanded.replace(
+            regex,
+            `$1$2 defined_here$3`,
+          );
+
           write_file_absolute(
             [...get_root_directory(ctx), "previews", `${id}.html`],
-            expanded.replace(regex, `$1$2 defined_here$3`),
+            withDefinedHereClass,
+            ctx,
+          );
+
+          // Create etag.
+          const hash = createHash().update(withDefinedHereClass).digest("hex");
+
+          write_file_absolute(
+            [...get_root_directory(ctx), "previews", `${id}.etag`],
+            hash,
             ctx,
           );
         }
@@ -158,7 +173,18 @@ export function def_generic(
         ),
       ];
     },
-    undefined,
+    (expanded, ctx) => {
+      // Create etag
+      const hash = createHash().update(expanded).digest("hex");
+
+      write_file_absolute(
+        [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
+        hash,
+        ctx,
+      );
+
+      return expanded;
+    },
     (ctx) => preview_state(ctx).currently_defining = true,
     (ctx) => preview_state(ctx).currently_defining = false,
   );

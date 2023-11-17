@@ -96,6 +96,8 @@ Deno.serve(async (req) => {
 
     const contentKind = contentType(extension) || "text/plain";
 
+    // If content kind is HTML, look for an etag.
+
     console.log(200, url.pathname);
 
     return new Response(file.readable, {
