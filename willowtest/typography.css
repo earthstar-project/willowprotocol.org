@@ -15,7 +15,7 @@ a:hover {
     color: var(--green)
 }
 
-a[href]:not(:where(
+main a[href]:not(:where(
   /* exclude hash only links */
   [href^="#"],
   /* exclude relative but not double slash only links */
@@ -30,6 +30,7 @@ a[href]:not(:where(
   margin-left: 0.3ch;
   font-size: 0.9em;
   text-decoration: none;
+  color: grey;
 }
 
 strong {

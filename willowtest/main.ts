@@ -18,7 +18,12 @@ import {
   title,
   ul,
 } from "../h.ts";
-import { copy_file, out_directory, out_file, write_file_relative } from "../out.ts";
+import {
+  copy_file,
+  out_directory,
+  out_file,
+  write_file_relative,
+} from "../out.ts";
 import { read_file } from "../input.ts";
 import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
@@ -65,7 +70,6 @@ export function site_template(meta: Document, body: Expression): Invocation {
                     ),
                   ),
                 ),
-                p(), // really, gwil? =P
                 div(
                   marginale_inlineable(
                     a(
@@ -207,11 +211,13 @@ evaluate([
           name: "testbar",
         },
         [
-          ul(
-            li(link_name("data_model", "Data Model")),
-            li(link_name("meadowcap", "Meadowcap")),
-            li(link_name("sync", "Sync")),
-            li(link_name("resource_control", "Resource Management")),
+          nav(
+            ul(
+              li(link_name("data_model", "Data Model")),
+              li(link_name("meadowcap", "Meadowcap")),
+              li(link_name("sync", "Sync")),
+              li(link_name("resource_control", "Resource Management")),
+            ),
           ),
           p([
             "This paragraph was marked neither as informative nor as normative. It will talk about ",
