@@ -36,12 +36,12 @@ main ul li:has(> a) {
 }
 
 main ul li:has(> a):after {
-    content: 'â†’';
+    content: '→';
     margin-left: 0.5ch;
 }
 
 main ul li:has(> a[aria-disabled=true]):after {
-    content: 'â³'
+    content: '→'
 }
 
 ul {
