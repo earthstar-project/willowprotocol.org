@@ -19,7 +19,9 @@ import {
   ul,
 } from "../h.ts";
 import {
+asset,
   copy_file,
+  copy_statics,
   out_directory,
   out_file,
   write_file_relative,
@@ -74,9 +76,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                   marginale_inlineable(
                     a(
                       { href: "https://nlnet.nl" },
-                      img({
-                        src: "/assets/nlnet.svg",
-                      }),
+                      img(asset("nlnet.svg")),
                     ),
                   ),
                   p("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
@@ -100,7 +100,18 @@ export function def_parameter(
   const info_ = typeof info === "string"
     ? { id: info, clazz: "param" }
     : { ...info, clazz: "param" };
-  return def_generic(info_, text, preview);
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param defined_here" }
+    : { ...info, clazz: "param defined_here" };
+  return def_generic(info_, true, text, preview);
 }
 
 export function def_value(
@@ -111,7 +122,18 @@ export function def_value(
   const info_ = typeof info === "string"
     ? { id: info, clazz: "value" }
     : { ...info, clazz: "value" };
-  return def_generic(info_, text, preview);
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value defined_here" }
+    : { ...info, clazz: "value defined_here" };
+  return def_generic(info_, true, text, preview);
 }
 
 function normative(
@@ -306,7 +328,7 @@ evaluate([
   }
 }`,
     ]),
-    copy_file("assets"),
+    copy_file("named_assets"),
     out_directory("specs", [
       out_index_directory("data-model", data_model),
       out_index_directory("meadowcap", meadowcap),
@@ -324,5 +346,6 @@ evaluate([
     out_directory("more", [
       out_index_directory("timestamps-really", timestamps_really),
     ]),
+    copy_statics("assets"),
   ),
 ]);

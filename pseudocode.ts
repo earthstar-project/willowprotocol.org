@@ -23,7 +23,7 @@ import {
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
-import { out_file_absolute, write_file_absolute } from "./out.ts";
+import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
 import { set_def } from "./defref.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -410,7 +410,7 @@ export function pseudocode(...toplevels: Toplevel[]): Expression {
   const macro = new_macro(
     (_args, _ctx) => {
       return [
-        html5_dependency_css("/assets/code.css"),
+        html5_dependency_css("/named_assets/code.css"),
         code({ class: "pseudocode" }, ...toplevels.map(render_toplevel)),
       ];
     },

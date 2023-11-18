@@ -1,12 +1,13 @@
-import { R, def, r, rs } from "../../defref.ts";
-import { aside, code, em, p } from "../../h.ts";
+import { R, def, def_fake, r, rs } from "../../defref.ts";
+import { aside, code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value } from "../main.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value, def_fake_value } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
+import { asset } from "../../out.ts";
 
 export const sync: Expression = site_template(
     {
@@ -79,7 +80,7 @@ export const sync: Expression = site_template(
         ]),
 
         hsection("sync_protocol", "Protocol", [
-            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def("betty", "Betty"), " refers to the peer that accepted a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
+            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def_fake("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def_fake("betty", "Betty"), " refers to the peer that accepted a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
 
             pinformative(`Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something “is an error”. Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a message that does not fulfill these criteria, that is an error.`),
 
@@ -101,9 +102,9 @@ export const sync: Expression = site_template(
                         {
                             id: "NamespaceHandle",
                             comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("aoi"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
-                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
-                                [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
-                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer's interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
+                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_fake_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
+                                [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_fake_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
+                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_fake_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer's interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
                             )],
                         },
                         {

@@ -1,6 +1,7 @@
 import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
-import { basename, join } from "https://deno.land/std@0.198.0/path/mod.ts";
+import { basename, join, extname } from "https://deno.land/std@0.198.0/path/mod.ts";
 import { copySync } from "https://deno.land/std@0.204.0/fs/copy.ts";
+import { walkSync } from "https://deno.land/std@0.170.0/fs/walk.ts";
 
 import {
   Context,
@@ -13,6 +14,8 @@ import {
 } from "./tsgen.ts";
 import { Stack } from "./stack.ts";
 import { Location } from "./get_current_line.ts";
+import { new_name, try_resolve_name } from "./names.ts";
+import { createHash } from "npm:sha256-uint8array";
 
 export type PerFileState = State;
 
@@ -549,4 +552,151 @@ function resolve_path(
 
 export function style_output_file(s: string): string {
   return Colors.blue(s);
+}
+
+
+
+const static_hash_key = Symbol("StaticHash");
+
+export function copy_statics(path_fragment: string): Invocation {
+  let first_td = true;
+
+  const filename = basename(path_fragment);
+
+  const macro = new_macro(
+    undefined,
+    (_, _ctx) => "",
+    // td
+    (ctx) => {
+      if (first_td) {
+        first_td = false;
+
+        const current = resolve_path(
+          out_state(ctx).out_files,
+          out_state(ctx).current_path,
+          0,
+          ctx,
+        );
+        if (current === null) {
+          return;
+        }
+
+        if (current.children === null) {
+          ctx.error(
+            `Cannot copy file ${style_file(path_fragment)} to ${
+              style_output_file(out_state(ctx).current_path.join("/"))
+            }`,
+          );
+          ctx.error(
+            `    ${
+              style_output_file(out_state(ctx).current_path.join("/"))
+            } is no output directory.`,
+          );
+          ctx.halt();
+        } else if (current.children.has(filename)) {
+          ctx.error(
+            `Cannot copy file ${style_file(path_fragment)} to ${
+              style_output_file(out_state(ctx).current_path.join("/"))
+            }`,
+          );
+          ctx.error(
+            `    There already exists an output file of name ${
+              style_output_file(
+                `${out_state(ctx).current_path.join("/")}/${filename}`,
+              )
+            }`,
+          );
+          ctx.error(
+            `    It was created by ${
+              format_location(
+                (<Stack<Location>> current.children.get(filename)!.state.get(
+                  location_key,
+                )!).peek()!,
+              )
+            }`,
+          );
+          ctx.halt();
+        } else {
+          const per_file_state = new Map();
+          per_file_state.set(location_key, ctx.stack);
+
+          current.children.set(filename, {
+            state: per_file_state,
+            children: new Map(),
+          });
+          out_state(ctx).current_path.push(filename);
+
+          const path = join(...out_state(ctx).current_path);
+          try {
+            Deno.removeSync(path, { recursive: true });
+          } catch (err) {
+            if (!(err instanceof Deno.errors.NotFound)) {
+              ctx.error(
+                `Could not clear (that is, delete) directory at ${
+                  style_file(out_state(ctx).current_path.join("/"))
+                }`,
+              );
+              ctx.error(err);
+              ctx.halt();
+              return "";
+            }
+          }
+
+          try {
+            Deno.mkdirSync(path);
+
+            for (const walkEntry of walkSync(path_fragment)) {
+              if (walkEntry.isFile) {
+                const name = walkEntry.path.slice(path_fragment.length + 1);
+
+                const id = name.replace(/\\/gi, "/");
+                
+                const contents = Deno.readFileSync(walkEntry.path);
+                const hash = createHash().update(contents).digest("hex");
+                const new_path = `${hash}${extname(name)}`;
+                
+                Deno.writeFileSync(`${path}/${new_path}`, contents);
+  
+                const state = new_name(id, "static", ctx);
+                state?.set(static_hash_key, new_path);
+              }
+            }
+          } catch (err) {
+            ctx.error(
+              `Could not copy file from ${style_file(path_fragment)} to ${
+                style_file(out_state(ctx).current_path.join("/"))
+              }`,
+            );
+            ctx.error(err);
+            ctx.halt();
+          }
+        }
+      } else {
+        out_state(ctx).current_path.push(filename);
+      }
+    },
+    // bu
+    (ctx) => {
+      out_state(ctx).current_path.pop();
+    },
+  );
+
+  return new Invocation(macro, []);
+}
+
+export function asset(id: string): Expression {
+  const macro = new_macro(
+    (_args, ctx) => {
+      const name = try_resolve_name(id, "static", ctx);
+      if (name) {
+        return `/assets/${name.get(static_hash_key)}`;
+      } else if (ctx.must_make_progress) {
+          return "unknown_asset";
+      } else {
+        return null;
+      }
+    },
+  );
+
+  return new Invocation(macro, []);
 }

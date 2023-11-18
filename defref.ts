@@ -125,6 +125,7 @@ export function set_def(name_state: PerNameState, def: Def) {
 
 export function def_generic(
   info: string | Def,
+  is_fake: boolean,
   text?: Expression,
   preview?: Expression,
 ): Expression {
@@ -137,7 +138,9 @@ export function def_generic(
         if (state === null) {
           return "";
         } else {
-          state?.set(def_key, info_);
+          if (!is_fake) {
+            state?.set(def_key, info_);
+          }
         }
       }
 
@@ -150,7 +153,7 @@ export function def_generic(
       }
 
       let manual_preview: Expression = "";
-      if (!preview_state(ctx).currently_defining) {
+      if (!preview_state(ctx).currently_defining && !is_fake) {
         if (preview) {
           manual_preview = out_file_absolute([
             ...get_root_directory(ctx),
@@ -174,14 +177,16 @@ export function def_generic(
       ];
     },
     (expanded, ctx) => {
-      // Create etag
-      const hash = createHash().update(expanded).digest("hex");
+      if (!is_fake) {
+        // Create etag
+        const hash = createHash().update(expanded).digest("hex");
 
-      write_file_absolute(
-        [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
-        hash,
-        ctx,
-      );
+        write_file_absolute(
+          [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
+          hash,
+          ctx,
+        );
+      }
 
       return expanded;
     },
@@ -200,7 +205,18 @@ export function def(
   const info_ = typeof info === "string"
     ? { id: info, clazz: "def" }
     : { ...info, clazz: "def" };
-  return def_generic(info_, text, preview);
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "def defined_here" }
+    : { ...info, clazz: "def defined_here" };
+  return def_generic(info_, true, text, preview);
 }
 
 export function r(
@@ -265,10 +281,10 @@ function ref_invocation(
       }
 
       return [
-        html5_dependency_js("/assets/floating-ui.core.min.js"),
-        html5_dependency_js("/assets/floating-ui.dom.min.js"),
-        html5_dependency_js("/assets/tooltips.js"),
-        html5_dependency_js("/assets/previews.js"),
+        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+        html5_dependency_js("/named_assets/tooltips.js"),
+        html5_dependency_js("/named_assets/previews.js"),
         the_link,
       ];
     },
