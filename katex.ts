@@ -23,7 +23,7 @@ export function $(fst: Expression, snd?: Expression, third?: Expression) : Expre
         post = args[1];
       }
 
-      return [html5_dependency_css("/assets/katex.min.css"), [
+      return [html5_dependency_css("/named_assets/katex.min.css"), [
         pre ? ["\\htmlClass{normal_text}{\\text{", pre, "}}"] : "",
         math,
         post ? ["\\htmlClass{normal_text}{\\text{", post, "}}"] : "",

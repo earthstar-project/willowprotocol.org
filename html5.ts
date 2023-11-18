@@ -40,11 +40,11 @@ export function html5_dependency(dep: Expression): Expression {
 }
 
 export function html5_dependency_css(path: Expression): Expression {
-  return html5_dependency(`<link rel="stylesheet" href="${path}">`);
+  return html5_dependency([`<link rel="stylesheet" href="`, path, `">`]);
 }
 
 export function html5_dependency_js(path: Expression): Expression {
-  return html5_dependency(`<script type="module" src="${path}"></script>`);
+  return html5_dependency([`<script type="module" src="`, path, `"></script>`]);
 }
 
 export function html5(

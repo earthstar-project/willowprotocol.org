@@ -2,10 +2,10 @@ import { register_tooltip_handler } from "./tooltips.js";
 
 register_tooltip_handler({
   selector: find_preview_url,
-  start_delay: 400,
-  preprocess_data: url => {
+  start_delay: 300,
+  preprocess_data: (url) => {
     return fetch(url)
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw response;
         } else {
@@ -28,7 +28,8 @@ register_tooltip_handler({
   render_err: (err, evt) => {
     const content_node = document.createElement("div");
     content_node.classList.add("preview_content");
-    content_node.innerHTML = "Could not load preview. You can still click the reference to jump to its target.";
+    content_node.innerHTML =
+      "Could not load preview. You can still click the reference to jump to its target.";
 
     const preview_node = document.createElement("div");
     preview_node.classList.add("preview");

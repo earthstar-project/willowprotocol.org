@@ -1,39 +1,40 @@
 import { Expression, Invocation, new_macro } from "./tsgen.ts";
 
 export class LayoutOptions {
-    /* All distances in rem */
-    // padding-top for the body
-    padding_top = 3;
-    // padding-bottom for the body
-    padding_bottom = 2;
-    // padding-right for the body
-    padding_right = 1;
-    // padding-left for the body
-    padding_left = 1;
+  /* All distances in rem */
+  // padding-top for the body
+  padding_top = 3;
+  // padding-bottom for the body
+  padding_bottom = 2;
+  // padding-right for the body
+  padding_right = 1;
+  // padding-left for the body
+  padding_left = 1;
 
-    // spacing between marginalia and the main contents
-    spacing_marginalia = 2;
-    // maximum width for the main contents
-    max_width_main = 32;
-    // maximum width for the marginalia
-    max_width_marginalia = 18;
+  // spacing between marginalia and the main contents
+  spacing_marginalia = 2;
+  // maximum width for the main contents
+  max_width_main = 32;
+  // maximum width for the marginalia
+  max_width_marginalia = 18;
 
-    // width of main content and the marginalia together
-    wide(): number {
-        return this.max_width_main + this.spacing_marginalia + this.max_width_marginalia;
-    }
+  // width of main content and the marginalia together
+  wide(): number {
+    return this.max_width_main + this.spacing_marginalia +
+      this.max_width_marginalia;
+  }
 
-    // width of main content, the marginalia, and their left and right margins
-    // if the screen is less wide than this, the marginalia disappear
-    wide_and_margins(): number {
-        return this.wide() + this.padding_left + this.padding_right;
-    }
+  // width of main content, the marginalia, and their left and right margins
+  // if the screen is less wide than this, the marginalia disappear
+  wide_and_margins(): number {
+    return this.wide() + this.padding_left + this.padding_right;
+  }
 }
 
 export function layout_marginalia(opts: LayoutOptions): Expression {
-    const macro = new_macro(
-      (_args, _ctx) => {
-        return `*,
+  const macro = new_macro(
+    (_args, _ctx) => {
+      return `*,
 *::before,
 *::after {
     box-sizing: border-box;
@@ -77,14 +78,18 @@ body {
 
 .verywide {
     position: relative;
-    min-width: calc(100vw - calc(${opts.padding_left + opts.padding_right}rem + 0.5 * calc(100vw - ${opts.wide()}rem)));
+    min-width: calc(100vw - calc(${
+        opts.padding_left + opts.padding_right
+      }rem + 0.5 * calc(100vw - ${opts.wide()}rem)));
     max-width: calc(100vw - ${opts.padding_left}rem - 2 * ${opts.padding_right}rem);
     clear: right;
 }
 
 .verywidefixed {
     position: relative;
-    min-width: calc(100vw - calc(${opts.padding_left + opts.padding_right}rem + 0.5 * calc(100vw - ${opts.wide()}rem)));
+    min-width: calc(100vw - calc(${
+        opts.padding_left + opts.padding_right
+      }rem + 0.5 * calc(100vw - ${opts.wide()}rem)));
     clear: right;
 }
 
@@ -103,10 +108,15 @@ body {
 
 .preview {
     background: var(--nearly-white);
-    box-shadow: 0px 0px 3px 4px #DDDDDD;
-    padding: 0.5rem;
-    max-width: calc(100vw + 1rem - ${opts.padding_left + opts.padding_right}rem);
+    box-shadow: 5px 5px 10px 0px rgba(68, 68, 68, 0.80);
+    padding: 1rem;
+    max-width: calc(100vw + 1rem - ${
+        opts.padding_left + opts.padding_right
+      }rem);
     position: absolute;
+    border: 1px solid #DDDDDD;
+    border-left: 3px solid var(--green);
+    overflow: hidden;
 }
 
 .preview .aside {
@@ -132,7 +142,8 @@ body {
         clear: right;
         position: relative;
         width: ${opts.max_width_marginalia}rem;
-        margin-right: ${-(opts.spacing_marginalia + opts.max_width_marginalia)}rem;
+        margin-right: ${-(opts.spacing_marginalia +
+        opts.max_width_marginalia)}rem;
         font-size: 0.9rem;
         margin-bottom: 1em;
         white-space: normal;
@@ -156,8 +167,8 @@ body {
         max-width: calc(${opts.max_width_main}rem + 1rem);
     }
 }`;
-      }
-    );
-    
-    return new Invocation(macro, []);
+    },
+  );
+
+  return new Invocation(macro, []);
 }

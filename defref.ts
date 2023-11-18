@@ -12,6 +12,7 @@ import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 import { out_file_absolute, write_file_absolute } from "./out.ts";
+import { createHash } from "npm:sha256-uint8array";
 
 const previewkey = Symbol("Preview");
 
@@ -62,9 +63,27 @@ export function preview_scope(...expressions: Expression[]): Invocation {
 
       if (ids != null) {
         for (const id of ids) {
+          const regex = new RegExp(
+            `(<a[^>]*id="${id}"[^>]*class=")([^"]*)("{1}[^>]*>)`,
+          );
+
+          const withDefinedHereClass = expanded.replace(
+            regex,
+            `$1$2 defined_here$3`,
+          );
+
           write_file_absolute(
             [...get_root_directory(ctx), "previews", `${id}.html`],
-            expanded,
+            withDefinedHereClass,
+            ctx,
+          );
+
+          // Create etag.
+          const hash = createHash().update(withDefinedHereClass).digest("hex");
+
+          write_file_absolute(
+            [...get_root_directory(ctx), "previews", `${id}.etag`],
+            hash,
             ctx,
           );
         }
@@ -106,6 +125,7 @@ export function set_def(name_state: PerNameState, def: Def) {
 
 export function def_generic(
   info: string | Def,
+  is_fake: boolean,
   text?: Expression,
   preview?: Expression,
 ): Expression {
@@ -118,7 +138,9 @@ export function def_generic(
         if (state === null) {
           return "";
         } else {
-          state?.set(def_key, info_);
+          if (!is_fake) {
+            state?.set(def_key, info_);
+          }
         }
       }
 
@@ -131,7 +153,7 @@ export function def_generic(
       }
 
       let manual_preview: Expression = "";
-      if (!preview_state(ctx).currently_defining) {
+      if (!preview_state(ctx).currently_defining && !is_fake) {
         if (preview) {
           manual_preview = out_file_absolute([
             ...get_root_directory(ctx),
@@ -154,7 +176,20 @@ export function def_generic(
         ),
       ];
     },
-    undefined,
+    (expanded, ctx) => {
+      if (!is_fake) {
+        // Create etag
+        const hash = createHash().update(expanded).digest("hex");
+
+        write_file_absolute(
+          [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
+          hash,
+          ctx,
+        );
+      }
+
+      return expanded;
+    },
     (ctx) => preview_state(ctx).currently_defining = true,
     (ctx) => preview_state(ctx).currently_defining = false,
   );
@@ -169,10 +204,22 @@ export function def(
 ): Expression {
   const info_ = typeof info === "string"
     ? { id: info, clazz: "def" }
-    : { ...info, clazz: "def" };    
-  return def_generic(info_, text, preview);
+    : { ...info, clazz: "def" };
+  return def_generic(info_, false, text, preview);
 }
 
+export function def_fake(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "def defined_here" }
+    : { ...info, clazz: "def defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+/** Refer to a definition using its singular label. */
 export function r(
   id: string,
   text?: Expression,
@@ -180,6 +227,7 @@ export function r(
   return ref_invocation(get_singular, id, text);
 }
 
+/** Refer to a definition in its plural label. */
 export function rs(
   id: string,
   text?: Expression,
@@ -235,10 +283,10 @@ function ref_invocation(
       }
 
       return [
-        html5_dependency_js("/assets/floating-ui.core.min.js"),
-        html5_dependency_js("/assets/floating-ui.dom.min.js"),
-        html5_dependency_js("/assets/tooltips.js"),
-        html5_dependency_js("/assets/previews.js"),
+        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+        html5_dependency_js("/named_assets/tooltips.js"),
+        html5_dependency_js("/named_assets/previews.js"),
         the_link,
       ];
     },

@@ -1,14 +1,14 @@
 import { Expression, Macro, Invocation, new_macro, is_expression } from "./tsgen.ts";
 
-export type Attributes = Record<PropertyKey, string>;
+export type Attributes = Record<PropertyKey, Expression>;
 
 function mac(tag_name: string, attributes: Attributes, is_non_void_element: boolean): Macro {
     return new_macro(
         (args, _state) => {
             if (is_non_void_element) {
-                return [`<${tag_name}${render_attributes()}>`, ...args, `</${tag_name}>`];
+                return [`<${tag_name}`, render_attributes(attributes), `>`, ...args, `</${tag_name}>`];
             } else {
-                return `<${tag_name}${render_attributes()} />`;
+                return [`<${tag_name}`, render_attributes(attributes), `/>`];
             }
         },
         undefined,
@@ -16,21 +16,24 @@ function mac(tag_name: string, attributes: Attributes, is_non_void_element: bool
         undefined,
         3,
     );
+}
 
-    function render_attributes(): string {
-        const fragments: string[] = [];
+function render_attributes(attributes: Attributes): Expression {
+    const fragments: Expression[][] = [];
 
-        for (const name in attributes) {
-            const value = attributes[name];
-            if (value === "") {
-                fragments.push(name);
-            } else {
-                fragments.push(`${name}="${value}"`);
-            }
+    for (const name in attributes) {
+        const value = attributes[name];
+        if (value === "") {
+            fragments.push([name]);
+        } else {
+            fragments.push([name, "=\"", value, "\""]);
         }
-
-        return fragments.length === 0 ? "" : ` ${fragments.join(" ")}`;
     }
+
+    return fragments.map((f, i) => {
+        f.unshift(" ");
+        return f;
+    });
 }
 
 export function h(tag_name: string, attributes: Attributes = {}, ...args: Expression[]): Expression {
@@ -41,55 +44,62 @@ export function h(tag_name: string, attributes: Attributes = {}, ...args: Expres
 }
 
 export function area(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("area", attributes, true), []);
+    return new Invocation(mac("area", attributes, false), []);
 }
 
 export function base(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("base", attributes, true), []);
+    return new Invocation(mac("base", attributes, false), []);
 }
 
 export function br(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("br", attributes, true), []);
+    return new Invocation(mac("br", attributes, false), []);
 }
 
 export function col(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("col", attributes, true), []);
+    return new Invocation(mac("col", attributes, false), []);
 }
 
 export function embed(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("embed", attributes, true), []);
+    return new Invocation(mac("embed", attributes, false), []);
 }
 
 export function hr(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("hr", attributes, true), []);
+    return new Invocation(mac("hr", attributes, false), []);
 }
 
-export function img(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("img", attributes, true), []);
+export function img(src: Expression, attributes: Attributes = {}): Expression {
+    const macro = new_macro(
+        (args, _ctx) => {
+            return [
+                `<img src="`, args[0], `"`, render_attributes(attributes), ">",
+            ];
+        },
+    );
+    return new Invocation(macro, [src]);
 }
 
 export function input(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("input", attributes, true), []);
+    return new Invocation(mac("input", attributes, false), []);
 }
 
 export function link(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("link", attributes, true), []);
+    return new Invocation(mac("link", attributes, false), []);
 }
 
 export function meta(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("meta", attributes, true), []);
+    return new Invocation(mac("meta", attributes, false), []);
 }
 
 export function source(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("source", attributes, true), []);
+    return new Invocation(mac("source", attributes, false), []);
 }
 
 export function track(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("track", attributes, true), []);
+    return new Invocation(mac("track", attributes, false), []);
 }
 
 export function wbr(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("wbr", attributes, true), []);
+    return new Invocation(mac("wbr", attributes, false), []);
 }
 
 export function a(attributes: Attributes, ...args: Expression[]): Expression;

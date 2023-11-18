@@ -7,7 +7,7 @@ code {
     word-break: break-word
 }
 
-nav>ul {
+footer>nav>ul {
     display: flex;
     gap: 1ch;
     padding: 0;
@@ -31,17 +31,17 @@ footer img {
     max-width: 7em;
 }
 
-main ul li:has(> a) {
+main nav ul li:has(> a) {
     list-style-type: none;
 }
 
-main ul li:has(> a):after {
-    content: 'â†’';
+main nav ul li:has(> a):after {
+    content: '→';
     margin-left: 0.5ch;
 }
 
-main ul li:has(> a[aria-disabled=true]):after {
-    content: 'â³'
+main nav ul li:has(> a[aria-disabled=true]):after {
+    content: '→'
 }
 
 ul {

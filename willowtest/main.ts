@@ -1,3 +1,4 @@
+import { createHash } from "npm:sha256-uint8array";
 import { evaluate, Expression, Invocation, new_macro } from "../tsgen.ts";
 import { html5, html5_dependency_css } from "../html5.ts";
 import {
@@ -17,7 +18,14 @@ import {
   title,
   ul,
 } from "../h.ts";
-import { copy_file, out_directory, out_file } from "../out.ts";
+import {
+asset,
+  copy_file,
+  copy_statics,
+  out_directory,
+  out_file,
+  write_file_relative,
+} from "../out.ts";
 import { read_file } from "../input.ts";
 import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
@@ -31,6 +39,7 @@ import { resource_control } from "./specs/sync/resource_control.ts";
 import { psi } from "./specs/sync/psi.ts";
 import { product_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
 import { access_control } from "./specs/sync/access_control.ts";
+import { timestamps_really } from "./specs/more/timestamps_really.ts";
 
 interface Document {
   title: string;
@@ -63,14 +72,11 @@ export function site_template(meta: Document, body: Expression): Invocation {
                     ),
                   ),
                 ),
-                p(), // really, gwil? =P
                 div(
                   marginale_inlineable(
                     a(
                       { href: "https://nlnet.nl" },
-                      img({
-                        src: "/assets/nlnet.svg",
-                      }),
+                      img(asset("nlnet.svg")),
                     ),
                   ),
                   p("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
@@ -94,7 +100,18 @@ export function def_parameter(
   const info_ = typeof info === "string"
     ? { id: info, clazz: "param" }
     : { ...info, clazz: "param" };
-  return def_generic(info_, text, preview);
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param defined_here" }
+    : { ...info, clazz: "param defined_here" };
+  return def_generic(info_, true, text, preview);
 }
 
 export function def_value(
@@ -104,8 +121,19 @@ export function def_value(
 ): Expression {
   const info_ = typeof info === "string"
     ? { id: info, clazz: "value" }
-    : { ...info, clazz: "value" };    
-  return def_generic(info_, text, preview);
+    : { ...info, clazz: "value" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value defined_here" }
+    : { ...info, clazz: "value defined_here" };
+  return def_generic(info_, true, text, preview);
 }
 
 function normative(
@@ -129,7 +157,7 @@ export function pnormative(
 export function pinformative(
   ...body: Expression[]
 ): Expression {
-  return p({ class: "informative"}, preview_scope(...body));
+  return p({ class: "informative" }, preview_scope(...body));
 }
 
 export function lis(
@@ -154,13 +182,32 @@ export function link(
   return new Invocation(macro, [display]);
 }
 
+function create_etags(...contents: Expression[]) {
+  const macro = new_macro(
+    undefined,
+    (expanded, ctx) => {
+      const hash = createHash().update(expanded).digest("hex");
+
+      write_file_relative(["..", "etag"], hash, ctx);
+
+      return expanded;
+    },
+  );
+
+  return new Invocation(macro, contents);
+}
+
 export function out_index_directory(
   path_fragment: string,
   ...contents: Expression[]
 ): Invocation {
   const macro = new_macro(
-    (args, _ctx) =>
-      out_directory(path_fragment, out_file("index.html", ...args)),
+    (args, _ctx) => {
+      return out_directory(
+        path_fragment,
+        out_file("index.html", create_etags(...args)),
+      );
+    },
   );
   return new Invocation(macro, contents);
 }
@@ -186,11 +233,13 @@ evaluate([
           name: "testbar",
         },
         [
-          ul(
-            li(link_name("data_model", "Data Model")),
-            li(link_name("meadowcap", "Meadowcap")),
-            li(link_name("sync", "Sync")),
-            li(link_name("resource_control", "Resource Management")),
+          nav(
+            ul(
+              li(link_name("data_model", "Data Model")),
+              li(link_name("meadowcap", "Meadowcap")),
+              li(link_name("sync", "Sync")),
+              li(link_name("resource_control", "Resource Management")),
+            ),
           ),
           p([
             "This paragraph was marked neither as informative nor as normative. It will talk about ",
@@ -279,12 +328,12 @@ evaluate([
   }
 }`,
     ]),
-    copy_file("assets"),
+    copy_file("named_assets"),
     out_directory("specs", [
       out_index_directory("data-model", data_model),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [
-        out_file("index.html", sync),
+        out_file("index.html", create_etags(sync)),
         out_index_directory("psi", psi),
         out_index_directory("resource-control", resource_control),
         out_index_directory(
@@ -294,5 +343,9 @@ evaluate([
         out_index_directory("access-control", access_control),
       ]),
     ]),
+    out_directory("more", [
+      out_index_directory("timestamps-really", timestamps_really),
+    ]),
+    copy_statics("assets"),
   ),
 ]);
