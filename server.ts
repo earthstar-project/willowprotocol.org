@@ -34,7 +34,7 @@ Deno.serve(async (req) => {
       return new Response(file.readable, {
         headers: {
           "Content-Type": contentKind,
-          "Cache-Control": "public, max-age 3600, s-maxage 3600",
+          "Cache-Control": "public, max-age 31536000, s-maxage 31536000",
         },
       });
     }
