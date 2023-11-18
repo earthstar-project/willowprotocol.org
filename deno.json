@@ -6,6 +6,8 @@
   },
   "tasks": {
     "build": "cd willowtest && deno run --allow-read --allow-write main.ts",
+    "build-watch": "cd willowtest && deno run --watch --allow-read --allow-write main.ts",
     "server": "deno run --allow-read --allow-net server.ts"
-  }
+  },
+  "exclude": ["willowtest/build", "willowtest/named_assets"]
 }
