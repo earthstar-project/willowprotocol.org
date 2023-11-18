@@ -219,6 +219,7 @@ export function def_fake(
   return def_generic(info_, true, text, preview);
 }
 
+/** Refer to a definition using its singular label. */
 export function r(
   id: string,
   text?: Expression,
@@ -226,6 +227,7 @@ export function r(
   return ref_invocation(get_singular, id, text);
 }
 
+/** Refer to a definition in its plural label. */
 export function rs(
   id: string,
   text?: Expression,
