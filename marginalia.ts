@@ -22,7 +22,8 @@ function set_sidenote_count(ctx: Context, new_count: number) {
 export function marginale_inlineable(marginale: Expression): Expression {
     const macro = new_macro(
       (args, _ctx) => {
-        return span({class: "aside inline"}, ...args);
+        // return span({class: "aside inline"}, ...args);
+        return div({class: "aside inline"}, ...args);
       }
     );
     
@@ -33,7 +34,8 @@ export function marginale_inlineable(marginale: Expression): Expression {
 export function marginale(marginale: Expression): Expression {
   const macro = new_macro(
     (args, _ctx) => {
-      return span({class: "aside"}, ...args);
+      // return span({class: "aside"}, ...args);
+      return div({class: "aside"}, ...args);
     }
   );
   
@@ -53,7 +55,8 @@ export function sidenote(anchor: Expression, note: Expression): Expression {
           args[0],
           span({class: "aside_counter"}, `${num}`),
         ]),
-        span({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[1]),
+        // span({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[1]),
+        div({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[1]),
       ];
     }
   );

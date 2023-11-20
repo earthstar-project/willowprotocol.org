@@ -138,6 +138,7 @@ body {
 @media (min-width: ${opts.wide_and_margins()}rem) {
     .aside, code .aside {
         display: initial;
+        // display: block;
         float: right;
         clear: right;
         position: relative;
