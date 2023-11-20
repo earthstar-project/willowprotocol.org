@@ -21,6 +21,7 @@ footer {
     border-top: 2px solid rgb(225, 225, 225);
     /* margin: 5em auto 0 auto; */
     padding: 0.5em 0;
+    margin: 5em 0 0 0;
 }
 
 footer p {
@@ -59,4 +60,33 @@ li {
 
 img {
     max-width: 100%;
+}
+
+main table {
+  width: 100%;
+  max-width: var(--paragraph-width);
+  border-collapse: collapse;
+  margin-bottom: 0.5em;
+  border-radius: 4px
+}
+
+main aside table {
+  width: 100%
+}
+
+tbody {
+  border-top: 1px solid var(--light-green);
+  border-bottom: 1px solid var(--light-green);
+}
+
+td, th {
+ font-size: 1rem;
+ font-weight: normal;
+ text-align: center;
+ padding: 0.5em;
+ vertical-align: middle;
+}
+
+td img {
+  height: 25%;
 }

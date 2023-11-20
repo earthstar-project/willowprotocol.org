@@ -186,8 +186,12 @@ body .katex {
 }
 
 aside.long {
-    border: 1px solid var(--light-green);
-    border-width: 1px 0;
-    padding: 1em 0.75em;
-    margin: 2em 0;
-  }
+  border: 1px solid var(--light-green);
+  border-width: 1px 0;
+  padding: 1em 0.75em;
+  margin: 2em 0;
+}
+  
+figcaption {
+  font-size: 1rem;
+}

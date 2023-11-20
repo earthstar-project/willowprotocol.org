@@ -19,7 +19,7 @@ import {
   ul,
 } from "../h.ts";
 import {
-asset,
+  asset,
   copy_file,
   copy_statics,
   out_directory,
@@ -40,6 +40,8 @@ import { psi } from "./specs/sync/psi.ts";
 import { product_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
 import { access_control } from "./specs/sync/access_control.ts";
 import { timestamps_really } from "./specs/more/timestamps_really.ts";
+import { specifications } from "./specs/specifications.ts";
+import { encodings } from "./specs/encodings.ts";
 
 interface Document {
   title: string;
@@ -64,7 +66,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
               nav(
                 ul(
                   li(a({ href: "/" }, "Home")),
-                  li(a({ href: "/specs" }, "Specifications")),
+                  li(link_name("specifications", "Specs")),
                   li(
                     a(
                       { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden" },
@@ -163,7 +165,7 @@ export function pinformative(
 export function aside_block(
   ...body: Expression[]
 ): Expression {
-  return aside({class: "long"}, body);
+  return aside({ class: "long" }, body);
 }
 
 export function lis(
@@ -336,7 +338,9 @@ evaluate([
     ]),
     copy_file("named_assets"),
     out_directory("specs", [
+      out_file("index.html", specifications),
       out_index_directory("data-model", data_model),
+      out_index_directory("encodings", encodings),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [
         out_file("index.html", create_etags(sync)),
