@@ -105,6 +105,10 @@ export class SimpleEnum {
   }
 }
 
+function item_spacing(): Expression {
+  return div({class: "item_spacing"});
+}
+
 function render_line(...exps: Expression[]): Expression {
   const macro = new_macro(
     (args, ctx) => {
@@ -399,11 +403,15 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
 export type Toplevel = Struct | SimpleEnum;
 
 function render_toplevel(tl: Toplevel): Expression {
+  let item: Expression = "";
+
   if (tl instanceof Struct) {
-    return render_struct(tl);
+    item = render_struct(tl);
   } else {
-    return render_simple_enum(tl);
+    item = render_simple_enum(tl);
   }
+
+  return [item_spacing(), item];
 }
 
 export function pseudocode(...toplevels: Toplevel[]): Expression {

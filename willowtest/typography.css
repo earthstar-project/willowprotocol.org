@@ -161,23 +161,8 @@ code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref
   text-decoration: none;
   background: rgba(255, 228, 0, 0.309);
   border-radius: 5px;
-  padding: 0.2em;
-  
+  padding: 0.2em;  
 }
-
-/*
-a.ref.def, dfn > a.def {
-    background: radial-gradient(ellipse, rgb(226, 253, 152),rgb(160, 158, 20));
-}
-
-a.ref.param, dfn > a.param {
-    background: radial-gradient(ellipse, rgb(221, 152, 253),rgb(160, 20, 20));
-}
-
-a.ref.value, dfn > a.value {
-    background: radial-gradient(ellipse, rgb(152, 253, 211),rgb(20, 85, 160));
-}
-*/
 
 /* since `important` is evil... */
 body .katex {

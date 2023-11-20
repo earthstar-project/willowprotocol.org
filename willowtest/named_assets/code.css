@@ -76,3 +76,7 @@ code dfn > a, code a.type, code a.member {
     padding-left: 1rem;
     text-decoration: inherit;
 }
+
+.item_spacing:not(:first-child) {
+    margin-top: 1em;
+}
