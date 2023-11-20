@@ -160,6 +160,12 @@ export function pinformative(
   return p({ class: "informative" }, preview_scope(...body));
 }
 
+export function aside_block(
+  ...body: Expression[]
+): Expression {
+  return aside({class: "long"}, body);
+}
+
 export function lis(
   ...items: Expression[]
 ): Invocation {

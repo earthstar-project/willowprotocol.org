@@ -4,7 +4,7 @@ import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value, def_fake_value } from "../main.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value, def_fake_value, aside_block } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
@@ -452,7 +452,7 @@ export const sync: Expression = site_template(
                         "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message's ", r("BindAreaOfInterestAOI"), ".",
                     ]),
 
-                    aside({class: "long"}, [
+                    aside_block([
                         p("The ", r("BindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("BindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("aoi"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("BindAreaOfInterest"), " messages for overlapping ", rs("aoi"), ". If both peers, upon receiving the other's message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
 
                         p("A simple workaround is to let ", r("alfie"), " be the only peer to initiate reconciliation. But this can introduce unnecessary delay when ", r("betty"), " sends a ", r("BindAreaOfInterest"), " message for which she already knows there are intersections with ", rs("aoi"), " that ", r("alfie"), " had previously ", r("handle_bind", "bound"), "."),
