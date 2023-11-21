@@ -5,7 +5,7 @@ import { sidenote } from "../../../marginalia.ts";
 import { Struct, hl_builtin } from "../../../pseudocode.ts";
 import { pseudocode } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
-import { def_parameter, pinformative, site_template } from "../../main.ts";
+import { def_parameter, ols, pinformative, site_template } from "../../main.ts";
 
 export const resource_control: Expression = site_template(
     {
@@ -156,35 +156,35 @@ export const resource_control: Expression = site_template(
             ]),
 
             hsection("resources_handles_managing", "Managing Resource Handles", [
+                pinformative("We use consecutive natural numbers as ", rs("resource_handle"), ". For each ", r("handle_type"), ", both peers keep track of the least number that has not yet been assigned as a ", r("resource_handle", "handle"), " of that ", r("handle_type", "type"), ". In order to ", r("handle_bind"), " a value to a ", r("resource_handle"), ", the ", r("handle_client"), " simply transmits the data and its type. The least number that had not been assigned before becomes the ", r("resource_handle"), " of the transmitted data. Both peers add the new mapping into some data structure they can use to later dereference the ", r("resource_handle"), " into its value."),
 
+                pinformative("The main issue in maintaining ", rs("resource_handle"), " is that of coordinating ", r("handle_free", "freeing"), " over an asynchronous communication channel. Suppose one peer removes a handle-to-value binding from their local mapping, sends a message to inform the other peer, but that peer has concurrently sent some message that pertains to the ", r("resource_handle"), " in question. Everything breaks! Hence, ", r("handle_free", "freeing"), " must be a three-step process:"),
+
+                ols(
+                    ["one peer sends a message that proposes to ", r("handle_free"), " a ", r("resource_handle"), " (and, in doing so, that peer commits to not referring to that ", r("resource_handle", "handle"), " in any of its future messages),"],
+                    ["the other peer, upon receiving that proposal, removes the corresponding handle-to-value binding from its local mapping and sends a confirmation message,"],
+                    ["the first peer, upon receiving the confirmation, removes the handle-to-value binding from its local mapping."],
+                ),
+
+                pinformative("There is no need to use separate message types for proposals and confirmations of ", r("handle_free", "freeing"), ": peers react to a proposal to ", r("handle_free"), " by sending their own proposal to ", r("handle_free"), " the same ", r("resource_handle"), ". Receiving a proposal to ", r("handle_free"), " a ", r("resource_handle"), " after having sent such a proposal oneself confirms that the handle-to-value binding can be removed from the local mapping. A nice side effect of this approach is that it gracefully handles concurrent proposals to ", r("handle_free"), " the same ", r("resource_handle"), " by both peers."),
+            ]),
+
+            hsection("handles_resource_control", "Resource Control", [
+                pinformative("Adding handle-to-value bindings to local mappings requires space, so the ", r("handle_server"), " should have a way to throttle the ", r("handle_client"), ". We use a (superficially) simple solution: for each ", r("handle_type"), ", the messages for ", r("handle_bind", "binding"), " new ", rs("resource_handle"), " are sent over their own ", r("logical_channel"), ". Throttling that ", r("logical_channel"), " controls the number of ", rs("resource_handle"), " that can be created."),
+
+                pinformative("Receiving a message that ", r("handle_bind", "binds"), " a ", r("resource_handle"), " and moving this message to a message buffer does not mean that the ", r("resource_handle"), " has actually been ", r("handle_bind", "bound"), ". In fact, there might not be enough memory available to ", r("handle_bind"), " the ", r("resource_handle"), ", so the message has to sit in the message buffer, unprocessed. The ", r("handle_server"), " should strive to allocate buffer space only for messages whose ", rs("resource_handle"), " can be ", r("handle_bind", "bound"), " immediately, but this might not always be possible."),
+
+                pinformative("For this reason, the ", r("handle_server"), " sends a ", def({id: "handle_confirmation", singular: "confirmation"}, "confirmation", ["A ", def_fake("handle_confirmation", "confirmation"), " message lets the ", r("handle_server"), " notify the ", r("handle_client"), " that some ", rs("resource_handle"), " were successfully ", r("handle_bind", "bound"), "."]), " whenever it actually ", r("handle_bind", "binds"), " a ", r("resource_handle"), ". Several such ", rs("handle_confirmation"), " for ", rs("resource_handle"), " of the same ", r("handle_type"), " can be aggregated into a single ", r("handle_confirmation"), " message that specifies the ", r("handle_type"), " in question and the number of ", r("handle_bind", "bound"), " ", rs("resource_handle"), ". After receiving a ", r("handle_confirmation"), ", the ", r("handle_client"), " knows it is safe to refer to the ", r("resource_handle", "resource handle(s)"), " in future messages."),
+
+                pinformative("If the ", r("handle_client"), " always had to wait for ", r("handle_confirmation"), " before using a ", r("resource_handle"), " in future messages, this would introduce additional latency. Hence, we allow ", rs("handle_client"), " to send messages that refer to ", rs("resource_handle"), " optimistically, before the ", rs("resource_handle"), " have been confirmed. This requires us to introduce another retransmission mechanism: When the ", r("handle_server"), " receives a message referring to a ", r("resource_handle"), " that it has not yet ", r("handle_bind", "bound"), ", it must drop this message and all future messages that refer to this ", r("resource_handle"), " or any newer ", rs("resource_handle", "handles"), " of the same ", r("handle_type", "type"), ", until it receives an ", def({id: "handle_apology", singular: "apology", plural: "apologies"}, "apology", ["An ", def_fake("handle_apology", "apology"), " message from the ", r("handle_client"), " informs the ", r("handle_server"), " to stop dropping messages containing ", rs("resource_handle"), " greater than and of the same ", r("handle_type", "type"), " as the ", r("resource_handle"), " specified in the ", r("handle_apology"), "."]), " message for this ", r("handle_type"), ". It must also inform the ", r("handle_client"), " that it has started to drop messages for this ", r("handle_type"), ", and this message includes the numeric ", r("resource_handle", "handle"), " that caused the dropping."),
+
+                pinformative("While dropping messages that contain ", rs("resource_handle"), " that are too large, the ", r("handle_server"), " still continues to process messages that contain smaller ", rs("resource_handle", "handles"), " of the same ", r("handle_type"), ". If such a message contains a ", em("smaller"), " ", r("resource_handle"), " that is ", em("also"), " unassigned, the ", r("handle_server"), " simply notifies the ", r("handle_client"), " again. The ", r("handle_apology"), " messages the ", r("handle_client"), " sends contain the ", r("resource_handle"), " they refer to; the ", r("handle_server"), " only accepts an ", r("handle_apology"), " for the smallest ", r("resource_handle"), " (per ", r("handle_type"), ") it has warned the ", r("handle_client"), " about. Such an ", r("handle_apology"), " then makes the ", r("handle_server"), " process ", em("all"), " messages with ", r("resource_handle", "handles"), " of the ", r("handle_type", "type"), " in question again."),
             ]),
         ]),
         
         p("wip"),
     ],
 );
-
-// We use consecutive natural numbers as handles. For each type of handle, both peers keep track of the least number that has not been assigned as a handle of that type yet. In order to bind a value to handle, the client simply transmits the data and its type. The least number that had not been assigned before becomes the handle of the transmitted data. Both peers add the new mapping into some data structure they can use to later dereference the handle into its value.
-
-// The main issue in maintaining handles is that of coordinating freeing over an asynchronous communication channel. Suppose one peer removes a binding from their local mapping, sends a message to inform the other peer, but that peer has concurrently sent some message that pertains to the handle. Everything breaks! Hence, freeing must be a three-step process:
-
-// 1. one peer sends a message that proposes to free an identifier (and, in doing so, that peer commits to not referring to that id in any of its future messages),
-// 2. the other peer, upon receiving that proposal, removes the corresponding entry from its local mapping and sends a confirmation message,
-// 3. the first peer, upon receiving the confirmation, removes the entry from its local mapping.
-
-// There is no need to use separate message types for proposals and confirmations of freeing: peers react to a proposal to free by sending their own proposal to fere the same handle. Receiving a proposal to free a handle after having sent such a proposal oneself confirms that the entry can be removed from the local mapping. A nice side effect of this approach is that it gracefully handles concurrent proposals to free the same binding by both peers.
-
-// ### Resource Control
-
-// Adding bindings to local mappings requires space (whether in main memory or on secondary storage), so the server should have a way to throttle the client. We use a (superficially) simple solution: for each type of handle, the messages for binding new ones are sent over their own logical channel. Throttling that channel controls the amount of bindings that can be created.
-
-// Receiving a message that creates a binding and moving it to a message buffer does not mean however that the binding has actually been created. In fact, that might not be enough memory available to create the binding, so the message has to sit in the message buffer, unprocessed. The server should strive to allocate buffer space only for messages whose bindings can be created immediately. But this might not always be possible.
-
-// For this reason, the servers sends a confirmation whenever it actually adds a binding. Several such confirmations for bindings of the same type can be aggregated into a single confirmation message that specifies the type in question and the number of added bindings. After receiving a confirmation, the client knows it is safe to use a binding in future messages.
-
-// If the client always had to wait for confirmation before using a binding in a future message, this would introduce additional latency. Hence, we allow clients to send messages that refer to bindings optimistically, before the binding has been confirmed. This requires us to introduce another retransmission mechanism: When the server receives a message referring to a binding that it has not yet created, it must drop this message and all future messages that refer to this binding or any newer bindings of the same type, until it receives an *apology message* for this type of binding. It must also inform the client that it has started to drop messages for this type of binding, and this message includes the numeric handle that caused the dropping.
-
-// While dropping messages that contain handles that are too large, the server still continues to process messages that contain smaller handles of the same type. If such a message contains a smaller handle that is also unassigned, the server simply notifies the client again. The apology messages the client sends contain the handle they refer to; the server only accepts an apology for the smallest handle it has warned the client about. Such an apology then makes the server process *all* messages with handles of the type in question again.
 
 // ### Message Types
 
@@ -203,7 +203,7 @@ export const resource_control: Expression = site_template(
 //         mine: bool, // true if the peer sending this message is the one who created the binding, false otherwise. This is needed for symmetric protocols where both peers act as both client and server and issue handles to the same types of resources.
 //         handle_type: T,
 //     },
-//     // The server confirms that it has successfully processed the `number` oldest `Bind` messages`.
+//     // The server confirms that it has successfully processed the `number` oldest `Bind` messages` with handle_type `T`.
 //     Confirmation {
 //         number: u64,
 //         handle_type: T,

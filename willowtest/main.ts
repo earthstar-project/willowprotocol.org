@@ -13,6 +13,7 @@ import {
   li,
   main,
   nav,
+  ol,
   p,
   span,
   title,
@@ -175,6 +176,18 @@ export function lis(
   const macro = new_macro(
     (args, _ctx) =>
       ul(
+        ...(args.map((item) => li(item))),
+      ),
+  );
+  return new Invocation(macro, items);
+}
+
+export function ols(
+  ...items: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) =>
+      ol(
         ...(args.map((item) => li(item))),
       ),
   );
