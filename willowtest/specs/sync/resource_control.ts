@@ -180,43 +180,109 @@ export const resource_control: Expression = site_template(
 
                 pinformative("While dropping messages that contain ", rs("resource_handle"), " that are too large, the ", r("handle_server"), " still continues to process messages that contain smaller ", rs("resource_handle", "handles"), " of the same ", r("handle_type"), ". If such a message contains a ", em("smaller"), " ", r("resource_handle"), " that is ", em("also"), " unassigned, the ", r("handle_server"), " simply notifies the ", r("handle_client"), " again. The ", r("handle_apology"), " messages the ", r("handle_client"), " sends contain the ", r("resource_handle"), " they refer to; the ", r("handle_server"), " only accepts an ", r("handle_apology"), " for the smallest ", r("resource_handle"), " (per ", r("handle_type"), ") it has warned the ", r("handle_client"), " about. Such an ", r("handle_apology"), " then makes the ", r("handle_server"), " process ", em("all"), " messages with ", r("resource_handle", "handles"), " of the ", r("handle_type", "type"), " in question again."),
             ]),
+
+            hsection("handles_message_types", "Message Types", [
+                pinformative("The following pseudo-type summarizes the messages for maintaining ", rs("resource_handle"), ". The parameter ", def_parameter("H", "H", ["The type of different ", rs("handle_type"), "."]), " is a type with one value for each ", r("handle_type"), ". Each message pertains to exactly one ", r("handle_type"), ", specified by its ", code("hande_type"), " field. ", r("HandleBind"), " messages belong to ", rs("logical_channel"), " determined by their ", code("handle_type"), " field, all other messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
+
+                pseudocode(
+                    new Struct({
+                        id: "HandleBind",
+                        name: "Bind",
+                        comment: ["The ", r("handle_client"), " directs the ", r("handle_server"), " to ", r("handle_bind"), " the next unused numeric ", r("resource_handle"), " to the given value."],
+                        fields: [
+                            {
+                                id: "HandleBindValue",
+                                comment: ["An actual protocol probably wants to define dedicated message type for the ", code("Bind"), " messages of every ", r("handle_type"), ", each with their own  associated type of values."],
+                                name: "value",
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "HandleBindType",
+                                name: "handle_type",
+                                rhs: r("H"),
+                            },
+                        ],
+                    }),
+
+                    new Struct({
+                        id: "HandleFree",
+                        name: "Free",
+                        comment: ["A peer asks the other peer to ", r("handle_free"), " a ", r("resource_handle"), "."],
+                        fields: [
+                            {
+                                id: "HandleFreeHandle",
+                                name: "handle",
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "HandleFreeType",
+                                name: "handle_type",
+                                rhs: r("H"),
+                            },
+                            {
+                                id: "HandleFreeMine",
+                                comment: ["Indicates whether the peer sending this message is the one who created the ", r("HandleFreeHandle"), "(", code("true"), ") or not (", code("false"), "). This is needed for symmetric protocols where peers act as both ", r("handle_client"), " and ", r("handle_server"), " simultaneously and ", r("handle_bind"), " ", rs("resource_handle"), " to the same ", rs("handle_type"), "."],
+                                name: "mine",
+                                rhs: hl_builtin("bool"),
+                            },
+                        ],
+                    }),
+
+                    new Struct({
+                        id: "HandleConfirm",
+                        name: "Confirm",
+                        comment: ["The ", r("handle_server"), " confirms that it has successfully processed the ", r("HandleConfirmNumber"), " oldest ", r("HandleBind"), " messages with handle_type ", r("H"), " it received."],
+                        fields: [
+                            {
+                                id: "HandleConfirmNumber",
+                                name: "number",
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "HandleConfirmType",
+                                name: "handle_type",
+                                rhs: r("H"),
+                            },
+                        ],
+                    }),
+
+                    new Struct({
+                        id: "HandleStartedDropping",
+                        name: "StartedDropping",
+                        comment: ["The ", r("handle_server"), " notifies the ", r("handle_client"), " that it has started dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("HandleStartedDroppingAt"), " and will continue to do so until it receives an ", r("HandleApology"), " message."],
+                        fields: [
+                            {
+                                id: "HandleStartedDroppingAt",
+                                name: "at",
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "HandleStartedDroppingType",
+                                name: "handle_type",
+                                rhs: r("H"),
+                            },
+                        ],
+                    }),
+
+                    new Struct({
+                        id: "HandleApology",
+                        name: "Apology",
+                        comment: ["The ", r("handle_client"), " notifies the ", r("handle_server"), " that it can stop dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("HandleApologyAt"), ". Note that the ", r("handle_server"), " will only accept ", rs("handle_apology"), " for the least ", r("resource_handle"), " (of ", r("handle_type"), " ", r("HandleApologyType"), ") for which it has sent a ", r("HandleStartedDropping"), " message."],
+                        fields: [
+                            {
+                                id: "HandleApologyAt",
+                                name: "at",
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "HandleApologyType",
+                                name: "handle_type",
+                                rhs: r("H"),
+                            },
+                        ],
+                    }),
+                ),
+            ]),
         ]),
-        
-        p("wip"),
     ],
 );
-
-// ### Message Types
-
-// The following pseudo-type summarizes the different kinds of messages that this approach introduces. The parameter `T` is a type with one value for each handle type. Each message pertains to exactly one handle type, specified by its `handle_type` field. `Bind` messages belong to logical channels determined by their `handle_type` field, all other messages are control messages that do not belong to any logical channel.
-
-// ```rust
-// enum Message<T /* the type of different handle types */> {
-//     // The client directs the server to bind the next unused numeric handle to the given Value.
-//     Bind {
-//         handle_type: T,
-//         value: SomeValue, // You'd probably define a dedicated message type for the binding messages of every handle type, with its own associated type of data
-//     },
-//     // A peer asks the other peer to free a handle.
-//     Free {
-//         handle: u64,
-//         mine: bool, // true if the peer sending this message is the one who created the binding, false otherwise. This is needed for symmetric protocols where both peers act as both client and server and issue handles to the same types of resources.
-//         handle_type: T,
-//     },
-//     // The server confirms that it has successfully processed the `number` oldest `Bind` messages` with handle_type `T`.
-//     Confirmation {
-//         number: u64,
-//         handle_type: T,
-//     },
-//     // The server notifies the client that it has started dropping messages that refer to handles greater than or equal to `at` and will continue to do so until it receives an `Apology` message.
-//     StartedDropping {
-//         at: u64,
-//         handle_type: T,
-//     },
-//     // The client notifies the server that it can stop dropping messages that refer to handles greater than or equal to `at`. Note that the server will only accept apologies for the least handle (of the hadle type in question) for which it has sent a `StartedDropping` request.
-//     Apology {
-//         at: u64,
-//         handle_type: T,
-//     },
-// }
-// ```

@@ -220,7 +220,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "PsiReplyHandle",
                                     name: "handle",
-                                    comment: ["The ", r("handle"), " of the ", r("BindNamespacePrivate"), " message which this finalizes."],
+                                    comment: ["The ", r("resource_handle"), " of the ", r("BindNamespacePrivate"), " message which this finalizes."],
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
@@ -238,7 +238,7 @@ export const sync: Expression = site_template(
                         "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("namespace"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
                     ]),
 
-                    pinformative("The ", r("PsiReplyHandle"), " must refer to a ", r("NamespaceHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindNamespacePrivate"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("NamespaceHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("handle"), " binding to the ", r("PsiReplyGroupMember"), " of the message, and its state to ", r("psi_state_private_completed"), "."),
+                    pinformative("The ", r("PsiReplyHandle"), " must refer to a ", r("NamespaceHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindNamespacePrivate"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("NamespaceHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to the ", r("PsiReplyGroupMember"), " of the message, and its state to ", r("psi_state_private_completed"), "."),
                 ]),
 
                 hsection("bind_namespace_public", code("BindNamespacePublic"), [
@@ -385,7 +385,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindPayloadCapability",
                                     name: "capability",
-                                    comment: ["A ", r("handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("entry"), "."],
+                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("entry"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
