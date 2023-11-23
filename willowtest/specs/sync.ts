@@ -504,6 +504,51 @@ export const sync: Expression = site_template(
                     pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
+                hsection("product_entries", code("ProductEntries"), [
+                    pseudocode(
+                        new Struct({
+                            id: "ProductEntries",
+                            comment: ["Send the ", rs("entry"), " a peer has in a ", r("3d_product"), " as part of ", r("pbsr"), "."],
+                            fields: [
+                                {
+                                    id: "ProductEntriesProduct",
+                                    name: "product",
+                                    comment: ["The ", r("3d_product"), " whose ", rs("entry"), " are transmitted."],
+                                    rhs: r("3d_product"),
+                                },
+                                {
+                                    id: "ProductEntriesEntries",
+                                    name: "entries",
+                                    comment: ["The fingerprint of the ", r("ProductEntriesProduct"), "."],
+                                    rhs: [code("["), r("entry"), code("]")],
+                                },
+                                {
+                                    id: "ProductEntriesFlag",
+                                    name: "want_response",
+                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("ProductEntries"), " forr the same ", r("3d_product"), " in return."],
+                                    rhs: [code("["), r("entry"), code("]")],
+                                },
+                                {
+                                    id: "ProductEntriesSenderHandle",
+                                    name: "sender_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductEntriesProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "ProductEntriesReceiverHandle",
+                                    name: "receiver_handle",
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductEntriesProduct"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("entries"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+
+                    pinformative(R("ProductEntries"), " messages use the ", r("ReconciliationChannel"), "."),
+                ]),
+
                 hsection("product_confirmation", code("ProductConfirmation"), [
                     pseudocode(
                         new Struct({
@@ -534,7 +579,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("ProductConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("pbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3d_product"), ".", marginale(["Upon sending or receiving a ", r("ProductConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("3d_product"), " to the other peer."]), " Each ", r("ProductConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
-                    pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+                    pinformative(R("ProductConfirmation"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_eagerness", code("Eagerness"), [
@@ -569,7 +614,6 @@ export const sync: Expression = site_template(
 
                     pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
                 ]),
-
             ]),
         ]),
 
@@ -577,17 +621,6 @@ export const sync: Expression = site_template(
 );
 
 /*
-
-
-#### ProductItemSet
-
-The **ProductItemSet** messages let peers exchange entries in the context of product-based set reconciliation.
-
-A *ProductItemSet* message consists of a single *product item set*. Peers may only send *ProductItemSet* messages whose 3d product is fully contained in a read capability of the receiver. The encoding layer enforces this by specifying the *3d product* of the *product items set* relative to the intersection of a pair of *area of interest handles* (one of the sending peer, one of the receiving peer).
-
-A *ProductItemSet* message costs `n` *reconciliation memory* resources, where `n` is the size of the encoded message (TODO make more precise).
-
-
 
 ### Resource Control Messages
 
