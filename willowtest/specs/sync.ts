@@ -74,9 +74,9 @@ export const sync: Expression = site_template(
 
             pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
 
-            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint", " of the empty set.")),
+            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("entry"), " and available payload lengths into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint", " of the empty set.")),
 
-            pinformative(link_name("access_control", "Access control"), " TODO ", def_parameter({id: "ReadCapability", plural: "ReadCapabilities"}), def_parameter("commitment_length"), def_parameter("commitment_hash"), def_parameter({ id: "sync_signature", singular: "SyncSignature"}), def(({ id: "sync_receiver", singular: "receiver"}))),            
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter("challenge_hash"), ".")       ,  
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -84,11 +84,11 @@ export const sync: Expression = site_template(
 
             pinformative(`Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something “is an error”. Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a message that does not fulfill these criteria, that is an error.`),
 
-            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("commitment_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
+            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
             pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmitted when explicitly requested."),
 
-            pinformative("The next ", r("commitment_length"), " bytes a peer sends are the ", r("commitment_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
+            pinformative("The next ", r("challenge_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
             pinformative("After those initial transmissions, the protocol becomes a purely message-based protocol. There are several kinds of messages, which the peers create, encode as byte strings, and transmit mostly independently from each other."),
 
@@ -158,11 +158,6 @@ export const sync: Expression = site_template(
                 }),
             ),
 
-// - **reconciliation memory**: Memory for buffering reconciliation messages. When this resource is limited, peers should make progress on reconciliation in a narrow sub-product rather than to keep multiplying the number of concurrent *product fingerprints*. If the peers do not do this, reconciliation can deadlock.
-// - **entry memory**: Memory for buffering entry-transmission-related messages that arrive outside of set reconciliation. Persisting entries (and their payloads) as they arrive might take longer than reading the bytes from the network. Introducing a resource for receiving entry bytes makes it so that this cannot stall the other protocol functions.
-
-// It is worth pointing out that these resources are fairly course-grained. Peers cannot, for example, fine-tune which of several products will be reconciled first, or which of several payloads will be transmitted first. This is in the interest of overall simplicity and efficiency: using separate resources for separate payment requests, for example, would introduce some overhead. Willow appliations that require different priorities for different kinds of payloads, for example, if real-time constraints are involved, should use a more specialized communication protocol than the WGPS.
-
             hsection("sync_messages", "Messages", [
                 pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
 
@@ -176,7 +171,7 @@ export const sync: Expression = site_template(
                                     id: "RevealCommitmentNonce",
                                     name: "nonce",
                                     comment: ["The ", r("nonce"), " of the sender, encoded as a ", link("big-endian", "https://en.wikipedia.org/wiki/Endianness"), " ", link("unsigned integer", "https://en.wikipedia.org/w/index.php?title=Unsigned_integer"), "."],
-                                    rhs: ["[", hl_builtin("u8"), "; ", r("commitment_length"), "]"],
+                                    rhs: ["[", hl_builtin("u8"), "; ", r("challenge_length"), "]"],
                                 },
                             ],
                         }),
@@ -465,7 +460,7 @@ export const sync: Expression = site_template(
                     pinformative(R("BindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
                 ]),
 
-                hsection("product_fingerprint", code("ProductFingerprint"), [
+                hsection("product_fingerprint_message", code("ProductFingerprint"), [
                     pseudocode(
                         new Struct({
                             id: "ProductFingerprint",
