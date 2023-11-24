@@ -10,7 +10,7 @@ export const product_based_set_reconciliation: Expression = site_template(
         name: "product_based_set_reconciliation",
     },
     [
-        pinformative("Given a ", r("3d_product"), ", that both peers in a sync session (Alfie and Betty) know, how can they efficiently update each other about their ", rs("entry"), " in that product? in this document we describe ", def({ id: "pbsr", singular: "product-based set reconciliation"}), ", a technique for solving this problem based on ", link("range-based set reconciliation", "https://arxiv.org/pdf/2212.13567.pdf"), "."),
+        pinformative("Given a ", r("3d_product"), ",that both peers in a sync session (Alfie and Betty) know, how can they efficiently update each other about their ", rs("entry"), " in that product? in this document we describe ", def({ id: "pbsr", singular: "product-based set reconciliation"}), ", a technique for solving this problem based on ", link("range-based set reconciliation", "https://arxiv.org/pdf/2212.13567.pdf"), "."),
 
         pinformative("The general idea of ", r("pbsr"), " is to have Alfie send a small ", def({ id: "entry_fingerprint", singular: "fingerprint"}), " over all his ", rs("entry"), " in the ", r("3d_product"), ". Upon receiving this ", r("entry_fingerprint"), ", Betty computes the ", r("entry_fingerprint"), " over all of ", em("her"), " ", rs("entry"), " in the ", r("entry_fingerprint"), ". If the ", rs("entry_fingerprint"), " match, she can conclude that no further data exchange is necessary."),
 
