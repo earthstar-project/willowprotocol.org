@@ -231,7 +231,7 @@ export const resource_control: Expression = site_template(
                     new Struct({
                         id: "HandleConfirm",
                         name: "Confirm",
-                        comment: ["The ", r("handle_server"), " confirms that it has successfully processed the ", r("HandleConfirmNumber"), " oldest ", r("HandleBind"), " messages with handle_type ", r("H"), " it received."],
+                        comment: ["The ", r("handle_server"), " confirms that it has successfully processed the ", r("HandleConfirmNumber"), " oldest ", r("HandleBind"), " messages with ", r("handle_type"), " ", r("HandleConfirmType"), " it received."],
                         fields: [
                             {
                                 id: "HandleConfirmNumber",

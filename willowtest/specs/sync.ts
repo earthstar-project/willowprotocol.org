@@ -544,7 +544,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("entries"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("entry"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ProductEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
@@ -613,6 +613,176 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("payload"), " from the intersection of two ", rs("aoi"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
 
                     pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+                ]),
+
+                hsection("sync_logical_channels", "Logical Channels", [
+                    pinformative("The following messages implement the ", rs("logical_channel"), " used by the other messages, as explained in the ", link_name("resources_message_types", "resource control document"), "."),
+
+                    pseudocode(
+                        new Struct({
+                            id: "SyncGuarantee",
+                            name: "Guarantee",
+                            comment: ["Make a binding promise of available buffer capacity to the other peer."],
+                            fields: [
+                                {
+                                    id: "SyncGuaranteeAmount",
+                                    name: "amount",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncGuaranteeChannel",
+                                    name: "channel",
+                                    rhs: r("LogicalChannel"),
+                                },
+                            ],
+                        }),
+        
+                        new Struct({
+                            id: "SyncAbsolve",
+                            name: "Absolve",
+                            comment: ["Allow the other peer to reduce its total buffer capacity by ", r("SyncAbsolveAmount"), "."],
+                            fields: [
+                                {
+                                    id: "SyncAbsolveAmount",
+                                    name: "amount",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncAbsolveChannel",
+                                    name: "channel",
+                                    rhs: r("LogicalChannel"),
+                                },
+                            ],
+                        }),
+        
+                        new Struct({
+                            id: "SyncOops",
+                            name: "Oops",
+                            comment: ["Ask the other peer to send an ", r("SyncAbsolve"), " message such that the remaining buffer capacity will be ", r("SyncOopsTarget"), "."],
+                            fields: [
+                                {
+                                    id: "SyncOopsTarget",
+                                    name: "target",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncOopsChannel",
+                                    name: "channel",
+                                    rhs: r("LogicalChannel"),
+                                },
+                            ],
+                        }),
+        
+                        new Struct({
+                            id: "SyncStartedDropping",
+                            name: "ChannelStartedDropping",
+                            comment: ["Notify the other peer that you have started dropping messages and will continue to do so until you receives an ", r("SyncApology"), " message. Note that you must send any outstanding ", rs("guarantee"), " of the ", r("logical_channel"), " before sending a ", r("SyncStartedDropping"), " message."],
+                            fields: [
+                                {
+                                    id: "SyncStartedDroppingChannel",
+                                    name: "channel",
+                                    rhs: r("LogicalChannel"),
+                                },
+                            ],
+                        }),
+        
+                        new Struct({
+                            id: "SyncApology",
+                            name: "ChannelApology",
+                            comment: ["Notify the other peer that it can stop dropping messages of this ", r("logical_channel"), "."],
+                            fields: [
+                                {
+                                    id: "SyncApologyChannel",
+                                    name: "channel",
+                                    rhs: r("LogicalChannel"),
+                                },
+                            ],
+                        }),
+                    ),
+                ]),
+
+                hsection("sync_handles", "Resource Handles", [
+                    pinformative("The following messages manage the ", rs("resource_handle"), " used by the other messages, as explained in the ", link_name("handles_message_types", "resource control document"), "."),
+
+                    pseudocode(
+                        new Struct({
+                            id: "SyncHandleFree",
+                            name: "Free",
+                            comment: ["Ask the other peer to ", r("handle_free"), " a ", r("resource_handle"), "."],
+                            fields: [
+                                {
+                                    id: "SyncHandleFreeHandle",
+                                    name: "handle",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncHandleFreeType",
+                                    name: "handle_type",
+                                    rhs: r("H"),
+                                },
+                                {
+                                    id: "SyncHandleFreeMine",
+                                    comment: ["Indicates whether the peer sending this message is the one who created the ", r("SyncHandleFreeHandle"), "(", code("true"), ") or not (", code("false"), ")."],
+                                    name: "mine",
+                                    rhs: hl_builtin("bool"),
+                                },
+                            ],
+                        }),
+    
+                        new Struct({
+                            id: "SyncHandleConfirm",
+                            name: "Confirm",
+                            comment: ["Confirm that you have successfully processed the ", r("SyncHandleConfirmNumber"), " oldest messages that ", r("handle_bind"), " a ", r("resource_handle"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), " you received."],
+                            fields: [
+                                {
+                                    id: "SyncHandleConfirmNumber",
+                                    name: "number",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncHandleConfirmType",
+                                    name: "handle_type",
+                                    rhs: r("H"),
+                                },
+                            ],
+                        }),
+    
+                        new Struct({
+                            id: "SyncHandleStartedDropping",
+                            name: "HandleStartedDropping",
+                            comment: ["Notify the other peer that you have started dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("SyncHandleStartedDroppingAt"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), " and will continue to do so until you receive an ", r("SyncHandleApology"), " message."],
+                            fields: [
+                                {
+                                    id: "SyncHandleStartedDroppingAt",
+                                    name: "at",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncHandleStartedDroppingType",
+                                    name: "handle_type",
+                                    rhs: r("H"),
+                                },
+                            ],
+                        }),
+    
+                        new Struct({
+                            id: "SyncHandleApology",
+                            name: "HandleApology",
+                            comment: ["Notify the other peer that it can stop dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("SyncHandleApologyAt"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), "."],
+                            fields: [
+                                {
+                                    id: "SyncHandleApologyAt",
+                                    name: "at",
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
+                                    id: "SyncHandleApologyType",
+                                    name: "handle_type",
+                                    rhs: r("H"),
+                                },
+                            ],
+                        }),
+                    ),
                 ]),
             ]),
         ]),
