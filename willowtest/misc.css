@@ -22,6 +22,7 @@ footer {
     /* margin: 5em auto 0 auto; */
     padding: 0.5em 0;
     margin: 5em 0 0 0;
+    clear: right;
 }
 
 footer p {

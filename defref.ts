@@ -192,6 +192,7 @@ export function def_generic(
     },
     (ctx) => preview_state(ctx).currently_defining = true,
     (ctx) => preview_state(ctx).currently_defining = false,
+    2,
   );
 
   return new Invocation(macro, [text ? text : "never used"]);
