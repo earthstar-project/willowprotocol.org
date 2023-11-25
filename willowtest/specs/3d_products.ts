@@ -1,45 +1,44 @@
-import { Expression } from "macro";
-import { aside_block, lis, pinformative, site_template } from "../main.ts";
+import { aside_block, link, lis, pinformative, site_template } from "../main.ts";
 import { hsection } from "../../hsection.ts";
-import { figcaption, figure, img } from "../../h.ts";
+import { em, figcaption, figure, img } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
+import { Expression } from "../../tsgen.ts";
+import { Rs, def, r, rs } from "../../defref.ts";
+import { link_name } from "../../linkname.ts";
 
 export const threedProducts: Expression = site_template({
-  name: "3d_products",
-  title: "3d Products",
+  name: "grouping_entries",
+  title: "Grouping Entries",
 }, [
+  pinformative("Willow lets authors place ", rs("entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("entry"), " are arranged according to three orthogonal dimensions: ", r("path"), ", ", r("subspace"), ", and ", r("timestamp"), ". This suggests a powerful way of thinking about willow: a ", r("namespace"), " is a collection of points (", rs("entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of payloads."),
+
+  marginale_inlineable(img(asset("meadowcap/3d_range.png"))),
+
+  pinformative("This viewpoint enables us to meaningfully group ", rs("entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to be more precise) in the three-dimensional willow space."),
+
+  pinformative("In this document, we develop and define some precise terminology for grouping ", rs("entry"), " based on their ", rs("path"), ", ", rs("subspace"), ", and ", rs("timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
+
+  hsection("ranges", "Ranges", [
+    pinformative("Ranges are the simplemost way of grouping ", rs("entry"), ", they can express groupings such as \"last week's ", rs("entry"), "\". A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def("range_include", "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is ", r("closed_range", "closed"), ")."),
+
+    pinformative("Ranges can only be defined for types of values that can be sorted according to some ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), ". For willow, we only use three types of ", rs("range"), ": a ", def({id: "time_range", singular: "time range"}), " is a ", r("range"), " of ", rs("timestamp"), " (ordered numerically), a ", def({id: "path_range", singular: "path range"}), " is a ", r("range"), " of ", rs("path"), " (ordered ", link("lexicographically", "https://en.wikipedia.org/wiki/Lexicographic_order"), "), and a ", def({id: "subspace_range", singular: "subspace range"}), " is a ", r("range"), " of ", rs("subspace_id"), " (whose ordering has to be supplied as a protocol parameter)."),
+
+    pinformative("When we combine ", rs("range"), " all three dimensions, we can delimit boxes in willow space. A ", def({id: "3d_range", singular: "3d-range"}), " consists of a ", r("time_range"), ", a ", r("path_range"), ", and a ", r("subspace_range"), ". It ", def("3d_range_include", "includes"), " all ", rs("entry"), " ", r("range_include", "included"), " by all of its three ", rs("range"), "."),
+  ]),
+
+  hsection("areas", "Areas", [
+    pinformative(Rs("3d_range"), " are a natural way of grouping ", rs("entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("paths"), ", for example, the lexicographic ordering of the encrypted ", rs("path"), " would not be consistent with the ordering of the unencrypted ", rs("path"), ". If users specified groupings of ", rs("entry"), " of ", rs("3d_range"), ", encryption ", rs("path"), " would be impossible. Similarly, ", rs("subspace_range"), " would not preserve their meaning under encryption either."),
+
+    pinformative("Fortunately, they do exist encryption techniques that preserve properties some weaker than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3d_range"), " that can be used even when encrypting ", rs("path"), " and ", rs("subspace_id"), ". These ", rs("area"), " can be used, for example, to let peers express which parts of a namespace another peer should be able to read from or to write to."),
+
+    pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def("area_include", "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), "'s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), "'s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), "'s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not."),
+  ]),
+
+
   hsection(
-    "ranges",
+    "rangeszzzzzzzzz",
     "Ranges",
-    pinformative(
-      "When restricting capabilities, we need to express which entries the restricted capability still has access to. We do so via ranges of timestamps, paths, and subspace IDs. A range is either **closed**, consisting of a **start** value and an **end** value, or it is **open**, consisting only of a **start** value. An **inclusive** *closed* range **includes** all values greater than or equal to the start value and strictly less than the end value. An **exclusive** *closed* range **includes** all values greater than or equal to the start value and less than or equal to the end value. An *open* range **includes** *all* values greater than or equal to the start value. Two ranges are **equivalent** so if they *include* exactly the same values.",
-    ),
-    figure(
-      img(asset("meadowcap/range_types_inclusion.png")),
-      figcaption(
-        "An exclusive closed range, an inclusive closed range, and an open range.",
-      ),
-    ),
-    pinformative(
-      "A time range is a range of timestamps (64-bit unsigned integers), sorted numerically.",
-    ),
-    pinformative(
-      "A **path range** is a range of Willow paths (bytestrings of up to `k` bytes), sorted [lexicographically](https://en.wikipedia.org/wiki/Lexicographic_order).",
-    ),
-    pinformative(
-      "A **subspace range** is a range of Willow subspace IDs (a type supplied as a protocol parameter), sorted by some [total order](https://en.wikipedia.org/wiki/Total_order) (also supplied as a protocol parameter).",
-    ),
-    pinformative(
-      marginale_inlineable(img(asset("meadowcap/3d_range.png"))),
-      "A **3d range** (three-dimensional range) is a triplet of a *time range*, a *path range*, and a *subspace range*. It **includes** all *entries* whose timestamp is included in the *time range* *and* whose path is included in the *path range* *and* whose subspace is included in the *subspace range*.",
-    ),
-    pinformative(
-      "In the preceeding drawing, entries with greater paths appear to the right of entries with lesser paths, entries with greater subspace IDs appear above entries with lesser subspace IDs, and entries with greater timestamps appear further back then entries with lesser timestamps. This drawing suggests a powerful way of thinking about Willow: a namespace is a collection of points (entries) in a three-dimensional space. Or more accurately, a namespace is a *mapping* from points in this three-dimensional space to hashes and sizes of payloads.",
-    ),
-    pinformative(
-      "We need to define some concepts around this three-dimensional space. These definitions can be a bit abstract at times, so we first explain some analogous two-dimensional concepts in a much simpler space: a chessboard.",
-    ),
     hsection(
       "chessboard",
       "Intermission: Talking About Squares on a Chessboard",
