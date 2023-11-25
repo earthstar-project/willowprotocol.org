@@ -74,7 +74,7 @@ export const sync: Expression = site_template(
 
             pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
 
-            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("entry"), " and available payload lengths into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint", " of the empty set.")),
+            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("lengthy_entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("lengthy_entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("lengthy_entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint"), " of the empty set."),
 
             pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter("challenge_hash"), ".")       ,  
         ]),
@@ -294,7 +294,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "EntryPush",
-                            comment: ["Unsolicitedly transmit an ", r("entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
+                            comment: ["Unsolicitedly transmit an ", r("lengthy_entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
                             fields: [
                                 {
                                     id: "EntryPushEntry",
@@ -320,7 +320,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["The message's ", r("EntryPushAvailable"), " is informative metadata that peers may use to inform their communication, or they may simply ignore it."]),
-                        "The ", r("EntryPush"), " messages let peers transmit ", rs("entry"), " outside of ", r("pbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
+                        "The ", r("EntryPush"), " messages let peers transmit ", rs("lengthy_entry"), " outside of ", r("pbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
                     ]),
 
                     pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), "'s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
@@ -475,7 +475,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ProductFingerprintFingerprint",
                                     name: "fingerprint",
-                                    comment: ["The fingerprint of the ", r("ProductFingerprintProduct"), "."],
+                                    comment: ["The fingerprint of the ", r("ProductFingerprintProduct"), ", that is, of all ", rs("lengthy_entry"), " the peer has in the ", r("ProductFingerprintProduct"), "."],
                                     rhs: r("Fingerprint"),
                                 },
                                 {
@@ -503,24 +503,24 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "ProductEntries",
-                            comment: ["Send the ", rs("entry"), " a peer has in a ", r("3d_product"), " as part of ", r("pbsr"), "."],
+                            comment: ["Send the ", rs("lengthy_entry"), " a peer has in a ", r("3d_product"), " as part of ", r("pbsr"), "."],
                             fields: [
                                 {
                                     id: "ProductEntriesProduct",
                                     name: "product",
-                                    comment: ["The ", r("3d_product"), " whose ", rs("entry"), " are transmitted."],
+                                    comment: ["The ", r("3d_product"), " whose ", rs("lengthy_entry"), " are transmitted."],
                                     rhs: r("3d_product"),
                                 },
                                 {
                                     id: "ProductEntriesEntries",
                                     name: "entries",
-                                    comment: ["The fingerprint of the ", r("ProductEntriesProduct"), "."],
-                                    rhs: [code("["), r("entry"), code("]")],
+                                    comment: ["The ", r("lengthy_entry"), " in the ", r("ProductEntriesProduct"), "."],
+                                    rhs: [code("["), r("lengthy_entry"), code("]")],
                                 },
                                 {
                                     id: "ProductEntriesFlag",
                                     name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("ProductEntries"), " forr the same ", r("3d_product"), " in return."],
+                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("ProductEntries"), " message for the same ", r("3d_product"), " in return."],
                                     rhs: [code("["), r("entry"), code("]")],
                                 },
                                 {
@@ -539,7 +539,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("entry"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("lengthy_entry"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ProductEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),

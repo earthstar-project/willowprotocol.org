@@ -1,4 +1,4 @@
-import { R, def, r, rs } from "../../../defref.ts";
+import { R, def, def_fake, r, rs } from "../../../defref.ts";
 import { code, em, p } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
 import { Expression } from "../../../tsgen.ts";
@@ -22,12 +22,12 @@ export const product_based_set_reconciliation: Expression = site_template(
 
         pinformative("By recursively splitting ", rs("3d_product"), " with non-equal ", rs("entry_fingerprint"), ", the peers can drill down to the subareas where actual reconciliation (by exchanging ", r("product_entry_set"), ") is required. Note that the peers need not agree on when to switch from ", rs("product_fingerprint"), " to ", rs("product_entry_said"), ", or into how many ", rs("3d_product"), " to subdivide in each recursion step. As long as they both make some kind of progress on every ", r("product_fingerprint"), " they receive, they will successfully reconcile their ", rs("entry"), "."),
 
-        pinformative("In willow, it is possible for a peer to have an entry but to not hold its full payload. We can easily modify ", r("pbsr"), " to let peers detect partial payloads on which they could make progress, by incorporating the number of available payload bytes into each ", r("entry_fingerprint"), "."),
+        pinformative("In willow, it is possible for a peer to have an entry but to not hold its full payload. We can easily modify ", r("pbsr"), " to let peers detect partial payloads on which they could make progress, by incorporating the length of the locally available payload bytes into each ", r("entry_fingerprint"), ". More precisely, let ", code("e"), " be an ", r("entry"), ", and let ", code("l"), " be the number of consecutive bytes from the start of the payload of ", code("e"), " that is locally available. Then we call the pair of ", code("e"), " and ", code("l"), " a ", def({id: "lengthy_entry", singular: "lengthy entry", plural: "lengthy entries"}, "lengthy entry", ["A ", def_fake("lengthy_entry", "lengthy entry"), " is a pair of an ", r("entry"), " and a 64 bit unsigned integer that denotes the number of consecutive bytes from the start of the ", r("entry"), "'s payload that is available to the peer."]), "."),
 
         hsection("pbsr_parameters", "Parameters", [
-            pinformative(R("pbsr"), " requires the ability to hash arbitrary sets of ", rs("entry") , " (and their locally available payloads) into values of a type ", def_parameter({id: "pbsr_fingerprint", singular: "Fingerprint"}), " via a function ", def_parameter({id: "pbsr_fp", singular: "fingerprint"}), ". In order to allow for certain efficient implementation techniques, ", r("pbsr_fp"), " is not an arbitrary protocol parameter but is constructed from some other protocol parameters."),
+            pinformative(R("pbsr"), " requires the ability to hash arbitrary sets of ", rs("lengthy_entry") , " into values of a type ", def_parameter({id: "pbsr_fingerprint", singular: "Fingerprint"}), " via a function ", def_parameter({id: "pbsr_fp", singular: "fingerprint"}), ". In order to allow for certain efficient implementation techniques, ", r("pbsr_fp"), " is not an arbitrary protocol parameter but is constructed from some other protocol parameters."),
 
-            pinformative("First, we require a function ", def_parameter({id: "pbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes pairs of individual ", rs("entry"), " and the number of available consecutive payload bytes from the start of the payload into the set ", r("pbsr_fingerprint"), ". This hash function should take into account all aspects of the entry: modifying its ", r("namespace_id"), ", ", r("subspace_id"), ", ", r("path"), ", ", r("timestamp"), ", ", r("entry_length"), ", ", r("entry_hash"), ", or the number of available bytes should result in a completely different ", r("entry_fingerprint"), "."),
+            pinformative("First, we require a function ", def_parameter({id: "pbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("lengthy_entry"), " into the set ", r("pbsr_fingerprint"), ". This hash function should take into account all aspects of the ", r("lengthy_entry"), ": modifying its ", r("namespace_id"), ", ", r("subspace_id"), ", ", r("path"), ", ", r("timestamp"), ", ", r("entry_length"), ", ", r("entry_hash"), ", or the number of available bytes, should result in a completely different ", r("entry_fingerprint"), "."),
 
             pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " function ", def_parameter({id: "pbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("pbsr_fingerprint"), " to a single new ", r("pbsr_fingerprint"), ", with a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def({id: "pbsr_neutral", singular: "fingerprint_neutral"}), "."),
 
@@ -35,8 +35,8 @@ export const product_based_set_reconciliation: Expression = site_template(
 
             lis(
                 ["applying ", r("pbsr_fp"), " to the empty set yields ", r("pbsr_neutral"), ","],
-                ["applying ", r("pbsr_fp"), " to a set containing exactly one ", r("entry"), " ", code("e"), " whose first ", code("l"), " payload bytes are available yields ", code(r("pbsr_fp_singleton"), "(e, l)"), ", and"],
-                ["applying ", r("pbsr_fp"), " to any other set of ", rs("entry"), " and the lengths of their locally available payloads yields the result of applying ", r("pbsr_fp_singleton"), " to all members of the set individually and then combining the resulting ", rs("entry_fingerprint"), " with ", r("pbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity respectively)."],
+                ["applying ", r("pbsr_fp"), " to a set containing exactly one ", r("lengthy_entry"), " yields the same result as applying ", r("pbsr_fp_singleton"), " to that entry, and"],
+                ["applying ", r("pbsr_fp"), " to any other set of ", rs("lengthy_entry"), " yields the result of applying ", r("pbsr_fp_singleton"), " to all members of the set individually and then combining the resulting ", rs("entry_fingerprint"), " with ", r("pbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity respectively)."],
             ),
         ]),
     ],
