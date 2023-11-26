@@ -1,27 +1,5 @@
 {
-  "version": "3",
-  "packages": {
-    "specifiers": {
-      "npm:katex@0.16.9": "npm:katex@0.16.9",
-      "npm:sha256-uint8array": "npm:sha256-uint8array@0.10.7"
-    },
-    "npm": {
-      "commander@8.3.0": {
-        "integrity": "sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==",
-        "dependencies": {}
-      },
-      "katex@0.16.9": {
-        "integrity": "sha512-fsSYjWS0EEOwvy81j3vRA8TEAhQhKiqO+FQaKWp0m39qwOzHVBgAUBIXWj1pB+O2W3fIpNa6Y9KSKCVbfPhyAQ==",
-        "dependencies": {
-          "commander": "commander@8.3.0"
-        }
-      },
-      "sha256-uint8array@0.10.7": {
-        "integrity": "sha512-1Q6JQU4tX9NqsDGodej6pkrUVQVNapLZnvkwIhddH/JqzBZF1fSaxSWNY6sziXBE8aEa2twtGkXUrwzGeZCMpQ==",
-        "dependencies": {}
-      }
-    }
-  },
+  "version": "2",
   "remote": {
     "https://deno.land/std@0.170.0/_util/asserts.ts": "d0844e9b62510f89ce1f9878b046f6a57bf88f208a10304aab50efcb48365272",
     "https://deno.land/std@0.170.0/_util/os.ts": "8a33345f74990e627b9dfe2de9b040004b08ea5146c7c9e8fe9a29070d193934",
@@ -80,17 +58,6 @@
     "https://deno.land/std@0.204.0/fs/_util.ts": "fbf57dcdc9f7bc8128d60301eece608246971a7836a3bb1e78da75314f08b978",
     "https://deno.land/std@0.204.0/fs/copy.ts": "ca19e4837965914471df38fbd61e16f9e8adfe89f9cffb0c83615c83ea3fc2bf",
     "https://deno.land/std@0.204.0/fs/ensure_dir.ts": "dc64c4c75c64721d4e3fb681f1382f803ff3d2868f08563ff923fdd20d071c40",
-    "https://deno.land/std@0.204.0/media_types/_db.ts": "7606d83e31f23ce1a7968cbaee852810c2cf477903a095696cdc62eaab7ce570",
-    "https://deno.land/std@0.204.0/media_types/_util.ts": "0879b04cc810ff18d3dcd97d361e03c9dfb29f67d7fc4a9c6c9d387282ef5fe8",
-    "https://deno.land/std@0.204.0/media_types/content_type.ts": "ad98a5aa2d95f5965b2796072284258710a25e520952376ed432b0937ce743bc",
-    "https://deno.land/std@0.204.0/media_types/extension.ts": "a7cd28c9417143387cdfed27d4e8607ebcf5b1ec27eb8473d5b000144689fe65",
-    "https://deno.land/std@0.204.0/media_types/extensions_by_type.ts": "43806d6a52a0d6d965ada9d20e60a982feb40bc7a82268178d94edb764694fed",
-    "https://deno.land/std@0.204.0/media_types/format_media_type.ts": "f5e1073c05526a6f5a516ac5c5587a1abd043bf1039c71cde1166aa4328c8baf",
-    "https://deno.land/std@0.204.0/media_types/get_charset.ts": "18b88274796fda5d353806bf409eb1d2ddb3f004eb4bd311662c4cdd8ac173db",
-    "https://deno.land/std@0.204.0/media_types/mod.ts": "d3f0b99f85053bc0b98ecc24eaa3546dfa09b856dc0bbaf60d8956d2cdd710c8",
-    "https://deno.land/std@0.204.0/media_types/parse_media_type.ts": "31ccf2388ffab31b49500bb89fa0f5de189c8897e2ee6c9954f207637d488211",
-    "https://deno.land/std@0.204.0/media_types/type_by_extension.ts": "8c210d4e28ea426414dd8c61146eefbcc7e091a89ccde54bbbe883a154856afd",
-    "https://deno.land/std@0.204.0/media_types/vendor/mime-db.v1.52.0.ts": "6925bbcae81ca37241e3f55908d0505724358cda3384eaea707773b2c7e99586",
     "https://deno.land/std@0.204.0/path/_common/assert_path.ts": "061e4d093d4ba5aebceb2c4da3318bfe3289e868570e9d3a8e327d91c2958946",
     "https://deno.land/std@0.204.0/path/_common/basename.ts": "0d978ff818f339cd3b1d09dc914881f4d15617432ae519c1b8fdc09ff8d3789a",
     "https://deno.land/std@0.204.0/path/_common/common.ts": "9e4233b2eeb50f8b2ae10ecc2108f58583aea6fd3e8907827020282dc2b76143",
@@ -160,5 +127,27 @@
     "https://deno.land/std@0.204.0/path/windows/separator.ts": "ae21f27015f10510ed1ac4a0ba9c4c9c967cbdd9d9e776a3e4967553c397bd5d",
     "https://deno.land/std@0.204.0/path/windows/to_file_url.ts": "8e9ea9e1ff364aa06fa72999204229952d0a279dbb876b7b838b2b2fea55cce3",
     "https://deno.land/std@0.204.0/path/windows/to_namespaced_path.ts": "e0f4d4a5e77f28a5708c1a33ff24360f35637ba6d8f103d19661255ef7bfd50d"
+  },
+  "npm": {
+    "specifiers": {
+      "katex@0.16.9": "katex@0.16.9",
+      "sha256-uint8array": "sha256-uint8array@0.10.7"
+    },
+    "packages": {
+      "commander@8.3.0": {
+        "integrity": "sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==",
+        "dependencies": {}
+      },
+      "katex@0.16.9": {
+        "integrity": "sha512-fsSYjWS0EEOwvy81j3vRA8TEAhQhKiqO+FQaKWp0m39qwOzHVBgAUBIXWj1pB+O2W3fIpNa6Y9KSKCVbfPhyAQ==",
+        "dependencies": {
+          "commander": "commander@8.3.0"
+        }
+      },
+      "sha256-uint8array@0.10.7": {
+        "integrity": "sha512-1Q6JQU4tX9NqsDGodej6pkrUVQVNapLZnvkwIhddH/JqzBZF1fSaxSWNY6sziXBE8aEa2twtGkXUrwzGeZCMpQ==",
+        "dependencies": {}
+      }
+    }
   }
 }

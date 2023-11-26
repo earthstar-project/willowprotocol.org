@@ -4,8 +4,9 @@ import { em, figcaption, figure, img } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { Rs, def, r, rs } from "../../defref.ts";
+import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
+import { $, $dot } from "../../katex.ts";
 
 export const threedProducts: Expression = site_template({
   name: "grouping_entries",
@@ -35,69 +36,55 @@ export const threedProducts: Expression = site_template({
     pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def("area_include", "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), "'s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), "'s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), "'s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not."),
   ]),
 
+  hsection("products", "Products", [
+    pinformative("We now turn a to a method for compactly describing several ", rs("3d_ranges"), " or ", rs("area"), " at once. Because this involves quite a few definitions, we start out by explaning the concepts in a more familiar space than willow: a regular two-dimensional chess board."),
+
+    hsection("chessboard", "Intermission: Chessboards", [
+      pinformative(marginale_inlineable(img(asset("meadowcap/chessboard.png"))), 'On a chessboard, each point (square) is identified by a number between one and eight (inclusive) and a letter between "a" and "h" (inclusive). We can consider ', def({id: "2d_range", singular: "2d-range"}, "2d-ranges"), ' that consist of a range of numbers and a range of letters. A ', r("2d_range"), " ", def({id: "2d_include", singular: "include"}, "includes"), " a square if its number included in one of the number ranges and its letter is included in one of the letter ranges."),
+
+      pinformative('Suppose we wanted to describe the set of squares with an odd number (1, 3, 5, or 7) and an "odd" letter ("a", "c", "e", or "g"). While this textual description listed only ', $("4 + 4 = 8"), ' objects, we need ', $("4 \\cdot 4 = 16"), ' ranges to ', r("2d_include"), ' exactly these squares.',),
+
+      pinformative("We can capture the idea behind the textual definition: ", preview_scope(
+        "A ", def({id: "2d_product", singular: "2d-product"}), " consists of a set of number ranges and a set of letter ranges. A ", r("2d_product"), " ", def({id: "2d_product_include", singular: "include"}, "includes"), " all squares whose number is included in at least one of the number ranges, and whose letter is included in at least one of the letter ranges."
+      ), marginale_inlineable(img(asset("meadowcap/chessboard_product.png"))),
+      " For example, the 2d product ", $("\\{[1, 2), [3, 4), [5, 6), [7, 8)\\}, \\{[a, b), [c, d), [e, f), [g, h)\\}"), "  corresponds to the textual description above and ", rs("2d_product_include"), " the same squares as the more verbose list of 16 ", rs("2d_ranges"), ".",),
+
+      pinformative("While ", rs("2d_product"), " allow us to succinctly represent some sets of squares, observe that not every combination of squares admits a single ", r("2d_product"), " that ", rs("2d_product_include"), " exactly those squares."),
+
+      pinformative("Note that you can have several non-equal ", rs("2d_product"), " that ", r("2d_product_include"), " exactly the same squares (for example through overlapping or adjacent ranges). Sometimes it is helpful for ", rs("2d_product"), " to be unique. To this end, we introduce the notion of ", r("2d_canonic"), " ", rs("2d_product"), ": a ", r("2d_product"), " is ", def({id: "2d_canonic", singular: "canonic"}), " if there is no ", r("2d_product"), " that ", rs("2d_product_include"), " the same squares but that consists of strictly fewer ", rs("2d_range"), ". If there are several such ", rs("2d_products"), ", the ", r("2d_canonic"), " one is the one with the most ", rs("open_range"), ".", marginale(["This serves to tie-break between ", rs("2d_product"), " such as ", $("\\{[6, 9)\\}, \\{[b, i)\\}"), " and ", $dot("\\{[6, \\ldots)\\}, \\{[b, \\ldots)\\}")])),
+
+      pinformative("For every set of squares, there is at most one ", r("canonic"), " ", r("2d_product"), " that ", rs("2d_product_include"), " exactly those squares. For the analogous three-dimensional willow concepts, we also provide a constructive characterization that can easily be checked by a computer."),
+
+      pinformative(
+        marginale_inlineable([
+          img(asset("meadowcap/2d_intersection.png")),
+          "An ", r("2d_intersection"), " of two ", rs("2d_product"), ".",
+        ]),
+        "Given two ", rs("2d_product"), ", the squares ", r("2d_product_include", "included"), " in both one ", em("and"), " the other can again be described by ", rs("2d_product"), "; we call these ", rs("2d_product"), " the ", def({id: "2d_intersection", singular: "intersection"}, "intersections"), " of the two initial ", rs("2d_product"), ". When we talk about ", em("the"), " ", r("2d_intersection"), ", we refer to the one ", r("2d_canonic"), " ", r("2d_intersection"), ".",
+      ),
+
+      pinformative(
+        marginale_inlineable([
+          img(asset("meadowcap/2d_union.png")),
+          "A ", r("2d_union"), " of two ", rs("2d_product"), ".",
+        ]),
+        "Given two ", rs("2d_product"), ", the squares ", r("2d_product_include", "included"), " in at least one of them the other cannot always be described by ", rs("2d_product"), ". But when such ", rs("2d_product"), " do exist,  we call them the ", def({id: "2d_union", singular: "union"}, "unions"), " of the two initial ", rs("2d_product"), ", and we call the original two ", rs("2d_product"), " ", def({id: "2d_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("2d_union"), " of some ", rs("2d_product"), ", we refer to the one ", r("2d_canonic"), " ", r("2d_union"), ".",
+      ),
+
+      pinformative("It turns out that two ", rs("2d_product"), " are ", r("2d_mergeable"), " if and only if their number ranges or their letter ranges ", r("2d_product_include"), " the same values. If both dimensions ", r("range_include"), " different values however, the ", rs("2d_product"), " are not ", r("2d_mergeable"), " ."),
+
+      pinformative("Determining whether the squares ", r("2d_product_include", "included"), " in any of a ", em("set"), " of ", rs("2d_product"), " can be described by a single ", r("2d_product"), " is more difficult however, even a set of pairwise non-", r("2d_mergeable"), " ", rs("2d_product"), " (i.e., no two ", rs("2d_product"), " in the set are ", r("2d_mergeable"), ") can ", r("2d_product_include"), " a set of squares in total that can be represented by a single ", r("2d_product"), "."),
+
+      pinformative("On the bright side, the squares included by a set of pairwise ", r("2d_product_mergeable"), " ", rs("2d_product"), " can always be represented by a single ", r("2d_product"), ", which we again call the ", r("2d_union"), " of the set of ", rs("2d_product"), "."),
+
+      pinformative("A set of ", rs("2d_product"), " is pairwise mergeable if and only if all their number ranges or all their letter ranges ", r("2d_product_include"), " the same values. This characterization allows us to verify whether a set of ", rs("2d_product"), " is pairwise ", r("2d_product_mergeable"), " in linear time and constant space."),
+    ]),
+  ]),
+
 
   hsection(
     "rangeszzzzzzzzz",
     "Ranges",
-    hsection(
-      "chessboard",
-      "Intermission: Talking About Squares on a Chessboard",
-      pinformative(
-        marginale_inlineable(img(asset("meadowcap/chessboard.png"))),
-        'On a chessboard, each point (square) is identified by a number between one and eight (inclusive) and a letter between "a" and "h" (inclusive). We can consider **2d ranges** that consist of a range of numbers and a range of letters.',
-      ),
-      pinformative(
-        'Suppose we wanted to describe the set of squares with an odd number (1, 3, 5, or 7) and an "odd" letter ("a", "c", "e", or "g"). While this textual description listed only `4 + 4 = 8` objects, we need `4 x 4 = 16` ranges to *include* exactly these squares.',
-      ),
-      pinformative(
-        "We wish to use the more efficient way of describing (certain) sets of squares that is employed by the textual description in a formal context. To this end, we define:",
-      ),
-      lis(
-        "An **interval** is a set of values that can be exactly captured by a single *range*. For our notation, we write an interval as the range that captures it.",
-        lis(
-          "In other words, an *interval* is a set with a least element such that for any `x, z` from the set and for any `y` such that `x < y < z` we have that `y` is in the interval.",
-        ),
-        "A **2d product** consists of a set of numbers of a chess board, and a set of letters of a chessboard, both of which are a union of finitely many intervals.",
-      ),
-      pinformative(
-        marginale_inlineable(img(asset("meadowcap/chessboard_product.png"))),
-        "A *2d product* **includes** all squares whose number lies in the product's set of numbers and whose letter lies in the product's set of letters. For example, the 2d product `{[1, 1], [3, 3], [5, 5], [7, 7]}, {[a, a], [c, c], [e, e], [g, g]}` corresponds to the textual description above and *includes* the same square as the more verbose list of 16 *2d ranges*.",
-      ),
-      aside_block(
-        "Notice that we define *2d products* in terms of *intervals*. not in terms of *ranges* that can be used to represent those *intervals*. The sets that make up single *2d product* can be represented by several different concrete ranges. But that only becomes an issue for encoding *2d products* — whether in memory as a datatype or for serialization — our definitions need not concern themselves with encoding details. The restriction to finite unions ensures that encodings are possible.",
-      ),
-      pinformative(
-        "While *2d products* allow us to succinctly represent some sets of squares, observe that not every combination of squares admits a single 2d product that describes it *but no additional squares*.",
-      ),
-      pinformative(
-        marginale_inlineable([
-          img(asset("meadowcap/2d_intersection.png")),
-          "An **intersection** of two 2d products.",
-        ]),
-        "Given two *2d products*, the squares *included* in one *and* the other of them can again be described by a 2d product; we call this *2d product* the **intersection** of the two initial *2d products*.",
-      ),
-      pinformative(
-        marginale_inlineable([
-          img(asset("meadowcap/2d_union.png")),
-          "A **union** of two **mergeable** 2d products.",
-          img(asset("meadowcap/2d_bad_union.png")),
-          "Two 2d products which are _not_ **mergeable**.",
-        ]),
-        "Given two *2d products*, the squares *included* by one *or* the other cannot always be described by another *2d product*. But when such a *2d product* exists, we call it their **union**, and we say that the two initial *2d products* are **mergeable**.",
-      ),
-      pinformative(
-        "It turns out that two non-equal, 2d products are *mergeable* if and only if their sets of intervals differ in at most one dimension.",
-      ),
-      pinformative(
-        "Determining whether the union of a *set* of 2d products yields another 2d product is more difficult however, even a set of pairwise non-mergeable 2d products (i.e., no two products in the set are mergeable) can include a set of squares in total that can be represented by a 2d product:",
-      ),
-      pinformative(
-        "On the bright side, the union of a set of *pairwise mergeable 2d products* can always be represented by a single 2d product, which we again call the **union** of the set of 2d products.",
-      ),
-      pinformative(
-        "A set of pairwise non-equal 2d products is pairwise mergeable if and only if there is at most one dimension in which their sets of intervals differ. This characterization allows us to verify whether a set of 2d products is pairwise mergeable in linear time and constant space.",
-      ),
-    ),
     hsection(
       "end_of_intermission",
       "End of Intermission",
