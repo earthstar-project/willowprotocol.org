@@ -1,6 +1,6 @@
 import { aside_block, link, lis, pinformative, site_template } from "../main.ts";
 import { hsection } from "../../hsection.ts";
-import { em, figcaption, figure, img } from "../../h.ts";
+import { code, em, figcaption, figure, img } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
@@ -25,7 +25,7 @@ export const threedProducts: Expression = site_template({
 
     pinformative("Ranges can only be defined for types of values that can be sorted according to some ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), ". For willow, we only use three types of ", rs("range"), ": a ", def({id: "time_range", singular: "time range"}), " is a ", r("range"), " of ", rs("timestamp"), " (ordered numerically), a ", def({id: "path_range", singular: "path range"}), " is a ", r("range"), " of ", rs("path"), " (ordered ", link("lexicographically", "https://en.wikipedia.org/wiki/Lexicographic_order"), "), and a ", def({id: "subspace_range", singular: "subspace range"}), " is a ", r("range"), " of ", rs("subspace_id"), " (whose ordering has to be supplied as a protocol parameter)."),
 
-    pinformative("When we combine ", rs("range"), " all three dimensions, we can delimit boxes in willow space. A ", def({id: "3d_range", singular: "3d-range"}), " consists of a ", r("time_range"), ", a ", r("path_range"), ", and a ", r("subspace_range"), ". It ", def("3d_range_include", "includes"), " all ", rs("entry"), " ", r("range_include", "included"), " by all of its three ", rs("range"), "."),
+    pinformative("When we combine ", rs("range"), " all three dimensions, we can delimit boxes in willow space. A ", def({id: "3d_range", singular: "3d-range"}), " consists of a ", r("time_range"), ", a ", r("path_range"), ", and a ", r("subspace_range"), ". It ", def({id: "3d_range_include", singular: "include"}, "includes"), " all ", rs("entry"), " ", r("range_include", "included"), " by all of its three ", rs("range"), "."),
   ]),
 
   hsection("areas", "Areas", [
@@ -37,7 +37,7 @@ export const threedProducts: Expression = site_template({
   ]),
 
   hsection("products", "Products", [
-    pinformative("We now turn a to a method for compactly describing several ", rs("3d_ranges"), " or ", rs("area"), " at once. Because this involves quite a few definitions, we start out by explaning the concepts in a more familiar space than willow: a regular two-dimensional chess board."),
+    pinformative("We now turn a to a method for compactly describing several ", rs("3d_range"), " or ", rs("area"), " at once. Because this involves quite a few definitions, we start out by explaning the concepts in a more familiar space than willow: a regular two-dimensional chess board."),
 
     hsection("chessboard", "Intermission: Chessboards", [
       pinformative(marginale_inlineable(img(asset("meadowcap/chessboard.png"))), 'On a chessboard, each point (square) is identified by a number between one and eight (inclusive) and a letter between "a" and "h" (inclusive). We can consider ', def({id: "2d_range", singular: "2d-range"}, "2d-ranges"), ' that consist of a range of numbers and a range of letters. A ', r("2d_range"), " ", def({id: "2d_include", singular: "include"}, "includes"), " a square if its number included in one of the number ranges and its letter is included in one of the letter ranges."),
@@ -53,7 +53,7 @@ export const threedProducts: Expression = site_template({
 
       pinformative("Note that you can have several non-equal ", rs("2d_product"), " that ", r("2d_product_include"), " exactly the same squares (for example through overlapping or adjacent ranges). Sometimes it is helpful for ", rs("2d_product"), " to be unique. To this end, we introduce the notion of ", r("2d_canonic"), " ", rs("2d_product"), ": a ", r("2d_product"), " is ", def({id: "2d_canonic", singular: "canonic"}), " if there is no ", r("2d_product"), " that ", rs("2d_product_include"), " the same squares but that consists of strictly fewer ", rs("2d_range"), ". If there are several such ", rs("2d_products"), ", the ", r("2d_canonic"), " one is the one with the most ", rs("open_range"), ".", marginale(["This serves to tie-break between ", rs("2d_product"), " such as ", $("\\{[6, 9)\\}, \\{[b, i)\\}"), " and ", $dot("\\{[6, \\ldots)\\}, \\{[b, \\ldots)\\}")])),
 
-      pinformative("For every set of squares, there is at most one ", r("canonic"), " ", r("2d_product"), " that ", rs("2d_product_include"), " exactly those squares. For the analogous three-dimensional willow concepts, we also provide a constructive characterization that can easily be checked by a computer."),
+      pinformative("For every set of squares, there is at most one ", r("canonic"), " ", r("2d_product"), " that ", rs("2d_product_include"), " exactly those squares."),
 
       pinformative(
         marginale_inlineable([
@@ -68,57 +68,92 @@ export const threedProducts: Expression = site_template({
           img(asset("meadowcap/2d_union.png")),
           "A ", r("2d_union"), " of two ", rs("2d_product"), ".",
         ]),
-        "Given two ", rs("2d_product"), ", the squares ", r("2d_product_include", "included"), " in at least one of them the other cannot always be described by ", rs("2d_product"), ". But when such ", rs("2d_product"), " do exist,  we call them the ", def({id: "2d_union", singular: "union"}, "unions"), " of the two initial ", rs("2d_product"), ", and we call the original two ", rs("2d_product"), " ", def({id: "2d_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("2d_union"), " of some ", rs("2d_product"), ", we refer to the one ", r("2d_canonic"), " ", r("2d_union"), ".",
+        "Given two ", rs("2d_product"), ", the squares ", r("2d_product_include", "included"), " in at least one of them cannot always be described by ", rs("2d_product"), ". But when such ", rs("2d_product"), " do exist,  we call them the ", def({id: "2d_union", singular: "union"}, "unions"), " of the two initial ", rs("2d_product"), ", and we call the original two ", rs("2d_product"), " ", def({id: "2d_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("2d_union"), " of some ", rs("2d_product"), ", we refer to the one ", r("2d_canonic"), " ", r("2d_union"), ".",
       ),
 
-      pinformative("It turns out that two ", rs("2d_product"), " are ", r("2d_mergeable"), " if and only if their number ranges or their letter ranges ", r("2d_product_include"), " the same values. If both dimensions ", r("range_include"), " different values however, the ", rs("2d_product"), " are not ", r("2d_mergeable"), " ."),
+      pinformative("It turns out that two ", rs("2d_product"), " are ", r("2d_mergeable"), " if and only if their number ranges or their letter ranges ", r("range_include"), " the same values. If both dimensions ", r("range_include"), " different values however, the ", rs("2d_product"), " are not ", r("2d_mergeable"), " ."),
 
       pinformative("Determining whether the squares ", r("2d_product_include", "included"), " in any of a ", em("set"), " of ", rs("2d_product"), " can be described by a single ", r("2d_product"), " is more difficult however, even a set of pairwise non-", r("2d_mergeable"), " ", rs("2d_product"), " (i.e., no two ", rs("2d_product"), " in the set are ", r("2d_mergeable"), ") can ", r("2d_product_include"), " a set of squares in total that can be represented by a single ", r("2d_product"), "."),
 
-      pinformative("On the bright side, the squares included by a set of pairwise ", r("2d_product_mergeable"), " ", rs("2d_product"), " can always be represented by a single ", r("2d_product"), ", which we again call the ", r("2d_union"), " of the set of ", rs("2d_product"), "."),
+      pinformative("On the bright side, the squares included by a set of pairwise ", r("2d_mergeable"), " ", rs("2d_product"), " can always be represented by a single ", r("2d_product"), ", which we again call the ", r("2d_union"), " of the set of ", rs("2d_product"), "."),
 
-      pinformative("A set of ", rs("2d_product"), " is pairwise mergeable if and only if all their number ranges or all their letter ranges ", r("2d_product_include"), " the same values. This characterization allows us to verify whether a set of ", rs("2d_product"), " is pairwise ", r("2d_product_mergeable"), " in linear time and constant space."),
+      pinformative("A set of ", rs("2d_product"), " is pairwise mergeable if and only if all their number ranges or all their letter ranges ", r("2d_product_include"), " the same values. This characterization allows us to verify whether a set of ", rs("2d_product"), " is pairwise ", r("2d_mergeable"), " in linear time and constant space."),
     ]),
-  ]),
 
+    hsection("3d_range_products", "3d-Range Products", [
+      pinformative("We now define concepts completely analogous to ", rs("2d_product"), " for the three-dimensional willow space."),
 
-  hsection(
-    "rangeszzzzzzzzz",
-    "Ranges",
-    hsection(
-      "end_of_intermission",
-      "End of Intermission",
-      pinformative(
-        "We now define completely analogous concepts for the three-dimensional Willow space, and describe where these concepts occur in Meadowcap.",
-      ),
       pinformative(
         marginale_inlineable(img(asset("meadowcap/3d_product.png"))),
-        "A **3d product** consists of a set of timestamps, a set of paths, and a set of subspace IDs, all three of which of which are a union of finitely many intervals. A *3d product* **includes** all Willow entries whose timestamp lies in the product's set of timetamps, whose path lies in the product's set of paths, and whose subspace ID lies in the product's set of subspace IDs.",
+        "A ", def({id: "3d_range_product", singular: "3d-range product"}), " consists of a set of ", rs("time_range"), ", a set of ", rs("path_range"), ", and a set of ", rs("subspace_range"), ". A ", r("3d_range_product"), " ", def({id: "3d_range_product_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("range_include", "included"), " in at least one of the ", rs("time_range"), ", whose ", r("path"), " is ", r("range_include", "included"), " in at least one of the ", rs("path_range"), "and whose ", r("subspace_id"), " is ", r("range_include", "included"), " in at least one of the ", rs("subspace_range"), ".",
       ),
-      pinformative(
-        "Each capability in Meadowcap grants access to some 3d product of entries in some namespace. Restricting capabilities works by supplying a 3d product, the resulting capability grants access to the *intersection* of that 3d product and the 3d product to which the parent capability grants access.",
-      ),
+
+      pinformative("A ", r("3d_range_product"), " is ", def({id: "3d_range_canonic", singular: "canonic"}), " if there is no ", r("3d_range_product"), " that ", rs("3d_range_include"), " the same ", rs("entry"), " but that consists of strictly fewer ", rs("3d_range"), ". If there are several such ", rs("3d_range_product"), ", the ", r("3d_range_canonic"), " one is the one with the most ", rs("open_range"), ". For every set of ", rs("entry"), ", there is at most one ", r("canonic"), " ", r("3d_range_product"), " that ", rs("3d_range_include"), " exactly those ", rs("entry"), "."),
+
       pinformative(
         marginale_inlineable([
           img(asset("meadowcap/3d_intersection.png")),
-          "An **intersection** of two 3d products.",
+          "An ", r("3d_range_intersection"), " of two ", rs("3d_range_product"), ".",
         ]),
-        "Given two 3d products, the entries *included* by both of them can again be described by a 3d product; we call this 3d product the **intersection** of the two initial 3d products.",
+        "Given two ", rs("3d_range_product"), ", the ", rs("entry"), " ", r("3d_range_product_include", "included"), " in both one ", em("and"), " the other can again be described by ", rs("3d_range_product"), "; we call these ", rs("3d_range_product"), " the ", def({id: "3d_range_intersection", singular: "intersection"}, "intersections"), " of the two initial ", rs("3d_range_product"), ". When we talk about ", em("the"), " ", r("3d_range_intersection"), ", we refer to the one ", r("3d_range_canonic"), " ", r("3d_range_intersection"), ".",
       ),
+
       pinformative(
         marginale_inlineable([
           img(asset("meadowcap/3d_union.png")),
-          "A **union** of two **mergeable** 3d products.",
+          "A ", r("3d_range_union"), " of two ", rs("3d_range_product"), ".",
         ]),
-        marginale_inlineable([
-          img(asset("meadowcap/3d_bad_union.png")),
-          "Two 3d products which are _not_ **mergeable**.",
-        ]),
-        "Meadowcap allows to merge several capabilities into a single new one. But we also require each capability to correspond to a single 3d product, hence we only allow the merging of sets of capabilities whose 3d products are *pairwise mergeable* according to the following definition:",
+        "Given two ", rs("3d_range_product"), ", the ", rs("entry"), " ", r("3d_range_product_include", "included"), " in at least one of them cannot always be described by ", rs("3d_range_product"), ". But when such ", rs("3d_range_product"), " do exist,  we call them the ", def({id: "3d_range_union", singular: "union"}, "unions"), " of the two initial ", rs("3d_range_product"), ", and we call the original two ", rs("3d_range_product"), " ", def({id: "3d_range_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("3d_range_union"), " of some ", r("3d_range_mergeable"), " ", rs("3d_range_product"), ", we refer to the one ", r("3d_range_canonic"), " ", r("3d_range_union"), ".",
       ),
+
+      pinformative("It turns out that two ", rs("3d_range_product"), " are ", r("3d_range_mergeable"), " if and only if at least two of the three dimensions of ", rs("range"), " ", r("range_include"), " the same values."),
+
+      pinformative("The ", rs("entry"), " ", r("3d_range_product_include"), " by a set of pairwise ", r("3d_range_mergeable"), " ", rs("3d_range_product"), " can always be represented by a single ", r("3d_range_product"), ", which we again call the ", r("3d_range_union"), " of the set of ", rs("3d_range_product"), "."),
+    ]),
+
+    hsection("area_products", "Area Products", [
+      pinformative("We can also apply the idea behind ", rs("3d_range_product"), " to ", rs("area"), "."),
+
       pinformative(
-        "Two 3d products are **mergeable** if and only if the union of the entries they *contain* can be exactly captured by a single 3d product. A set of 3d products is **pairwise mergeable** if any two 3d products in the set are *mergeable*. This is the case if and only if there is at most one dimension in which the values *included* by the ranges for that dimension differ between the 3d products.",
+        "A ", def({id: "area_product", singular: "area product"}), " consists of a set of ", rs("time_range"), ", a set of ", rs("path"), ", and a set of ", rs("subspace_id"), ". A ", r("area_product"), " ", def({id: "area_product_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("range_include", "included"), " in at least one of the ", rs("time_range"), ", whose ", r("path"), " starts with at least one of the ", rs("path"), " in the set of ", r("path"), ", and whose ", r("subspace_id"), " is in the set of ", rs("subspace_id"), ".",
       ),
+
+      pinformative("An ", r("area_product"), " is ", def({id: "area_canonic", singular: "canonic"}), " if there is no ", r("area_product"), " that ", rs("area_include"), " the same ", rs("entry"), " but whose sets contain strictly fewer items. If there are several such ", rs("area_product"), ", the ", r("area_canonic"), " one is the one with an ", rs("open_range", "open"), " ", r("time range"), "", ". For every set of ", rs("entry"), ", there is at most one ", r("canonic"), " ", r("area_product"), " that ", rs("area_include"), " exactly those ", rs("entry"), "."),
+
+      pinformative(
+        "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in both one ", em("and"), " the other can again be described by ", rs("area_forproduct"), "; we call these ", rs("area_product"), " the ", def({id: "area_intersection", singular: "intersection"}, "intersections"), " of the two initial ", rs("area_product"), ". When we talk about ", em("the"), " ", r("area_intersection"), ", we refer to the one ", r("area_canonic"), " ", r("area_intersection"), ".",
+      ),
+
+      pinformative(
+        "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in at least one of them cannot always be described by ", rs("area_product"), ". But when such ", rs("area_product"), " do exist,  we call them the ", def({id: "area_union", singular: "union"}, "unions"), " of the two initial ", rs("area_product"), ", and we call the original two ", rs("area_product"), " ", def({id: "area_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("area_union"), " of some ", r("area_mergeable"), " ", rs("area_product"), ", we refer to the one ", r("area_canonic"), " ", r("area_union"), ".",
+      ),
+
+      pinformative("It turns out that two ", rs("area_product"), " are ", r("area_mergeable"), " if and only if at least two of the folliwing three are equal for all the", rs("area_product"), "; three dimensions of ", rs("range"), " ", r("range_include"), " the same values."),
+
+      lis(
+        ["the ", rs("timestamp"), " ", r("range_include", "included"), " by the ", r("area_product"), "'s ", rs("time_range"), ","],
+        ["the set of all ", rs("path"), " prefixed by any of the ", r("area_product"), "'s ", rs("path"), ","],
+        ["the ", r("area_product"), "'s ", rs("subspace_id"), "."],
+      ),
+
+      pinformative("The ", rs("entry"), " ", r("area_product_include"), " by a set of pairwise ", r("area_mergeable"), " ", rs("area_product"), " can always be represented by a single ", r("area_product"), ", which we again call the ", r("area_union"), " of the set of ", rs("area_product"), "."),
+    ]),
+  ]),
+
+  hsection("grouping_entries_aois", "Areas of Interest", [
+    pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
+
+    pinformative("An ", def({id: "aoi", singular: "area product of interest", plural: "area products of interest"}), " consists of an ", r("area_product"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set of ", rs("entry"), " ", code("S"), " to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
+
+    lis(
+      ["if there is a ", r("time_count"), ", then every ", r("entry"), " in ", code("T"), " is amongst the ", r("time_count"), " many ", rs("entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
+      ["if there is a ", r("time_size"), ", then no ", r("entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("timestamp"), " than any ", r("entry"), " in ", code("T"), ","],
+      ["if there is a ", r("time_size"), ", then the sum of the ", r("payload_length"), " of the ", r("entry"), " in ", code("T"), " is at most the ", r("time_size"), " many ", rs("entry"), " in ", code("S"), ","],
+      ["if there is a ", r("path_count"), ", then every ", r("entry"), " in ", code("T"), " is amongst the ", r("path_count"), " many ", rs("entry"), " in ", code("S"), " with the (lexicographically) greatest ", rs("path"), ","],
+      ["if there is a ", r("path_size"), ", then no ", r("entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("path"), " than any ", r("entry"), " in ", code("T"), ","],
+      ["if there is a ", r("path_size"), ", then the sum of the ", r("payload_length"), " of the ", r("entry"), " in ", code("T"), " is at most the ", r("path_size"), " many ", rs("entry"), " in ", code("S"), "."],
     ),
-  ),
+
+    pinformative("The ", def({id: "aoi_intersection", singular: "intersection"}), " of two ", rs("aoi"), " consists of the ", r("area_product_intersection"), " of their ", rs("area_product"), ", the lesser (if any) of their ", rs("time_count"), ", the lesser (if any) of their ", rs("time_size"), ", the lesser (if any) of their ", rs("path_count"), ", and the lesser (if any) of their ", rs("path_size"), "."),
+  ]),
 ]);

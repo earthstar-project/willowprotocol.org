@@ -77,11 +77,6 @@ export const data_model: Expression = site_template(
 
             def({ id: "3d_product", singular: "3d-product" }),
             def({ id: "product_contain", singular: "contain" }),
-            def({ id: "aoi", singular: "area of interest", plural: "areas of interest"}),
-            def({ id: "aoi_empty", singular: "empty"}),
-            def({ id: "aoi_intersection", singular: "intersection"}),
-            def({ id: "aoi_count_limit", singular: "count limit"}),
-            def({ id: "aoi_size_limit", singular: "size limit"}),
             def({ id: "encoding_function", singular: "encoding function" }),
         ]),
     ],
