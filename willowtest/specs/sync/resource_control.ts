@@ -1,6 +1,7 @@
 import { def, def_fake, preview_scope, r, rs } from "../../../defref.ts";
 import { code, em, p } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
+import { $, $comma, $dot } from "../../../katex.ts";
 import { sidenote } from "../../../marginalia.ts";
 import { Struct, hl_builtin } from "../../../pseudocode.ts";
 import { pseudocode } from "../../../pseudocode.ts";
@@ -282,6 +283,12 @@ export const resource_control: Expression = site_template(
                         ],
                     }),
                 ),
+            ]),
+
+            hsection("delta_handles", "Delta Handles", [
+                pinformative("When encoding ", rs("resource_handle"), " as part of a message, we can do better than simply encoding their numeric values. After a ", r("resource_handle"), " has been ", r("handle_free", "freed"), ", we know that its value will never be communicated again. Instead of transmitting actual numeric values, we can instead transmit the difference between the numeric value and the numeric value of the oldest ", r("resource_handle"), " that has not yet been ", r("handle_free", "freed"), ". This way, we transmit smaller numbers, which can be encoded more efficiently. More precisely:"),
+
+                pinformative("Let ", $("h"), " be a ", r("resource_handle"), " (that is, a natural number between zero and ", $("2^{64} - 1", ")"), ". The ", def({id: "delta_handle", singular: "delta handle"}), " of ", $("h"), " is ", $comma("h - l"), " where ", $("l"), " is the numerically least ", r("resource_handle"), " of the same ", r("handle_type"), " and ", r("handle_bind", "bound"), " by the same peer as ", $("h"), " for which the peer who is determining the ", r("delta_handle"), " has not yet sent a ", r("HandleFree"), " message."),
             ]),
         ]),
     ],

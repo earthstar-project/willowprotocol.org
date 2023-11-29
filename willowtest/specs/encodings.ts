@@ -1,4 +1,3 @@
-import { Expression } from "macro";
 import {
   def_parameter,
   def_value,
@@ -19,9 +18,10 @@ import {
   thead,
   tr,
 } from "../../h.ts";
-import { r } from "../../defref.ts";
+import { r, def } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale_inlineable } from "../../marginalia.ts";
+import { Expression } from "../../tsgen.ts";
 
 export const encodings: Expression = site_template({
   name: "encodings",
@@ -33,7 +33,7 @@ export const encodings: Expression = site_template({
 
   pinformative(
     "An ",
-    em("encoding function"),
+    def({id: "encoding_function", singular: "encoding function"}),
     " ",
     def_value(`encode_s`),
     " for a set ",

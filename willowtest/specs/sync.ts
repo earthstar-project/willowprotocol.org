@@ -76,7 +76,7 @@ export const sync: Expression = site_template(
 
             pinformative(link_name("3drbsr", "3d-range-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("lengthy_entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("lengthy_entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("lengthy_entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint"), " of the empty set."),
 
-            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter("challenge_hash"), ".")       ,  
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter("challenge_hash"), ". We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", rs("ReadCapability"), " that does not encode their ", r("granted_namespace"), "."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -273,6 +273,12 @@ export const sync: Expression = site_template(
                                     rhs: r("ReadCapability"),
                                 },
                                 {
+                                    id: "BindCapabilityHandle",
+                                    name: "handle",
+                                    comment: ["The ", r("resource_handle"), " of the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), "."],
+                                    rhs: hl_builtin("u64"),
+                                },
+                                {
                                     id: "BindCapabilitySignature",
                                     name: "signature",
                                     comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " of the ", r("BindCapabilityCapability"), " over the sender's ", r("value_challenge"), "."],
@@ -282,10 +288,11 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative([
-                        marginale(["This message implicitly specifies the ", r("namespace"), " it pertains to, because every ", r("ReadCapability"), " belongs to a single ", r("namespace"), ". On the encoding layer, we ensure that this ", r("namespace"), " went through the set intersection process, by encoding ", rs("namespace"), " via ", rs("NamespaceHandle"), " exclusively."]),
+                    pinformative(
                         "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
-                    ]),
+                    ),
+
+                    pinformative("The ", r("BindCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), ". We enforce this on the encoding layer: the encoding used for the ", r("BindCapabilityCapability"), " simply does not contain the ", r("granted_namespace"), ", instead the ", r("namespace"), " to which the ", r("BindCapabilityHandle"), " is ", r("handle_bind", "bound"), " is used as the ", r("granted_namespace"), "."),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
                 ]),
@@ -782,6 +789,38 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
+                pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
+
+                hsection("encoding_reveal_commitment", code("RevealCommitment"), [
+                    pinformative("When encoding a ", r("RevealCommitment"), " message, the five least significant bits of the first byte are ", code("00000"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("RevealCommitmentNonce"), "."),
+                ]),
+
+                hsection("encoding_bind_namespace_private", code("BindNamespacePrivate"), [
+                    pinformative("When encoding a ", r("BindNamespacePrivate"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePrivateGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                ]),
+
+                hsection("encoding_psi_reply", code("PsiReply"), [
+                    pinformative("When encoding a ", r("PsiReply"), " message, the five least significant bits of the first byte are ", code("00010"), "."),
+
+                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PsiReplyHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PsiReplyHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+
+                    pinformative("This is followed by the ", r("PsiReplyGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                ]),
+
+                hsection("encoding_bind_namespace_public", code("BindNamespacePublic"), [
+                    pinformative("When encoding a ", r("BindNamespacePublic"), " message, the five least significant bits of the first byte are ", code("00011"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePublicGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                ]),
+
+                hsection("encoding_bind_capability", code("BindCapability"), [
+                    pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00100"), "."),
+
+                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+
+                    pinformative("This is followed by the ", r("BindCapabilitySignature"), ", encoded with the ", r("encoding_function"), " for ", r("PsiSignature"), "."),
+
+                    pinformative("This is followed by the ", r("BindCapabilityCapability"), ", encoded with the ", r("encoding_function"), " for ", r("ReadCapability"), " (which need not encode the ", r("granted_namespace"), ")."),
+                ]),
+
                 pinformative("wip"),
                 ols(
                     r("RevealCommitment"),
@@ -804,7 +843,6 @@ export const sync: Expression = site_template(
                     r("SyncOops"),
                     r("SyncStartedDropping"),
                     r("SyncApology"),
-                    r("SyncHandleFree"),
                     [r("SyncHandleFree"), ", special cases for ", lis("mine false", "mine true")],
                     r("SyncHandleConfirm"),
                     r("SyncHandleStartedDropping"),
@@ -812,6 +850,7 @@ export const sync: Expression = site_template(
                 ),
                 pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
                 pinformative("6 logical channels, 4 handle kinds"),
+                pinformative("Group messages whose header byte contains no information beyond the message type together."),
             ]),
         ]),
 
