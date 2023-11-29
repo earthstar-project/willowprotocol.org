@@ -38,7 +38,7 @@ import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
 import { resource_control } from "./specs/sync/resource_control.ts";
 import { psi } from "./specs/sync/psi.ts";
-import { product_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
+import { range3d_based_set_reconciliation } from "./specs/sync/product_based_set_reconciliation.ts";
 import { access_control } from "./specs/sync/access_control.ts";
 import { timestamps_really } from "./specs/more/timestamps_really.ts";
 import { specifications } from "./specs/specifications.ts";
@@ -363,7 +363,7 @@ evaluate([
         out_index_directory("resource-control", resource_control),
         out_index_directory(
           "product-based-set-reconciliation",
-          product_based_set_reconciliation,
+          range3d_based_set_reconciliation,
         ),
         out_index_directory("access-control", access_control),
       ]),

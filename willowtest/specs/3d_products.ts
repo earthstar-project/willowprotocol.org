@@ -34,6 +34,8 @@ export const threedProducts: Expression = site_template({
     pinformative("Fortunately, they do exist encryption techniques that preserve properties some weaker than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3d_range"), " that can be used even when encrypting ", rs("path"), " and ", rs("subspace_id"), ". These ", rs("area"), " can be used, for example, to let peers express which parts of a namespace another peer should be able to read from or to write to."),
 
     pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def("area_include", "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), "'s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), "'s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), "'s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not."),
+
+    // pinformative("The ", def({id: "area_intersection", singular: "intersection"}), " of two ", rs("area"), " "),
   ]),
 
   hsection("products", "Products", [
@@ -111,39 +113,39 @@ export const threedProducts: Expression = site_template({
       pinformative("The ", rs("entry"), " ", r("3d_range_product_include"), " by a set of pairwise ", r("3d_range_mergeable"), " ", rs("3d_range_product"), " can always be represented by a single ", r("3d_range_product"), ", which we again call the ", r("3d_range_union"), " of the set of ", rs("3d_range_product"), "."),
     ]),
 
-    hsection("area_products", "Area Products", [
-      pinformative("We can also apply the idea behind ", rs("3d_range_product"), " to ", rs("area"), "."),
+    // hsection("area_products", "Area Products", [
+    //   pinformative("We can also apply the idea behind ", rs("3d_range_product"), " to ", rs("area"), "."),
 
-      pinformative(
-        "A ", def({id: "area_product", singular: "area product"}), " consists of a set of ", rs("time_range"), ", a set of ", rs("path"), ", and a set of ", rs("subspace_id"), ". A ", r("area_product"), " ", def({id: "area_product_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("range_include", "included"), " in at least one of the ", rs("time_range"), ", whose ", r("path"), " starts with at least one of the ", rs("path"), " in the set of ", r("path"), ", and — if the set of ", rs("subspace_id"), " is non-empty — whose ", r("subspace_id"), " is in the set of ", rs("subspace_id"), ".",
-      ),
+    //   pinformative(
+    //     "A ", def({id: "area_product", singular: "area product"}), " consists of a set of ", rs("time_range"), ", a set of ", rs("path"), ", and a set of ", rs("subspace_id"), ". A ", r("area_product"), " ", def({id: "area_product_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("range_include", "included"), " in at least one of the ", rs("time_range"), ", whose ", r("path"), " starts with at least one of the ", rs("path"), " in the set of ", r("path"), ", and — if the set of ", rs("subspace_id"), " is non-empty — whose ", r("subspace_id"), " is in the set of ", rs("subspace_id"), ".",
+    //   ),
 
-      pinformative("An ", r("area_product"), " is ", def({id: "area_canonic", singular: "canonic"}), " if there is no ", r("area_product"), " that ", rs("area_include"), " the same ", rs("entry"), " but whose sets contain strictly fewer items. If there are several such ", rs("area_product"), ", the ", r("area_canonic"), " one is the one with an ", rs("open_range", "open"), " ", r("time range"), "", ". For every set of ", rs("entry"), ", there is at most one ", r("canonic"), " ", r("area_product"), " that ", rs("area_include"), " exactly those ", rs("entry"), "."),
+    //   pinformative("An ", r("area_product"), " is ", def({id: "area_canonic", singular: "canonic"}), " if there is no ", r("area_product"), " that ", rs("area_include"), " the same ", rs("entry"), " but whose sets contain strictly fewer items. If there are several such ", rs("area_product"), ", the ", r("area_canonic"), " one is the one with an ", rs("open_range", "open"), " ", r("time range"), "", ". For every set of ", rs("entry"), ", there is at most one ", r("canonic"), " ", r("area_product"), " that ", rs("area_include"), " exactly those ", rs("entry"), "."),
 
-      pinformative(
-        "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in both one ", em("and"), " the other can again be described by ", rs("area_forproduct"), "; we call these ", rs("area_product"), " the ", def({id: "area_intersection", singular: "intersection"}, "intersections"), " of the two initial ", rs("area_product"), ". When we talk about ", em("the"), " ", r("area_intersection"), ", we refer to the one ", r("area_canonic"), " ", r("area_intersection"), ".",
-      ),
+    //   pinformative(
+    //     "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in both one ", em("and"), " the other can again be described by ", rs("area_forproduct"), "; we call these ", rs("area_product"), " the ", def({id: "area_intersection", singular: "intersection"}, "intersections"), " of the two initial ", rs("area_product"), ". When we talk about ", em("the"), " ", r("area_intersection"), ", we refer to the one ", r("area_canonic"), " ", r("area_intersection"), ".",
+    //   ),
 
-      pinformative(
-        "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in at least one of them cannot always be described by ", rs("area_product"), ". But when such ", rs("area_product"), " do exist,  we call them the ", def({id: "area_union", singular: "union"}, "unions"), " of the two initial ", rs("area_product"), ", and we call the original two ", rs("area_product"), " ", def({id: "area_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("area_union"), " of some ", r("area_mergeable"), " ", rs("area_product"), ", we refer to the one ", r("area_canonic"), " ", r("area_union"), ".",
-      ),
+    //   pinformative(
+    //     "Given two ", rs("area_product"), ", the ", rs("entry"), " ", r("area_product_include", "included"), " in at least one of them cannot always be described by ", rs("area_product"), ". But when such ", rs("area_product"), " do exist,  we call them the ", def({id: "area_union", singular: "union"}, "unions"), " of the two initial ", rs("area_product"), ", and we call the original two ", rs("area_product"), " ", def({id: "area_mergeable", singular: "mergeable"}), ". When we talk about ", em("the"), " ", r("area_union"), " of some ", r("area_mergeable"), " ", rs("area_product"), ", we refer to the one ", r("area_canonic"), " ", r("area_union"), ".",
+    //   ),
 
-      pinformative("It turns out that two ", rs("area_product"), " are ", r("area_mergeable"), " if and only if at least two of the folliwing three are equal for all the", rs("area_product"), "; three dimensions of ", rs("range"), " ", r("range_include"), " the same values."),
+    //   pinformative("It turns out that two ", rs("area_product"), " are ", r("area_mergeable"), " if and only if at least two of the folliwing three are equal for all the", rs("area_product"), "; three dimensions of ", rs("range"), " ", r("range_include"), " the same values."),
 
-      lis(
-        ["the ", rs("timestamp"), " ", r("range_include", "included"), " by the ", r("area_product"), "'s ", rs("time_range"), ","],
-        ["the set of all ", rs("path"), " prefixed by any of the ", r("area_product"), "'s ", rs("path"), ","],
-        ["the ", r("area_product"), "'s ", rs("subspace_id"), "."],
-      ),
+    //   lis(
+    //     ["the ", rs("timestamp"), " ", r("range_include", "included"), " by the ", r("area_product"), "'s ", rs("time_range"), ","],
+    //     ["the set of all ", rs("path"), " prefixed by any of the ", r("area_product"), "'s ", rs("path"), ","],
+    //     ["the ", r("area_product"), "'s ", rs("subspace_id"), "."],
+    //   ),
 
-      pinformative("The ", rs("entry"), " ", r("area_product_include"), " by a set of pairwise ", r("area_mergeable"), " ", rs("area_product"), " can always be represented by a single ", r("area_product"), ", which we again call the ", r("area_union"), " of the set of ", rs("area_product"), "."),
-    ]),
+    //   pinformative("The ", rs("entry"), " ", r("area_product_include"), " by a set of pairwise ", r("area_mergeable"), " ", rs("area_product"), " can always be represented by a single ", r("area_product"), ", which we again call the ", r("area_union"), " of the set of ", rs("area_product"), "."),
+    // ]),
   ]),
 
   hsection("grouping_entries_aois", "Areas of Interest", [
     pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
 
-    pinformative("An ", def({id: "aoi", singular: "area product of interest", plural: "area products of interest"}), " consists of an ", r("area_product"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set of ", rs("entry"), " ", code("S"), " to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
+    pinformative("An ", def({id: "aoi", singular: "area of interest", plural: "areas of interest"}), " consists of an ", r("area"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set ", code("S"), " of ", rs("entry"), " that are ", r("aoi_include", "included"), " by the ", r("area"), ", to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
 
     lis(
       ["if there is a ", r("time_count"), ", then every ", r("entry"), " in ", code("T"), " is amongst the ", r("time_count"), " many ", rs("entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
@@ -154,6 +156,6 @@ export const threedProducts: Expression = site_template({
       ["if there is a ", r("path_size"), ", then the sum of the ", r("payload_length"), " of the ", r("entry"), " in ", code("T"), " is at most the ", r("path_size"), " many ", rs("entry"), " in ", code("S"), "."],
     ),
 
-    pinformative("The ", def({id: "aoi_intersection", singular: "intersection"}), " of two ", rs("aoi"), " consists of the ", r("area_product_intersection"), " of their ", rs("area_product"), ", the lesser (if any) of their ", rs("time_count"), ", the lesser (if any) of their ", rs("time_size"), ", the lesser (if any) of their ", rs("path_count"), ", and the lesser (if any) of their ", rs("path_size"), "."),
+    pinformative("The ", def({id: "aoi_intersection", singular: "intersection"}), " of two ", rs("aoi"), " consists of the ", r("area_intersection"), " of their ", rs("area"), ", the lesser (if any) of their ", rs("time_count"), ", the lesser (if any) of their ", rs("time_size"), ", the lesser (if any) of their ", rs("path_count"), ", and the lesser (if any) of their ", rs("path_size"), "."),
   ]),
 ]);

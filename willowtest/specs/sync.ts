@@ -4,7 +4,7 @@ import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value, def_fake_value, aside_block } from "../main.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter, def_value, def_fake_value, aside_block, ols } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
@@ -47,15 +47,15 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
-                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". All ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("entry"), " that need to be synchronized."),
+                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". The ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("entry"), " that need to be synchronized."),
 
-                pinformative("The WGPS synchronizes these ", rs("aoi_intersection"), " via ", r("pbsr"), ", a technique we ", link_name("product_based_set_reconciliation", "explain in detail here"), "."),
+                pinformative("The WGPS synchronizes these ", rs("aoi_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("range3d_based_set_reconciliation", "explain in detail here"), "."),
 
                 // pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
-                pinformative("After performing ", r("pbsr", "set reconciliation"), ", peers might receive new ", rs("entry"), " that fall into their shared ", rs("aoi"), ". Hence, the WGPS allows peers to transmit ", rs("entry"), " unsolicitedly."),
+                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("entry"), " that fall into their shared ", rs("aoi"), ". Hence, the WGPS allows peers to transmit ", rs("entry"), " unsolicitedly."),
             ]),
 
             hsection("sync_payloads", "Payload transmissions", [
@@ -70,11 +70,11 @@ export const sync: Expression = site_template(
         ]),
         
         hsection("sync_parameters", "Parameters", [
-            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for private set intersection, access control, and product-based set reconciliation."),
+            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for ", link_name("psi", "private set intersection"), ", ", link_name("access_control", "access control"), ", and ", link_name("range3d_based_set_reconciliation", "3d-range-based set reconciliation"), "."),
 
             pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
 
-            pinformative(link_name("pbsr", "Product-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("lengthy_entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("lengthy_entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("lengthy_entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint"), " of the empty set."),
+            pinformative(link_name("3drbsr", "3d-range-based set reconciliation"), " requires a type ", def_parameter("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter("fingerprint_singleton"), " from ", rs("lengthy_entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("lengthy_entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("lengthy_entry"), " sets, and a value ", def_parameter("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint"), " of the empty set."),
 
             pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter("challenge_hash"), ".")       ,  
         ]),
@@ -132,11 +132,11 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "ReconciliationChannel",
-                            comment: [R("logical_channel"), " for performing ", r("pbsr"), "."],
+                            comment: [R("logical_channel"), " for performing ", r("3drbsr"), "."],
                         },
                         {
                             id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payload"), " outside of ", r("pbsr"), "."],
+                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payload"), " outside of ", r("3drbsr"), "."],
                         },
                         {
                             id: "NamespaceChannel",
@@ -294,7 +294,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "EntryPush",
-                            comment: ["Unsolicitedly transmit an ", r("lengthy_entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
+                            comment: ["Unsolicitedly transmit a ", r("lengthy_entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
                             fields: [
                                 {
                                     id: "EntryPushEntry",
@@ -320,7 +320,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["The message's ", r("EntryPushAvailable"), " is informative metadata that peers may use to inform their communication, or they may simply ignore it."]),
-                        "The ", r("EntryPush"), " messages let peers transmit ", rs("lengthy_entry"), " outside of ", r("pbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
+                        "The ", r("EntryPush"), " messages let peers transmit ", rs("lengthy_entry"), " outside of ", r("3drbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
                     ]),
 
                     pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), "'s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
@@ -389,7 +389,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["If the receiver of a ", r("BindPayloadRequest"), " does not have the requested ", r("payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_product"), " must ", r("product_contain"), " the requested ", r("entry"), ".",
+                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_area"), " must ", r("3d_range_contain"), " the requested ", r("entry"), ".",
                     ]),
                 
                     pinformative(R("BindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
@@ -443,7 +443,7 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["Development note: if we go for private product intersection, this message would become a ", code("BindAreaOfInterestPublic"), " message, and we would add ", code("BindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
+                        marginale(["Development note: if we go for private 3d-range intersection, this message would become a ", code("BindAreaOfInterestPublic"), " message, and we would add ", code("BindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
                         "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message's ", r("BindAreaOfInterestAOI"), ".",
                     ]),
 
@@ -460,134 +460,134 @@ export const sync: Expression = site_template(
                     pinformative(R("BindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
                 ]),
 
-                hsection("product_fingerprint_message", code("ProductFingerprint"), [
+                hsection("range_fingerprint_message", code("RangeFingerprint"), [
                     pseudocode(
                         new Struct({
-                            id: "ProductFingerprint",
-                            comment: ["Send a fingerprint as part of ", r("pbsr"), "."],
+                            id: "RangeFingerprint",
+                            comment: ["Send a fingerprint as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
-                                    id: "ProductFingerprintProduct",
-                                    name: "product",
-                                    comment: ["The ", r("3d_product"), " whose fingerprint is transmitted."],
-                                    rhs: r("3d_product"),
+                                    id: "RangeFingerprintRange",
+                                    name: "range",
+                                    comment: ["The ", r("3d_range"), " whose fingerprint is transmitted."],
+                                    rhs: r("3d_range"),
                                 },
                                 {
-                                    id: "ProductFingerprintFingerprint",
+                                    id: "RangeFingerprintFingerprint",
                                     name: "fingerprint",
-                                    comment: ["The fingerprint of the ", r("ProductFingerprintProduct"), ", that is, of all ", rs("lengthy_entry"), " the peer has in the ", r("ProductFingerprintProduct"), "."],
+                                    comment: ["The fingerprint of the ", r("RangeFingerprintRange"), ", that is, of all ", rs("lengthy_entry"), " the peer has in the ", r("RangeFingerprintRange"), "."],
                                     rhs: r("Fingerprint"),
                                 },
                                 {
-                                    id: "ProductFingerprintSenderHandle",
+                                    id: "RangeFingerprintSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductFingerprintProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeFingerprintRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
-                                    id: "ProductFingerprintReceiverHandle",
+                                    id: "RangeFingerprintReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductFingerprintProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeFingerprintRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductFingerprint"), " messages let peers initiate and progress ", r("pbsr"), ". Each ", r("ProductFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeFingerprint"), " messages let peers initiate and progress ", r("3drbsr"), ". Each ", r("RangeFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
-                    pinformative(R("ProductFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+                    pinformative(R("RangeFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
-                hsection("product_entries", code("ProductEntries"), [
+                hsection("range_entries", code("RangeEntries"), [
                     pseudocode(
                         new Struct({
-                            id: "ProductEntries",
-                            comment: ["Send the ", rs("lengthy_entry"), " a peer has in a ", r("3d_product"), " as part of ", r("pbsr"), "."],
+                            id: "RangeEntries",
+                            comment: ["Send the ", rs("lengthy_entry"), " a peer has in a ", r("3d_range"), " as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
-                                    id: "ProductEntriesProduct",
-                                    name: "product",
-                                    comment: ["The ", r("3d_product"), " whose ", rs("lengthy_entry"), " are transmitted."],
-                                    rhs: r("3d_product"),
+                                    id: "RangeEntriesRange",
+                                    name: "range",
+                                    comment: ["The ", r("3d_range"), " whose ", rs("lengthy_entry"), " are transmitted."],
+                                    rhs: r("3d_range"),
                                 },
                                 {
-                                    id: "ProductEntriesEntries",
+                                    id: "RangeEntriesEntries",
                                     name: "entries",
-                                    comment: ["The ", r("lengthy_entry"), " in the ", r("ProductEntriesProduct"), "."],
+                                    comment: ["The ", rs("lengthy_entry"), " in the ", r("RangeEntriesRange"), "."],
                                     rhs: [code("["), r("lengthy_entry"), code("]")],
                                 },
                                 {
-                                    id: "ProductEntriesFlag",
+                                    id: "RangeEntriesFlag",
                                     name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("ProductEntries"), " message for the same ", r("3d_product"), " in return."],
-                                    rhs: [code("["), r("entry"), code("]")],
+                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("RangeEntries"), " message for the same ", r("3d_range"), " in return."],
+                                    rhs: hl_builtin("bool"),
                                 },
                                 {
-                                    id: "ProductEntriesSenderHandle",
+                                    id: "RangeEntriesSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductEntriesProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeEntriesRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
-                                    id: "ProductEntriesReceiverHandle",
+                                    id: "RangeEntriesReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductEntriesProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeEntriesRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductEntries"), " messages let peers conclude ", r("pbsr"), " for a ", r("3d_product"), " by transmitting their ", rs("lengthy_entry"), " in the ", r("3d_product", "product"), ". Each ", r("ProductEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeEntries"), " messages let peers conclude ", r("3drbsr"), " for a ", r("3d_range"), " by transmitting their ", rs("lengthy_entry"), " in the ", r("3d_range"), ". Each ", r("RangeEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
-                    pinformative(R("ProductEntries"), " messages use the ", r("ReconciliationChannel"), "."),
+                    pinformative(R("RangeEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
-                hsection("product_confirmation", code("ProductConfirmation"), [
+                hsection("range_confirmation", code("RangeConfirmation"), [
                     pseudocode(
                         new Struct({
-                            id: "ProductConfirmation",
-                            comment: ["Signal fingerprint equality as part of ", r("pbsr"), "."],
+                            id: "RangeConfirmation",
+                            comment: ["Signal fingerprint equality as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
-                                    id: "ProductConfirmationProduct",
-                                    name: "product",
-                                    comment: ["The ", r("3d_product"), " in question."],
-                                    rhs: r("3d_product"),
+                                    id: "RangeConfirmationRange",
+                                    name: "range",
+                                    comment: ["The ", r("3d_range"), " in question."],
+                                    rhs: r("3d_range"),
                                 },
                                 {
-                                    id: "ProductConfirmationSenderHandle",
+                                    id: "RangeConfirmationSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ProductConfirmationProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
-                                    id: "ProductConfirmationReceiverHandle",
+                                    id: "RangeConfirmationReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ProductConfirmationProduct"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
                                     rhs: hl_builtin("u64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("ProductConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("pbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3d_product"), ".", marginale(["Upon sending or receiving a ", r("ProductConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("3d_product"), " to the other peer."]), " Each ", r("ProductConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("3drbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3d_range"), ".", marginale(["Upon sending or receiving a ", r("RangeConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("3d_range"), " to the other peer."]), " Each ", r("RangeConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
-                    pinformative(R("ProductConfirmation"), " messages use the ", r("ReconciliationChannel"), "."),
+                    pinformative(R("RangeConfirmation"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_eagerness", code("Eagerness"), [
                     pseudocode(
                         new Struct({
                             id: "Eagerness",
-                            comment: ["Express a preference whether the other peer should eaerly forward ", rs("payload"), " in the intersection of two ", rs("aoi"), "."],
+                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("payload"), " in the intersection of two ", rs("aoi"), "."],
                             fields: [
                                 {
                                     id: "EagernessEagerness",
                                     name: "is_eager",
                                     comment: ["Whether ", rs("payload"), " should be pushed."],
-                                    rhs: r("3d_product"),
+                                    rhs: hl_builtin("bool"),
                                 },
                                 {
                                     id: "EagernessSenderHandle",
@@ -711,15 +711,15 @@ export const sync: Expression = site_template(
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
-                                    id: "SyncHandleFreeType",
-                                    name: "handle_type",
-                                    rhs: r("H"),
-                                },
-                                {
                                     id: "SyncHandleFreeMine",
                                     comment: ["Indicates whether the peer sending this message is the one who created the ", r("SyncHandleFreeHandle"), "(", code("true"), ") or not (", code("false"), ")."],
                                     name: "mine",
                                     rhs: hl_builtin("bool"),
+                                },
+                                {
+                                    id: "SyncHandleFreeType",
+                                    name: "handle_type",
+                                    rhs: r("H"),
                                 },
                             ],
                         }),
@@ -780,83 +780,40 @@ export const sync: Expression = site_template(
                     ),
                 ]),
             ]),
+
+            hsection("sync_encodings", "Encodings", [
+                pinformative("wip"),
+                ols(
+                    r("RevealCommitment"),
+                    r("BindNamespacePrivate"),
+                    r("PsiReply"),
+                    r("BindNamespacePublic"),
+                    r("BindCapability"),
+                    [r("EntryPush"), ", special cases for ", lis("available_bytes 0", "available_bytes all")],
+                    r("PayloadPush"),
+                    r("BindPayloadRequest"),
+                    [r("BindPayloadRequest"), ", special case for ", lis("offset 0")],
+                    r("PayloadResponse"),
+                    r("BindAreaOfInterest"),
+                    r("RangeFingerprint"),
+                    r("RangeEntries"),
+                    r("RangeConfirmation"),
+                    [r("Eagerness"), ", special cases for ", lis("is_eager false", "is_eager true")],
+                    r("SyncGuarantee"),
+                    r("SyncAbsolve"),
+                    r("SyncOops"),
+                    r("SyncStartedDropping"),
+                    r("SyncApology"),
+                    r("SyncHandleFree"),
+                    [r("SyncHandleFree"), ", special cases for ", lis("mine false", "mine true")],
+                    r("SyncHandleConfirm"),
+                    r("SyncHandleStartedDropping"),
+                    r("SyncHandleApology"),
+                ),
+                pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
+                pinformative("6 logical channels, 4 handle kinds"),
+            ]),
         ]),
 
     ],
 );
-
-/*
-
-### Resource Control Messages
-
-The remaining messages implement the logical channel management and handle management outlined in the [resource control document](./resource-control). All of these are control messages, that is, they do not belong to any logical channel themselves. The `Bind` message from the resource control document does not appear here, as we have defined explicit messages for binding specific handle types that supersede the generic formulation of the `Bind` message.
-
-We define the following types to explicitly select logical channels and binding types:
-
-```rust
-enum LogicalChannel {
-  Namespace,
-  // More channel types will be defined as we expand to a feature-complete sync spec.
-}
-
-enum BindingType {
-  Namespace,
-  // More binding types will be defined as we expand to a feature-complete sync spec.
-}
-```
-
-The remaining message kinds are taken one-to-one from the [resource control document](./resource-control), we list them here for completeness.
-
-```rust
-// Backpressure for logical channels
-
-// The server makes a binding promise of available buffer capacity to the client.
-Guarantee {
-    amount: u64,
-    channel: LogicalChannel,
-},
-// The client allows the server to reduce its total buffer capacity by `amount`.
-Absolve {
-    amount: u64,
-    channel: LogicalChannel,
-},
-// The server asks the client to send an `Absolve` message such that the remaining buffer capacity will be `target`.
-Oops {
-    target: u64,
-    channel: LogicalChannel,
-},
-// The server notifies the client that it has started dropping messages and will continue to do so until it receives an `Apology` message. Note that the server must send any outstanding guarantees of the channel before sending a `StartedDropping` message.
-StartedDropping {
-    channel: LogicalChannel,
-},
-// The client notifies the server that it can stop dropping messages of this channel.
-Apology {
-    channel: LogicalChannel,
-},
-
-// Handle handling
-
-// A peer asks the other peer to free a handle.
-Free {
-    handle: u64,
-    mine: bool, // true if the peer sending this message is the one who created the binding, false otherwise. This is needed for symmetric protocols where both peers act as both client and server and issue handles to the same types of resources.
-    handle_type: BindingType,
-},
-// The server confirms that it has successfully processed the `number` oldest `Bind` messages.
-Confirmation {
-    number: u64,
-    handle_type: BindingType,
-},
-// The server notifies the client that it has started dropping messages that refer to handles greater than or equal to `at` and will continue to do so until it receives an `Apology` message.
-StartedDropping {
-    at: u64,
-    handle_type: BindingType,
-},
-// The client notifies the server that it can stop dropping messages that refer to handles greater than or equal to `at`. Note that the server will only accept apologies for the least handle (of the hadle type in question) for which it has sent a `StartedDropping` request.
-Apology {
-    at: u64,
-    handle_type: BindingType,
-},
-```
-
-*/

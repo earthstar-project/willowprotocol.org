@@ -215,15 +215,15 @@ export const resource_control: Expression = site_template(
                                 rhs: hl_builtin("u64"),
                             },
                             {
-                                id: "HandleFreeType",
-                                name: "handle_type",
-                                rhs: r("H"),
-                            },
-                            {
                                 id: "HandleFreeMine",
                                 comment: ["Indicates whether the peer sending this message is the one who created the ", r("HandleFreeHandle"), "(", code("true"), ") or not (", code("false"), "). This is needed for symmetric protocols where peers act as both ", r("handle_client"), " and ", r("handle_server"), " simultaneously and ", r("handle_bind"), " ", rs("resource_handle"), " to the same ", rs("handle_type"), "."],
                                 name: "mine",
                                 rhs: hl_builtin("bool"),
+                            },
+                            {
+                                id: "HandleFreeType",
+                                name: "handle_type",
+                                rhs: r("H"),
                             },
                         ],
                     }),
