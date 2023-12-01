@@ -345,7 +345,7 @@ export const sync: Expression = site_template(
                                     id: "PayloadPushAmount",
                                     name: "amount",
                                     comment: ["The number of transmitted bytes."],
-                                    rhs: hl_builtin("u16"),
+                                    rhs: hl_builtin("u64"),
                                 },
                                 {
                                     id: "PayloadPushBytes",
@@ -385,7 +385,7 @@ export const sync: Expression = site_template(
                                     rhs: hl_builtin("u64"),
                                 },
                                 {
-                                    id: "BindPayloadCapability",
+                                    id: "BindPayloadRequestCapability",
                                     name: "capability",
                                     comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("entry"), "."],
                                     rhs: hl_builtin("u64"),
@@ -425,7 +425,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindAreaOfInterest",
-                            comment: [R("handle_bind"), " an ", r("aoi"), " to a ", r("AreaOfInterestHandle"), "."],
+                            comment: [R("handle_bind"), " an ", r("aoi"), " to an ", r("AreaOfInterestHandle"), "."],
                             fields: [
                                 {
                                     id: "BindAreaOfInterestAOI",
@@ -527,7 +527,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "RangeEntriesFlag",
                                     name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the center wishes to receive a ", r("RangeEntries"), " message for the same ", r("3d_range"), " in return."],
+                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("RangeEntries"), " message for the same ", r("3d_range"), " in return."],
                                     rhs: hl_builtin("bool"),
                                 },
                                 {
@@ -789,6 +789,7 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
+                marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
                 pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
 
                 hsection("encoding_reveal_commitment", code("RevealCommitment"), [
@@ -821,36 +822,157 @@ export const sync: Expression = site_template(
                     pinformative("This is followed by the ", r("BindCapabilityCapability"), ", encoded with the ", r("encoding_function"), " for ", r("ReadCapability"), " (which need not encode the ", r("granted_namespace"), ")."),
                 ]),
 
-                pinformative("wip"),
-                ols(
-                    r("RevealCommitment"),
-                    r("BindNamespacePrivate"),
-                    r("PsiReply"),
-                    r("BindNamespacePublic"),
-                    r("BindCapability"),
-                    [r("EntryPush"), ", special cases for ", lis("available_bytes 0", "available_bytes all")],
-                    r("PayloadPush"),
-                    r("BindPayloadRequest"),
-                    [r("BindPayloadRequest"), ", special case for ", lis("offset 0")],
-                    r("PayloadResponse"),
-                    r("BindAreaOfInterest"),
-                    r("RangeFingerprint"),
-                    r("RangeEntries"),
-                    r("RangeConfirmation"),
-                    [r("Eagerness"), ", special cases for ", lis("is_eager false", "is_eager true")],
-                    r("SyncGuarantee"),
-                    r("SyncAbsolve"),
-                    r("SyncOops"),
-                    r("SyncStartedDropping"),
-                    r("SyncApology"),
-                    [r("SyncHandleFree"), ", special cases for ", lis("mine false", "mine true")],
-                    r("SyncHandleConfirm"),
-                    r("SyncHandleStartedDropping"),
-                    r("SyncHandleApology"),
-                ),
-                pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
-                pinformative("6 logical channels, 4 handle kinds"),
-                pinformative("Group messages whose header byte contains no information beyond the message type together."),
+                hsection("encoding_entry_push", code("EntryPush"), [
+                    pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00101"), "."),
+
+                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("EntryPushAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("EntryPushEntry"), " can be encoded efficiently, as can such an ", r("EntryPushOffset"), ". The ", r("EntryPushEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_payload_push", code("PayloadPush"), [
+                    pinformative("When encoding a ", r("PayloadPush"), " message, the five least significant bits of the first byte are ", code("00110"), "."),
+
+                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("PayloadPushAmount"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("PayloadPushAmount"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+
+                    pinformative("This is followed by ", r("PayloadPushAmount"), " bytes of ", r("payload"), "."),
+                ]),
+
+                hsection("encoding_bind_payload_request", code("BindPayloadRequest"), [
+                    pinformative("When encoding a ", r("BindPayloadRequest"), " message, the five least significant bits of the first byte are ", code("00111"), "."),
+
+                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("BindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_payload_response", code("PayloadResponse"), [
+                    pinformative("When encoding a ", r("PayloadResponse"), " message, the five least significant bits of the first byte are ", code("01000"), "."),
+
+                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+                ]),
+
+                hsection("encoding_bind_aoi", code("BindAreaOfInterest"), [
+                    pinformative("When encoding a ", r("BindAreaOfInterest"), " message, the five least significant bits of the first byte are ", code("01001"), "."),
+
+                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("BindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("BindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_range_fp", code("RangeFingerprint"), [
+                    pinformative("When encoding a ", r("RangeFingerprint"), " message, the five least significant bits of the first byte are ", code("01010"), "."),
+
+                    pinformative("The ", r("RangeFingerprintRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeFingerprintSenderHandle"), " and the ", r("RangeFingerprintReceiverHandle"), " as a ", r("RangeInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_range_entries", code("RangeEntries"), [
+                    pinformative("When encoding a ", r("RangeEntries"), " message, the five least significant bits of the first byte are ", code("01011"), "."),
+
+                    pinformative("The ", r("RangeEntriesRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeEntriesSenderHandle"), " and the ", r("RangeEntriesReceiverHandle"), " as a ", r("RangeInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_range_confirmation", code("RangeConfirmation"), [
+                    pinformative("When encoding a ", r("RangeConfirmation"), " message, the five least significant bits of the first byte are ", code("01100"), "."),
+
+                    pinformative("The ", r("RangeConfirmationRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeConfirmationSenderHandle"), " and the ", r("RangeConfirmationReceiverHandle"), " as a ", r("RangeInArea"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_eagerness", code("Eagerness"), [
+                    pinformative("When encoding a ", r("Eagerness"), " message, the five least significant bits of the first byte are ", code("01101"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_guarantee", code("Guarantee"), [
+                    pinformative("When encoding a ", r("SyncGuarantee"), " message, the five least significant bits of the first byte are ", code("01110"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_absolve", code("Absolve"), [
+                    pinformative("When encoding a ", r("SyncAbsolve"), " message, the five least significant bits of the first byte are ", code("01111"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_oops", code("Oops"), [
+                    pinformative("When encoding a ", r("SyncOops"), " message, the five least significant bits of the first byte are ", code("10000"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_started_dropping", code("ChannelStartedDropping"), [
+                    pinformative("When encoding a ", r("SyncStartedDropping"), " message, the five least significant bits of the first byte are ", code("10001"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_apology", code("ChannelApology"), [
+                    pinformative("When encoding a ", r("SyncApology"), " message, the five least significant bits of the first byte are ", code("10010"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_handle_free", code("Free"), [
+                    pinformative("When encoding a ", r("SyncHandleFree"), " message, the five least significant bits of the first byte are ", code("10011"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_handle_confirm", code("Confirm"), [
+                    pinformative("When encoding a ", r("SyncHandleConfirm"), " message, the five least significant bits of the first byte are ", code("10100"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_handle_started_dropping", code("HandleStartedDropping"), [
+                    pinformative("When encoding a ", r("SyncHandleStartedDropping"), " message, the five least significant bits of the first byte are ", code("10101"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                hsection("encoding_handle_apology", code("HandleApology"), [
+                    pinformative("When encoding a ", r("SyncHandleApology"), " message, the five least significant bits of the first byte are ", code("10110"), "."),
+
+                    pinformative("TODO define an encoding"),
+                ]),
+
+                // pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
+                // pinformative("6 logical channels, 4 handle kinds"),
+                // pinformative("Group messages whose header byte contains no information beyond the message type together."),
+
+                // ols(
+                //     r("RevealCommitment"),
+                //     r("BindNamespacePrivate"),
+                //     r("PsiReply"),
+                //     r("BindNamespacePublic"),
+                //     r("BindCapability"),
+                //     [r("EntryPush"), ", special cases for ", lis("offset 0", "offset all", "available_length all")],
+                //     r("PayloadPush"),
+                //     [r("BindPayloadRequest"), ", special case for ", lis("offset 0")],
+                //     r("PayloadResponse"),
+                //     r("BindAreaOfInterest"),
+                //     r("RangeFingerprint"),
+                //     r("RangeEntries"),
+                //     r("RangeConfirmation"),
+                //     [r("Eagerness"), ", special cases for ", lis("is_eager false", "is_eager true")],
+                //     r("SyncGuarantee"),
+                //     r("SyncAbsolve"),
+                //     r("SyncOops"),
+                //     r("SyncStartedDropping"),
+                //     r("SyncApology"),
+                //     [r("SyncHandleFree"), ", special cases for ", lis("mine false", "mine true")],
+                //     r("SyncHandleConfirm"),
+                //     r("SyncHandleStartedDropping"),
+                //     r("SyncHandleApology"),
+                // ),
             ]),
         ]),
 

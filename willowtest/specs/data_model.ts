@@ -80,3 +80,23 @@ export const data_model: Expression = site_template(
         ]),
     ],
 );
+
+/*
+
+In this document, we define the core data model of willow.
+
+Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes, not unlike a filesystem. For example, you might give the name `["blog", "recipes", "mustard_pasta"]` to the bytestring `"This must be delicious."`. Unlike a typical file system, entries of this kind can be efficiently shared with other users.
+
+At a later point you might change your mind about mustard pasta, overwriting the old entry at `["blog", "recipes", "mustard_pasta"]` with `"Tried it, not good."`. Willow keeps the timestamp of each assignment, the new entry overwrites the old one.
+
+If you wanted to hide that you ever considered mustard pasta in the first place, you can overwrite `["blog", "recipes"]` to remove *all* entries below it. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism prefix-based deletion.
+
+Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate *subspaces* — intuitively, each user writes to their own, separate universe of data. Willow allows for a multitude of ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems.
+
+Willow further allows the grouping of subspaces into completely independent *namespaces*. Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for pluggin in different such policies on a per-namespace basis.
+
+This is a full overview of willow: applications read and write data in and to subspaces, using hierarchical paths. Willow tracks timestamps of write operations, allow newer writes to replace older writes in the manner of a traditioal file system. These data collctions live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies.
+
+Now we can delve into the precise definition of these concepts.
+
+*/
