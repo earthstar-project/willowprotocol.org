@@ -23,8 +23,8 @@ export const specifications: Expression = site_template(
         lis(
           link_name("access_control", "Access control"),
           link_name(
-            "product_based_set_reconciliation",
-            "Product-based set reconciliation",
+            "3d_range_based_set_reconciliation",
+            "3d-range-based set reconciliation",
           ),
           link_name("psi", "Private set intersection"),
           link_name("resource_control", "Resource control"),

@@ -46,7 +46,25 @@ import { encodings } from "./specs/encodings.ts";
 import { threedProducts } from "./specs/3d_products.ts";
 import { e2e } from "./specs/e2e.ts";
 
-interface Document {
+export function quotes(...contents: Expression[]) {
+  const macro = new_macro(
+    (args, _ctx) => ["“", args, "”"],
+  );
+
+  return new Invocation(macro, contents);
+}
+
+export function single_quotes(...contents: Expression[]) {
+  const macro = new_macro(
+    (args, _ctx) => ["‘", args, "’"],
+  );
+
+  return new Invocation(macro, contents);
+}
+
+export const apo = "’";
+
+export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
 }
@@ -84,7 +102,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                       img(asset("nlnet.svg")),
                     ),
                   ),
-                  p("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
+                  pinformative("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission", apo, "s Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
                 ),
               ),
             ),

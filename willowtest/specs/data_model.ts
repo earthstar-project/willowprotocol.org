@@ -1,12 +1,15 @@
 import { Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { code, em, p } from "../../h.ts";
+import { code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { $, $dot } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
+import { asset } from "../../out.ts";
 import { Struct, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { Expression } from "../../tsgen.ts";
 import { def_parameter, link, lis, path, pinformative, site_template } from "../main.ts";
+
+const apo = "’";
 
 export const data_model: Expression = site_template(
     {
@@ -103,7 +106,7 @@ export const data_model: Expression = site_template(
                             {
                                 id: "timestamp",
                                 comment: ["The time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), " at which the ", r("entry"), " is claimed to have been created."],
-                                marginale: ["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
+                                marginale: ["Willow", apo, "s use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
                                 rhs: hl_builtin("u64"),
                             },
                             {
@@ -165,5 +168,7 @@ export const data_model: Expression = site_template(
 
             pinformative("How can we encrypt ", rs("entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
         ]),
+
+        img(asset("emblems/a.png")),
     ],
 );

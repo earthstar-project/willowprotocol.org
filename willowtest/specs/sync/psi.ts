@@ -6,6 +6,8 @@ import { marginale, sidenote } from "../../../marginalia.ts";
 import { Expression } from "../../../tsgen.ts";
 import { def_value, link, lis, pinformative, site_template } from "../../main.ts";
 
+const apo = "’";
+
 const Items = "\\mathrm{Items}";
 const item_to_group = "\\mathrm{item\\_to\\_group}";
 
@@ -20,7 +22,7 @@ export const psi: Expression = site_template(
         hsection("private_equality_testing", "Private Equality Testing", [
             pinformative("We start by considering a related but simpler problem: two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of ", sidenote("inequality", ["If the peers simply exchanged hashes of their items, peers could learn which other peers have equal items, so this is not a sufficiently private solution."]), ". Before giving the precise mathematical formulation, we describe the solution by way of analogy."),
 
-            pinformative("Imagine the items were ", em("colors"), ". Assume colors can easily be mixed with other colors, but \"unmixing\" a given color into its components is impossible. The following procedure then solves the problem:"),
+            pinformative("Imagine the items were ", em("colors"), ". Assume colors can easily be mixed with other colors, but unmixing a given color into its components is impossible. The following procedure then solves the problem:"),
 
             lis(
                 [preview_scope("Alfie and Betty each start with a data color ", def_value("data_A"), " and ", def_value("data_B"), " respectively.")],
@@ -29,7 +31,7 @@ export const psi: Expression = site_template(
                 ["Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", code("combine(combine(", r("data_B"), ", ", r("secret_B"), "), ", r("secret_A"), ")"), " and ", code("combine(combine(", r("data_A"), ", ", r("secret_A"), "), ", r("secret_B"), ")"), ")."],
             ),
     
-            pinformative("If they receive the same color they remembered, then they started with the same data color, and otherwise they did not. Because unmixing colors is impossible and mixing with a randomly chosen secret color essentially yields a new random-looking color, the peers cannot learn anything about each other's colors in case of inequality.", marginale(["Neither can any eavesdropper learn about the data colors. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the color metaphor from its wikipedia page."])),
+            pinformative("If they receive the same color they remembered, then they started with the same data color, and otherwise they did not. Because unmixing colors is impossible and mixing with a randomly chosen secret color essentially yields a new random-looking color, the peers cannot learn anything about each other", apo, "s colors in case of inequality.", marginale(["Neither can any eavesdropper learn about the data colors. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the color metaphor from its wikipedia page."])),
     
             pinformative(marginale(["Note that the color analogy is not fully accurate: data colors correspond to group members but secret colors correspond to scalars, which are of a different type than group members."]), "Leaving the world of analogy, the actual cryptographic primitives we use are ", link("finite cyclic groups", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), " — such as the ", link("X25519 elliptic curve", "https://en.wikipedia.org/wiki/Curve25519"), " — equipped with a way of serializing group members for transport and with a way of generating pseudo-random group members from the items to test for equality."),
     

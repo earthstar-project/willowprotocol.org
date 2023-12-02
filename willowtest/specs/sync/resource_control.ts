@@ -8,6 +8,8 @@ import { pseudocode } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
 import { def_parameter, ols, pinformative, site_template } from "../../main.ts";
 
+const apo = "’";
+
 export const resource_control: Expression = site_template(
     {
         title: "Resource Management",
@@ -18,7 +20,7 @@ export const resource_control: Expression = site_template(
 
         pinformative("Unfortunately, memory is finite, so there has to be a limit on how many messages can be copied elsewhere. Once that limit is reached, the process can either crash (not good), or it must wait for messages to finish processing, essentially leaving us with the same problem as we started with."),
 
-        pinformative("In some sense, there's no way around that. However, we would prefer if the communication partner ", em("knew"), " when this was about to happen; it could then throttle its more expensive messages, so that its cheaper messages could still be processed without delay. This is crucial to implementing logically independent communication channels on top of a single physical communication channel."),
+        pinformative("In some sense, there is no way around that. However, we would prefer if the communication partner ", em("knew"), " when this was about to happen; it could then throttle its more expensive messages, so that its cheaper messages could still be processed without delay. This is crucial to implementing logically independent communication channels on top of a single physical communication channel."),
 
         pinformative("Here, we describe a simple way of maintaining independent message buffers for each logical communication channel. When receiving a message that will take a long time to process, a peers moves it into the message buffer for that kind of messages. This keeps the main communication channel responsive. If a message buffer has insufficient capacity for new messages, the other peer is informed in advance so that it does not send messages that cannot be buffered."),
 
@@ -37,7 +39,7 @@ export const resource_control: Expression = site_template(
         hsection("resource_control_overview", "Solution Overview", [
             pinformative("To satisfy these requirements, our solution builds on the concept of ", def("guarantee", "guarantees", ["A ", def_fake("guarantee"), " constitutes a binding promise that server will be able to buffer messages for a particular ", r("logical_channel"), ". One ", r("guarantee"), " corresponds to one byte of buffer space."]), ". The ", r("resources_server"), " sends ", rs("guarantee"), " of available buffer space to the ", r("resources_client"), " per ", r("logical_channel"), "; the ", r("resources_client"), " tracks its available ", rs("guarantee"), " and knows that all of its messages that do not exceed the ", rs("guarantee"), " will be buffered."),
 
-            pinformative("When the ", r("resources_server"), " increases a buffer's capacity, it gives that many ", rs("guarantee"), " (measured in bytes) for the corresponding ", r("logical_channel"), " to the ", r("resources_client"), ". When establishing the connection, the ", r("resources_client"), " has no ", rs("guarantee"), ", and the ", r("resources_server"), " typically starts by sending ", rs("guarantee"), " equal to its initial buffer capacities. Conceptually, the ", r("resources_server"), " begins its operation by increasing its buffer capacities from zero to their actual starting amounts."),
+            pinformative("When the ", r("resources_server"), " increases a buffer", apo, "s capacity, it gives that many ", rs("guarantee"), " (measured in bytes) for the corresponding ", r("logical_channel"), " to the ", r("resources_client"), ". When establishing the connection, the ", r("resources_client"), " has no ", rs("guarantee"), ", and the ", r("resources_server"), " typically starts by sending ", rs("guarantee"), " equal to its initial buffer capacities. Conceptually, the ", r("resources_server"), " begins its operation by increasing its buffer capacities from zero to their actual starting amounts."),
 
             pinformative("The second way of giving ", rs("guarantee"), " occurs when the ", r("resources_server"), " has processed a buffered message and thus frees up buffer space. It then communicates the amount of buffer space that was freed up, and for which ", r("logical_channel"), ". The ", r("resources_server"), " need not communicate this immediately, it is free to send only the occasional update that aggregates ", rs("guarantee"), " that stem from processing several messages from the same ", r("logical_channel"), "."),
 

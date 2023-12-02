@@ -3,6 +3,7 @@ import {
   def_value,
   lis,
   pinformative,
+  quotes,
   site_template,
 } from "../main.ts";
 import {
@@ -27,6 +28,8 @@ export const encodings: Expression = site_template({
   name: "encodings",
   title: "Encodings",
 }, [
+  pinformative("wip, the current version of this page was transferred verbatim from an older version of Meadowcap. The definitions are correct, but the presentation needs some reworking."),
+
   pinformative(
     "In order to digitally sign the logical values of Willow and Meadowcap (entries, capabilities, etc.), these logical values must first be converted to bytestrings. Entries and capabilities contain smaller values such as hashes or signatures. Meadowcap does not assume a fixed hash function or signature scheme, so the instructions on how to encode these values as bytestrings have to be supplied as protocol parameters. For things to work correctly, Meadowcap requires certain properties of the encoding function. We first give a succinct, mathematical definition of valid encoding functions, followed by a more accessible, English explanation.",
   ),
@@ -94,14 +97,14 @@ export const encodings: Expression = site_template({
       tbody(
         tr(
           td(img(asset("meadowcap/turtle.png"))),
-          td(code(`"turtle"`)),
+          td(code(quotes("turtle"))),
           td(img(asset("meadowcap/checkmark.png"))),
         ),
       ),
       tbody(
         tr(
           td(img(asset("meadowcap/turtle.png"))),
-          td(code(`"turtle" | "tortoise`)),
+          td(code(quotes("turtle"), " | ", quotes("tortoise"))),
           td(img(asset("meadowcap/cross.png"))),
         ),
       ),
@@ -135,23 +138,23 @@ export const encodings: Expression = site_template({
       ),
       tbody(
         tr(
-          td(code(`"turtle"`)),
+          td(code(quotes("turtle"))),
           td(img(asset("meadowcap/turtle.png"))),
           td({ rowspan: "2" }, img(asset("meadowcap/checkmark.png"))),
         ),
         tr(
-          td(code(`"tortoise"`)),
+          td(code(quotes("tortoise"))),
           td(img(asset("meadowcap/questionmark.png"))),
         ),
       ),
       tbody(
         tr(
-          td(code(`"turtle"`)),
+          td(code(quotes("turtle"))),
           td(img(asset("meadowcap/turtle.png"))),
           td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
         ),
         tr(
-          td(code(`"tortoise"`)),
+          td(code(quotes("tortoise"))),
           td(img(asset("meadowcap/turtle.png"))),
         ),
       ),
@@ -176,34 +179,34 @@ export const encodings: Expression = site_template({
         ),
         tbody(
           tr(
-            td(code(`"turtle"`)),
+            td(code(quotes("turtle"))),
             td(img(asset("meadowcap/turtle.png"))),
             td({ rowspan: "2" }, img(asset("meadowcap/checkmark.png"))),
           ),
           tr(
-            td(code(`"turtleneck"`)),
+            td(code(quotes("turtleneck"))),
             td(img(asset("meadowcap/turtle.png"))),
           ),
         ),
         tbody(
           tr(
-            td(code(`"turtle"`)),
+            td(code(quotes("turtle"))),
             td(img(asset("meadowcap/turtle.png"))),
             td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
           ),
           tr(
-            td(code(`"turtleneck"`)),
+            td(code(quotes("turtleneck"))),
             td(img(asset("meadowcap/questionmark.png"))),
           ),
         ),
         tbody(
           tr(
-            td(code(`"turtle"`)),
+            td(code(quotes("turtle"))),
             td(img(asset("meadowcap/turtle.png"))),
             td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
           ),
           tr(
-            td(code(`"turtleneck"`)),
+            td(code(quotes("turtleneck"))),
             td(img(asset("meadowcap/turtleneck.png"))),
           ),
         ),

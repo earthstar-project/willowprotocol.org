@@ -540,5 +540,7 @@ export const meadowcap: Expression = site_template(
         ),
       ),
     ]),
+
+    img(asset("meadowcap/meadowcap.png")),
   ],
 );

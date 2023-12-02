@@ -7,6 +7,8 @@ import { asset } from "../../../out.ts";
 import { Expression } from "../../../tsgen.ts";
 import { link, pinformative, site_template } from "../../main.ts";
 
+const apo = "’";
+
 export const access_control: Expression = site_template(
     {
         title: "Access Control",
@@ -23,11 +25,11 @@ export const access_control: Expression = site_template(
 
         marginale(img(asset("meadowcap/recommended_proof_technique.png"))),
 
-        pinformative("To negotiate a random ", code("m"), "-bit number, each peer locally generates a random ", code("m"), "-bit number, hashes it with a well-known, secure hash function, and sends the digest to the other peer. Once both peers have received the other's digest, they then exchange their actual numbers, and verify that the number they received hashes to the digest they received before (if it does not, they abort the connection). XOR-ing the two locally chosen numbers then yields the desired random number. This mechanism is called a ", def({ id: "commitment_scheme", singular: "commitment scheme"}), "."),
+        pinformative("To negotiate a random ", code("m"), "-bit number, each peer locally generates a random ", code("m"), "-bit number, hashes it with a well-known, secure hash function, and sends the digest to the other peer. Once both peers have received the other", apo, "s digest, they then exchange their actual numbers, and verify that the number they received hashes to the digest they received before (if it does not, they abort the connection). XOR-ing the two locally chosen numbers then yields the desired random number. This mechanism is called a ", def({ id: "commitment_scheme", singular: "commitment scheme"}), "."),
 
-        pinformative("One peer can use this number directly as a ", def({id: "access_challenge", singular: "access challenge"}), ": the other peer can prove that it holds the secret key that corresponds to some public key by producing a valid signature for the ", r("access_challenge"), ". The other peer should use a different ", r("access_challenge"), ", lest the peers copy each other's signatures. Hence, the other peer should simply use the inverted number (where every bit is flipped) as its ", r("access_challenge"), "."),
+        pinformative("One peer can use this number directly as a ", def({id: "access_challenge", singular: "access challenge"}), ": the other peer can prove that it holds the secret key that corresponds to some public key by producing a valid signature for the ", r("access_challenge"), ". The other peer should use a different ", r("access_challenge"), ", lest the peers copy each other", apo, "s signatures. Hence, the other peer should simply use the inverted number (where every bit is flipped) as its ", r("access_challenge"), "."),
 
-        pinformative("It is important to use this cooperative random number generation rather than allowing each peer to freely choose the ", r("access_challenge"), " they present to the other peer. If peers immediately transmitted the random choice without transmitting the hash first, a malicious peer could simply wait for the other's choice before making its own choice, allowing it to freely select the resulting challenge. And if challenges were chosen directly, a malicious peer could simply pose a challenge that it itself needs to answer to a different, honest peer to obtain a valid signature without knowing the corresponding secret key."),
+        pinformative("It is important to use this cooperative random number generation rather than allowing each peer to freely choose the ", r("access_challenge"), " they present to the other peer. If peers immediately transmitted the random choice without transmitting the hash first, a malicious peer could simply wait for the other", apo, "s choice before making its own choice, allowing it to freely select the resulting challenge. And if challenges were chosen directly, a malicious peer could simply pose a challenge that it itself needs to answer to a different, honest peer to obtain a valid signature without knowing the corresponding secret key."),
 
         pinformative("As closing thoughts, we want to compare this way of controlling read access with that of encrypting data and passing it around freely. Both keep data inaccessible to unauthorized agents as long as the underlying cryptographic primitives remain strong. Freely sharing encrypted data has the drawback that all data becomes public once the encryption primitive is broken, whereas peer could begin to refuse to pass on any data once the signature scheme is broken. However, encrypted data can be readily propagated through a peer-to-peer network, whereas access-controlled unencrypted data can only travel between peers with access."),
 
