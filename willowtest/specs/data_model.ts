@@ -138,8 +138,8 @@ export const data_model: Expression = site_template(
             ))),
 
             pinformative(
-                marginale(["When two peers connect and wish to update each other, they compute the ", rs("join"), " of all their ", rs("store"), " with equal ", r("namespace_id"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
-                marginale(["Formally, adding a new ", r("entry"), " to a ", r("store"), " consists of computing the ", r("join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("entry"), "."]),
+                marginale(["When two peers connect and wish to update each other, they compute the ", rs("store_join"), " of all their ", rs("store"), " with equal ", r("namespace_id"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
+                marginale(["Formally, adding a new ", r("entry"), " to a ", r("store"), " consists of computing the ", r("store_join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("entry"), "."]),
                 
                 "The ", def({id: "store_join", singular: "join"}), " of two ", rs("store"), " ", code("r1"), " and ", code("r2"), " that store ", rs("entry"), " of the same ", r("namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
                 ["Starts with the union of ", code("r1"), " and ", code("r2"), "."],
@@ -149,7 +149,21 @@ export const data_model: Expression = site_template(
                 ),
             ),
 
-            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which groupings and orderings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. ", Rs("store"), " form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") under the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
+            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which order and groupings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. ", Rs("store"), " form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") under the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
+        ]),
+
+        hsection("data_further", "Further Reading", [
+            pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
+
+            pinformative("How can we precisely delimit meaningful groups of ", rs("entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("entry"), " can be characterized) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("entry"), " ", link_name("grouping_entries", "here"), "."),
+
+            pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterized nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
+
+            pinformative("How should we select the ", r("AuthorizationToken"), " and ", r("is_authorized_write"), " parameters? Different deployments of Willow will have different needs. We provide ", link_name("meadowcap", "Meadowcap"), ", a capability-based solution that should be suitable for most use-cases."),
+
+            pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronize data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
+
+            pinformative("How can we encrypt ", rs("entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
         ]),
     ],
 );

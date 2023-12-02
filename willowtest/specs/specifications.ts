@@ -16,6 +16,7 @@ export const specifications: Expression = site_template(
         lis(
           link_name("encodings", "What we mean when we talk about Encodings"),
           link_name("grouping_entries", "Grouping Entries"),
+          link_name("e2e", "Encrypting Entries"),
         ),
         link_name("meadowcap", "Meadowcap capability system"),
         link_name("sync", "Synchronisation"),

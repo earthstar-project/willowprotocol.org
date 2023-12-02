@@ -44,6 +44,7 @@ import { timestamps_really } from "./specs/more/timestamps_really.ts";
 import { specifications } from "./specs/specifications.ts";
 import { encodings } from "./specs/encodings.ts";
 import { threedProducts } from "./specs/3d_products.ts";
+import { e2e } from "./specs/e2e.ts";
 
 interface Document {
   title: string;
@@ -370,6 +371,7 @@ evaluate([
       out_index_directory("data-model", data_model),
       out_index_directory("encodings", encodings),
       out_index_directory("3d-products", threedProducts),
+      out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [
         out_file("index.html", create_etags(sync)),
