@@ -7,8 +7,8 @@ import {
   site_template,
 } from "../main.ts";
 import {
+Attributes,
   code,
-  em,
   figcaption,
   figure,
   img,
@@ -22,7 +22,16 @@ import {
 import { r, def } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale_inlineable } from "../../marginalia.ts";
-import { Expression } from "../../tsgen.ts";
+import { Expression, Invocation, new_macro } from "../../tsgen.ts";
+
+export function small_img(src: Expression, attributes: Attributes = {}): Expression {
+  const macro = new_macro(
+      (args, _ctx) => {
+          return img(args[0], {...attributes, style: "height: 32px;"});
+      },
+  );
+  return new Invocation(macro, [src]);
+}
 
 export const encodings: Expression = site_template({
   name: "encodings",
@@ -96,23 +105,23 @@ export const encodings: Expression = site_template({
       ),
       tbody(
         tr(
-          td(img(asset("meadowcap/turtle.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
           td(code(quotes("turtle"))),
-          td(img(asset("meadowcap/checkmark.png"))),
+          td(small_img(asset("meadowcap/checkmark.png"))),
         ),
       ),
       tbody(
         tr(
-          td(img(asset("meadowcap/turtle.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
           td(code(quotes("turtle"), " | ", quotes("tortoise"))),
-          td(img(asset("meadowcap/cross.png"))),
+          td(small_img(asset("meadowcap/cross.png"))),
         ),
       ),
       tbody(
         tr(
-          td(img(asset("meadowcap/turtle.png"))),
-          td(img(asset("meadowcap/questionmark.png"))),
-          td(img(asset("meadowcap/cross.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
+          td(small_img(asset("meadowcap/questionmark.png"))),
+          td(small_img(asset("meadowcap/cross.png"))),
         ),
       ),
     ),
@@ -139,23 +148,23 @@ export const encodings: Expression = site_template({
       tbody(
         tr(
           td(code(quotes("turtle"))),
-          td(img(asset("meadowcap/turtle.png"))),
-          td({ rowspan: "2" }, img(asset("meadowcap/checkmark.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
+          td({ rowspan: "2" }, small_img(asset("meadowcap/checkmark.png"))),
         ),
         tr(
           td(code(quotes("tortoise"))),
-          td(img(asset("meadowcap/questionmark.png"))),
+          td(small_img(asset("meadowcap/questionmark.png"))),
         ),
       ),
       tbody(
         tr(
           td(code(quotes("turtle"))),
-          td(img(asset("meadowcap/turtle.png"))),
-          td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
+          td({ rowspan: "2" }, small_img(asset("meadowcap/cross.png"))),
         ),
         tr(
           td(code(quotes("tortoise"))),
-          td(img(asset("meadowcap/turtle.png"))),
+          td(small_img(asset("meadowcap/turtle.png"))),
         ),
       ),
     ),
@@ -180,34 +189,34 @@ export const encodings: Expression = site_template({
         tbody(
           tr(
             td(code(quotes("turtle"))),
-            td(img(asset("meadowcap/turtle.png"))),
-            td({ rowspan: "2" }, img(asset("meadowcap/checkmark.png"))),
+            td(small_img(asset("meadowcap/turtle.png"))),
+            td({ rowspan: "2" }, small_img(asset("meadowcap/checkmark.png"))),
           ),
           tr(
             td(code(quotes("turtleneck"))),
-            td(img(asset("meadowcap/turtle.png"))),
+            td(small_img(asset("meadowcap/turtle.png"))),
           ),
         ),
         tbody(
           tr(
             td(code(quotes("turtle"))),
-            td(img(asset("meadowcap/turtle.png"))),
-            td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
+            td(small_img(asset("meadowcap/turtle.png"))),
+            td({ rowspan: "2" }, small_img(asset("meadowcap/cross.png"))),
           ),
           tr(
             td(code(quotes("turtleneck"))),
-            td(img(asset("meadowcap/questionmark.png"))),
+            td(small_img(asset("meadowcap/questionmark.png"))),
           ),
         ),
         tbody(
           tr(
             td(code(quotes("turtle"))),
-            td(img(asset("meadowcap/turtle.png"))),
-            td({ rowspan: "2" }, img(asset("meadowcap/cross.png"))),
+            td(small_img(asset("meadowcap/turtle.png"))),
+            td({ rowspan: "2" }, small_img(asset("meadowcap/cross.png"))),
           ),
           tr(
             td(code(quotes("turtleneck"))),
-            td(img(asset("meadowcap/turtleneck.png"))),
+            td(small_img(asset("meadowcap/turtleneck.png"))),
           ),
         ),
       ),
