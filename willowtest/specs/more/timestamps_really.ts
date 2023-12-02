@@ -14,7 +14,7 @@ export const timestamps_really: Expression = site_template(
     [
         pinformative("Willow implements a key-value store (up to prefix-based overwrites), and a key-value store can map any one key to at most one value. Willow uses ", em("timestamps"), " to resolve conflicting mappings. This design decision might trigger some healthy skepticism, so this text walks you through our reasoning for building them into the protocol."),
 
-        hsection("why_no_timestamps", "Why Timestamps are Suspicious", [
+        hsection("why_no_timestamps", "Why Timestamps Might Be Suspicious", [
             pinformative("We start by laying out why unreflected usage of timestamps is a bad idea; both to give a solid foundation to our arguments in favor of using them regardless, and to give you a clear picture of which blind spots we might have (please reach out and tell us about them)."),
 
             pinformative("Peer-to-peer systems operate in an asynchronous model of communication: peers cannot know how long it takes until a communication of theirs reaches its recipient. This networking model is full of ", s("depressing"), " ", em("fun"), " impossibility results, such as the impossibility of ", link("reaching consensus", "https://en.wikipedia.org/wiki/Consensus_(computer_science)#The_FLP_impossibility_result_for_asynchronous_deterministic_consensus"), ". If it was possible to reach consensus in a peer-to-peer system, it could collectively act like a large, centralised system, simplifying many design issues."),
@@ -63,7 +63,7 @@ export const timestamps_really: Expression = site_template(
         hsection("timestamps_meadowcap", "Timestamps in Meadowcap", [
             marginale("Meadowcap is a security component. There will be no happy-case reasoning here, only adversarially chosen timestamps."),
 
-            pinformative("Willow allows write-access control via the ", r("is_authorised_write"), " function, which receives a full ", r("entry"), " as input — including its ", r("timestamp"), ". ", link_name("meadowcap", "Meadowcap"), " (the recommended access-control system for Willow) allows to incorporate ", rs("timestamp"), " into access control. In the following, we discuss issues of timestamps with respect to Meadowcap. We assume familiarity with (the introduction of) the ", link_name("meadowcap", "Meadowcap specification"), "."),
+            pinformative("Willow allows write-access control via the ", r("is_authorized_write"), " function, which receives a full ", r("entry"), " as input — including its ", r("timestamp"), ". ", link_name("meadowcap", "Meadowcap"), " (the recommended access-control system for Willow) allows to incorporate ", rs("timestamp"), " into access control. In the following, we discuss issues of timestamps with respect to Meadowcap. We assume familiarity with (the introduction of) the ", link_name("meadowcap", "Meadowcap specification"), "."),
 
             pinformative("When a Meadowcap capability restricts ", r("entry"), " creation based on ", rs("timestamp"), ", this has ", em("absolutely nothing"), " to do with the (physical) time at which ", rs("entry"), " are ", em("created"), ". It merely restricts which times can be ", em("claimed"), " as the ", rs("timestamp"), " of ", rs("entry"), "."),
 

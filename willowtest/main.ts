@@ -170,6 +170,20 @@ export function aside_block(
   return aside({ class: "long" }, body);
 }
 
+export function path(
+  ...components: Expression[]
+): Expression {
+  const e: Expression[] = ["["];
+  for (let i = 0; i < components.length; i++) {
+    if (i != 0) {
+      e.push(", ");
+    }
+    e.push(components[i]);
+  }
+  e.push("]");
+  return code(...e);
+}
+
 export function lis(
   ...items: Expression[]
 ): Invocation {

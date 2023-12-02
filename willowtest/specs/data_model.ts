@@ -1,10 +1,12 @@
-import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
+import { Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { code, em, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
+import { $, $dot } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
-import { marginale } from "../../marginalia.ts";
+import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
+import { Struct, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { Expression } from "../../tsgen.ts";
-import { def_parameter, link, lis, pinformative, site_template } from "../main.ts";
+import { def_parameter, link, lis, path, pinformative, site_template } from "../main.ts";
 
 export const data_model: Expression = site_template(
     {
@@ -12,91 +14,140 @@ export const data_model: Expression = site_template(
         name: "data_model",
     },
     [
-        pinformative("At its essence, Willow is a system for naming pieces of data. Names are ", em("hierarchical"), " to allow for meaningful grouping of data. Name management is decentralized and local-first, ideally suited for ", em("peer-to-peer"), " applications. The naming process includes a flexible ", em("authentication"), " process, to prevent unwanted interference with your data."),
+        pinformative("In this document, we define the core data model of Willow."),
 
-        hsection("willow_parameters", "Preliminaries", [
-            pinformative("An instantiation of Willow must define concrete choices of the following parameters:"),
+        pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes, not unlike a filesystem. For example, you might give the name ", path("blog", "recipes", "mustard_pasta"), " to the bytestring ", code("Sounds delicious"), ". Unlike a typical file system, entries of this kind can be efficiently shared with other users."),
 
-            preview_scope(
-                lis(
-                    ["a natural number ", def_parameter("max_path_length"), " that denotes the maximum length of ", rs("path"), " (defined later),"],
-                    ["sets ", def_parameter("NamespaceId"), ", ", def_parameter("SubspaceId"), ", ", def_parameter("AuthorizationToken"), ","],
-                    ["a function ", def_parameter("hash_payload"), " from bytestrings to some fixed, ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " domain ", def_parameter("Digest"), ", and"],
-                    ["a function ", def_parameter("is_authorized_write"), " from pairs of an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to booleans."],
-                ),
-            ),            
+        pinformative("At a later point you might change your mind about mustard pasta, overwriting the old entry at path ", path("blog", "recipes", "mustard_pasta"), " with ", code("Tried it, not good"), ". Willow tracks the timestamp of each assignment, the new entry overwrites the old one."),
+
+        pinformative("If you wanted to hide that you ever considered mustard pasta in the first place, you could overwrite the path ", path("blog", "recipes"), " to remove ", em("all"), " entries below it. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", em("prefix-based deletion"), "."),
+
+        pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
+
+        pinformative("Willow further allows the grouping of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
+
+        pinformative("This constitutes a full overview of the data model of Willow. Applications read and write data in and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
+
+        pinformative("Now we can ", em("almost"), " delve into the precise definition of these concepts."),
+
+        hsection("willow_parameters", "Parameters", [
+            pinformative("Some questions in protocol design have no clear-cut answer. Should namespaces be identified via human-readable strings, or via the public keys of some digital signature scheme? That depends entirely on the use-case. To sidestep such questions, the Willow data model is ", em("generic"), " over certain choices of parameters. You can instantiate Willow to use strings as the identifiers of namespaces, or you could have it use 256 bit integers, or urls, or iris scans, etc."),
+
+            pinformative("This makes Willow a higher-order protocol: you supply a set of specific choices for its parameters, and in return you get a concrete protocol that you can then use. If different systems instantiate Willow with non-equal parameters, the results will not be interoperable, even though both systems use Willow."),
+
+            pinformative(marginale(["We give precise semantics to these parameters in the spec proper, the list need not fully make sense on the first read-through."]), "An instantiation of Willow must define concrete choices of the following parameters:"),
+
+            lis(
+                [
+                    "A type ", def_parameter("NamespaceId", "NamespaceId", ["A protocol parameter, the type of ", rs("namespace_id"), "."]), " for identifying namespaces."
+                ],
+                [
+                    "A type ", def_parameter("SubspaceId", "SubspaceId", ["A protocol parameter, the type of ", rs("subspace_id"), "."]), " for identifying subspaces."
+                ],
+
+                [
+                    "A natural number ", def_parameter("max_component_length", "max_component_length", ["A protocol parameter, the maximal length of individual ", r("path"), " components."]), " for limiting the length of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter("max_component_count", "max_component_count", ["A protocol parameter, the maximal number of components (bytestrings) in a single ", r("path"), "."]), " for limiting the number of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter("max_path_length", "max_path_length", ["A protocol parameter, the maximal sum of the lengths of the components (bytestrings) of a single ", r("path"), " in bytes."]), " for limiting the overall size of paths.",
+                ],
+
+                [
+                    "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " set ", def_parameter("PayloadDigest", "PayloadDigest", ["A protocol parameter, the totally ordered type of ", rs("payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
+                ],
+                [
+                    " A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
+                ],
+
+                [
+                    "A type ", def_parameter("AuthorizationToken", "AuthorizationToken", ["A protocol parameter, required to define ", rs("possibly_authorized_entry"), "."]), " for proving write permission."
+                ],
+                [
+                    marginale([link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function."]), "A function ", def_parameter("is_authorized_write", "is_authorized_write", ["A protocol parameter, required to define ", rs("authorized_entry"), "."]), " that maps an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to a boolean, indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("entry"), "."
+                ],
+            ),
         ]),
 
         hsection("data_model_concepts", "Concepts", [
-            pinformative("A ", def("namespace"), " is a collaboratively maintained, mutable key-value mapping. Every ", r("namespace"), " is identified by a ", def({ id: "namespace_id", singular: "namespace id" }), " of type ", r("NamespaceId"), ". ", Rs("namespace"), " can be modified concurrently by different authors, hence they only exist as an abstraction, not as actual data structures at particular locations."),
+            pinformative("Willow can store arbitrary bytestrings of at most ", $("2^{64} - 1"), " bytes. We call such a bytestring a ", def("payload", "payload", ["A ", def_fake("payload"), " is a bytestring of at most ", $("2^{64} - 1"), " bytes."]), "."),
 
-            pinformative("A ", def("store"), " is a snapshot of a ", r("namespace"), " at a particular moment in (distributed) time, usually backed by a persistent database. More precisely, a ", r("store"), " is a collection of ", rs("authorized_entry"), ". An ", def({ id: "authorized_entry", singular: "authorized entry", plural: "authorized entries" }), " consists of an ", r("entry"), " (to be defined later), and an ", def({ id: "authorization_token", singular: "authorization token" }), " of type ", r("AuthorizationToken"), " such that ", r("is_authorized_write"), " returns ", code("true"), " when given the ", r("entry"), " and the ", r("authorization_token"), "."),
-
-            pinformative("An ", def({ id: "entry", singular: "entry", plural: "entries" }), " is a pair of a ", r("record_identifier"), " and a ", r("record"), "."),
-
-            pinformative("A ", def({ id: "record_identifier", singular: "record identifier" }), " is a triplet of"),
+            pinformative("A ", def("path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), "."),
 
             preview_scope(
-                lis(
-                    ["the ", r("namespace_id"), " of the namespace to which the ", r("entry"), " belongs,"],
-                    ["the ", def({id: "subspace_id", singular: "subspace id"}), ", which is of type ", r("SubspaceId"), ", and"],
-                    ["the ", def("path"), ", a bytestring of at most ", r("max_path_length"), " bytes."],
+                p("The ", "metadata", marginale(["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")]), " associated with each ", r("payload"), " is called an ", def({id: "entry", plural: "entries"}), ":"),
+
+                pseudocode(
+                    new Struct({
+                        id: "Entry",
+                        comment: ["The metadata for storing a ", r("payload"), "."],
+                        fields: [
+                            {
+                                id: "namespace_id",
+                                comment: ["The identifier of the ", r("namespace"), " to which the ", r("entry"), " belongs."],
+                                rhs: r("NamespaceId"),
+                            },
+                            {
+                                id: "subspace_id",
+                                comment: ["The identifier of the ", r("subspace"), " to which the ", r("entry"), " belongs."],
+                                rhs: r("SubspaceId"),
+                            },
+                            {
+                                id: "entry_path",
+                                comment: ["The ", r("path"), " to which the ", r("entry"), " was written."],
+                                rhs: r("path"),
+                            },
+                            {
+                                id: "timestamp",
+                                comment: ["The time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), " at which the ", r("entry"), " is claimed to have been created."],
+                                rhs: hl_builtin("u64"),
+                            },
+                            {
+                                id: "payload_digest",
+                                comment: ["The result of applying ", r("hash_payload"), " to the ", r("payload"), "."],
+                                rhs: r("PayloadDigest"),
+                            },
+                            {
+                                id: "payload_length",
+                                comment: ["The length of the ", r("payload"), " in bytes."],
+                                rhs: hl_builtin("u64"),
+                            },
+                        ],
+                    }),
                 ),
             ),
 
-            pinformative("A ", def("record"), " is a triplet of"),
+            pinformative("A ", def({id: "possibly_authorized_entry", singular: "possibly authorized entry", plural: "possibly authorized entries"}), " is a pair of an ", r("entry"), " and an ", r("AuthorizationToken"), ". An ", def({id: "authorized_entry", singular: "authorized entry", plural: "authorized entries"}), " is a ", r("possibly_authorized_entry"), " for which ", r("is_authorized_write"), " returns ", code("true"), "."),
 
-            preview_scope(
-                lis(
-                    ["the ", def("timestamp"), ", which is a 64 bit integer (interpreted as microseconds since the Unix epoch),", marginale(["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")])],
-                    ["the ", def({id: "payload_length", singular: "payload length"}), ", a 64 bit unsigned integer, and"],
-                    ["the ", def({ id: "payload_hash", singular: "payload hash", plural: "payload hashes" }), ", of type ", r("Digest"), "."],
-                ),
-            ),
+            pinformative(marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]), "A ", r("path"), " ", code("s"), " is a ", def({id: "path_prefix", singular: "prefix", plural: "prefixes"}), " of a ", r("path"), " ", code("t"), " if the first items (that is, bytestrings) of ", code("t"), " are exactly the items of ", code("s"), "."),
 
-            pinformative("The ", r("payload_length"), " and ", r("payload_hash"), " of a ", r("record"), " are intended to be the length of some bytestring and its digest using the ", r("hash_payload"), " function. We call this bytestring the ", def("payload"), " of the ", r("record"), "."),
-        ]),
+            pinformative("A ", def("store"), " is a set of ", rs("authorized_entry"), " such that", lis(
+                ["all its ", rs("entry"), " have the same ", r("namespace_id"), ", and"],
+                [marginale(["This is where we formally define prefix-based deletion."]), "there are no two of its ", rs("entry"), " ", code("old"), " and ", code("new"), " such that", lis(
+                    [code("old"), " and ", code("new"), " have equal ", rs("subspace_id"), ", and"],
+                    ["the ", r("path"), " of ", code("new"), " is a ", r("path_prefix"), " of ", code("old"), ", and", lis(
+                        ["the ", r("timestamp"), " of ", code("old"), " is strictly less than that of ", code("new"), ", or"],
+                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is strictly less", marginale(["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), " than that of ", code("new"), ", or"],
+                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_length"), " of ", code("old"), " is strictly less than that of ", code("new"), "."],
+                    )],
+                )],
+            )),
 
-        hsection("data_model_sync", "Store Synchronization", [
-            pinformative("Willow is designed for local-first peer-to-peer systems. Each peer maintains a local ", r("store"), " for each ", r("namespace"), " they are interested in. When two peers communicate, they exchange information until the both arrive at the same new, more up-to-date ", r("store"), ". This resulting ", r("store"), " is called the ", def({id: "store_join", singular: "join"}), " of their two starting ", rs("store"), " and is defined next."),
-
-            pinformative("Stores form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") using the ", r("store_join"), " operation described below. Conceptually, the state of a ", r("namespace"), " at any one point in time is the ", r("store_join"), " of all its ", rs("store"), " at that point in time."),
-
-            pinformative("A ", def("join"), " takes ", rs("store"), " ", code("r1"), " and ", code("r2"), ", all of whose ", rs("entry"), " have the same ", r("namespace_id"), ", and deterministically maps these inputs to a new ", r("store"), " ", code("r"), " as follows:"),
-
-            lis(
-                [code("r"), " starts as the union of the ", rs("authorized_entry"), " of ", code("r1"), " and ", code("r"), "."],
+            pinformative(
+                marginale(["When two peers connect and wish to update each other, they compute the ", rs("join"), " of all their ", rs("store"), " with equal ", r("namespace_id"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
+                marginale(["Formally, adding a new ", r("entry"), " to a ", r("store"), " consists of computing the ", r("join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("entry"), "."]),
+                
+                "The ", def({id: "store_join", singular: "join"}), " of two ", rs("store"), " ", code("r1"), " and ", code("r2"), " that store ", rs("entry"), " of the same ", r("namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
+                ["Starts with the union of ", code("r1"), " and ", code("r"), "."],
                 ["Then, remove all ", rs("entry"), " with a ", r("path"), " ", code("p"), " whose ", r("timestamp"), " is strictly less than the ", r("timestamp"), " of any other ", r("entry"), " of the same ", r("subspace_id"), " whose ", r("path"), " is a prefix of ", code("p"), "."],
-                ["Then, for each set of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", and equal ", rs("timestamp"), ", remove all but those whose ", r("record"), " has the greatest ", r("payload_hash"), " component (according to the total order on ", r("Digest"), ")."],
-                ["Then, for each set of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", equal ", rs("timestamp"), ", and equal ", rs("payload_hash"), ", remove all but those whose ", r("record"), " has the greatest ", r("payload_length"), " component."],
+                ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", and equal ", rs("timestamp"), ", remove all but those with the greatest ", r("payload_digest"), "."],
+                ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", equal ", rs("timestamp"), ", and equal ", rs("payload_digest"), ", remove all but those with the greatest ", r("payload_length"), "."],
+                ),
             ),
-        ]),
 
-        hsection("3d_space", "Entries in 3d Space", [
-            pinformative("WIP"),
-
-            def({ id: "3d_product", singular: "3d-product" }),
-            def({ id: "product_contain", singular: "contain" }),
+            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which groupings and orderings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. Stores form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") using the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
         ]),
     ],
 );
-
-/*
-
-In this document, we define the core data model of willow.
-
-Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes, not unlike a filesystem. For example, you might give the name `["blog", "recipes", "mustard_pasta"]` to the bytestring `"This must be delicious."`. Unlike a typical file system, entries of this kind can be efficiently shared with other users.
-
-At a later point you might change your mind about mustard pasta, overwriting the old entry at `["blog", "recipes", "mustard_pasta"]` with `"Tried it, not good."`. Willow keeps the timestamp of each assignment, the new entry overwrites the old one.
-
-If you wanted to hide that you ever considered mustard pasta in the first place, you can overwrite `["blog", "recipes"]` to remove *all* entries below it. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism prefix-based deletion.
-
-Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate *subspaces* — intuitively, each user writes to their own, separate universe of data. Willow allows for a multitude of ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems.
-
-Willow further allows the grouping of subspaces into completely independent *namespaces*. Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for pluggin in different such policies on a per-namespace basis.
-
-This is a full overview of willow: applications read and write data in and to subspaces, using hierarchical paths. Willow tracks timestamps of write operations, allow newer writes to replace older writes in the manner of a traditioal file system. These data collctions live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies.
-
-Now we can delve into the precise definition of these concepts.
-
-*/
