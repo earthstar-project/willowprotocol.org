@@ -160,6 +160,10 @@ body {
         font-size: 0.7em;
     }
 
+    .preview .aside_counter {
+        display: none;
+    }
+
     .aside > .aside_counter {
         margin-right: 0.2rem;
     }

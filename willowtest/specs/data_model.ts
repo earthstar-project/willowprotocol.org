@@ -16,7 +16,7 @@ export const data_model: Expression = site_template(
     [
         pinformative("In this document, we define the core data model of Willow."),
 
-        pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes, not unlike a filesystem. For example, you might give the name ", path("blog", "recipes", "mustard_pasta"), " to the bytestring ", code("Sounds delicious"), ". Unlike a typical file system, entries of this kind can be efficiently shared with other users."),
+        pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "recipes", "mustard_pasta"), " to the bytestring ", code("Sounds delicious"), ". Unlike a typical file system, entries of this kind can be efficiently shared with other users."),
 
         pinformative("At a later point you might change your mind about mustard pasta, overwriting the old entry at path ", path("blog", "recipes", "mustard_pasta"), " with ", code("Tried it, not good"), ". Willow tracks the timestamp of each assignment, the new entry overwrites the old one."),
 
@@ -24,9 +24,9 @@ export const data_model: Expression = site_template(
 
         pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
 
-        pinformative("Willow further allows the grouping of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
+        pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
 
-        pinformative("This constitutes a full overview of the data model of Willow. Applications read and write data in and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
+        pinformative("This constitutes a full overview of the data model of Willow. Applications read and write payloads from and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
 
         pinformative("Now we can ", em("almost"), " delve into the precise definition of these concepts."),
 
@@ -59,7 +59,8 @@ export const data_model: Expression = site_template(
                     "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " set ", def_parameter("PayloadDigest", "PayloadDigest", ["A protocol parameter, the totally ordered type of ", rs("payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
                 ],
                 [
-                    " A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
+                    marginale(["Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), "."]),
+                    "A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
                 ],
 
                 [
@@ -77,7 +78,7 @@ export const data_model: Expression = site_template(
             pinformative("A ", def("path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), "."),
 
             preview_scope(
-                p("The ", "metadata", marginale(["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")]), " associated with each ", r("payload"), " is called an ", def({id: "entry", plural: "entries"}), ":"),
+                p("The metadata associated with each ", r("payload"), " is called an ", def({id: "entry", plural: "entries"}), ":"),
 
                 pseudocode(
                     new Struct({
@@ -102,6 +103,7 @@ export const data_model: Expression = site_template(
                             {
                                 id: "timestamp",
                                 comment: ["The time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), " at which the ", r("entry"), " is claimed to have been created."],
+                                marginale: ["Willow's use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
                                 rhs: hl_builtin("u64"),
                             },
                             {
@@ -123,31 +125,31 @@ export const data_model: Expression = site_template(
 
             pinformative(marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]), "A ", r("path"), " ", code("s"), " is a ", def({id: "path_prefix", singular: "prefix", plural: "prefixes"}), " of a ", r("path"), " ", code("t"), " if the first items (that is, bytestrings) of ", code("t"), " are exactly the items of ", code("s"), "."),
 
-            pinformative("A ", def("store"), " is a set of ", rs("authorized_entry"), " such that", lis(
+            pinformative("We can now formally define which ", rs("entry"), " overwrite each other and which can coexist. ", preview_scope("A ", def("store"), " is a set of ", rs("authorized_entry"), " such that", lis(
                 ["all its ", rs("entry"), " have the same ", r("namespace_id"), ", and"],
-                [marginale(["This is where we formally define prefix-based deletion."]), "there are no two of its ", rs("entry"), " ", code("old"), " and ", code("new"), " such that", lis(
+                ["there are no two of its ", rs("entry"), " ", code("old"), " and ", code("new"), " such that", lis(
                     [code("old"), " and ", code("new"), " have equal ", rs("subspace_id"), ", and"],
                     ["the ", r("path"), " of ", code("new"), " is a ", r("path_prefix"), " of ", code("old"), ", and", lis(
                         ["the ", r("timestamp"), " of ", code("old"), " is strictly less than that of ", code("new"), ", or"],
-                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is strictly less", marginale(["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), " than that of ", code("new"), ", or"],
+                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is strictly ", sidenote("less", ["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), " than that of ", code("new"), ", or"],
                         ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_length"), " of ", code("old"), " is strictly less than that of ", code("new"), "."],
                     )],
                 )],
-            )),
+            ))),
 
             pinformative(
                 marginale(["When two peers connect and wish to update each other, they compute the ", rs("join"), " of all their ", rs("store"), " with equal ", r("namespace_id"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
                 marginale(["Formally, adding a new ", r("entry"), " to a ", r("store"), " consists of computing the ", r("join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("entry"), "."]),
                 
                 "The ", def({id: "store_join", singular: "join"}), " of two ", rs("store"), " ", code("r1"), " and ", code("r2"), " that store ", rs("entry"), " of the same ", r("namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
-                ["Starts with the union of ", code("r1"), " and ", code("r"), "."],
+                ["Starts with the union of ", code("r1"), " and ", code("r2"), "."],
                 ["Then, remove all ", rs("entry"), " with a ", r("path"), " ", code("p"), " whose ", r("timestamp"), " is strictly less than the ", r("timestamp"), " of any other ", r("entry"), " of the same ", r("subspace_id"), " whose ", r("path"), " is a prefix of ", code("p"), "."],
                 ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", and equal ", rs("timestamp"), ", remove all but those with the greatest ", r("payload_digest"), "."],
                 ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", equal ", rs("timestamp"), ", and equal ", rs("payload_digest"), ", remove all but those with the greatest ", r("payload_length"), "."],
                 ),
             ),
 
-            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which groupings and orderings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. Stores form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") using the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
+            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which groupings and orderings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. ", Rs("store"), " form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") under the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
         ]),
     ],
 );

@@ -25,6 +25,7 @@ import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
 import { set_def } from "./defref.ts";
+import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
 
@@ -54,6 +55,7 @@ export interface Field {
   id: string;
   comment?: Expression;
   name?: string;
+  marginale?: Expression;
   rhs: Expression;
 }
 
@@ -163,6 +165,11 @@ function render_field(field: Field): Expression {
         set_def(state, { id: field.id, clazz: "member", singular: field_name });
       }
 
+      let field_marginale: Expression = "";
+      if (field.marginale) {
+        field_marginale = marginale(field.marginale);
+      }
+
       let comment: Expression = "";
       if (field.comment) {
         comment = render_doc_comment(field.comment);
@@ -189,6 +196,7 @@ function render_field(field: Field): Expression {
       );
 
       return [
+        field_marginale,
         comment,
         field_line,
       ];
