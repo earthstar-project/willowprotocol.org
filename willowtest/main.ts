@@ -192,15 +192,21 @@ export function aside_block(
 export function path(
   ...components: Expression[]
 ): Expression {
-  const e: Expression[] = ["["];
-  for (let i = 0; i < components.length; i++) {
-    if (i != 0) {
-      e.push(", ");
+  const macro = new_macro(
+    (args, _ctx) => {
+      const e: Expression[] = ["["];
+      for (let i = 0; i < args.length; i++) {
+        if (i != 0) {
+          e.push(", ");
+        }
+        e.push(args[i]);
+      }
+      e.push("]");
+      return e;
     }
-    e.push(components[i]);
-  }
-  e.push("]");
-  return code(...e);
+  );
+  
+  return new Invocation(macro, components);
 }
 
 export function lis(

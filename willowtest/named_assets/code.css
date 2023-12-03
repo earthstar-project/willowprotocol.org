@@ -40,6 +40,15 @@ code.pseudocode {
     border-radius: 0;
 }
 
+.pseudocode p {
+    margin: 0;
+    margin-top: 1em;
+}
+
+.pseudocode p:first-child {
+    margin-top: 0;
+}
+
 .preview code.pseudocode {
     margin: 0;
 }

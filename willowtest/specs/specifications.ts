@@ -1,6 +1,7 @@
-import { nav } from "../../h.ts";
+import { code, nav } from "../../h.ts";
 import { link_name } from "../../linkname.ts";
-import { Expression } from "../../tsgen.ts";
+import { def_type } from "../../pseudocode.ts";
+import { Expression, surpress_output } from "../../tsgen.ts";
 import { lis, pinformative, site_template } from "../main.ts";
 
 export const specifications: Expression = site_template(
@@ -14,8 +15,8 @@ export const specifications: Expression = site_template(
       lis(
         link_name("data_model", "Data model"),
         lis(
-          link_name("encodings", "What we mean when we talk about Encodings"),
           link_name("grouping_entries", "Grouping Entries"),
+          link_name("encodings", "On Encodings"),
           link_name("e2e", "Encrypting Entries"),
         ),
         link_name("meadowcap", "Meadowcap capability system"),
@@ -31,5 +32,8 @@ export const specifications: Expression = site_template(
         ),
       ),
     ),
+
+    surpress_output(def_type("U64", "U64", ["The type of unsigned 64 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("2^64 - 1"), "."])),
+    surpress_output(def_type("Bool", "Bool", ["The type of teh two truth values ", code("true"), " and ", code("false"), "."])),
   ],
 );

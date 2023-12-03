@@ -42,35 +42,35 @@ export const data_model: Expression = site_template(
 
             lis(
                 [
-                    "A type ", def_parameter("NamespaceId", "NamespaceId", ["A protocol parameter, the type of ", rs("namespace_id"), "."]), " for identifying namespaces."
+                    "A type ", def_parameter("NamespaceId", "NamespaceId", ["A protocol parameter of Willow, the type of ", rs("namespace_id"), "."]), " for identifying namespaces."
                 ],
                 [
-                    "A type ", def_parameter("SubspaceId", "SubspaceId", ["A protocol parameter, the type of ", rs("subspace_id"), "."]), " for identifying subspaces."
-                ],
-
-                [
-                    "A natural number ", def_parameter("max_component_length", "max_component_length", ["A protocol parameter, the maximal length of individual ", r("path"), " components."]), " for limiting the length of path components.",
-                ],
-                [
-                    "A natural number ", def_parameter("max_component_count", "max_component_count", ["A protocol parameter, the maximal number of components (bytestrings) in a single ", r("path"), "."]), " for limiting the number of path components.",
-                ],
-                [
-                    "A natural number ", def_parameter("max_path_length", "max_path_length", ["A protocol parameter, the maximal sum of the lengths of the components (bytestrings) of a single ", r("path"), " in bytes."]), " for limiting the overall size of paths.",
+                    "A type ", def_parameter("SubspaceId", "SubspaceId", ["A protocol parameter of Willow, the type of ", rs("subspace_id"), "."]), " for identifying subspaces."
                 ],
 
                 [
-                    "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " set ", def_parameter("PayloadDigest", "PayloadDigest", ["A protocol parameter, the totally ordered type of ", rs("payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
+                    "A natural number ", def_parameter("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", r("path"), " components."]), " for limiting the length of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of components (bytestrings) in a single ", r("path"), "."]), " for limiting the number of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the components (bytestrings) of a single ", r("path"), " in bytes."]), " for limiting the overall size of paths.",
+                ],
+
+                [
+                    "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " set ", def_parameter("PayloadDigest", "PayloadDigest", ["A protocol parameter of Willow, the totally ordered type of ", rs("payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
                 ],
                 [
                     marginale(["Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), "."]),
-                    "A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
+                    "A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
                 ],
 
                 [
-                    "A type ", def_parameter("AuthorizationToken", "AuthorizationToken", ["A protocol parameter, required to define ", rs("possibly_authorized_entry"), "."]), " for proving write permission."
+                    "A type ", def_parameter("AuthorizationToken", "AuthorizationToken", ["A protocol parameter of Willow, required to define ", rs("possibly_authorized_entry"), "."]), " for proving write permission."
                 ],
                 [
-                    marginale([link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function."]), "A function ", def_parameter("is_authorized_write", "is_authorized_write", ["A protocol parameter, required to define ", rs("authorized_entry"), "."]), " that maps an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to a boolean, indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("entry"), "."
+                    marginale([link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function."]), "A function ", def_parameter("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("authorized_entry"), "."]), " that maps an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to a boolean, indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("entry"), "."
                 ],
             ),
         ]),
@@ -100,14 +100,15 @@ export const data_model: Expression = site_template(
                             },
                             {
                                 id: "entry_path",
+                                name: "path",
                                 comment: ["The ", r("path"), " to which the ", r("entry"), " was written."],
                                 rhs: r("path"),
                             },
                             {
                                 id: "timestamp",
                                 comment: ["The time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), " at which the ", r("entry"), " is claimed to have been created."],
-                                marginale: ["Willow", apo, "s use of wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
-                                rhs: hl_builtin("u64"),
+                                marginale: ["Wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
+                                rhs: r("U64"),
                             },
                             {
                                 id: "payload_digest",
@@ -117,7 +118,7 @@ export const data_model: Expression = site_template(
                             {
                                 id: "payload_length",
                                 comment: ["The length of the ", r("payload"), " in bytes."],
-                                rhs: hl_builtin("u64"),
+                                rhs: r("U64"),
                             },
                         ],
                     }),

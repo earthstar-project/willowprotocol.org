@@ -6,7 +6,7 @@ import { marginale, marginale_inlineable } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
-import { $, $dot } from "../../katex.ts";
+import { $, $comma, $dot } from "../../katex.ts";
 import { Struct, hl_builtin, pseudocode } from "../../pseudocode.ts";
 
 const apo = "’";
@@ -36,11 +36,15 @@ export const threedProducts: Expression = site_template({
   hsection("areas", "Areas", [
     pinformative(Rs("3d_range"), " are a natural way of grouping ", rs("entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("paths"), ", for example, the lexicographic ordering of the encrypted ", rs("path"), " would not be consistent with the ordering of the unencrypted ", rs("path"), ". If users specified groupings of ", rs("entry"), " of ", rs("3d_range"), ", encryption ", rs("path"), " would be impossible. Similarly, ", rs("subspace_range"), " would not preserve their meaning under encryption either."),
 
-    pinformative("Fortunately, they do exist encryption techniques that preserve properties some weaker than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3d_range"), " that can be used even when encrypting ", rs("path"), " and ", rs("subspace_id"), ". These ", rs("area"), " can be used, for example, to let peers express which parts of a namespace another peer should be able to read from or to write to."),
+    pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3d_range"), " that can be used even when encrypting ", rs("path"), " and ", rs("subspace_id"), ". These ", rs("area"), " can be used, for example, to let peers express which parts of a namespace another peer should be able to read from or to write to."),
 
-    pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def({id: "area_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), apo, "s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), apo, "s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), apo, "s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not."),
+    pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def({id: "area_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), apo, "s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), apo, "s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), apo, "s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not. An ", r("area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), marginale(["In particular, every ", r("area"), " ", rs("area_include_area"), " itself."]), " another ", r("area"), " if the first ", r("area"), " ", rs("area_include"), " all ", rs("entry"), " that the second ", r("area"), " ", rs("area_include"), "."),
 
     pinformative("Let ", code("a1"), " and ", code("a2"), " be ", rs("area"), " consisting of ", rs("time_range"), " ", code("t1"), " and ", code("t2"), ", ", rs("path"), " ", code("p1"), " and ", code("p2"), ", and optional ", rs("subspace_id"), " ", code("s1"), " and ", code("s2"), " respectively. If there exist ", rs("entry"), " ", r("area_include", "included"), " in both of them, then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", code("a1"), " and ", code("a2"), " as the ", r("range_intersection"), " of ", code("t1"), " and ", code("t2"), ", the longer of ", code("p1"), " and ", code("p2"), " (one is a prefix of the other, otherwise the intersection would be empty), and either no ", r("subspace_id"), " (if neither ", code("s1"), " nor ", code("s2"), " are given), or any of the given ", rs("subspace_id"), " otherwise (if both are given, then they are equal, as otherwise the intersection would be empty)."),
+
+    pinformative("The ", def({id: "full_area", singular: "full area"}), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and which has no ", r("subspace_id"), ". It ", rs("area_include"), " all ", rs("entry"), "."),
+
+    pinformative("The ", def({id: "subspace_area", singular: "subspace area"}), " of the ", r("subspace_id"), " ", code("sub"), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and whose ", r("subspace_id"), " is ", code("sub"), ". It ", rs("area_include"), " exactly the ", rs("entry"), " with ", r("subspace_id"), " ", code("sub"), "."),
   ]),
 
   hsection("grouping_entries_aois", "Areas of Interest", [
@@ -124,7 +128,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "EntryInRange",
-      comment: ["Describes a target ", r("entry"), " ", code("t"), " relative to a reference ", r("namespace"), " ", code("n"), " and a reference ", r("3d_range"), " ", code("r"), " that ", rs("3d_range_include"), " ", code("t"), "."],
+      comment: ["Describes a target ", r("entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("3d_range"), " ", code("r"), " that ", rs("3d_range_include"), " ", code("t"), "."],
       fields: [
           {
             id: "EntryInRangeNamespace",
@@ -173,7 +177,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "EntryInArea",
-      comment: ["Describes a target ", r("entry"), " ", code("t"), " relative to a reference ", r("namespace"), " ", code("n"), " and a reference ", r("area"), " ", code("a"), " that ", rs("area_include"), " ", code("t"), "."],
+      comment: ["Describes a target ", r("entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("area"), " ", code("a"), " that ", rs("area_include"), " ", code("t"), "."],
       fields: [
           {
             id: "EntryInAreaNamespace",
@@ -301,7 +305,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "RangeInArea",
-      comment: ["Describes a target ", r("3d_range"), " ", code("t"), " relative to a reference ", r("area"), " ", code("r"), " which fully contains ", code("t"), "."],
+      comment: ["Describes a target ", r("3d_range"), " ", code("t"), " in a reference ", r("area"), " ", code("r"), " which fully contains ", code("t"), "."],
       fields: [
           {
             id: "RangeInAreaSubspaceStart",
@@ -368,7 +372,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "AreaInArea",
-      comment: ["Describes a target ", r("area"), " ", code("t"), " relative to a reference ", r("area"), " ", code("r"), " which fully contains ", code("t"), "."],
+      comment: ["Describes a target ", r("area"), " ", code("t"), " in a reference ", r("area"), " ", code("r"), " which fully ", rs("area_include_area"), " ", code("t"), "."],
       fields: [
           {
             id: "AreaInAreaSubspace",

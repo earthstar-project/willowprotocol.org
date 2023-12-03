@@ -312,3 +312,14 @@ export function is_expression(x: any): boolean {
     return false;
   }
 }
+
+export function surpress_output(
+  ...exps: Expression[]
+): Expression {
+  const macro = new_macro(
+    undefined,
+    (_, _ctx) => "",
+  );
+  
+  return new Invocation(macro, exps);
+}
