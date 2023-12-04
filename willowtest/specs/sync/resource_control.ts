@@ -6,7 +6,7 @@ import { sidenote } from "../../../marginalia.ts";
 import { Struct, hl_builtin } from "../../../pseudocode.ts";
 import { pseudocode } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
-import { def_parameter, ols, pinformative, site_template } from "../../main.ts";
+import { def_parameter_type, def_parameter_value, ols, pinformative, site_template } from "../../main.ts";
 
 const apo = "’";
 
@@ -59,7 +59,7 @@ export const resource_control: Expression = site_template(
         ]),
 
         hsection("resources_message_types", "Message Types", [
-            pinformative("The following pseudo-type summarizes the different kinds of ", rs("control_message"), " that this approach introduces. The parameter ", def_parameter("C", "C", ["The type of different ", rs("logical_channel"), "."]), " is a type with one value for each ", r("logical_channel"), ". Each message pertains to exactly one ", r("logical_channel"), ", specified by its ", code("channel"), " field."),
+            pinformative("The following pseudo-type summarizes the different kinds of ", rs("control_message"), " that this approach introduces. The parameter ", def_parameter_type("C", "C", ["The type of different ", rs("logical_channel"), "."]), " is a type with one value for each ", r("logical_channel"), ". Each message pertains to exactly one ", r("logical_channel"), ", specified by its ", code("channel"), " field."),
 
             pseudocode(
                 new Struct({
@@ -185,7 +185,7 @@ export const resource_control: Expression = site_template(
             ]),
 
             hsection("handles_message_types", "Message Types", [
-                pinformative("The following pseudo-type summarizes the messages for maintaining ", rs("resource_handle"), ". The parameter ", def_parameter("H", "H", ["The type of different ", rs("handle_type"), "."]), " is a type with one value for each ", r("handle_type"), ". Each message pertains to exactly one ", r("handle_type"), ", specified by its ", code("hande_type"), " field. ", r("HandleBind"), " messages belong to ", rs("logical_channel"), " determined by their ", code("handle_type"), " field, all other messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
+                pinformative("The following pseudo-type summarizes the messages for maintaining ", rs("resource_handle"), ". The parameter ", def_parameter_type("H", "H", ["The type of different ", rs("handle_type"), "."]), " is a type with one value for each ", r("handle_type"), ". Each message pertains to exactly one ", r("handle_type"), ", specified by its ", code("hande_type"), " field. ", r("HandleBind"), " messages belong to ", rs("logical_channel"), " determined by their ", code("handle_type"), " field, all other messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
 
                 pseudocode(
                     new Struct({

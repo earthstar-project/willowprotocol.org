@@ -43,7 +43,7 @@ import { access_control } from "./specs/sync/access_control.ts";
 import { timestamps_really } from "./specs/more/timestamps_really.ts";
 import { specifications } from "./specs/specifications.ts";
 import { encodings } from "./specs/encodings.ts";
-import { threedProducts } from "./specs/3d_products.ts";
+import { grouping_entries } from "./specs/grouping_entries.ts";
 import { e2e } from "./specs/e2e.ts";
 
 export function quotes(...contents: Expression[]) {
@@ -115,25 +115,47 @@ export function site_template(meta: Document, body: Expression): Invocation {
   return new Invocation(macro, [body]);
 }
 
-export function def_parameter(
+export function def_parameter_type(
   info: string | Def,
   text?: Expression,
   preview?: Expression,
 ): Expression {
   const info_ = typeof info === "string"
-    ? { id: info, clazz: "param" }
-    : { ...info, clazz: "param" };
+    ? { id: info, clazz: "param type" }
+    : { ...info, clazz: "param type" };
   return def_generic(info_, false, text, preview);
 }
 
-export function def_fake_parameter(
+export function def_fake_parameter_type(
   info: string | Def,
   text?: Expression,
   preview?: Expression,
 ): Expression {
   const info_ = typeof info === "string"
-    ? { id: info, clazz: "param defined_here" }
-    : { ...info, clazz: "param defined_here" };
+    ? { id: info, clazz: "param type defined_here" }
+    : { ...info, clazz: "param type defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_parameter_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param value" }
+    : { ...info, clazz: "param value" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param value defined_here" }
+    : { ...info, clazz: "param value defined_here" };
   return def_generic(info_, true, text, preview);
 }
 
@@ -394,7 +416,7 @@ evaluate([
       out_file("index.html", specifications),
       out_index_directory("data-model", data_model),
       out_index_directory("encodings", encodings),
-      out_index_directory("3d-products", threedProducts),
+      out_index_directory("grouping_entries", grouping_entries),
       out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [

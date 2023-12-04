@@ -1,71 +1,183 @@
-import { aside_block, link, lis, pinformative, quotes, site_template } from "../main.ts";
+import { aside_block, def_value, link, lis, pinformative, quotes, site_template } from "../main.ts";
 import { hsection } from "../../hsection.ts";
 import { code, em, figcaption, figure, img } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
-import { Expression } from "../../tsgen.ts";
-import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
+import { Expression, surpress_output } from "../../tsgen.ts";
+import { Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
 import { $, $comma, $dot } from "../../katex.ts";
-import { Struct, hl_builtin, pseudocode } from "../../pseudocode.ts";
+import { Struct, def_symbol, hl_builtin, pseudo_choices, pseudocode } from "../../pseudocode.ts";
 
 const apo = "’";
 
-export const threedProducts: Expression = site_template({
+export const grouping_entries: Expression = site_template({
   name: "grouping_entries",
   title: "Grouping Entries",
 }, [
-  pinformative("Willow lets authors place ", rs("entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("entry"), " are arranged according to three orthogonal dimensions: ", r("path"), ", ", r("subspace"), ", and ", r("timestamp"), ". This suggests a powerful way of thinking about willow: a ", r("namespace"), " is a collection of points (", rs("entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of payloads."),
+  pinformative("Willow lets authors place ", rs("Entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("Entry"), " are arranged according to three orthogonal dimensions: ", r("entry_path"), ", ", r("entry_subspace_id"), ", and ", r("entry_timestamp"), ". This suggests a powerful way of thinking about Willow: a ", r("namespace"), " is a collection of points (", rs("Entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of ", rs("Payload"), "."),
 
   marginale_inlineable(img(asset("meadowcap/3d_range.png"))),
 
-  pinformative("This viewpoint enables us to meaningfully group ", rs("entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to be more precise) in the three-dimensional willow space."),
+  pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to be more precise) in the three-dimensional willow space."),
 
-  pinformative("In this document, we develop and define some precise terminology for grouping ", rs("entry"), " based on their ", rs("path"), ", ", rs("subspace"), ", and ", rs("timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
+  pinformative("In this document, we develop and define some precise terminology for grouping ", rs("Entry"), " based on their ", rs("entry_path"), ", ", rs("andrea_subspace_id"), ", and ", rs("andrea_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
 
   hsection("ranges", "Ranges", [
-    pinformative("Ranges are the simplemost way of grouping ", rs("entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("entry"),), ". A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def("range_include", "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is ", r("closed_range", "closed"), ")."),
+    pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def("range_include", "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one).")),
 
-    pinformative("Ranges can only be defined for types of values that can be sorted according to some ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), ". For willow, we only use three types of ", rs("range"), ": a ", def({id: "time_range", singular: "time range"}), " is a ", r("range"), " of ", rs("timestamp"), " (ordered numerically), a ", def({id: "path_range", singular: "path range"}), " is a ", r("range"), " of ", rs("path"), " (ordered ", link("lexicographically", "https://en.wikipedia.org/wiki/Lexicographic_order"), "), and a ", def({id: "subspace_range", singular: "subspace range"}), " is a ", r("range"), " of ", rs("subspace_id"), " (whose ordering has to be supplied as a protocol parameter)."),
+    pinformative("The Willow protocols use three types of ", rs("range"), ":"),
+    surpress_output(def_symbol({id: "range_open", singular: "open"}, "open", ["A value that signals that a ", r("range"), " is ", r("open_range", "open"), "."])),
 
-    pinformative("Let ", code("r1"), " and ", code("r2"), " be ", rs("range"), " (over the same types of values). The ", def({id: "range_intersection", singular: "intersection"}), " of ", code("r1"), " is the range whose ", r("start_value"), " is the greater of the ", rs("start_value"), " of ", code("r1"), " and ", code("r2"), ", and whose ", r("end_value"), " is the lesser of the ", rs("end_value"), " of ", code("r1"), " and ", code("r2"), " (if both are ", rs("closed_range"), "), the one ", rs("end_value"), " among ", code("r1"), " and ", code("r2"), " (if exactly one of them is a ", r("closed_range"), "), or no ", r("end_value"), " (if both ", code("r1"), " and ", code("r2"), " are ", rs("open_range"), ")."),
+    pseudocode(
+      new Struct({
+        id: "TimeRange",
+        comment: ["A ", r("range"), " of ", rs("Timestamp"), "."],
+        fields: [
+          {
+            id: "TimeRangeStart",
+            name: "start",
+            comment: ["A ", r("Timestamp"), " must be numerically greater than or equal to this to be ", r("range_include", "included"), " in the ", r("range"), "."],
+            rhs: r("Timestamp"),
+          },
+          {
+            id: "TimeRangeEnd",
+            name: "end",
+            comment: ["If ", r("range_open"), ", the ", r("range"), " is an ", r("open_range"), ". Otherwise, a ", r("Timestamp"), " must be numerically strictly less than this to be ", r("range_include", "included"), " in the ", r("range"), "."],
+            rhs: pseudo_choices(r("Timestamp"), r("range_open")),
+          },
+        ],
+      }),
 
-    pinformative("When we combine ", rs("range"), " all three dimensions, we can delimit boxes in willow space. A ", def({id: "3d_range", singular: "3d-range"}), " consists of a ", r("time_range"), ", a ", r("path_range"), ", and a ", r("subspace_range"), ". It ", def({id: "3d_range_include", singular: "include"}, "includes"), " all ", rs("entry"), " ", r("range_include", "included"), " by all of its three ", rs("range"), "."),
+      new Struct({
+        id: "PathRange",
+        comment: ["A ", r("range"), " of ", rs("Path"), "."],
+        fields: [
+          {
+            id: "PathRangeStart",
+            name: "start",
+            comment: ["A ", r("Path"), " must be ", link("lexicographically", "https://en.wikipedia.org/wiki/Lexicographic_order"), " greater than or equal to this to be ", r("range_include", "included"), " in the ", r("range"), "."],
+            rhs: r("Path"),
+          },
+          {
+            id: "PathRangeEnd",
+            name: "end",
+            comment: ["If ", r("range_open"), ", the ", r("range"), " is an ", r("open_range"), ". Otherwise, a ", r("Path"), " must be ", link("lexicographically", "https://en.wikipedia.org/wiki/Lexicographic_order"), " strictly less than this to be ", r("range_include", "included"), " in the ", r("range"), "."],
+            rhs: pseudo_choices(r("Path"), r("range_open")),
+          },
+        ],
+      }),
+
+      new Struct({
+        id: "SubspaceRange",
+        comment: ["A ", r("range"), " of ", rs("SubspaceId"), "."],
+        fields: [
+          {
+            id: "SubspaceRangeStart",
+            name: "start",
+            comment: ["A ", r("SubspaceId"), " must be greater than or equal to this to be ", r("range_include", "included"), " in the ", r("range"), ". The ordering must be given by a protocol parameter."],
+            rhs: r("SubspaceId"),
+          },
+          {
+            id: "SubspaceRangeEnd",
+            name: "end",
+            comment: ["If ", r("range_open"), ", the ", r("range"), " is an ", r("open_range"), ". Otherwise, a ", r("SubspaceId"), " must be numerically strictly less than this to be ", r("range_include", "included"), " in the ", r("range"), ". The ordering must be given by a protocol parameter."],
+            rhs: pseudo_choices(r("SubspaceId"), r("range_open")),
+          },
+        ],
+      }),
+    ),
+
+    pinformative("Let ", def_value({id: "rangeisectr1", singular: "r1"}), " and ", def_value({id: "rangeisectr2", singular: "r2"}), " be ", rs("range"), " (over the same types of values). The ", def({id: "range_intersection", singular: "intersection"}), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " is the range whose ", r("start_value"), " is the greater of the ", rs("start_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), ", and whose ", r("end_value"), " is the lesser of the ", rs("end_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if both are ", rs("closed_range"), "), the one ", r("end_value"), " among ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if exactly one of them is a ", r("closed_range"), "), or no ", r("end_value"), " (if both ", r("rangeisectr1"), " and ", r("rangeisectr2"), " are ", rs("open_range"), ")."),
+
+    pinformative("When we combine ", rs("range"), " of all three dimensions, we can delimit boxes in Willow space."),
+
+    pseudocode(
+      new Struct({
+        id: "3dRange",
+        comment: ["A three-dimensional range that ", rs("3d_range_include"), " every ", r("Entry"), " ", r("range_include", "included"), " in all three component ", rs("range"), "."],
+        fields: [
+          {
+            id: "3dRangeTime",
+            name: "time_range",
+            rhs: r("TimeRange"),
+          },
+          {
+            id: "3dRangePath",
+            name: "path_range",
+            rhs: r("PathRange"),
+          },
+          {
+            id: "3dRangeSubspace",
+            name: "subspace_range",
+            rhs: r("SubspaceRange"),
+          },
+        ],
+      }),
+    ),
+
+    pinformative("A ", r("3dRange"), " ", def({id: "3d_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " ", r("range_include", "included"), " in all of its three component ", rs("range"), "."),
   ]),
 
   hsection("areas", "Areas", [
-    pinformative(Rs("3d_range"), " are a natural way of grouping ", rs("entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("paths"), ", for example, the lexicographic ordering of the encrypted ", rs("path"), " would not be consistent with the ordering of the unencrypted ", rs("path"), ". If users specified groupings of ", rs("entry"), " of ", rs("3d_range"), ", encryption ", rs("path"), " would be impossible. Similarly, ", rs("subspace_range"), " would not preserve their meaning under encryption either."),
+    pinformative(Rs("3dRange"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Paths"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRangeange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("3dRange"), " are close to useless when dealing with encrypted data."),
 
-    pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3d_range"), " that can be used even when encrypting ", rs("path"), " and ", rs("subspace_id"), ". These ", rs("area"), " can be used, for example, to let peers express which parts of a namespace another peer should be able to read from or to write to."),
+    pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings. Without going into the cryptographic details, we now define an alternative to ", rs("3dRange"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
-    pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def({id: "area_include", singular: "include"}, "includes"), " all ", rs("entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), apo, "s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), apo, "s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("entry"), apo, "s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not. An ", r("area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), marginale(["In particular, every ", r("area"), " ", rs("area_include_area"), " itself."]), " another ", r("area"), " if the first ", r("area"), " ", rs("area_include"), " all ", rs("entry"), " that the second ", r("area"), " ", rs("area_include"), "."),
+    marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some (most, even) boxes do not correspond to any ", r("Area"), "."]),
 
-    pinformative("Let ", code("a1"), " and ", code("a2"), " be ", rs("area"), " consisting of ", rs("time_range"), " ", code("t1"), " and ", code("t2"), ", ", rs("path"), " ", code("p1"), " and ", code("p2"), ", and optional ", rs("subspace_id"), " ", code("s1"), " and ", code("s2"), " respectively. If there exist ", rs("entry"), " ", r("area_include", "included"), " in both of them, then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", code("a1"), " and ", code("a2"), " as the ", r("range_intersection"), " of ", code("t1"), " and ", code("t2"), ", the longer of ", code("p1"), " and ", code("p2"), " (one is a prefix of the other, otherwise the intersection would be empty), and either no ", r("subspace_id"), " (if neither ", code("s1"), " nor ", code("s2"), " are given), or any of the given ", rs("subspace_id"), " otherwise (if both are given, then they are equal, as otherwise the intersection would be empty)."),
+    pseudocode(
+      new Struct({
+        id: "Area",
+        comment: ["A grouping of ", rs("Entry"), " TODO."],
+        fields: [
+          // {
+          //   id: "3dRangeTime",
+          //   name: "time_range",
+          //   rhs: r("TimeRange"),
+          // },
+          // {
+          //   id: "3dRangePath",
+          //   name: "path_range",
+          //   rhs: r("PathRange"),
+          // },
+          // {
+          //   id: "3dRangeSubspace",
+          //   name: "subspace_range",
+          //   rhs: r("SubspaceRange"),
+          // },
+        ],
+      }),
+    ),
 
-    pinformative("The ", def({id: "full_area", singular: "full area"}), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and which has no ", r("subspace_id"), ". It ", rs("area_include"), " all ", rs("entry"), "."),
+    pinformative("An ", def("area"), " consists of a ", r("time_range"), ", a ", r("path"), ", and an optional ", r("subspace_id"), ". It ", def({id: "area_include", singular: "include"}, "includes"), " all ", rs("Entry"), " whose ", r("timestamp"), " is ", r("area_include", "included"), " in the ", r("time_range"), ", whose ", r("path"), " starts with the ", r("area"), apo, "s ", r("path"), ", and whose ", r("subspace_id"), " is the ", r("area"), apo, "s ", r("subspace_id"), " — if the ", r("area"), " has no ", r("subspace_id"), ", then the ", r("Entry"), apo, "s ", r("subspace_id"), " has no bearing on whether it is ", r("area_include", "included"), " or not. An ", r("area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), marginale(["In particular, every ", r("area"), " ", rs("area_include_area"), " itself."]), " another ", r("area"), " if the first ", r("area"), " ", rs("area_include"), " all ", rs("Entry"), " that the second ", r("area"), " ", rs("area_include"), "."),
 
-    pinformative("The ", def({id: "subspace_area", singular: "subspace area"}), " of the ", r("subspace_id"), " ", code("sub"), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and whose ", r("subspace_id"), " is ", code("sub"), ". It ", rs("area_include"), " exactly the ", rs("entry"), " with ", r("subspace_id"), " ", code("sub"), "."),
+    pinformative("Let ", code("a1"), " and ", code("a2"), " be ", rs("area"), " consisting of ", rs("time_range"), " ", code("t1"), " and ", code("t2"), ", ", rs("path"), " ", code("p1"), " and ", code("p2"), ", and optional ", rs("subspace_id"), " ", code("s1"), " and ", code("s2"), " respectively. If there exist ", rs("Entry"), " ", r("area_include", "included"), " in both of them, then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", code("a1"), " and ", code("a2"), " as the ", r("range_intersection"), " of ", code("t1"), " and ", code("t2"), ", the longer of ", code("p1"), " and ", code("p2"), " (one is a prefix of the other, otherwise the intersection would be empty), and either no ", r("subspace_id"), " (if neither ", code("s1"), " nor ", code("s2"), " are given), or any of the given ", rs("subspace_id"), " otherwise (if both are given, then they are equal, as otherwise the intersection would be empty)."),
+
+    pinformative("The ", def({id: "full_area", singular: "full area"}), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and which has no ", r("subspace_id"), ". It ", rs("area_include"), " all ", rs("Entry"), "."),
+
+    pinformative("The ", def({id: "subspace_area", singular: "subspace area"}), " of the ", r("subspace_id"), " ", code("sub"), " is the ", r("area"), " whose ", r("time_range"), " is the ", r("open_range"), " with ", r("start_value"), " ", $comma("0"), " whose ", r("path"), " is the empty ", r("path"), ", and whose ", r("subspace_id"), " is ", code("sub"), ". It ", rs("area_include"), " exactly the ", rs("Entry"), " with ", r("subspace_id"), " ", code("sub"), "."),
   ]),
 
   hsection("grouping_entries_aois", "Areas of Interest", [
-    pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
+    pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("Entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("Entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
 
-    pinformative("An ", def({id: "aoi", singular: "area of interest", plural: "areas of interest"}), " consists of an ", r("area"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set ", code("S"), " of ", rs("entry"), " that are ", r("aoi_include", "included"), " by the ", r("area"), ", to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
+    pinformative("An ", def({id: "aoi", singular: "area of interest", plural: "areas of interest"}), " consists of an ", r("area"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("Entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set ", code("S"), " of ", rs("Entry"), " that are ", r("aoi_include", "included"), " by the ", r("area"), ", to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
 
     lis(
-      ["if there is a ", r("time_count"), ", then every ", r("entry"), " in ", code("T"), " is amongst the ", r("time_count"), " many ", rs("entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
-      ["if there is a ", r("time_size"), ", then no ", r("entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("timestamp"), " than any ", r("entry"), " in ", code("T"), ","],
-      ["if there is a ", r("time_size"), ", then the sum of the ", r("payload_length"), " of the ", r("entry"), " in ", code("T"), " is at most the ", r("time_size"), " many ", rs("entry"), " in ", code("S"), ","],
-      ["if there is a ", r("path_count"), ", then every ", r("entry"), " in ", code("T"), " is amongst the ", r("path_count"), " many ", rs("entry"), " in ", code("S"), " with the (lexicographically) greatest ", rs("path"), ","],
-      ["if there is a ", r("path_size"), ", then no ", r("entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("path"), " than any ", r("entry"), " in ", code("T"), ","],
-      ["if there is a ", r("path_size"), ", then the sum of the ", r("payload_length"), " of the ", r("entry"), " in ", code("T"), " is at most the ", r("path_size"), " many ", rs("entry"), " in ", code("S"), "."],
+      ["if there is a ", r("time_count"), ", then every ", r("Entry"), " in ", code("T"), " is amongst the ", r("time_count"), " many ", rs("Entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
+      ["if there is a ", r("time_size"), ", then no ", r("Entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("timestamp"), " than any ", r("Entry"), " in ", code("T"), ","],
+      ["if there is a ", r("time_size"), ", then the sum of the ", r("payload_length"), " of the ", r("Entry"), " in ", code("T"), " is at most the ", r("time_size"), " many ", rs("Entry"), " in ", code("S"), ","],
+      ["if there is a ", r("path_count"), ", then every ", r("Entry"), " in ", code("T"), " is amongst the ", r("path_count"), " many ", rs("Entry"), " in ", code("S"), " with the (lexicographically) greatest ", rs("path"), ","],
+      ["if there is a ", r("path_size"), ", then no ", r("Entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("path"), " than any ", r("Entry"), " in ", code("T"), ","],
+      ["if there is a ", r("path_size"), ", then the sum of the ", r("payload_length"), " of the ", r("Entry"), " in ", code("T"), " is at most the ", r("path_size"), " many ", rs("Entry"), " in ", code("S"), "."],
     ),
 
     pinformative("The ", def({id: "aoi_intersection", singular: "intersection"}), " of two ", rs("aoi"), " consists of the ", r("area_intersection"), " of their ", rs("area"), ", the lesser (if any) of their ", rs("time_count"), ", the lesser (if any) of their ", rs("time_size"), ", the lesser (if any) of their ", rs("path_count"), ", and the lesser (if any) of their ", rs("path_size"), "."),
   ]),
 
   hsection("entries_relativity", "Relativity", [
-    pinformative("When encoding multiple ", rs("entry"), ", ", rs("3d_range"), ", or ", rs("area"), ", we can increase efficiency by letting the encodings reference each other. If, for example, we encode several ", rs("entry"), " with equal ", rs("subspace_id"), ", there is little point in repeating the same ", r("subspace_id"), " over and over. In this section we define several concepts for expressing ", rs("entry"), " and their groupings relative to another ", r("entry"), " or grouping. If the entity and its reference entity are similar enough, the resulting relative entities are much smaller than their absolute counterparts."),
+    pinformative("When encoding multiple ", rs("Entry"), ", ", rs("3d_range"), ", or ", rs("area"), ", we can increase efficiency by letting the encodings reference each other. If, for example, we encode several ", rs("Entry"), " with equal ", rs("subspace_id"), ", there is little point in repeating the same ", r("subspace_id"), " over and over. In this section we define several concepts for expressing ", rs("Entry"), " and their groupings relative to another ", r("Entry"), " or grouping. If the entity and its reference entity are similar enough, the resulting relative entities are much smaller than their absolute counterparts."),
 
     pinformative("In the following, we write ", hl_builtin(def("ub")), " for the type of unsigned ", $("b", "-bit"), " integers, where ", $("b"), " is the least number such that ", $dot("256^{b} > \\href{/specs/data-model/index.html#max_path_length}{\\htmlClass{ref param}{\\htmlData{preview=/previews/max_path_length.html}{\\mathrm{max\\_path\\_length}}}}")),
   ]),
@@ -73,7 +185,7 @@ export const threedProducts: Expression = site_template({
   pseudocode(
     new Struct({
         id: "EntryRelativeEntry",
-        comment: ["Describes a target ", r("entry"), " ", code("t"), " relative to a reference ", r("entry"), " ", code("r"), "."],
+        comment: ["Describes a target ", r("Entry"), " ", code("t"), " relative to a reference ", r("Entry"), " ", code("r"), "."],
         fields: [
             {
               id: "EntryRelativeEntryNamespace",
@@ -128,7 +240,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "EntryInRange",
-      comment: ["Describes a target ", r("entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("3d_range"), " ", code("r"), " that ", rs("3d_range_include"), " ", code("t"), "."],
+      comment: ["Describes a target ", r("Entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("3d_range"), " ", code("r"), " that ", rs("3d_range_include"), " ", code("t"), "."],
       fields: [
           {
             id: "EntryInRangeNamespace",
@@ -177,7 +289,7 @@ export const threedProducts: Expression = site_template({
 
     new Struct({
       id: "EntryInArea",
-      comment: ["Describes a target ", r("entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("area"), " ", code("a"), " that ", rs("area_include"), " ", code("t"), "."],
+      comment: ["Describes a target ", r("Entry"), " ", code("t"), " in a reference ", r("namespace"), " ", code("n"), " and a reference ", r("area"), " ", code("a"), " that ", rs("area_include"), " ", code("t"), "."],
       fields: [
           {
             id: "EntryInAreaNamespace",

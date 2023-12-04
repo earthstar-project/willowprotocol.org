@@ -5,11 +5,9 @@ import { $, $dot } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { asset } from "../../out.ts";
-import { Struct, field_access, hl_builtin, pseudocode } from "../../pseudocode.ts";
+import { Struct, def_fake_type, def_type, field_access, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { Expression } from "../../tsgen.ts";
-import { def_parameter, link, lis, path, pinformative, site_template } from "../main.ts";
-
-const apo = "’";
+import { def_parameter_type, def_parameter_value, def_value, link, lis, path, pinformative, site_template } from "../main.ts";
 
 export const data_model: Expression = site_template(
     {
@@ -42,82 +40,90 @@ export const data_model: Expression = site_template(
 
             lis(
                 [
-                    "A type ", def_parameter("NamespaceId", "NamespaceId", ["A protocol parameter of Willow, the type of ", rs("namespace_id"), "."]), " for identifying namespaces."
+                    "A type ", def_parameter_type("NamespaceId", "NamespaceId", ["A protocol parameter of Willow, the type of ", rs("entry_namespace_id"), "."]), " for identifying namespaces."
                 ],
                 [
-                    "A type ", def_parameter("SubspaceId", "SubspaceId", ["A protocol parameter of Willow, the type of ", rs("subspace_id"), "."]), " for identifying subspaces."
-                ],
-
-                [
-                    "A natural number ", def_parameter("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", r("path"), " components."]), " for limiting the length of path components.",
-                ],
-                [
-                    "A natural number ", def_parameter("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of components (bytestrings) in a single ", r("path"), "."]), " for limiting the number of path components.",
-                ],
-                [
-                    "A natural number ", def_parameter("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the components (bytestrings) of a single ", r("path"), " in bytes."]), " for limiting the overall size of paths.",
+                    "A type ", def_parameter_type("SubspaceId", "SubspaceId", ["A protocol parameter of Willow, the type of ", rs("entry_subspace_id"), "."]), " for identifying subspaces."
                 ],
 
                 [
-                    "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " set ", def_parameter("PayloadDigest", "PayloadDigest", ["A protocol parameter of Willow, the totally ordered type of ", rs("payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
+                    "A natural number ", def_parameter_value("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", r("Path"), " components."]), " for limiting the length of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter_value("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of components (bytestrings) in a single ", r("Path"), "."]), " for limiting the number of path components.",
+                ],
+                [
+                    "A natural number ", def_parameter_value("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the components (bytestrings) of a single ", r("Path"), " in bytes."]), " for limiting the overall size of paths.",
+                ],
+
+                [
+                    "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " type ", def_parameter_type("PayloadDigest", "PayloadDigest", ["A protocol parameter of Willow, the totally ordered type of ", rs("entry_payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores."
                 ],
                 [
                     marginale(["Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), "."]),
-                    "A function ", def_parameter("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("payload_digest"), " from ", rs("payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
+                    "A function ", def_parameter_value("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), "."]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), "."
                 ],
 
                 [
-                    "A type ", def_parameter("AuthorizationToken", "AuthorizationToken", ["A protocol parameter of Willow, required to define ", rs("possibly_authorized_entry"), "."]), " for proving write permission."
+                    "A type ", def_parameter_type("AuthorizationToken", "AuthorizationToken", ["A protocol parameter of Willow, required to define ", rs("PossiblyAuthorizedEntry"), "."]), " for proving write permission."
                 ],
                 [
-                    marginale([link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function."]), "A function ", def_parameter("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("authorized_entry"), "."]), " that maps an ", r("entry"), " (defined later) and an ", r("AuthorizationToken"), " to a boolean, indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("entry"), "."
+                    marginale([link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function."]), "A function ", def_parameter_value("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("AuthorizedEntry"), "."]), " that maps an ", r("Entry"), " (defined later) and an ", r("AuthorizationToken"), " to a ", r("Bool"), ", indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("Entry"), "."
                 ],
             ),
         ]),
 
         hsection("data_model_concepts", "Concepts", [
-            pinformative("Willow can store arbitrary bytestrings of at most ", $("2^{64} - 1"), " bytes. We call such a bytestring a ", def("payload", "payload", ["A ", def_fake("payload"), " is a bytestring of at most ", $("2^{64} - 1"), " bytes."]), "."),
+            pinformative("Willow can store arbitrary bytestrings of at most ", $("2^{64} - 1"), " bytes. We call such a bytestring a ", def_type("Payload", "Payload", ["A ", def_fake_type("Payload"), " is a bytestring of at most ", $("2^{64} - 1"), " bytes."]), "."),
 
-            pinformative("A ", def("path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), "."),
+            pinformative("A ", def_type("Path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), "."),
+
+            pinformative("A ", def_type("Timestamp"), " is a 64-bit unsigned integer, that is, a natural number between zero (inclusive) and ", code("2^64 - 1"), " (exclusive). ", Rs("Timestamp"), " are to be interpreted as a time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), "."),
 
             preview_scope(
-                p("The metadata associated with each ", r("payload"), " is called an ", def({id: "entry", plural: "entries"}), ":"),
+                p("The metadata associated with each ", r("Payload"), " is called an ", r("Entry"), ":"),
 
                 pseudocode(
                     new Struct({
                         id: "Entry",
-                        comment: ["The metadata for storing a ", r("payload"), "."],
+                        plural: "Entries",
+                        comment: ["The metadata for storing a ", r("Payload"), "."],
                         fields: [
                             {
-                                id: "namespace_id",
-                                comment: ["The identifier of the ", r("namespace"), " to which the ", r("entry"), " belongs."],
+                                id: "entry_namespace_id",
+                                name: "namespace_id",
+                                comment: ["The identifier of the ", r("namespace"), " to which the ", r("Entry"), " belongs."],
                                 rhs: r("NamespaceId"),
                             },
                             {
-                                id: "subspace_id",
-                                comment: ["The identifier of the ", r("subspace"), " to which the ", r("entry"), " belongs."],
+                                id: "entry_subspace_id",
+                                name: "subspace_id",
+                                comment: ["The identifier of the ", r("subspace"), " to which the ", r("Entry"), " belongs."],
                                 rhs: r("SubspaceId"),
                             },
                             {
                                 id: "entry_path",
                                 name: "path",
-                                comment: ["The ", r("path"), " to which the ", r("entry"), " was written."],
-                                rhs: r("path"),
+                                comment: ["The ", r("Path"), " to which the ", r("Entry"), " was written."],
+                                rhs: r("Path"),
                             },
                             {
-                                id: "timestamp",
-                                comment: ["The time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), " at which the ", r("entry"), " is claimed to have been created."],
+                                id: "entry_timestamp",
+                                name: "timestamp",
+                                comment: ["The claimed creation time of the ", r("Entry"), "."],
                                 marginale: ["Wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
                                 rhs: r("U64"),
                             },
                             {
-                                id: "payload_digest",
-                                comment: ["The result of applying ", r("hash_payload"), " to the ", r("payload"), "."],
+                                id: "entry_payload_digest",
+                                name: "payload_digest",
+                                comment: ["The result of applying ", r("hash_payload"), " to the ", r("Payload"), "."],
                                 rhs: r("PayloadDigest"),
                             },
                             {
-                                id: "payload_length",
-                                comment: ["The length of the ", r("payload"), " in bytes."],
+                                id: "entry_payload_length",
+                                name: "payload_length",
+                                comment: ["The length of the ", r("Payload"), " in bytes."],
                                 rhs: r("U64"),
                             },
                         ],
@@ -125,41 +131,41 @@ export const data_model: Expression = site_template(
                 ),
             ),
 
-            pinformative("A ", def({id: "possibly_authorized_entry", singular: "possibly authorized entry", plural: "possibly authorized entries"}), " is a pair of an ", r("entry"), " and an ", r("AuthorizationToken"), ". An ", def({id: "authorized_entry", singular: "authorized entry", plural: "authorized entries"}), " is a ", r("possibly_authorized_entry"), " for which ", r("is_authorized_write"), " returns ", code("true"), "."),
+            pinformative("A ", def_type({id: "PossiblyAuthorizedEntry", plural: "possibly authorized entries"}), " is a pair of an ", r("Entry"), " and an ", r("AuthorizationToken"), ". An ", def_type({id: "AuthorizedEntry", plural: "authorized entries"}), " is a ", r("PossiblyAuthorizedEntry"), " for which ", r("is_authorized_write"), " returns ", code("true"), "."),
 
-            pinformative(marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]), "A ", r("path"), " ", code("s"), " is a ", def({id: "path_prefix", singular: "prefix", plural: "prefixes"}), " of a ", r("path"), " ", code("t"), " if the first items (that is, bytestrings) of ", code("t"), " are exactly the items of ", code("s"), "."),
+            pinformative(marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]), "A ", r("Path"), " ", def_value({id: "prefix_s", singular: "s"}), " is a ", def({id: "path_prefix", singular: "prefix", plural: "prefixes"}), " of a ", r("Path"), " ", def_value({id: "prefix_t", singular: "t"}), " if the first items (that is, bytestrings) of ", r("prefix_t"), " are exactly the items of ", r("prefix_s"), "."),
 
-            pinformative("We can now formally define which ", rs("entry"), " overwrite each other and which can coexist. ", preview_scope("A ", def("store"), " is a set of ", rs("authorized_entry"), " such that", lis(
-                ["all its ", rs("entry"), " have the same ", r("namespace_id"), ", and"],
-                ["there are no two of its ", rs("entry"), " ", code("old"), " and ", code("new"), " such that", lis(
-                    [code(field_access(code("old"), "subspace_id"), " == ", field_access(code("new"), "subspace_id")), ", and"],
-                    [field_access(code("new"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(code("old"), "entry_path"), ", and", lis(
-                        [code(field_access(code("old"), "timestamp"), " < ", field_access(code("new"), "timestamp")), ", or"],
-                        [code(field_access(code("old"), "timestamp"), " == ", field_access(code("new"), "timestamp")), " and ", code(field_access(code("old"), "payload_digest"), " < ", marginale(["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), field_access(code("new"), "payload_digest")), ", or"],
-                        [code(field_access(code("old"), "timestamp"), " == ", field_access(code("new"), "timestamp")), " and ", code(field_access(code("old"), "payload_digest"), " == ", field_access(code("new"), "payload_digest")), " and ", code(field_access(code("old"), "payload_length"), " < ", field_access(code("new"), "payload_length")), "."],
+            pinformative("We can now formally define which ", rs("Entry"), " overwrite each other and which can coexist. ", preview_scope("A ", def("store"), " is a set of ", rs("AuthorizedEntry"), " such that", lis(
+                ["all its ", rs("Entry"), " have the same ", r("entry_namespace_id"), ", and"],
+                ["there are no two of its ", rs("entry"), " ", def_value({id: "store_old", singular: "old"}), " and ", def_value({id: "store_new", singular: "new"}), " such that", lis(
+                    [code(field_access(r("store_old"), "entry_subspace_id"), " == ", field_access(r("store_new"), "entry_subspace_id")), ", and"],
+                    [field_access(r("store_old"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(r("store_old"), "entry_path"), ", and", lis(
+                        [code(field_access(r("store_old"), "entry_timestamp"), " < ", field_access(r("store_new"), "entry_timestamp")), ", or"],
+                        [code(field_access(r("store_old"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("store_old"), "entry_payload_digest"), " < ", marginale(["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), field_access(r("store_new"), "entry_payload_digest")), ", or"],
+                        [code(field_access(r("store_old"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("store_old"), "entry_payload_digest"), " == ", field_access(r("store_new"), "entry_payload_digest")), " and ", code(field_access(r("store_old"), "entry_payload_length"), " < ", field_access(r("store_new"), "entry_payload_length")), "."],
                     )],
                 )],
             ))),
 
             pinformative(
-                marginale(["When two peers connect and wish to update each other, they compute the ", rs("store_join"), " of all their ", rs("store"), " with equal ", r("namespace_id"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
+                marginale(["When two peers connect and wish to update each other, they compute the ", rs("store_join"), " of all their ", rs("store"), " with equal ", rs("NamespaceId"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
                 marginale(["Formally, adding a new ", r("entry"), " to a ", r("store"), " consists of computing the ", r("store_join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("entry"), "."]),
                 
-                "The ", def({id: "store_join", singular: "join"}), " of two ", rs("store"), " ", code("r1"), " and ", code("r2"), " that store ", rs("entry"), " of the same ", r("namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
-                ["Starts with the union of ", code("r1"), " and ", code("r2"), "."],
-                ["Then, remove all ", rs("entry"), " with a ", r("path"), " ", code("p"), " whose ", r("timestamp"), " is strictly less than the ", r("timestamp"), " of any other ", r("entry"), " of the same ", r("subspace_id"), " whose ", r("path"), " is a prefix of ", code("p"), "."],
-                ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", and equal ", rs("timestamp"), ", remove all but those with the greatest ", r("payload_digest"), "."],
-                ["Then, for each subset of ", rs("entry"), " with equal ", rs("subspace_id"), ", equal ", rs("path"), ", equal ", rs("timestamp"), ", and equal ", rs("payload_digest"), ", remove all but those with the greatest ", r("payload_length"), "."],
+                "The ", def({id: "store_join", singular: "join"}), " of two ", rs("store"), " that store ", rs("entry"), " of the same ", r("entry_namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
+                ["Starts with the union of the two ", rs("store"), "."],
+                ["Then, remove all ", rs("Entry"), " with a ", r("entry_path"), " ", def_value({id: "join_def_p", singular: "p"}), " whose ", r("timestamp"), " is strictly less than the ", r("timestamp"), " of any other ", r("Entry"), " of the same ", r("entry_subspace_id"), " whose ", r("entry_path"), " is a prefix of ", r("join_def_p"), "."],
+                ["Then, for each subset of ", rs("Entry"), " with equal ", rs("entry_subspace_id"), ", equal ", rs("entry_path"), ", and equal ", rs("entry_timestamp"), ", remove all but those with the greatest ", r("entry_payload_digest"), "."],
+                ["Then, for each subset of ", rs("Entry"), " with equal ", rs("entry_subspace_id"), ", equal ", rs("entry_path"), ", equal ", rs("entry_timestamp"), ", and equal ", rs("entry_payload_digest"), ", remove all but those with the greatest ", r("entry_payload_length"), "."],
                 ),
             ),
 
-            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which order and groupings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. ", Rs("store"), " form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") under the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("entry"), " of a given ", r("namespace_id"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("entry"), " of a given ", r("subspace_id"), " in a given ", r("namespace"), ".")),
+            pinformative(preview_scope("A ", def("namespace"), " is the ", r("store_join"), " over ", sidenote("all", ["No matter in which order and groupings the ", rs("store"), " are ", r("store_join", "joined"), " the result is always the same. ", Rs("store"), " form a ", link("join semi-lattice", "https://en.wikipedia.org/wiki/Semilattice"), " (also known as a ", link("state-based CRDT", "https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs"), ") under the ", r("store_join"), " operation."]), " ", rs("store"), " with ", rs("Entry"), " of a given ", r("NamespaceId"), ". Note that this concept only makes sense as an abstract notion, since no participant in a distributed system can ever be certain that it has (up-to-date) information about all existing ", rs("store"), "."), " ", preview_scope("A ", def("subspace"), " is the set of all ", rs("Entry"), " of a given ", r("SubspaceId"), " in a given ", r("namespace"), ".")),
         ]),
 
         hsection("data_further", "Further Reading", [
             pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
 
-            pinformative("How can we precisely delimit meaningful groups of ", rs("entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("entry"), " can be characterized) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("entry"), " ", link_name("grouping_entries", "here"), "."),
+            pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterized) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
 
             pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterized nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
 
@@ -167,7 +173,7 @@ export const data_model: Expression = site_template(
 
             pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronize data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
 
-            pinformative("How can we encrypt ", rs("entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
+            pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
         ]),
 
         img(asset("emblems/a.png")),

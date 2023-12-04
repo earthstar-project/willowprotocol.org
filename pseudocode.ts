@@ -107,6 +107,7 @@ export interface Struct_ {
   id: string;
   comment?: Expression;
   name?: string;
+  plural?: string;
   fields: Field[];
 }
 
@@ -114,12 +115,14 @@ export class Struct {
   id: string;
   comment?: Expression;
   name?: string;
+  plural?: string;
   fields: Field[];
 
   constructor(struct: Struct_) {
     this.id = struct.id;
     this.comment = struct.comment;
     this.name = struct.name;
+    this.plural = struct.plural;
     this.fields = struct.fields;
   }
 }
@@ -344,7 +347,7 @@ function render_struct(struct: Struct): Expression {
       if (state === null) {
         return "";
       } else {
-        set_def(state, { id: struct.id, clazz: "type", singular: struct_name });
+        set_def(state, { id: struct.id, clazz: "type", singular: struct_name, plural: struct.plural });
       }
 
       const attributes: Attributes = {
