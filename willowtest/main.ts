@@ -49,6 +49,7 @@ import { threedProducts } from "./specs/3d_products.ts";
 interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
+  heading?: Expression;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -63,7 +64,12 @@ export function site_template(meta: Document, body: Expression): Invocation {
           div(
             { class: "container_main" },
             main(
-              hsection(meta.name, { wide: true }, meta.title, args[0]),
+              hsection(
+                meta.name,
+                { wide: true },
+                meta.heading ? meta.heading : meta.title,
+                args[0],
+              ),
             ),
             footer(
               nav(
@@ -249,20 +255,14 @@ evaluate([
     "build",
     out_directory("previews"),
     out_file(
-      "anotherfile.html",
-      site_template({ title: "Hi", name: "testfoo" }, [
-        link_name("my_favorite_section", "Linking to another document."),
-      ]),
-    ),
-    out_file(
       "index.html",
       site_template(
         {
           title: "Willow",
           name: "willow",
+          heading: img("emblem.png"),
         },
         [
-          header(h1(img("emblem.png"))),
           pintroductory(
             "A protocol specification for local-first key-value stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
           ),

@@ -59,12 +59,11 @@ img {
 }
 
 h1 img {
-  width: 100%;
+  width: 32rem;
 }
 
 main table {
   width: 100%;
-  max-width: var(--paragraph-width);
   border-collapse: collapse;
   margin-bottom: 0.5em;
   border-radius: 4px
