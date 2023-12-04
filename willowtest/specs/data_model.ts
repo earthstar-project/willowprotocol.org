@@ -5,7 +5,7 @@ import { $, $dot } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { asset } from "../../out.ts";
-import { Struct, hl_builtin, pseudocode } from "../../pseudocode.ts";
+import { Struct, field_access, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { Expression } from "../../tsgen.ts";
 import { def_parameter, link, lis, path, pinformative, site_template } from "../main.ts";
 
@@ -132,11 +132,11 @@ export const data_model: Expression = site_template(
             pinformative("We can now formally define which ", rs("entry"), " overwrite each other and which can coexist. ", preview_scope("A ", def("store"), " is a set of ", rs("authorized_entry"), " such that", lis(
                 ["all its ", rs("entry"), " have the same ", r("namespace_id"), ", and"],
                 ["there are no two of its ", rs("entry"), " ", code("old"), " and ", code("new"), " such that", lis(
-                    [code("old"), " and ", code("new"), " have equal ", rs("subspace_id"), ", and"],
-                    ["the ", r("path"), " of ", code("new"), " is a ", r("path_prefix"), " of ", code("old"), ", and", lis(
-                        ["the ", r("timestamp"), " of ", code("old"), " is strictly less than that of ", code("new"), ", or"],
-                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is strictly ", sidenote("less", ["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), " than that of ", code("new"), ", or"],
-                        ["the ", r("timestamp"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_digest"), " of ", code("old"), " is equal to that of ", code("new"), " and the ", r("payload_length"), " of ", code("old"), " is strictly less than that of ", code("new"), "."],
+                    [code(field_access(code("old"), "subspace_id"), " == ", field_access(code("new"), "subspace_id")), ", and"],
+                    [field_access(code("new"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(code("old"), "entry_path"), ", and", lis(
+                        [code(field_access(code("old"), "timestamp"), " < ", field_access(code("new"), "timestamp")), ", or"],
+                        [code(field_access(code("old"), "timestamp"), " == ", field_access(code("new"), "timestamp")), " and ", code(field_access(code("old"), "payload_digest"), " < ", marginale(["We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison."]), field_access(code("new"), "payload_digest")), ", or"],
+                        [code(field_access(code("old"), "timestamp"), " == ", field_access(code("new"), "timestamp")), " and ", code(field_access(code("old"), "payload_digest"), " == ", field_access(code("new"), "payload_digest")), " and ", code(field_access(code("old"), "payload_length"), " < ", field_access(code("new"), "payload_length")), "."],
                     )],
                 )],
             ))),

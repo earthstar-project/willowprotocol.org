@@ -4,7 +4,7 @@ import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
 import { asset } from "../../out.ts";
-import { Struct, def_symbol, hl_builtin, pseudocode, pseudo_choices, pseudo_array, pseudo_tuple } from "../../pseudocode.ts";
+import { Struct, def_symbol, hl_builtin, pseudocode, pseudo_choices, pseudo_array, pseudo_tuple, field_access, function_call } from "../../pseudocode.ts";
 import { Expression } from "../../tsgen.ts";
 import {
 aside_block,
@@ -321,24 +321,47 @@ export const meadowcap: Expression = site_template(
 
       pinformative("A ", r("Capability"), " with zero ", r("cap_delegations"), " and a ", r("communal_namespace"), " is ", r("cap_valid"), " if ", r("cap_initial_authorization"), " is ", r("cap_initial_none"), "."),
 
-      pinformative("A ", r("Capability"), " with zero ", r("cap_delegations"), " and an ", r("owned_namespace"), " is ", r("cap_valid"), " if ", r("cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("cap_namespace"), " over the ", r("cap_user"), " (encoded via ", r("encode_user_pk"), ") followed by either the byte ", code("0x00"), " (if ", r("cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("cap_access_mode"), " is ", r("access_write"), ")."),
+      pinformative("A ", r("Capability"), " with zero ", r("cap_delegations"), " and an ", r("owned_namespace"), " is ", r("cap_valid"), " if ", r("cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
 
-      pinformative("For the inductive case, let ", code("prev_cap"), " be a ", r("cap_valid"), " ", r("Capability"), " with ", r("cap_receiver"), " ", code("prev_receiver"), " and ", r("cap_granted_area"), " ", code("prev_area"), ". Now let ", code("cap"), " be a ", r("Capability"), " obtained from ", code("prev_cap"), " by appending a triplet ", code("(new_area, new_user, new_signature)"), " to the ", r("cap_delegations"), " of ", code("prev_cap"), ". Let ", code("old_signature"), " be TODO."),
+      pinformative("For the inductive case, let ", code("prev_cap"), " be a ", r("cap_valid"), " ", r("Capability"), " with ", r("cap_receiver"), " ", code("prev_receiver"), ", and ", r("cap_granted_area"), " ", code("prev_area"), ". Now let ", code("cap"), " be a ", r("Capability"), " obtained from ", code("prev_cap"), " by appending a triplet ", code("(new_area, new_user, new_signature)"), " to the ", r("cap_delegations"), " of ", code("prev_cap"), "."),
 
-      pinformative("If ", code("prev_area"), " does not ", r("area_include_area"), " ", code("new_area"), ", then ", code("cap"), " is not ", r("cap_valid"), ". If it does, however, let ", code("diff_area"), " be the ", r("AreaInArea"), " of ", code("new_area"), " in ", code("prev_area"), ". Then let ", code("bytes_to_sign"), " be the concatenation of the following bytestrings:"),
+      pinformative("Then ", code("cap"), " is ", r("cap_valid"), " if the ", r("granted_area"), " of ", code("prev_cap"), " ", rs("area_include_area"), " ", code("new_area"), ", and ", code("new_signature"), " is a ", r("UserSignature"), " issued by the ", code("prev_receiver"), " over the bytestring ", code("handover"), ", which is defined as follows:"),
 
       lis(
-        ["TODO skip area if it did not change"],
-        ["TODO (header byte indicating whether subspace changes and whether time range is open/closed), width in bytes of the time start and ends"],
-        ["the result of applying ", r("encode_user_pk"), " to the ", r("AreaInAreaSubspace"), " of ", code("diff_area"), " if it is not ", r("cap_initial_none"), ","],
-        ["TODO encoded relative path"],
-        ["TODO time start"],
-        ["TODO time end (if not none)"],
-        ["the result of applying ", r("encode_user_pk"), " to ", code("new_user"), "."],
-        ["the result of applying ", r("encode_user_signature"), " to ", code("old_signature"), "."],
+        [
+          "If ", field_access(code("prev_cap"), "cap_delegations"), " is empty and ", field_access(code("prev_cap"), "cap_namespace"), " is ", r("communal_namespace", "communal"), ", then ", code("handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            ["the byte ", code("0x00"), " (if ", field_access(code("prev_cap"), "cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(code("prev_cap"), "cap_access_mode"), " is ", r("access_write"), "),"],
+            [function_call(r("encode_namespace_pk"), field_access(code("prev_cap"), "cap_namespace")), ","],
+            ["TODO area,"],
+            [function_call(r("encode_user_pk"), code("new_user")), "."],
+          ),
+        ],
+        [
+          "Else, if ", field_access(code("prev_cap"), "cap_delegations"), " is empty and ", field_access(code("prev_cap"), "cap_namespace"), " is ", r("owned_namespace", "owned"), ", then ", code("handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            ["TODO area,"],
+            [function_call(r("encode_user_signature"), field_access(code("prev_cap"), "cap_initial_authorization")), "."],
+            [function_call(r("encode_user_pk"), code("new_user")), "."],
+          ),
+        ],
+        [
+          "Otherwise, let ", code("prev_signature"), " be the ", r("UserSignature"), " in the last triplet of ", field_access(code("prev_cap"), "cap_delegations"), ". Then ", code("handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            ["TODO area,"],
+            [function_call(r("encode_user_signature"), code("prev_signature")), "."],
+            [function_call(r("encode_user_pk"), code("new_user")), "."],
+          ),
+        ],
       ),
 
-      pinformative("Then ", code("cap"), " is ", r("cap_valid"), " if applying ", r("user_verify"), " to ", code("prev_receiver"), ", ", code("new_signature"), ", and ", code("bytes_to_sign"), " is ", code("true"), "."),
+      
+
+      
+
+      
+
+      
     ]),
 
     hsection("mc_with_willow", "Usage With Willow", [

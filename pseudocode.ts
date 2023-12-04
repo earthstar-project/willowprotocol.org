@@ -24,7 +24,7 @@ import {
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { Def, def_generic, set_def } from "./defref.ts";
+import { Def, def_generic, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -246,6 +246,33 @@ export function pseudo_array(exp: Expression): Expression {
   return new Invocation(macro, [exp]);
 }
 
+export function field_access(obj: Expression, field_id: string): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [args[0], hl_punctuation("."), r(field_id)];
+    }
+  );
+  
+  return new Invocation(macro, [obj]);
+}
+
+export function function_call(fn: Expression, ...args: Expression[]): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const args_to_render: Expression[] = [hl_punctuation("(")];
+      for (let i = 1; i < args.length; i++) {
+        if (i > 1) {
+          args_to_render.push(hl_punctuation(", "));
+        }
+        args_to_render.push(args[i]);
+      }
+      args_to_render.push(hl_punctuation(")"));
+      return code(args[0], args_to_render);
+    }
+  );
+  
+  return new Invocation(macro, [fn, ...args]);
+}
 function render_field(field: Field): Expression {
   const field_name = field.name ? field.name : field.id;
 
