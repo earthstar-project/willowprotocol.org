@@ -3,13 +3,36 @@ import { contentType } from "std/media_types/mod.ts";
 import { extname } from "std/path/extname.ts";
 import { join } from "std/path/join.ts";
 
+const emblemFileNames = [
+  "a.png",
+  "b.png",
+  "c.png",
+];
+
+async function pickRandomEmblem() {
+  const filename =
+    emblemFileNames[Math.floor(Math.random() * emblemFileNames.length)];
+
+  const file = await Deno.open(
+    join("willowtest", "named_assets", "emblems", filename),
+  );
+
+  return file.readable;
+}
+
 Deno.serve(async (req) => {
   // Check built assets for matching pathname.
 
   const url = new URL(req.url);
 
-  if (url.pathname === "emblem.png") {
-    // TODO: Serve up a random emblem.
+  console.log(url.pathname);
+
+  if (url.pathname === "/emblem.png") {
+    return new Response(await pickRandomEmblem(), {
+      headers: {
+        "Content-Type": "image/png",
+      },
+    });
   }
 
   try {

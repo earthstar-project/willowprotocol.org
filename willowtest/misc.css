@@ -50,17 +50,16 @@ ul {
     padding-inline-start: 1.25em;
 }
 
-h1 img {
-    max-height: 5em;
-    max-width: 100%;
-}
-
 li {
     margin: 0.5em 0;
 }
 
 img {
     max-width: 100%;
+}
+
+h1 img {
+  width: 100%;
 }
 
 main table {

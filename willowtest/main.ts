@@ -9,6 +9,7 @@ import {
   em,
   footer,
   h1,
+  header,
   img,
   li,
   main,
@@ -164,6 +165,12 @@ export function pinformative(
   return p({ class: "informative" }, preview_scope(...body));
 }
 
+export function pintroductory(
+  ...body: Expression[]
+): Expression {
+  return p({ class: "introductory" }, preview_scope(...body));
+}
+
 export function aside_block(
   ...body: Expression[]
 ): Expression {
@@ -251,86 +258,81 @@ evaluate([
       "index.html",
       site_template(
         {
-          title: "TestSpec",
-          name: "testbar",
+          title: "Willow",
+          name: "willow",
         },
         [
+          header(h1(img("emblem.png"))),
+          pintroductory(
+            "A protocol specification for local-first key-value stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
+          ),
           nav(
-            ul(
-              li(link_name("data_model", "Data Model")),
-              li(link_name("meadowcap", "Meadowcap")),
-              li(link_name("sync", "Sync")),
-              li(link_name("resource_control", "Resource Management")),
+            lis(
+              link_name("specifications", "The specifications"),
             ),
           ),
-          p([
-            "This paragraph was marked neither as informative nor as normative. It will talk about ",
-            rs("cow"),
-            " and ",
-            rs("duck"),
-            ". I see four options: we can explicitly mark only the normative or only the informative paragraphs, we can explicitly mark every paragraph. Or we use only inline markup for normative content. ",
-            normative(
-              "This is an example of inline normative content. A ",
-              def("cow"),
-              " is a horse that produces chocolate.",
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/local-first.png")),
             ),
-            " There would be no definitions in an unmarked parargaph, except in inline normative content, or if everything was normative by default. In the latter case, a ",
-            def("duck"),
-            " is a chicken that rides on a ",
-            r("cow"),
-            ". ",
-            normative("Every ", r("cow"), " is a ", r("duck"), " itself."),
-          ]),
-          pinformative([
-            "This paragraph was explicitly marked as informative. While it might reference predefined concepts such as ",
-            rs("duck"),
-            ", it should contain neither definitions nor inline normative content.",
-          ]),
-          pnormative([
-            "This paragraph however is normative. Not only can it reference ",
-            rs("cow"),
-            ", it can also define its own notions. Did you know, for example, that a ",
-            def("chicken"),
-            " is a ",
-            r("duck"),
-            " that despises chocolate? It is truth now, such is the power of normative paragraphs and the definitions therein. ",
-          ]),
-          hsection("s1_0", "What a beautiful day", [
-            "What a beautiful day it is to do some...",
-            hsection("s2_0", "Bird Watching?", ["I guess."]),
-            hsection("my_favorite_section", "Macro Writing?", [
-              "It's all the rage!",
-            ]),
-          ]),
-          // link_name("my_favorite_section", "Bloep bloep bloep."),
-          p("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Condimentum mattis pellentesque id nibh tortor id aliquet lectus. Proin sed libero enim sed faucibus turpis. In dictum non consectetur a erat nam at. Nam libero justo laoreet sit amet cursus. Non arcu risus quis varius quam quisque id. In fermentum et sollicitudin ac orci. Convallis tellus id interdum velit laoreet. Dui accumsan sit amet nulla facilisi morbi. At tempor commodo ullamcorper a lacus vestibulum. Nibh sed pulvinar proin gravida. Consequat ac felis donec et odio pellentesque diam volutpat commodo. Amet nisl suscipit adipiscing bibendum est ultricies. Amet nisl purus in mollis nunc sed id."),
-          marginale_inlineable(
-            "This marginale is so important, it is displayed inline if screen space becomes too small.",
+            "Data storage which never goes offline. You get local-first key value stores for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores belong to the same namespace, they deterministically sync with each other.",
           ),
-          p(
-            "Justo donec enim diam vulputate ut. Orci a scelerisque purus semper eget duis at tellus at. Odio eu feugiat pretium nibh ipsum consequat nisl. Elementum integer enim neque volutpat ac tincidunt vitae. Posuere ac ut consequat semper viverra. Ut venenatis tellus in metus vulputate eu scelerisque felis imperdiet. Eget mauris",
-            marginale(
-              "A rude marginale interrupting a peaceful paragraph. At least it has the courtesy of disappearing when the screen becomes too small.",
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/prefix-pruning.png")),
             ),
-            " pharetra et ultrices neque ornare aenean euismod elementum. Quis risus sed vulputate odio ut. Accumsan tortor ",
-            sidenote(
-              "posuere",
-              "A sidenote. Sidenotes are numbered automatically.",
+            "Total erasure of data. Distributed systems use tombstones to communicate deletes, but even these leave metadata behind. Prefix pruning deletes many entries and all of their metadata in their entirety, leaving a single tombstone in their place.",
+          ),
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/capabilities.png")),
             ),
-            " ac ut consequat semper viverra nam libero. Gravida arcu ac tortor dignissim convallis aenean et. Pellentesque pulvinar pellentesque ",
-            sidenote("habitant", [
-              "Like regular marginals, sidenotes disappear if the viewport is too narrow. By the way, notice how the wide paragraph below automatically dodges this overly long sidenote. That paragraph simply has a ",
-              code("wide"),
-              "class applied to it. That class can be applied to any block element in the main column.",
-            ]),
-            " morbi tristique senectus et netus et. Convallis convallis tellus id interdum velit laoreet id.",
+            "Fine grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
           ),
-          p(
-            { class: "wide" },
-            "Ut eu sem integer vitae justo eget. Cursus risus at ultrices mi tempus imperdiet. Id aliquet risus feugiat in ante metus. Tincidunt eget nullam non nisi est sit amet facilisis magna. In dictum non consectetur a erat nam at lectus. Arcu non sodales neque sodales ut etiam. Facilisis volutpat est velit egestas dui id ornare. Sed ullamcorper morbi tincidunt ornare massa eget egestas purus viverra. Laoreet sit amet cursus sit amet dictum sit amet justo. Volutpat commodo sed egestas egestas fringilla phasellus. Id semper risus in hendrerit gravida rutrum quisque non. Scelerisque varius morbi enim nunc faucibus a pellentesque sit. Lorem dolor sed viverra ipsum nunc aliquet bibendum enim. Nulla porttitor massa id neque aliquam. Sed turpis tincidunt id aliquet risus feugiat in. Nulla porttitor massa id neque aliquam vestibulum morbi blandit cursus. Habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Posuere morbi leo urna molestie at elementum eu facilisis. Quis hendrerit dolor magna eget est lorem ipsum dolor sit.",
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/partial-sync.png")),
+            ),
+            "Partial sync. Have a lot of data, but don't want to sync the whole thing to a particular device? Choose which data to replicate by what, when, or who.",
           ),
-          p(
-            "Ut eu sem integer vitae justo eget. Cursus risus at ultrices mi tempus imperdiet. Id aliquet risus feugiat in ante metus. Tincidunt eget nullam non nisi est sit amet facilisis magna. In dictum non consectetur a erat nam at lectus. Arcu non sodales neque sodales ut etiam. Facilisis volutpat est velit egestas dui id ornare. Sed ullamcorper morbi tincidunt ornare massa eget egestas purus viverra. Laoreet sit amet cursus sit amet dictum sit amet justo. Volutpat commodo sed egestas egestas fringilla phasellus. Id semper risus in hendrerit gravida rutrum quisque non. Scelerisque varius morbi enim nunc faucibus a pellentesque sit. Lorem dolor sed viverra ipsum nunc aliquet bibendum enim. Nulla porttitor massa id neque aliquam. Sed turpis tincidunt id aliquet risus feugiat in. Nulla porttitor massa id neque aliquam vestibulum morbi blandit cursus. Habitasse platea dictumst vestibulum rhoncus est pellentesque elit. Posuere morbi leo urna molestie at elementum eu facilisis. Quis hendrerit dolor magna eget est lorem ipsum dolor sit.",
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/destructive-edits.png")),
+            ),
+            "Destructive edits. When you update a value, the old values and associated metadata are overwritten.",
+          ),
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/forget-data.png")),
+            ),
+            "Locally delete data you don’t want to store, even if it was authored by someone else.",
+          ),
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/ants.png")),
+            ),
+            "Peers can communicate resource budgets, so devices with very limited memory can sync too.",
+          ),
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/parametrised.png")),
+            ),
+            "You choose the transport and cryptographic primitives suited to your use-case.",
+          ),
+
+          pinformative(
+            marginale_inlineable(
+              img(asset("landing/concurrent.png")),
+            ),
+            "Authors can write from multiple devices concurrently. Yay.",
           ),
         ],
       ),
