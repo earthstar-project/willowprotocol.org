@@ -244,15 +244,17 @@ export function path(
 ): Expression {
   const macro = new_macro(
     (args, _ctx) => {
-      const e: Expression[] = ["["];
+      const e: Expression[] = [];
       for (let i = 0; i < args.length; i++) {
-        if (i != 0) {
-          e.push(", ");
-        }
-        e.push(args[i]);
+        e.push(
+          span(
+            { class: "path_segment" },
+            span({ class: "path_segment_txt" }, args[i]),
+          ),
+        );
       }
-      e.push("]");
-      return e;
+
+      return span({ class: "path" }, e);
     },
   );
 
