@@ -38,6 +38,7 @@ footer .sponsor img {
 
 main {
   flex: 1;
+  margin-bottom: 2rem;
 }
 
 main nav ul li:has(> a) {
