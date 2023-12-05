@@ -21,7 +21,6 @@ footer {
     border-top: 2px solid rgb(225, 225, 225);
     /* margin: 5em auto 0 auto; */
     padding: 0.5em 0;
-    margin: 5em 0 0 0;
     clear: right;
 }
 
@@ -35,6 +34,10 @@ footer .funder img {
 
 footer .sponsor img {
   max-width: 4em;
+}
+
+main {
+  flex: 1;
 }
 
 main nav ul li:has(> a) {
