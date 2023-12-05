@@ -107,7 +107,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 div(
                   marginale_inlineable(
                     a(
-                      { href: "https://nlnet.nl" },
+                      { href: "https://nlnet.nl", class: "funder" },
                       img(asset("nlnet.svg")),
                     ),
                   ),
@@ -115,6 +115,15 @@ export function site_template(meta: Document, body: Expression): Invocation {
                     "This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission",
                     apo,
                     "s Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073.",
+                  ),
+                  marginale_inlineable(
+                    a(
+                      { href: "https://iroh.computer", class: "sponsor" },
+                      img(asset("iroh.svg")),
+                    ),
+                  ),
+                  pinformative(
+                    "We also thank our other sponsors for their support.",
                   ),
                 ),
               ),

@@ -29,8 +29,12 @@ footer p {
     font-variant-numeric: oldstyle-nums;
 }
 
-footer img {
-    max-width: 7em;
+footer .funder img {
+  max-width: 9em;
+}
+
+footer .sponsor img {
+  max-width: 4em;
 }
 
 main nav ul li:has(> a) {
