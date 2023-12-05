@@ -1,6 +1,6 @@
 import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
 import { new_name } from "./names.ts";
-import { Attributes, a, h1, h2, h3, h4, h5, h6 } from "./h.ts";
+import { a, Attributes, h1, h2, h3, h4, h5, h6 } from "./h.ts";
 
 const statekey = Symbol("HSection");
 
@@ -22,7 +22,7 @@ function hsection_state(ctx: Context): HSectionState {
 }
 
 export interface HSectionOptions {
-  wide: boolean,
+  wide: boolean;
 }
 
 const default_options = {
@@ -106,7 +106,7 @@ export function hsection_(
           header_attributes.class = "wide";
         }
         return [
-          header_macro(header_attributes, a({href: `#${id}`}, title)),
+          header_macro(header_attributes, a({ href: `#${id}` }, title)),
           // header_macro(header_attributes, title),
           ...contents,
         ];

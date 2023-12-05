@@ -176,6 +176,6 @@ export const data_model: Expression = site_template(
             pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
         ]),
 
-        img(asset("emblems/a.png")),
+        img("/emblem.png"),
     ],
 );

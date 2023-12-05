@@ -104,16 +104,6 @@ p.normative {
     background: linear-gradient(to right, #e3f3ff, #fff 16%);
 }
 
-/* code, a.ref.type, a.ref.member, a.ref.variant {
-    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-    font-size: 0.8em;
-    background: rgba(0, 0, 0, 0.03);
-    padding: 0.2em;
-    border-radius: 10%;
-    word-break: break-word;
-    text-decoration: inherit;
-} */
-
 a.ref, a.param, a.value {
   color: var(--nearly-black);
   text-decoration-style: dotted;
@@ -141,7 +131,7 @@ a.ref:hover, a.param:hover, a.value:hover {
   border-radius: 5px;
 }
 
-code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
+code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value, .path {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
     font-size: 0.9em;
     word-break: break-word;
@@ -179,4 +169,47 @@ aside.long {
   
 figcaption {
   font-size: 1rem;
+}
+
+p.introductory  {
+  font-size: 1.5rem;
+}
+
+.path {
+  white-space: nowrap;
+}
+
+.path_segment {
+  padding: 0.1em 0.3em;
+  transform: skewX(-13deg);
+  display: inline-block;
+  margin: 0 1px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.path_segment_txt {
+  transform: skewX(13deg);
+  display: inline-block;
+}
+
+.path_segment:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+.path_segment:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.path_segment:only-child {
+  border-radius: 3px;
+}
+
+
+.path_segment:nth-child(even) {
+   color: rgb(0,158,115);
+   
+}
+
+.path_segment:nth-child(odd) {
+  color: rgb(0,114, 178);
 }

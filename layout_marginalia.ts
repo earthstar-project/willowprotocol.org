@@ -3,7 +3,7 @@ import { Expression, Invocation, new_macro } from "./tsgen.ts";
 export class LayoutOptions {
   /* All distances in rem */
   // padding-top for the body
-  padding_top = 3;
+  padding_top = 4;
   // padding-bottom for the body
   padding_bottom = 2;
   // padding-right for the body
@@ -45,18 +45,20 @@ export function layout_marginalia(opts: LayoutOptions): Expression {
 }
 
 body {
+    overflow-x: hidden;
+}
+
+.container_main {
     padding-left: ${opts.padding_left}rem;
     padding-right: ${opts.padding_right}rem;
     padding-bottom: ${opts.padding_bottom}rem;
     padding-top: ${opts.padding_top}rem;
-    overflow-x: hidden;
-    min-height: 100vh;
-}
-
-.container_main {
     max-width: ${opts.wide()}rem;
     position: relative;
     margin: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 .container_main > * {
@@ -133,6 +135,12 @@ body {
 
 .preview_content>* {
     margin: 0;
+}
+
+@media (max-width: ${opts.wide_and_margins()}rem) {
+  .container_main > * {
+    margin: auto;
+  } 
 }
 
 @media (min-width: ${opts.wide_and_margins()}rem) {
