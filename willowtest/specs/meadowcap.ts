@@ -241,14 +241,14 @@ export const meadowcap: Expression = site_template(
           lis(
             ["the byte ", code("0x00"), " (if ", field_access(r("prev_cap"), "cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("prev_cap"), "cap_access_mode"), " is ", r("access_write"), "),"],
             [function_call(r("encode_namespace_pk"), field_access(r("prev_cap"), "cap_namespace")), ","],
-            ["TODO area,"],
+            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
             [function_call(r("encode_user_pk"), r("new_user")), "."],
           ),
         ],
         [
           "Else, if ", field_access(r("prev_cap"), "cap_delegations"), " is empty and ", field_access(r("prev_cap"), "cap_namespace"), " is ", r("owned_namespace", "owned"), ", then ", r("handover"), " is the concatenation of the following bytestrings:",
           lis(
-            ["TODO area,"],
+            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
             [function_call(r("encode_user_signature"), field_access(r("prev_cap"), "cap_initial_authorization")), "."],
             [function_call(r("encode_user_pk"), r("new_user")), "."],
           ),
@@ -256,7 +256,7 @@ export const meadowcap: Expression = site_template(
         [
           "Otherwise, let ", def_value("prev_signature"), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("prev_cap"), "cap_delegations"), ". Then ", r("handover"), " is the concatenation of the following bytestrings:",
           lis(
-            ["TODO area,"],
+            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
             [function_call(r("encode_user_signature"), r("prev_signature")), "."],
             [function_call(r("encode_user_pk"), r("new_user")), "."],
           ),

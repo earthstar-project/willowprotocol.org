@@ -112,7 +112,7 @@ export const data_model: Expression = site_template(
                                 name: "timestamp",
                                 comment: ["The claimed creation time of the ", r("Entry"), "."],
                                 marginale: ["Wall-clock timestamps may come as a surprise. We are cognisant of their limitations, and use them anyway. To learn why, please see ", link_name("timestamps_really", "Timestamps, really?")],
-                                rhs: r("U64"),
+                                rhs: r("Timestamp"),
                             },
                             {
                                 id: "entry_payload_digest",
