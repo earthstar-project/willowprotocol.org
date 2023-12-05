@@ -46,6 +46,7 @@ import { specifications } from "./specs/specifications.ts";
 import { encodings } from "./specs/encodings.ts";
 import { grouping_entries } from "./specs/grouping_entries.ts";
 import { e2e } from "./specs/e2e.ts";
+import { more } from "./specs/more/more.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -95,6 +96,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 ul(
                   li(a({ href: "/" }, "Home")),
                   li(link_name("specifications", "Specs")),
+                  li(link_name("more", "More")),
                   li(
                     a(
                       { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden" },
@@ -109,7 +111,11 @@ export function site_template(meta: Document, body: Expression): Invocation {
                       img(asset("nlnet.svg")),
                     ),
                   ),
-                  pinformative("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission", apo, "s Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
+                  pinformative(
+                    "This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission",
+                    apo,
+                    "s Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073.",
+                  ),
                 ),
               ),
             ),
@@ -238,9 +244,9 @@ export function path(
       }
       e.push("]");
       return e;
-    }
+    },
   );
-  
+
   return new Invocation(macro, components);
 }
 
@@ -433,6 +439,7 @@ evaluate([
       ]),
     ]),
     out_directory("more", [
+      out_file("index.html", more),
       out_index_directory("timestamps-really", timestamps_really),
     ]),
     copy_statics("assets"),
