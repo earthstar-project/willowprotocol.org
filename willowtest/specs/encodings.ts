@@ -13,14 +13,16 @@ Attributes,
   figcaption,
   figure,
   img,
+  li,
   table,
   tbody,
   td,
   th,
   thead,
   tr,
+  ul,
 } from "../../h.ts";
-import { r, def, rs } from "../../defref.ts";
+import { r, def, rs, preview_scope } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression, Invocation, new_macro } from "../../tsgen.ts";
@@ -249,16 +251,46 @@ export const encodings: Expression = site_template({
 
       pinformative("In all subsequent definitions, whenever the value ", r("range_open"), " is part of a numeric computation or comparison, it should be treated as a very large number, say, ", code("2^9999"), ". The definitions all ensure that the resulting values never have to be encoded."),
 
-      pinformative("To encode an ", r("Area"), " ", def_value({id: "area_in_area_inner", singular: "inner"}), " that is ", r("area_include_area", "included"), " in another ", r("Area"), " ", def_value({id: "area_in_area_outer", singular: "outer"}), ", we first define ", def_value({id: "aia_start", singular: "start_diff"}), " as the minimum of ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"), " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")), " and ", code(field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), ", and we define ", def_value({id: "aia_end", singular: "end_diff"}), " as the minimum of ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), " and ", code(field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd")), ". We then define ", function_call(def_value("encode_area_in_area"), r("area_in_area_inner"), r("area_in_area_outer")), " as the concatenation of", lis(
-        ["a byte whose bits are set as follows (bit 0 is the most significant bit, bit 7 the least significant):", lis(
-          ["Bit 0 is set to ", code("1"), " if ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")), " and to ", code("0"), " otherwise,"],
-          ["Bit 1 is set to ", code("1"), " if ", code(field_access(r("area_in_area_inner"), "AreaSubspace"), " != ", field_access(r("area_in_area_outer"), "AreaSubspace")), marginale(["Because ", r("area_in_area_outer"), " ", rs("area_include_area"), " ", r("area_in_area_inner"), ", this only happens when ", field_access(r("area_in_area_outer"), "AreaSubspace"), " is ", r("area_any"), " but ", field_access(r("area_in_area_outer"), "AreaSubspace"), " is not."]), " and to ", code("0"), " otherwise,"],
-          ["Bit 2 is set to ", code("1"), " if ", code(r("aia_start"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"), " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")), " and to ", code("0"), " otherwise,"],
-          ["Bit 3 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,"],
-          ["Bit 4 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,"],
-          ["Bit 5 is set to ", code("1"), " if ", code(r("aia_end"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), " and to ", code("0"), " otherwise,"],
-          ["Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,"],
-          ["Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,"],
+      pinformative(preview_scope("To encode an ", r("Area"), " ", def_value({id: "area_in_area_inner", singular: "inner"}), " that is ", r("area_include_area", "included"), " in another ", r("Area"), " ", def_value({id: "area_in_area_outer", singular: "outer"}), ", we first define ", def_value({id: "aia_start", singular: "start_diff"}), " as the minimum of ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"), " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")), " and ", code(field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), ", and we define ", def_value({id: "aia_end", singular: "end_diff"}), " as the minimum of ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), " and ", code(field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"))), ". We then define ", function_call(def_value("encode_area_in_area"), r("area_in_area_inner"), r("area_in_area_outer")), " as the concatenation of", lis(
+        
+        ["a byte whose bits are set as follows (bit 0 is the most significant bit, bit 7 the least significant):", ul(
+          li({style: "clear: right;"},
+            marginale(["This flag indicates whether the main encoding has to include the ", r("end_value"), " of ", field_access(r("area_in_area_inner"), "AreaTime"), "."]),
+
+            "Bit 0 is set to ", code("1"), " if ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")), " and to ", code("0"), " otherwise,",
+          ),
+
+          li({style: "clear: right;"},
+            marginale(["This flag indicates whether the main encoding has to include ", field_access(r("area_in_area_inner"), "AreaSubspace"), "."]),
+            
+            "Bit 1 is set to ", code("1"), " if ", code(field_access(r("area_in_area_inner"), "AreaSubspace"), " != ", field_access(r("area_in_area_outer"), "AreaSubspace")), " and to ", code("0"), " otherwise,",
+          ),
+
+          li({style: "clear: right;"},
+            marginale(["This flag indicates whether the encoding of ", r("aia_start"), " must be added to ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart"), " or subtracted from ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), "."]),
+            
+            "Bit 2 is set to ", code("1"), " if ", code(r("aia_start"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"), " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")), " and to ", code("0"), " otherwise,",
+          ),
+
+          li({style: "clear: right;"},
+            marginale(["This flag indicates whether the encoding of ", r("aia_end"), " must be added to ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"), " or subtracted from ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"), "."]),
+            
+            "Bit 3 is set to ", code("1"), " if ", code(r("aia_end"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")), " and to ", code("0"), " otherwise,",
+          ),
+
+          li({style: "clear: right;"},
+            marginale(["Bits 4 and 5 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " for the ", r("TimeRange"), " ", r("start_value"), "."]),
+            
+            "Bit 4 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,"),
+          li("Bit 5 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,"),          
+
+
+          li({style: "clear: right;"},
+            marginale(["Bit 6 and 7 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " for the ", r("TimeRange"), " ", r("end_value"), "."]),
+            
+            "Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,",
+          ),
+          li("Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,"),
         )],
 
         [r("aia_start"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("aia_start")), "-byte integer,"],

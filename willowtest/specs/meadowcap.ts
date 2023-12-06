@@ -52,7 +52,7 @@ export const meadowcap: Expression = site_template(
           id: "communal_namespace",
           singular: "communal namespace",
           plural: "communal namespaces",
-        }), ", each ", r("subspace"), " is owned by a particular author. This is implemented by using public keys of a ", link("digital signature scheme", "https://en.wikipedia.org/wiki/Digital_signature_scheme"), " as ", rs("subspace_id"), ", you then prove ownership by providing valid signatures (which requires the corresponding secret key).",
+        }), ", each ", r("subspace"), " is owned by a particular author. This is implemented by using public keys of a ", link("digital signature scheme", "https://en.wikipedia.org/wiki/Digital_signature_scheme"), " as ", rs("SubspaceId"), ", you then prove ownership by providing valid signatures (which requires the corresponding secret key).",
       ),
 
       marginale([
@@ -65,7 +65,7 @@ export const meadowcap: Expression = site_template(
           id: "owned_namespace",
           singular: "owned namespace",
           plural: "owned namespaces",
-        }), ", the person who created the ", r("namespace"), " is the owner of all its data. To implement this, ", rs("namespace_id"), " are public keys. In an ", r("owned_namespace"), ", peers reject all requests unless they involve a signature from the ", r("namespace"), " keypair; in a ", r("communal_namespace"), ", peers reject all requests unless they involve a signature from the ", r("subspace"), " keypair.",
+        }), ", the person who created the ", r("namespace"), " is the owner of all its data. To implement this, ", rs("NamespaceId"), " are public keys. In an ", r("owned_namespace"), ", peers reject all requests unless they involve a signature from the ", r("namespace"), " keypair; in a ", r("communal_namespace"), ", peers reject all requests unless they involve a signature from the ", r("subspace"), " keypair.",
       ),
 
       pinformative(rs("owned_namespace", "Owned namespaces"), " would be quite pointless were it not for the next feature: ", em("capability delegation"), ". A capability bestows not only access rights but also the ability to mint new capabilities for the same resources but to another peer. When you create an owned namespace, you can invite others to join the fun by delegating read and/or write access to them."),
