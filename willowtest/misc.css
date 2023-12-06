@@ -92,3 +92,7 @@ td, th {
  padding: 0.5em;
  vertical-align: middle;
 }
+
+figure {
+  margin: 1.5em 0;
+}
