@@ -1,5 +1,5 @@
 import { Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { code, em, img, p } from "../../h.ts";
+import { code, em, figure, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { $, $dot } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
@@ -18,14 +18,24 @@ export const data_model: Expression = site_template(
         pinformative("In this document, we define the core data model of Willow."),
 
         pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "recipes", "mustard_pasta"), " to the bytestring ", code("Sounds delicious"), ". Unlike a typical file system, entries of this kind can be efficiently shared with other users."),
+        
+        figure(img(asset("data_model/paths.png"))),
 
         pinformative("At a later point you might change your mind about mustard pasta, overwriting the old entry at path ", path("blog", "recipes", "mustard_pasta"), " with ", code("Tried it, not good"), ". Willow tracks the timestamp of each assignment, the new entry overwrites the old one."),
+        
+        figure(img(asset("data_model/timestamps.png"))),
 
         pinformative("If you wanted to hide that you ever considered mustard pasta in the first place, you could overwrite the path ", path("blog", "recipes"), " to remove ", em("all"), " entries below it. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", em("prefix-based deletion"), "."),
+        
+        figure(img(asset("data_model/prefix_pruning.png"))),
 
         pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
+        
+        figure(img(asset("data_model/subspaces.png"))),
 
         pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
+        
+        figure(img(asset("data_model/namespaces.png"))),
 
         pinformative("This constitutes a full overview of the data model of Willow. Applications read and write payloads from and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
 
