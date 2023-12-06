@@ -1,4 +1,4 @@
-import { def, def_fake, preview_scope, r, rs } from "../../defref.ts";
+import { R, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { br, code, em, figcaption, figure, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
@@ -166,53 +166,43 @@ export const meadowcap: Expression = site_template(
     ]),
 
     hsection("capabilities", "Capabilities", [
-      pinformative(marginale(img(asset("meadowcap/capability_semantics.png"))), "Intuitively, a capability should be some piece of data that answers four questions: To whom does it grant access? Does it grant read or write access? For which ", rs("Entry"), " does it grant access? And finally, is it valid or a forgery? The following type allows us to answer the formal counterparts of all these questions."),
+      // pinformative(marginale(img(asset("meadowcap/capability_semantics.png"))), "Intuitively, a capability should be some piece of data that answers four questions: To whom does it grant access? Does it grant read or write access? For which ", rs("Entry"), " does it grant access? And finally, is it valid or a forgery? The following type allows us to answer the formal counterparts of all these questions."),
+
+      pinformative(marginale(img(asset("meadowcap/capability_semantics.png"))), "Intuitively, a capability should be some piece of data that answers four questions: To whom does it grant access? Does it grant read or write access? For which ", rs("Entry"), " does it grant access? And finally, is it valid or a forgery?"),
+
+      pinformative("We define three types that provide these semantics: one for implementing ", rs("communal_namespace"), ", one for implementing ", rs("owned_namespace"), ", and one for combining both."),
 
       pseudocode(
         new Struct({
-            id: "Capability",
-            comment: ["A Meadowcap capability."],
+            id: "CommunalCapability",
+            comment: ["A capability that implements ", rs("communal_namespace"), "."],
             fields: [
                 {
-                    id: "cap_access_mode",
+                    id: "communal_cap_access_mode",
                     name: "access_mode",
                     comment: ["The kind of access this grants."],
                     rhs: pseudo_choices(
-                      def_symbol({id: "access_read", singular: "read"}, "read", ["One of two possible ", r("cap_access_mode"), " of a ", r("Capability"), "."]),
-                      def_symbol({id: "access_write", singular: "write"}, "write", ["One of two possible ", r("cap_access_mode"), " of a ", r("Capability"), "."]),
+                      def_symbol({id: "communal_access_read", singular: "read"}, "read", ["One of two possible ", r("communal_cap_access_mode"), " of a ", r("CommunalCapability"), "."]),
+                      def_symbol({id: "communal_access_write", singular: "write"}, "write", ["One of two possible ", r("communal_cap_access_mode"), " of a ", r("CommunalCapability"), "."]),
                     ),
                 },
                 {
-                    id: "cap_namespace",
+                    id: "communal_cap_namespace",
                     name: "namespace_key",
-                    comment: ["The ", r("namespace"), " for which this grants access."],
+                    comment: ["The ", r("namespace"), " in which this grants access."],
                     rhs: r("NamespacePublicKey"),
                 },
                 {
-                    id: "cap_user",
+                    id: "communal_cap_user",
                     name: "user_key",
+                    marginale: ["Remember that we assume ", r("SubspaceId"), " and ", r("UserPublicKey"), " to be the same types."],
                     comment: [
-                      pinformative("In a ", r("communal_namespace"), ", the ", r("subspace"), " ", em("for which"), " and ", em("to whom"), " this grants access."),
-
-                      pinformative("In an ", r("owned_namespace"), ", the user ", em("to whom"), " this grants access; granting access for the full ", r("cap_namespace"), ", not just to a ", r("subspace"), "."),
+                      pinformative("The ", r("subspace"), " ", em("for which"), " and ", em("to whom"), " this grants access."),
                     ],
                     rhs: r("UserPublicKey"),
                 },
                 {
-                    id: "cap_initial_authorization",
-                    name: "initial_authorization",
-                    comment: [
-                      pinformative("In a ", r("communal_namespace"), ", ", r("cap_initial_none"), "."),
-
-                      pinformative("In an ", r("owned_namespace"), ", authorization of the ", r("cap_user"), " by the ", r("namespace_key"), "."),
-                    ],
-                    rhs: pseudo_choices(
-                      r("NamespaceSignature"),
-                      def_symbol({id: "cap_initial_none", singular: "none"}, "none", ["A value to indicate absence of an ", r("cap_initial_authorization"), " in a ", r("Capability"), " for a ", r("communal_namespace"), "."]),
-                    ),
-                },
-                {
-                    id: "cap_delegations",
+                    id: "communal_cap_delegations",
                     name: "delegations",
                     comment: ["Successive authorizations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
                     rhs: pseudo_array(pseudo_tuple(r("Area"), r("UserPublicKey"), r("UserSignature"))),
@@ -221,49 +211,129 @@ export const meadowcap: Expression = site_template(
         }),
       ),
 
-      pinformative("The ", r("cap_receiver"), " of a ", r("Capability"), " is the user to whom it grants access. Formally, the ", def({id: "cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("cap_delegations"), ", or the ", r("cap_user"), " if the ", r("cap_delegations"), " are empty."),
+      pinformative("The ", r("communal_cap_receiver"), " of a ", r("CommunityCapability"), " is the user to whom it grants access. Formally, the ", def({id: "communal_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("communal_cap_delegations"), ", or the ", r("communal_cap_user"), " if the ", r("communal_cap_delegations"), " are empty."),
 
-      pinformative("The ", r("cap_granted_area"), " of a ", r("Capability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "cap_granted_area", singular: "granted area"}), " of a ", r("Capability"), " is the final ", r("Area"), " in its ", r("cap_delegations"), " if the ", r("cap_delegations"), " are non-empty. Otherwise, it is the ", r("full_area"), " for an ", r("owned_namespace"), ", or the ", r("subspace_area"), " of the ", r("cap_user"), " for a ", r("communal_namespace"), "."),
+      pinformative("The ", r("communal_cap_granted_area"), " of a ", r("CommunalCapability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "communal_cap_granted_area", singular: "granted area"}), " of a ", r("CommunalCapability"), " is the final ", r("Area"), " in its ", r("communal_cap_delegations"), " if the ", r("communal_cap_delegations"), " are non-empty. Otherwise, it is the ", r("subspace_area"), " of the ", r("communal_cap_user"), "."),
 
-      pinformative("The final remaining definition is that of ", r("cap_valid", "validity"), "; it governs how ", rs("capability"), " can be delegated and restricted. We define ", def({id: "cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("Capability"), " is ", def_fake("cap_valid", "valid"), " if its ", r("cap_initial_authorization"), " and its ", r("cap_delegations"), " form correct chains of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("cap_delegations"), "."),
+      pinformative(R("communal_cap_valid", "Validity"), " governs how ", rs("CommunalCapability"), " can be delegated and restricted. We define ", def({id: "communal_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("CommunalCapability"), " is ", def_fake("communal_cap_valid", "valid"), " if its ", r("communal_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("communal_cap_delegations"), "."),
 
-      pinformative("A ", r("Capability"), " with zero ", r("cap_delegations"), " and a ", r("communal_namespace"), " is ", r("cap_valid"), " if ", r("cap_initial_authorization"), " is ", r("cap_initial_none"), "."),
+      pinformative("Every ", r("CommunalCapability"), " with zero ", r("communal_cap_delegations"), " is ", r("communal_cap_valid"), "."),
 
-      pinformative("A ", r("Capability"), " with zero ", r("cap_delegations"), " and an ", r("owned_namespace"), " is ", r("cap_valid"), " if ", r("cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+      pinformative("For the inductive case, let ", def_value({id: "communal_prev_cap", singular: "prev_cap"}), " be a ", r("communal_cap_valid"), " ", r("CommunalCapability"), " with ", r("communal_cap_receiver"), " ", def_value("communal_prev_receiver"), ", and ", r("communal_cap_granted_area"), " ", def_value("communal_prev_area"), ". Now let ", def_value({id: "communal_cap_defvalid", singular: "cap"}), " be a ", r("CommunalCapability"), " obtained from ", r("communal_prev_cap"), " by appending a triplet ", code("(", def_value("communal_new_area"), ", ", def_value("communal_new_user"), ", ", def_value("communal_new_signature"), ")"), " to ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), "."),
 
-      pinformative("For the inductive case, let ", def_value("prev_cap"), " be a ", r("cap_valid"), " ", r("Capability"), " with ", r("cap_receiver"), " ", def_value("prev_receiver"), ", and ", r("cap_granted_area"), " ", def_value("prev_area"), ". Now let ", def_value({id: "cap_defvalid", singular: "cap"}), " be a ", r("Capability"), " obtained from ", r("prev_cap"), " by appending a triplet ", code("(", def_value("new_area"), ", ", def_value("new_user"), ", ", def_value("new_signature"), ")"), " to ", field_access(r("prev_cap"), "cap_delegations"), "."),
-
-      pinformative("Then ", r("cap_defvalid"), " is ", r("cap_valid"), " if the ", r("granted_area"), " of ", r("prev_cap"), " ", rs("area_include_area"), " ", r("new_area"), ", and ", r("new_signature"), " is a ", r("UserSignature"), " issued by the ", r("prev_receiver"), " over the bytestring ", def_value("handover"), ", which is defined as follows:"),
+      pinformative("Then ", r("communal_cap_defvalid"), " is ", r("cap_valid"), " if the ", r("communal_granted_area"), " of ", r("communal_prev_cap"), " ", rs("area_include_area"), " ", r("communal_new_area"), ", and ", r("communal_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("communal_prev_receiver"), " over the bytestring ", def_value({id: "communal_handover", singular: "handover"}), ", which is defined as follows:"),
 
       lis(
         [
-          "If ", field_access(r("prev_cap"), "cap_delegations"), " is empty and ", field_access(r("prev_cap"), "cap_namespace"), " is ", r("communal_namespace", "communal"), ", then ", r("handover"), " is the concatenation of the following bytestrings:",
+          "If ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), " is empty, then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            ["the byte ", code("0x00"), " (if ", field_access(r("prev_cap"), "cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("prev_cap"), "cap_access_mode"), " is ", r("access_write"), "),"],
-            [function_call(r("encode_namespace_pk"), field_access(r("prev_cap"), "cap_namespace")), ","],
-            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
-            [function_call(r("encode_user_pk"), r("new_user")), "."],
+            ["the byte ", code("0x00"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("communal_access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("communal_access_write"), "),"],
+            [function_call(r("encode_namespace_pk"), field_access(r("communal_prev_cap"), "communal_cap_namespace")), ","],
+            [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
+            [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
           ),
         ],
         [
-          "Else, if ", field_access(r("prev_cap"), "cap_delegations"), " is empty and ", field_access(r("prev_cap"), "cap_namespace"), " is ", r("owned_namespace", "owned"), ", then ", r("handover"), " is the concatenation of the following bytestrings:",
+          "Otherwise, let ", def_value({id: "communal_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), ". Then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
-            [function_call(r("encode_user_signature"), field_access(r("prev_cap"), "cap_initial_authorization")), "."],
-            [function_call(r("encode_user_pk"), r("new_user")), "."],
-          ),
-        ],
-        [
-          "Otherwise, let ", def_value("prev_signature"), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("prev_cap"), "cap_delegations"), ". Then ", r("handover"), " is the concatenation of the following bytestrings:",
-          lis(
-            [function_call(r("encode_area_in_area"), r("new_area"), r("prev_area")), ","],
-            [function_call(r("encode_user_signature"), r("prev_signature")), "."],
-            [function_call(r("encode_user_pk"), r("new_user")), "."],
+            [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
+            [function_call(r("encode_user_signature"), r("communal_prev_signature")), "."],
+            [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
           ),
         ],
       ),
 
-      
+      pseudocode(
+        new Struct({
+            id: "OwnedCapability",
+            comment: ["A capability that implements ", rs("owned_namespace"), "."],
+            fields: [
+                {
+                    id: "owned_cap_access_mode",
+                    name: "access_mode",
+                    comment: ["The kind of access this grants."],
+                    rhs: pseudo_choices(
+                      def_symbol({id: "owned_access_read", singular: "read"}, "read", ["One of two possible ", r("owned_cap_access_mode"), " of a ", r("OwnedCapability"), "."]),
+                      def_symbol({id: "owned_access_write", singular: "write"}, "write", ["One of two possible ", r("owned_cap_access_mode"), " of a ", r("OwnedCapability"), "."]),
+                    ),
+                },
+                {
+                    id: "owned_cap_namespace",
+                    name: "namespace_key",
+                    comment: ["The ", r("namespace"), " for which this grants access."],
+                    rhs: r("NamespacePublicKey"),
+                },
+                {
+                    id: "owned_cap_user",
+                    name: "user_key",
+                    comment: [
+                      pinformative("The user ", em("to whom"), " this grants access; granting access for the full ", r("owned_cap_namespace"), ", not just to a ", r("subspace"), "."),
+                    ],
+                    rhs: r("UserPublicKey"),
+                },
+                {
+                    id: "owned_cap_initial_authorization",
+                    name: "initial_authorization",
+                    comment: [
+                      pinformative("Authorization of the ", r("owned_cap_user"), " by the ", r("owned_namespace_key"), "."),
+                    ],
+                    rhs: r("NamespaceSignature"),
+                },
+                {
+                    id: "owned_cap_delegations",
+                    name: "delegations",
+                    comment: ["Successive authorizations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
+                    rhs: pseudo_array(pseudo_tuple(r("Area"), r("UserPublicKey"), r("UserSignature"))),
+                },
+            ],
+        }),
+      ),
+
+      pinformative("The ", r("owned_cap_receiver"), " of a ", r("OwnedCapability"), " is the user to whom it grants access. Formally, the ", def({id: "owned_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("owned_cap_delegations"), ", or the ", r("owned_cap_user"), " if the ", r("owned_cap_delegations"), " are empty."),
+
+      pinformative("The ", r("owned_cap_granted_area"), " of a ", r("OwnedCapability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "owned_cap_granted_area", singular: "granted area"}), " of a ", r("OwnedCapability"), " is the final ", r("Area"), " in its ", r("owned_cap_delegations"), " if the ", r("owned_cap_delegations"), " are non-empty. Otherwise, it is the ", r("full_area"), " for an ", r("owned_namespace"), "."),
+
+      pinformative(R("owned__cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("owned_cap_delegations"), "."),
+
+      pinformative("A ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("cap_valid"), " if ", r("owned_cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("owned_access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("owned_access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+
+      pinformative("For the inductive case, let ", def_value("owned_prev_cap"), " be a ", r("owned_cap_valid"), " ", r("OwnedCapability"), " with ", r("owned_cap_receiver"), " ", def_value("owned_prev_receiver"), ", and ", r("owned_cap_granted_area"), " ", def_value("owned_prev_area"), ". Now let ", def_value({id: "owned_cap_defvalid", singular: "cap"}), " be a ", r("OwnedCapability"), " obtained from ", r("owned_prev_cap"), " by appending a triplet ", code("(", def_value("owned_new_area"), ", ", def_value("owned_new_user"), ", ", def_value("owned_new_signature"), ")"), " to ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."),
+
+      pinformative("Then ", r("owned_cap_defvalid"), " is ", r("owned_cap_valid"), " if the ", r("owned_granted_area"), " of ", r("owned_prev_cap"), " ", rs("area_include_area"), " ", r("owned_new_area"), ", and ", r("owned_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("owned_prev_receiver"), " over the bytestring ", def_value({id: "owned_handover", singular: "handover"}), ", which is defined as follows:"),
+
+      lis(
+        [
+          "If ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), " is empty and ", field_access(r("owned_prev_cap"), "owned_cap_namespace"), " is ", r("owned_namespace", "owned"), ", then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            [function_call(r("encode_area_in_area"), r("owned_new_area"), r("Spellprev_area")), ","],
+            [function_call(r("encode_user_signature"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorization")), "."],
+            [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
+          ),
+        ],
+        [
+          "Otherwise, let ", def_value({id: "owned_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), ". Then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            [function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area")), ","],
+            [function_call(r("encode_user_signature"), r("owned_prev_signature")), "."],
+            [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
+          ),
+        ],
+      ),
+
+      pseudocode(
+        new Struct({
+            id: "Capability",
+            comment: ["A Meadowcap capability."],
+            fields: [
+                {
+                    id: "foo",
+                    rhs: pseudo_choices(r("CommunalCapability"), r("OwnedCapability")),
+                },
+            ],
+        }),
+      ),
+
+      pinformative("TODO bla. Receiver and granted area jut delegate to the inner cap, validity delegates to the inner cap and also checks whether the choice of inner cap type matches `is_communal`."),
 
       
 
