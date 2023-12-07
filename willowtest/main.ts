@@ -342,7 +342,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol specification for local-first key-value stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
+            "A protocol specification for local-first data stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
           ),
           nav(
             lis(
