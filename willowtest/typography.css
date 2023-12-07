@@ -206,10 +206,11 @@ p.introductory  {
 
 
 .path_segment:nth-child(even) {
-   color: rgb(0,158,115);
-   background: rgba(0, 0, 0, 0.08);
+   color: rgb(86,180,233);
+
 }
 
 .path_segment:nth-child(odd) {
   color: rgb(0,114, 178);
+  background: rgba(0, 0, 0, 0.08);
 }
