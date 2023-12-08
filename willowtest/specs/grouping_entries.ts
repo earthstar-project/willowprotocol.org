@@ -25,6 +25,11 @@ export const grouping_entries: Expression = site_template({
 
   hsection("ranges", "Ranges", [
     pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one).")),
+    
+    figure(
+      img(asset("grouping_entries/ranges.png")),
+      figcaption("A ", r('closed_range'), " and a ", r('open_range'), ".")
+    ),
 
     pinformative("The Willow protocols use three types of ", rs("range"), ":"),
     surpress_output(def_symbol({id: "range_open", singular: "open"}, "open", ["A value that signals that a ", r("range"), " is ", r("open_range", "open"), "."])),
@@ -89,6 +94,8 @@ export const grouping_entries: Expression = site_template({
     ),
 
     pinformative("Let ", def_value({id: "rangeisectr1", singular: "r1"}), " and ", def_value({id: "rangeisectr2", singular: "r2"}), " be ", rs("range"), " (over the same types of values). The ", def({id: "range_intersection", singular: "intersection"}), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " is the range whose ", r("start_value"), " is the greater of the ", rs("start_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), ", and whose ", r("end_value"), " is the lesser of the ", rs("end_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if both are ", rs("closed_range"), "), the one ", r("end_value"), " among ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if exactly one of them is a ", r("closed_range"), "), or no ", r("end_value"), " (if both ", r("rangeisectr1"), " and ", r("rangeisectr2"), " are ", rs("open_range"), ")."),
+    
+    marginale_inlineable(img(asset("grouping_entries/3d_range.png"))),
 
     pinformative("When we combine ", rs("range"), " of all three dimensions, we can delimit boxes in Willow space."),
 
