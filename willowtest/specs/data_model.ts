@@ -46,7 +46,7 @@ export const data_model: Expression = site_template(
       "You also give the name ",
       path("blog", "idea", "2"),
       " to the bytestring ",
-      code("(will post results here)"),
+      code("(watch this space)"),
       ".",
     ),
 

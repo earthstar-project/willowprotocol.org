@@ -17,8 +17,6 @@ export const grouping_entries: Expression = site_template({
 }, [
   pinformative("Willow lets authors place ", rs("Entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("Entry"), " are arranged according to three orthogonal dimensions: ", r("entry_path"), ", ", r("entry_subspace_id"), ", and ", r("entry_timestamp"), ". This suggests a powerful way of thinking about Willow: a ", r("namespace"), " is a collection of points (", rs("Entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of ", rs("Payload"), "."),
 
-  marginale_inlineable(img(asset("meadowcap/3d_range.png"))),
-
   pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to be more precise) in the three-dimensional willow space."),
 
   pinformative("In this document, we develop and define some precise terminology for grouping ", rs("Entry"), " based on their ", rs("entry_path"), ", ", rs("andrea_subspace_id"), ", and ", rs("andrea_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
