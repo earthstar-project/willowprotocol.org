@@ -23,14 +23,12 @@ main a[href]:not(:where(
   /* domains to exclude */
   [href*="//willowprotocol.org"]
 )):after {
-  color: var(--nearly-black);
-  display: inline-block;
+  display: inline;
   content: '↗';
   font-family: ui-sans-serif;
-  margin-left: 0.3ch;
   font-size: 0.9em;
   text-decoration: none;
-  color: grey;
+  text-decoration-thickness: 0;
 }
 
 strong {
