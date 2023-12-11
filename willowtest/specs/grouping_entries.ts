@@ -132,6 +132,8 @@ export const grouping_entries: Expression = site_template({
     pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("3dRange"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
     marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some (most, even) boxes do not correspond to any ", r("Area"), "."]),
+    
+    marginale(img(asset('grouping_entries/area.png'))),
 
     pseudocode(
       new Struct({
