@@ -2,6 +2,7 @@ import { def, def_fake, R, r, rs } from "../../../defref.ts";
 import {
   code,
   em,
+  figcaption,
   figure,
   img,
   table,
@@ -343,6 +344,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
               td(small_img(asset("3d_rbsr/fp_bottle_green.png"))),
             ),
           ),
+          figcaption("A metaphorical juicing fingerprint. Although the number of ingredients in the set may change, the size of the bottle does not. Each bottle's juice inherits its unique flavour from its ingredients.")
         ),
       ),
 
