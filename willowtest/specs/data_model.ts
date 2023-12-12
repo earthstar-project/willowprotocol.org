@@ -12,7 +12,7 @@ import {
   pseudocode,
   Struct,
 } from "../../pseudocode.ts";
-import { Expression } from "macro";
+import { Expression } from "../../tsgen.ts";
 import {
   def_parameter_type,
   def_parameter_value,

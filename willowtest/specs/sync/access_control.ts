@@ -72,7 +72,7 @@ export const access_control: Expression = site_template(
     ),
 
     pinformative(
-      "In order to prove to each other that they are need the intended receivers of the",
+      "In order to prove to each other that they are need the intended receivers of the ",
       rs("read_capability"),
       " the peers registered, they need to produce a valid signature for the ",
       r("access_receiver"),

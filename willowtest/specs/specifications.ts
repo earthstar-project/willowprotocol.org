@@ -34,6 +34,6 @@ export const specifications: Expression = site_template(
     ),
 
     surpress_output(def_type("U64", "U64", ["The type of unsigned 64 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("2^64 - 1"), "."])),
-    surpress_output(def_type("Bool", "Bool", ["The type of teh two truth values ", code("true"), " and ", code("false"), "."])),
+    surpress_output(def_type("Bool", "Bool", ["The type of the two truth values ", code("true"), " and ", code("false"), "."])),
   ],
 );
