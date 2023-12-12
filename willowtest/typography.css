@@ -106,7 +106,6 @@ a.ref, a.param, a.value {
   color: var(--nearly-black);
   text-decoration-style: dotted;
   text-decoration-color: rgb(112, 132, 132);
-  white-space: nowrap; 
 }
 
 a.def {
