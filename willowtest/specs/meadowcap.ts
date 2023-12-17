@@ -123,7 +123,7 @@ export const meadowcap: Expression = site_template(
           ],
 
           [
-              marginale(["Users identities are ", rs("dss_pk"), " of the ", r("user_signature_scheme"), ". Further, ", r("subspace_id"), " must be ", rs("dss_pk"), " of the ", r("user_signature_scheme"), " as well. In ", rs("communal_namespace"), ", all valid capabilities stem from knowing a particular ", r("dss_sk"), " of the ", r("user_signature_scheme"), "."]),
+              marginale(["Users identities are ", rs("dss_pk"), " of the ", r("user_signature_scheme"), ". Further, ", r("SubspaceId"), " must be ", rs("dss_pk"), " of the ", r("user_signature_scheme"), " as well. In ", rs("communal_namespace"), ", all valid capabilities stem from knowing a particular ", r("dss_sk"), " of the ", r("user_signature_scheme"), "."]),
               "A ", r("signature_scheme"), " ", def_parameter_value("user_signature_scheme", "user_signature_scheme", ["A protocol parameter of Meadowcap, the ", r("signature_scheme"), " from which authority stems in ", rs("communal_namespace"), ", and which is used when delegating capabilities."]), " consisting of algorithms ", def_parameter_value("user_generate_keys", "user_generate_keys", ["A protocol parameter of Meadowcap, the ", r("dss_generate_keys"), " function of the ", r("user_signature_scheme"), "."]), ", ", def_parameter_value("user_sign", "user_sign", ["A protocol parameter of Meadowcap, the ", r("dss_sign"), " function of the ", r("user_signature_scheme"), "."]), ", and ", def_parameter_value("user_verify", "user_verify", ["A protocol parameter of Meadowcap, the ", r("dss_verify"), " function of the ", r("user_signature_scheme"), "."]), ". The ", rs("dss_pk"), " have type ", def_parameter_type("UserPublicKey", "UserPublicKey", ["A protocol parameter of Meadowcap, the type of ", rs("dss_pk"), " of the ", r("user_signature_scheme"), "."]), ", and the ", rs("dss_signature"), " have type ", def_parameter_type("UserSignature", "UserSignature", ["A protocol parameter of Meadowcap, the type of ", rs("dss_signature"), " of the ", r("user_signature_scheme"), "."]), "."
           ],
           [
@@ -239,7 +239,7 @@ export const meadowcap: Expression = site_template(
             preview_scope("Otherwise, let ", def_value({id: "communal_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), "."), " Then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
             lis(
               [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
-              [function_call(r("encode_user_signature"), r("communal_prev_signature")), "."],
+              [function_call(r("encode_user_sig"), r("communal_prev_signature")), "."],
               [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
             ),
           ],
@@ -321,7 +321,7 @@ export const meadowcap: Expression = site_template(
             preview_scope("Otherwise, let ", def_value({id: "owned_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."), " Then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
             lis(
               [function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area")), ","],
-              [function_call(r("encode_user_signature"), r("owned_prev_signature")), "."],
+              [function_call(r("encode_user_sig"), r("owned_prev_signature")), "."],
               [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
             ),
           ],
