@@ -76,7 +76,7 @@ export const meadowcap: Expression = site_template(
 
       pinformative("Verifying whether a delegated capability bestows access rights is done recursively: check that the last delegation step is accompanied by a valid signature, then verify the capability that was being delegated."),
 
-      pinformative("The next important feature of Meadowcap is that of ", em("restricting"), " capabilities. Suppose I maintain several code repositories inside my personal ", r("subspace"), ". I use different ", rs("path"), " to organize the data pertaining to different repositories, say ", path("code", "seasonal-clock"), " and ", path("code", "earthstar"), ". If I wanted to give somebody write-access to the ", path("code", "seasonal-clock"), " repository, I should ", em("not"), " simply grant them write access to my complete ", r("subspace"), " — if I did, they could also write to ", path("code", "earthstar"), ". Or to ", path("blog", "embarrassing-facts"), " for that matter.", ),
+      pinformative("The next important feature of Meadowcap is that of ", em("restricting"), " capabilities. Suppose I maintain several code repositories inside my personal ", r("subspace"), ". I use different ", rs("Path"), " to organize the data pertaining to different repositories, say ", path("code", "seasonal-clock"), " and ", path("code", "earthstar"), ". If I wanted to give somebody write-access to the ", path("code", "seasonal-clock"), " repository, I should ", em("not"), " simply grant them write access to my complete ", r("subspace"), " — if I did, they could also write to ", path("code", "earthstar"), ". Or to ", path("blog", "embarrassing-facts"), " for that matter.", ),
 
       // marginale(img(asset("meadowcap/capability_types.png"))),
 
@@ -217,7 +217,7 @@ export const meadowcap: Expression = site_template(
   
         pinformative("The ", r("communal_cap_granted_area"), " of a ", r("CommunalCapability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "communal_cap_granted_area", singular: "granted area"}), " of a ", r("CommunalCapability"), " is the final ", r("Area"), " in its ", r("communal_cap_delegations"), " if the ", r("communal_cap_delegations"), " are non-empty. Otherwise, it is the ", r("subspace_area"), " of the ", r("communal_cap_user"), "."),
   
-        pinformative(R("communal_cap_valid", "Validity"), " governs how ", rs("CommunalCapability"), " can be delegated and restricted. We define ", def({id: "communal_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("CommunalCapability"), " is ", def_fake("communal_cap_valid", "valid"), " if its ", r("communal_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("communal_cap_delegations"), "."),
+        pinformative(R("communal_cap_valid", "Validity"), " governs how ", rs("CommunalCapability"), " can be delegated and restricted. We define ", def({id: "communal_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("CommunalCapability"), " is ", def_fake("communal_cap_valid", "valid"), " if its ", r("communal_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("Area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("communal_cap_delegations"), "."),
   
         pinformative("Every ", r("CommunalCapability"), " with zero ", r("communal_cap_delegations"), " is ", r("communal_cap_valid"), "."),
   
@@ -229,7 +229,7 @@ export const meadowcap: Expression = site_template(
           [
             "If ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), " is empty, then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
             lis(
-              ["the byte ", code("0x00"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("communal_access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("communal_access_write"), "),"],
+              ["the byte ", code("0x00"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_write"), "),"],
               [function_call(r("encode_namespace_pk"), field_access(r("communal_prev_cap"), "communal_cap_namespace")), ","],
               [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
               [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
@@ -278,7 +278,7 @@ export const meadowcap: Expression = site_template(
                       id: "owned_cap_initial_authorization",
                       name: "initial_authorization",
                       comment: [
-                        pinformative("Authorization of the ", r("owned_cap_user"), " by the ", r("owned_namespace_key"), "."),
+                        pinformative("Authorization of the ", r("owned_cap_user"), " by the ", r("owned_cap_namespace"), "."),
                       ],
                       rhs: r("NamespaceSignature"),
                   },
@@ -300,9 +300,9 @@ export const meadowcap: Expression = site_template(
   
         pinformative("The ", r("owned_cap_granted_area"), " of an ", r("OwnedCapability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "owned_cap_granted_area", singular: "granted area"}), " of an ", r("OwnedCapability"), " is the final ", r("Area"), " in its ", r("owned_cap_delegations"), " if the ", r("owned_cap_delegations"), " are non-empty. Otherwise, it is the ", r("full_area"), "."),
   
-        pinformative(R("owned_cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("An ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("owned_cap_delegations"), "."),
+        pinformative(R("owned_cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("An ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("Area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("owned_cap_delegations"), "."),
   
-        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("owned_access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("owned_access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
   
         pinformative("For the inductive case, let ", def_value({id: "owned_prev_cap", singular: "prev_cap"}), " be a ", r("owned_cap_valid"), " ", r("OwnedCapability"), " with ", r("owned_cap_receiver"), " ", def_value({id: "owned_prev_receiver", singular: "prev_receiver"}), ", and ", r("owned_cap_granted_area"), " ", def_value({id: "owned_prev_area", singular: "prev_area"}), ". Now let ", def_value({id: "owned_cap_defvalid", singular: "cap"}), " be an ", r("OwnedCapability"), " obtained from ", r("owned_prev_cap"), " by appending a triplet ", code("(", def_value({id: "owned_new_area", singular: "new_area"}), ", ", def_value({id: "owned_new_user", singular: "new_user"}), ", ", def_value({id: "owned_new_signature", singular: "new_signature"}), ")"), " to ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."),
   

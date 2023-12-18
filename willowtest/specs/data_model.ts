@@ -206,12 +206,12 @@ export const data_model: Expression = site_template(
       pinformative(
         marginale(["When two peers connect and wish to update each other, they compute the ", rs("store_join"), " of all their ", rs("store"), " with equal ", rs("NamespaceId"), ". Doing so efficiently can be quite challenging, we recommend our ", link_name("sync", "Willow General Purpose Sync"), " protocol."]),
         marginale(["Formally, adding a new ", r("Entry"), " to a ", r("store"), " consists of computing the ", r("store_join"), " of the original ", r("store"), " and a singleton ", r("store"), " containing only the new ", r("Entry"), "."]),
-        "The ", def({ id: "store_join", singular: "join" }), " of two ", rs("store"), " that store ", rs("entry"), " of the same ", r("entry_namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
+        "The ", def({ id: "store_join", singular: "join" }), " of two ", rs("store"), " that store ", rs("Entry"), " of the same ", r("entry_namespace_id"), " is the ", r("store"), " obtained as follows:", lis(
           [
             "Starts with the union of the two ", rs("store"), ".",
           ],
           [
-            "Then, remove all ", rs("Entry"), " with a ", r("entry_path"), " ", def_value({ id: "join_def_p", singular: "p" }), " whose ", r("timestamp"), " is strictly less than the ", r("timestamp"), " of any other ", r("Entry"), " of the same ", r("entry_subspace_id"), " whose ", r("entry_path"), " is a prefix of ", r("join_def_p"), ".",
+            "Then, remove all ", rs("Entry"), " with a ", r("entry_path"), " ", def_value({ id: "join_def_p", singular: "p" }), " whose ", r("entry_timestamp"), " is strictly less than the ", r("entry_timestamp"), " of any other ", r("Entry"), " of the same ", r("entry_subspace_id"), " whose ", r("entry_path"), " is a prefix of ", r("join_def_p"), ".",
           ],
           [
             "Then, for each subset of ", rs("Entry"), " with equal ", rs("entry_subspace_id"), ", equal ", rs("entry_path"), ", and equal ", rs("entry_timestamp"), ", remove all but those with the greatest ", r("entry_payload_digest"), ".",
