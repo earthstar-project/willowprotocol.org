@@ -93,11 +93,4 @@ aside_block,
     hsection("e2e_auth", "AuthorizationTokens", [
       pinformative("Peers store and exchange not only ", rs("Entry"), " but ", rs("AuthorizedEntry"), ". Whether ", rs("AuthorizationToken"), " can be meaningfully encrypted depends on the choice of ", r("is_authorized_write"), ", and should be taken into account when designing and using these parameters. ", link_name("meadowcap", "Meadowcap"), " ", rs("Capability"), " cannot be encrypted, as this would remove the ability of peers without access to the decryption keys to verify the ", rs("dss_signature"), "."),
     ]),
-
-    // pinformative("Spoilers: ", rs("namespace_id"), " and ", rs("subspace_id"), " can be encrypted with any normal block cypher. ", Rs("path"), " require encryption with a prefix-preserving encryption ", sidenote("scheme", [link(`Xu, Jun, et al. "Prefix-preserving ip address anonymization: Measurement-based security evaluation and a new cryptography-based scheme." 10th IEEE International Conference on Network Protocols, 2002. Proceedings. IEEE, 2002.`, "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=3d6387c053cc9f3fe153bbffc79b492f0775c354")]), ". ", Rs("timestamp"), " cannot be encrypted while preserving Willow semantics."),
   ]);
-  
-  /*
-  
-  */
-  
