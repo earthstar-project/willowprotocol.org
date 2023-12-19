@@ -1,15 +1,11 @@
 import { createHash } from "npm:sha256-uint8array";
-import { evaluate, Expression, Invocation, new_macro } from "../tsgen.ts";
+import { evaluate, Expression, Invocation, new_macro } from "macro";
 import { html5, html5_dependency_css } from "../html5.ts";
 import {
   a,
   aside,
-  code,
   div,
-  em,
   footer,
-  h1,
-  header,
   img,
   li,
   main,
@@ -29,11 +25,11 @@ import {
   write_file_relative,
 } from "../out.ts";
 import { read_file } from "../input.ts";
-import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
+import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def, def_generic, preview_scope, r, rs } from "../defref.ts";
+import { Def, def_generic, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
