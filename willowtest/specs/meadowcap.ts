@@ -1,11 +1,11 @@
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { br, code, em, figcaption, figure, img, p } from "../../h.ts";
+import { code, em, figure, img } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
-import { marginale, marginale_inlineable } from "../../marginalia.ts";
+import { marginale } from "../../marginalia.ts";
 import { asset } from "../../out.ts";
-import { Struct, def_symbol, hl_builtin, pseudocode, pseudo_choices, pseudo_array, pseudo_tuple, field_access, function_call } from "../../pseudocode.ts";
-import { Expression, surpress_output } from "../../tsgen.ts";
+import { Struct, def_symbol, pseudocode, pseudo_choices, pseudo_array, pseudo_tuple, field_access, function_call } from "../../pseudocode.ts";
+import { Expression, surpress_output } from "macro";
 import {
 aside_block,
 def_parameter_type,
