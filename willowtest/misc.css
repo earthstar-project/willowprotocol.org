@@ -17,6 +17,7 @@ nav ul li {
 }
 
 footer {
+    margin: 1em 0 0 0;
     border-top: 2px solid rgb(225, 225, 225);
     /* margin: 5em auto 0 auto; */
     padding: 0.5em 0;
