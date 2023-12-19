@@ -5,6 +5,7 @@ import {
   figcaption,
   figure,
   img,
+  span,
   table,
   tbody,
   td,
@@ -70,7 +71,10 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     pinformative("Range-based set reconciliation solves the problem recursively. To reconcile two sets, one peer first computes a hash over all items in its set, and sends this fingerprint to the other peer. That peer then computes the fingerprint over its items as well. If the fingerprints match, they are done reconciling. If they do not match, there are two options. First, the peer can split its set in half and then initiate set reconciliation for each half concurrently (by transmitting its hashes for both halves). Second, if the set is sufficiently small, the peer can instead simply transmit its items in the set. The other peer responds to this with all other items that it held in the set, completing the process of reconciliation."),
 
-    figure(img(asset("3d_rbsr/drilling_down.png"))),
+    figure(
+      img(asset("3d_rbsr/drilling_down.png")),
+      figcaption(span({class: 'vermillion'},"Non-equal ranges"),  " are  split apart in order to hone in on the location of the difference, and ", span({class: 'blue'}, "equal ranges"),   " are disregarded.")
+    ),
 
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
 

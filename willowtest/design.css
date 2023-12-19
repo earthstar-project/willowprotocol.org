@@ -5,7 +5,43 @@
     --nearly-black: rgb(17, 17, 17);
     --nearly-nearly-black: rgb(19, 50, 21);
     --nearly-white: rgb(255, 253, 252);
-    --nearly-nearly-white: rgb(255, 252, 250)
+    --nearly-nearly-white: rgb(255, 252, 250);
+    
+    --wong-orange: rgb(230, 159, 0);
+    --wong-sky-blue: rgb(86, 180, 233);
+    --wong-green: rgb(0, 158, 115);
+    --wong-yellow: rgb(240,228,66);
+    --wong-blue: rgb(0, 114, 178);
+    --wong-vermillion: rgb(213, 94, 0);
+    --wong-purple: rgb(204, 121, 167);
+}
+
+.orange {
+    color: var(--wong-orange)
+}
+
+.sky-blue {
+    color: var(--wong-blue)
+}
+
+.green {
+    color: var(--wong-green)
+}
+
+.yellow {
+    color: var(--wong-yellow)
+}
+
+.blue {
+    color: var(--wong-blue)
+}
+
+.vermillion {
+    color: var(--wong-vermillion)
+}
+
+.purple {
+    color: var(--wong-purple)
 }
 
 body {

@@ -1,13 +1,13 @@
-import { aside_block, def_value, link, lis, pinformative, quotes, site_template } from "../main.ts";
+import { def_value, link, lis, pinformative, quotes, site_template } from "../main.ts";
 import { hsection } from "../../hsection.ts";
 import { code, em, figcaption, figure, img } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
-import { Expression, surpress_output } from "../../tsgen.ts";
-import { Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
+import { Expression, surpress_output } from "macro";
+import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
-import { $, $comma, $dot } from "../../katex.ts";
-import { Struct, def_symbol, field_access, hl_builtin, pseudo_choices, pseudocode } from "../../pseudocode.ts";
+import { $comma } from "../../katex.ts";
+import { Struct, def_symbol, field_access, pseudo_choices, pseudocode } from "../../pseudocode.ts";
 
 const apo = "’";
 
@@ -15,7 +15,12 @@ export const grouping_entries: Expression = site_template({
   name: "grouping_entries",
   title: "Grouping Entries",
 }, [
-  marginale_inlineable(img(asset("grouping_entries/axes.png"))),
+  marginale_inlineable(
+    [
+      img(asset("grouping_entries/axes.png")),
+      figcaption("The three dimensions of a Willow namespace.")
+    ]
+  ),
   
   pinformative("Willow lets authors place ", rs("Entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("Entry"), " are arranged according to three orthogonal dimensions: ", r("entry_path"), ", ", r("entry_subspace_id"), ", and ", r("entry_timestamp"), ". This suggests a powerful way of thinking about Willow: a ", r("namespace"), " is a collection of points (", rs("Entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of ", rs("Payload"), "."),
 
@@ -95,7 +100,12 @@ export const grouping_entries: Expression = site_template({
 
     pinformative("Let ", def_value({id: "rangeisectr1", singular: "r1"}), " and ", def_value({id: "rangeisectr2", singular: "r2"}), " be ", rs("range"), " (over the same types of values). The ", def({id: "range_intersection", singular: "intersection"}), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " is the range whose ", r("start_value"), " is the greater of the ", rs("start_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), ", and whose ", r("end_value"), " is the lesser of the ", rs("end_value"), " of ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if both are ", rs("closed_range"), "), the one ", r("end_value"), " among ", r("rangeisectr1"), " and ", r("rangeisectr2"), " (if exactly one of them is a ", r("closed_range"), "), or no ", r("end_value"), " (if both ", r("rangeisectr1"), " and ", r("rangeisectr2"), " are ", rs("open_range"), ")."),
     
-    marginale_inlineable(img(asset("grouping_entries/3d_range.png"))),
+    marginale_inlineable(
+      [
+        img(asset("grouping_entries/3d_range.png")),
+        figcaption("A 3d range composed of a time range, path range, and subspace range.")
+      ]
+    ),
 
     pinformative("When we combine ", rs("range"), " of all three dimensions, we can delimit boxes in Willow space."),
 
@@ -133,7 +143,12 @@ export const grouping_entries: Expression = site_template({
 
     marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some (most, even) boxes do not correspond to any ", r("Area"), "."]),
     
-    marginale(img(asset('grouping_entries/area.png'))),
+    marginale(
+      [
+        img(asset("grouping_entries/area.png")),
+        figcaption("This diagram attempts to show the key difference between a ", r('3dRange'), ' and a ', r('Area'), ', namely that its dimensions are ', em('derived'), ' from its ', r('AreaPath'), ' ', r('AreaSubspace'), '.') 
+      ]
+    ),
 
     pseudocode(
       new Struct({
