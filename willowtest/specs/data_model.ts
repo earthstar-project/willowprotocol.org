@@ -53,7 +53,7 @@ export const data_model: Expression = site_template(
 
     figure(
       img(asset("data_model/subspaces.png")),
-      figcaption("The three dimensions of Willow's data model: paths, timestamps, and subspaces.")
+      figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
     ),
 
     pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
