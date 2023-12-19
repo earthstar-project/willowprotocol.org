@@ -9,6 +9,7 @@ import { pseudocode } from "../../../pseudocode.ts";
 import { Expression } from "macro";
 import {
   def_parameter_type,
+  def_value,
   ols,
   pinformative,
   site_template,
@@ -31,69 +32,36 @@ export const resource_control: Expression = site_template(
     ),
 
     pinformative(
-      "In some sense, there is no way around that. However, we would prefer if the communication partner ",
-      em("knew"),
-      " when this was about to happen; it could then throttle its more expensive messages, so that its cheaper messages could still be processed without delay. This is crucial to implementing logically independent communication channels on top of a single physical communication channel.",
+      "In some sense, there is no way around that. However, we would prefer if the communication partner ", em("knew"), " when this was about to happen; it could then throttle its more expensive messages, so that its cheaper messages could still be processed without delay. This is crucial to implementing logically independent communication channels on top of a single physical communication channel.",
     ),
 
     pinformative(
-      "Here, we describe a simple way of maintaining independent message buffers for each logical communication channel. When receiving a message that will take a long time to process, a peers moves it into the message buffer for that kind of messages. This keeps the main communication channel responsive. If a message buffer has insufficient capacity for new messages, the other peer is informed in advance so that it does not send messages that cannot be buffered.",
+      "Here, we describe a simple way of maintaining independent message buffers for each logical communication channel. When receiving a message that will take a long time to process, a peers moves it into the message buffer for that kind of messages. This keeps the main communication channel responsive. If a message buffer has insufficient capacity for new messages, the other peer is informed in advance, so that it does not send messages that cannot be buffered.",
     ),
 
     hsection("resouce_control_requirements", "Requirements", [
       pinformative(
-        "To describe our approach more precisely, we need to introduce some terminology. One peer — the ",
-        def({ id: "resources_client", singular: "client" }, "client", [
-          "The ",
-          def_fake("resources_client", "client"),
-          " is the peer who wishes to send messages to a ",
-          r("resources_server"),
-          " that applies flow control.",
+        "To describe our approach more precisely, we need to introduce some terminology. One peer — the ", def({id: "resources_client", singular: "client"}, "client", [
+          "The ", def_fake("resources_client", "client"), " is the peer who wishes to send messages to a ", r("resources_server"), " that applies flow control.",
         ]),
-        " — sends messages to the other peer — the ",
-        def({ id: "resources_server", singular: "server" }, "server", [
-          "The ",
-          def_fake("resources_server", "server"),
-          " is the peer who wishes to apply flow control to the messages it receives.",
-        ]),
-        ". Messages belong to ",
-        def(
-          { id: "logical_channel", singular: "logical channel" },
-          "logical communication channels",
-          [
-            "A ",
-            def_fake("logical_channel", "logical channel"),
-            " allows application of backpressure to its messages, independent from other ",
-            rs("logical_channel"),
-            " that might be concurrently running over the same physical communication channel.",
+        " — sends messages to the other peer — the ", def({ id: "resources_server", singular: "server" }, "server", [
+          "The ", def_fake("resources_server", "server"), " is the peer who wishes to apply flow control to the messages it receives.",
+        ]), ". Messages belong to ", def({id: "logical_channel", singular: "logical channel"}, "logical communication channels", [
+            "A ", def_fake("logical_channel", "logical channel"), " allows application of backpressure to its messages, independent from other ", rs("logical_channel"), " that might be concurrently running over the same physical communication channel.",
           ],
-        ),
-        ", and the server maintains a fifo buffer for each ",
-        r("logical_channel"),
-        ". Some messages do not belong to any ",
-        r("logical_channel"),
-        " — those are messages that can always be processed immediately and in negligible time, so they are never moved to any buffer. In particular, our approach adds its own message kinds for exchanging metadata about the buffers. All of these ",
-        def(
-          { id: "control_message", singular: "control message" },
-          "control messages",
-          [
-            "A ",
-            def_fake("control_message", "control message"),
-            " is a message that does not belong to any ",
-            r("logical_channel"),
-            ".",
+        ), ", and the server maintains a fifo buffer for each ", r("logical_channel"), ". Some messages do not belong to any ", r("logical_channel"), " — those are messages that can always be processed immediately and in negligible time, so they are never moved to any buffer. In particular, our approach adds its own message kinds for exchanging metadata about the buffers. All of these ", def({id: "control_message", singular: "control message"}, "control messages", [
+            "A ", def_fake("control_message", "control message"), " is a message that does not belong to any ", r("logical_channel"),".",
           ],
-        ),
-        " do not belong to any channel — if buffer management required buffer capacity in the first place, things could quickly go wrong.",
+        )," do not belong to any channel — if buffer management required buffer capacity in the first place, things could quickly go wrong.",
       ),
 
       figure(
         img(asset("resource_control/logical_channels.png")),
-        figcaption("Messages being moved from a buffer to their respective ", rs('logical_channel'), ".")
+        figcaption("Messages being moved from a shared fifo input channel to the buffers of their respective ", rs('logical_channel'), ".")
       ),
 
       pinformative(
-        "We now present some properties we would like our solution to fullfil.",
+        "We now present some properties we would like our solution to fulfill.",
       ),
 
       pinformative(
@@ -220,7 +188,7 @@ export const resource_control: Expression = site_template(
         " cannot simply decrease the buffer size and then inform the ",
         r("resources_client"),
         ": while that information is traveling to the ",
-        r("resources_server"),
+        r("resources_client"),
         ", the ",
         r("resources_client"),
         " might send messages on this ",
@@ -295,9 +263,7 @@ export const resource_control: Expression = site_template(
       pinformative(
         "To keep the complexity of the retransmission logic minimal, we adopt a very simple solution: when the ",
         r("resources_server"),
-        " drops an optimistically transmitted message (it is still ",
-        em("not"),
-        " allowed to drop messages for which it had previously guaranteed buffer capacity), it must ",
+        " drops an ", sidenote("optimistically", ["The ", r("resources_server"), " is still ", em("not"), " allowed to drop messages for which it had previously guaranteed buffer capacity."]), " transmitted message, it must ",
         em("keep dropping"),
         " all messages on the same ",
         r("logical_channel"),
@@ -385,7 +351,7 @@ export const resource_control: Expression = site_template(
 
     hsection("resources_message_types", "Message Types", [
       pinformative(
-        "The following pseudo-type summarizes the different kinds of ",
+        "The following pseudo-types summarize the different kinds of ",
         rs("control_message"),
         " that this approach introduces. The parameter ",
         def_parameter_type("C", "C", [
@@ -407,18 +373,13 @@ export const resource_control: Expression = site_template(
           id: "ResourceControlGuarantee",
           name: "Guarantee",
           comment: [
-            "The ",
-            r("resources_server"),
-            " makes a binding promise of available buffer capacity to the ",
-            r("resources_client"),
-            ".",
+            "The ", r("resources_server"), " makes a binding promise of ", r("ResourceControlGuaranteeAmount"), " many bytes of available buffer capacity to the ", r("resources_client"), ".",
           ],
           fields: [
             {
               id: "ResourceControlGuaranteeAmount",
               name: "amount",
-              // comment: ["A number of bytes the ", r("resources_server"), " promises to be able to buffer."],
-              rhs: hl_builtin("u64"),
+              rhs: r("U64"),
             },
             {
               id: "ResourceControlGuaranteeChannel",
@@ -443,7 +404,7 @@ export const resource_control: Expression = site_template(
             {
               id: "ResourceControlAbsolveAmount",
               name: "amount",
-              rhs: hl_builtin("u64"),
+              rhs: r("U64"),
             },
             {
               id: "ResourceControlAbsolveChannel",
@@ -470,7 +431,7 @@ export const resource_control: Expression = site_template(
             {
               id: "ResourceControlOopsTarget",
               name: "target",
-              rhs: hl_builtin("u64"),
+              rhs: r("U64"),
             },
             {
               id: "ResourceControlOopsChannel",
@@ -489,7 +450,7 @@ export const resource_control: Expression = site_template(
             r("resources_client"),
             " that it has started dropping messages and will continue to do so until it receives an ",
             r("ResourceControlApology"),
-            " message. Note that the ",
+            " message. The ",
             r("resources_server"),
             " must send any outstanding ",
             rs("guarantee"),
@@ -515,7 +476,7 @@ export const resource_control: Expression = site_template(
             r("resources_client"),
             " notifies the ",
             r("resources_server"),
-            " that it can stop dropping messages of this ",
+            " that it can stop dropping messages on this ",
             r("logical_channel"),
             ".",
           ],
@@ -582,7 +543,7 @@ export const resource_control: Expression = site_template(
           r("handle_server"),
           " must keep track of all ",
           rs("resource_handle"),
-          ", they should both be able to remove a binding. We call this operation ",
+          ", they should both be able to remove bindings. We call this operation ",
           def({ id: "handle_free", singular: "free" }, "freeing"),
           " a ",
           r("resource_handle"),
@@ -590,9 +551,7 @@ export const resource_control: Expression = site_template(
         ),
 
         pinformative(
-          "Note that we only discuss ",
-          rs("resource_handle"),
-          " that live during a particular protocol run between two peers. We do not consider the setting of persisting peer-specific state across sessions.",
+          "Note that we only discuss ", rs("resource_handle"), " that live during a particular protocol run between two peers. We do not consider the problem of persisting peer-specific state across sessions.",
         ),
       ]),
 
@@ -770,7 +729,7 @@ export const resource_control: Expression = site_template(
           rs("resource_handle"),
           " optimistically, before the ",
           rs("resource_handle"),
-          " have been confirmed. This requires us to introduce another retransmission mechanism: When the ",
+          " have been confirmed. This requires us to introduce a retransmission mechanism: When the ",
           r("handle_server"),
           " receives a message referring to a ",
           r("resource_handle"),
@@ -866,7 +825,7 @@ export const resource_control: Expression = site_template(
 
       hsection("handles_message_types", "Message Types", [
         pinformative(
-          "The following pseudo-type summarizes the messages for maintaining ",
+          "The following pseudo-types summarize the messages for maintaining ",
           rs("resource_handle"),
           ". The parameter ",
           def_parameter_type("H", "H", [
@@ -879,7 +838,7 @@ export const resource_control: Expression = site_template(
           ". Each message pertains to exactly one ",
           r("handle_type"),
           ", specified by its ",
-          code("hande_type"),
+          code("handle_type"),
           " field. ",
           r("HandleBind"),
           " messages belong to ",
@@ -912,14 +871,14 @@ export const resource_control: Expression = site_template(
               {
                 id: "HandleBindValue",
                 comment: [
-                  "An actual protocol probably wants to define dedicated message type for the ",
+                  "An actual protocol probably wants to define dedicated message types for the ",
                   code("Bind"),
                   " messages of every ",
                   r("handle_type"),
-                  ", each with their own  associated type of values.",
+                  ", each with their own associated type of values.",
                 ],
                 name: "value",
-                rhs: hl_builtin("u64"),
+                rhs: r("U64"),
               },
               {
                 id: "HandleBindType",
@@ -942,14 +901,14 @@ export const resource_control: Expression = site_template(
               {
                 id: "HandleFreeHandle",
                 name: "handle",
-                rhs: hl_builtin("u64"),
+                rhs: r("U64"),
               },
               {
                 id: "HandleFreeMine",
                 comment: [
                   "Indicates whether the peer sending this message is the one who created the ",
                   r("HandleFreeHandle"),
-                  "(",
+                  " (",
                   code("true"),
                   ") or not (",
                   code("false"),
@@ -966,7 +925,7 @@ export const resource_control: Expression = site_template(
                   ".",
                 ],
                 name: "mine",
-                rhs: hl_builtin("bool"),
+                rhs: r("Bool"),
               },
               {
                 id: "HandleFreeType",
@@ -995,7 +954,7 @@ export const resource_control: Expression = site_template(
               {
                 id: "HandleConfirmNumber",
                 name: "number",
-                rhs: hl_builtin("u64"),
+                rhs: r("U64"),
               },
               {
                 id: "HandleConfirmType",
@@ -1024,7 +983,7 @@ export const resource_control: Expression = site_template(
               {
                 id: "HandleStartedDroppingAt",
                 name: "at",
-                rhs: hl_builtin("u64"),
+                rhs: r("U64"),
               },
               {
                 id: "HandleStartedDroppingType",
@@ -1063,7 +1022,7 @@ export const resource_control: Expression = site_template(
               {
                 id: "HandleApologyAt",
                 name: "at",
-                rhs: hl_builtin("u64"),
+                rhs: r("U64"),
               },
               {
                 id: "HandleApologyType",
@@ -1092,28 +1051,26 @@ export const resource_control: Expression = site_template(
 
         pinformative(
           "Let ",
-          $("h"),
+          def_value({id: "delta_handle_h", singular: "h"}),
           " be a ",
           r("resource_handle"),
-          " (that is, a natural number between zero and ",
-          $("2^{64} - 1", ")"),
-          ". The ",
+          " (greater than or equal to ", code("0"), " and strictly less than ", code("2^64 - 1"), ". The ",
           def({ id: "delta_handle", singular: "delta handle" }),
           " of ",
-          $("h"),
+          r("delta_handle_h"),
           " is ",
-          $comma("h - l"),
+          code(r("delta_handle_h"), " - ", r("delta_handle_l")),
           " where ",
-          $("l"),
+          def_value({id: "delta_handle_l", singular: "l"}),
           " is the numerically least ",
           r("resource_handle"),
           " of the same ",
           r("handle_type"),
-          " and ",
+          "",
           r("handle_bind", "bound"),
           " by the same peer as ",
-          $("h"),
-          " for which the peer who is determining the ",
+          $("delta_handle_h"),
+          ", for which the peer who is determining the ",
           r("delta_handle"),
           " has not yet sent a ",
           r("HandleFree"),
