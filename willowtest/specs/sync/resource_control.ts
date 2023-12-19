@@ -1,15 +1,14 @@
-import { def, def_fake, preview_scope, r, rs } from "../../../defref.ts";
-import { code, em, figure, img, p } from "../../../h.ts";
+import { def, def_fake, r, rs } from "../../../defref.ts";
+import { code, em, figcaption, figure, img } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
-import { $, $comma, $dot } from "../../../katex.ts";
+import { $, $comma } from "../../../katex.ts";
 import { sidenote } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
 import { hl_builtin, Struct } from "../../../pseudocode.ts";
 import { pseudocode } from "../../../pseudocode.ts";
-import { Expression } from "../../../tsgen.ts";
+import { Expression } from "macro";
 import {
   def_parameter_type,
-  def_parameter_value,
   ols,
   pinformative,
   site_template,
@@ -88,7 +87,10 @@ export const resource_control: Expression = site_template(
         " do not belong to any channel — if buffer management required buffer capacity in the first place, things could quickly go wrong.",
       ),
 
-      figure(img(asset("resource_control/logical_channels.png"))),
+      figure(
+        img(asset("resource_control/logical_channels.png")),
+        figcaption("Messages being moved from a buffer to their respective ", rs('logical_channel'), ".")
+      ),
 
       pinformative(
         "We now present some properties we would like our solution to fullfil.",
