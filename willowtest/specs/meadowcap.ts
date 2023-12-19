@@ -138,15 +138,15 @@ export const meadowcap: Expression = site_template(
           ],
 
           [
-              "Limits on the sizes of the ", rs("Path"), " that can appear in capabilities:", lis(
+              "Limits on the sizes of the ", rs("Path"), " and their ", rs("Component"), " that can appear in capabilities:", lis(
                 [
-                  "A natural number ", def_parameter_value({id: "mc_max_component_length", singular: "max_component_length"}, "max_component_length", ["A protocol parameter of Meadowcap, the maximal length of individual ", r("Path"), " components."]), " for limiting the length of ", r("Path"), " components.",
+                  "A natural number ", def_parameter_value({id: "mc_max_component_length", singular: "max_component_length"}, "max_component_length", ["A protocol parameter of Meadowcap, the maximal length of individual ", rs("Component"), "."]), " for limiting the length of individual ", rs("Component"), ".",
                 ],
                 [
-                    "A natural number ", def_parameter_value({id: "mc_max_component_count", singular: "max_component_count"}, "max_component_count", ["A protocol parameter of Meadowcap, the maximal number of components (bytestrings) in a single ", r("Path"), "."]), " for limiting the number of ", r("Path"), " components.",
+                    "A natural number ", def_parameter_value({id: "mc_max_component_count", singular: "max_component_count"}, "max_component_count", ["A protocol parameter of Meadowcap, the maximal number of ", rs("Component"), " in a single ", r("Path"), "."]), " for limiting the number of ", rs("Component"), " per ", r("Path"), ".",
                 ],
                 [
-                    "A natural number ", def_parameter_value({id: "mc_max_path_length", singular: "max_path_length"}, "max_path_length", ["A protocol parameter of Meadowcap, the maximal sum of the lengths of the components (bytestrings) of a single ", r("Path"), " in bytes."]), " for limiting the overall size of ", rs("Path"), ".",
+                    "A natural number ", def_parameter_value({id: "mc_max_path_length", singular: "max_path_length"}, "max_path_length", ["A protocol parameter of Meadowcap, the maximal sum of the lengths of the ", rs("Component"), " of a single ", r("Path"), " in bytes."]), " for limiting the overall size of ", rs("Path"), ".",
                 ],
               ),
           ],

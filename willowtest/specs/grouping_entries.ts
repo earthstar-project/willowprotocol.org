@@ -112,7 +112,7 @@ export const grouping_entries: Expression = site_template({
     pseudocode(
       new Struct({
         id: "3dRange",
-        comment: ["A three-dimensional range that ", rs("3d_range_include"), " every ", r("Entry"), " ", r("range_include", "included"), " in all three component ", rs("range"), "."],
+        comment: ["A three-dimensional range that ", rs("3d_range_include"), " every ", r("Entry"), " ", r("range_include", "included"), " in all three of its ", rs("range"), "."],
         fields: [
           {
             id: "3dRangeTime",
@@ -133,7 +133,7 @@ export const grouping_entries: Expression = site_template({
       }),
     ),
 
-    pinformative("A ", r("3dRange"), " ", def({id: "3d_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " whose ", r("entry_timestamp"), ", ", r("entry_path"), ", and ", r("entry_subspace_id"), " are all ", r("range_include", "included"), " their respective component ", r("range"), "."),
+    pinformative("A ", r("3dRange"), " ", def({id: "3d_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " whose ", r("entry_timestamp"), ", ", r("entry_path"), ", and ", r("entry_subspace_id"), " are all ", r("range_include", "included"), " their respective ", r("range"), "."),
   ]),
 
   hsection("areas", "Areas", [

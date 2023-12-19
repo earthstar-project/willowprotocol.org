@@ -86,13 +86,13 @@ export const data_model: Expression = site_template(
         [ "A type ", def_parameter_type("SubspaceId", "SubspaceId", ["A protocol parameter of Willow, the type of ", rs("entry_subspace_id"), "."]), " for identifying subspaces.",
         ],
         [
-          "A natural number ", def_parameter_value("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", r("Path"), " components."]), " for limiting the length of path components.",
+          "A natural number ", def_parameter_value("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", rs("Component"), "."]), " for limiting the length of path components.",
         ],
         [
-          "A natural number ", def_parameter_value("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of components (bytestrings) in a single ", r("Path"), ".", ]), " for limiting the number of path components.",
+          "A natural number ", def_parameter_value("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of ", rs("Component"), " in a single ", r("Path"), ".", ]), " for limiting the number of path components.",
         ],
         [
-          "A natural number ", def_parameter_value("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the components (bytestrings) of a single ", r("Path"), " in bytes."]), " for limiting the overall size of paths.",
+          "A natural number ", def_parameter_value("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the ", rs("Component"), "  of a single ", r("Path"), " in bytes."]), " for limiting the overall size of paths.",
         ],
         [
           "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " type ", def_parameter_type("PayloadDigest", "PayloadDigest", ["A protocol parameter of Willow, the totally ordered type of ", rs("entry_payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores.",
@@ -118,7 +118,7 @@ export const data_model: Expression = site_template(
     hsection("data_model_concepts", "Concepts", [
       pinformative("Willow can store arbitrary bytestrings of at most ", $("2^{64} - 1"), " bytes. We call such a bytestring a ", def_type("Payload", "Payload", ["A ", def_fake_type("Payload"), " is a bytestring of at most ", $("2^{64} - 1"), " bytes."]), "."),
 
-      pinformative("A ", def_type("Path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), "."),
+      pinformative("A ", def_type("Path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), ". The bytestrings that make up a ", r("Path"), " are called its ", def_type("Component", "Components"), "."),
 
       pinformative("A ", def_type("Timestamp"), " is a 64-bit unsigned integer, that is, a natural number between zero (inclusive) and ", code("2^64 - 1"), " (exclusive). ", Rs("Timestamp"), " are to be interpreted as a time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), "."),
 
@@ -178,7 +178,7 @@ export const data_model: Expression = site_template(
 
       pinformative(
         marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]),
-        "A ", r("Path"), " ", def_value({ id: "prefix_s", singular: "s" }), " is a ", def({ id: "path_prefix", singular: "prefix", plural: "prefixes" }), " of a ", r("Path"), " ", def_value({ id: "prefix_t", singular: "t" }), " if the first components (that is, bytestrings) of ", r("prefix_t"), " are exactly the components of ", r("prefix_s"), ".",
+        "A ", r("Path"), " ", def_value({ id: "prefix_s", singular: "s" }), " is a ", def({ id: "path_prefix", singular: "prefix", plural: "prefixes" }), " of a ", r("Path"), " ", def_value({ id: "prefix_t", singular: "t" }), " if the first ", rs("Component"), " of ", r("prefix_t"), " are exactly the ", rs("Component"), " of ", r("prefix_s"), ".",
       ),
 
       pinformative("We can now formally define which ", rs("Entry"), " overwrite each other and which can coexist. ", preview_scope(
