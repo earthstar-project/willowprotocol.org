@@ -112,6 +112,34 @@ a.ref, a.param, a.value {
   text-decoration-color: rgb(112, 132, 132);
 }
 
+.orange a.ref, .orange a.param, .orange a.value {
+  color: var(--wong-orange)
+}
+
+.sky-blue a.ref, .sky-blue a.param, .sky-blue a.value {
+  color: var(--wong-blue)
+}
+
+.green a.ref, .green a.param, .green a.value {
+  color: var(--wong-green)
+}
+
+.yellow a.ref, .yellow a.param, .yellow a.value {
+  color: var(--wong-yellow)
+}
+
+.blue a.ref, .blue a.param, .blue a.value {
+  color: var(--wong-blue)
+}
+
+.vermillion a.ref, .vermillion a.param, .vermillion a.value {
+  color: var(--wong-vermillion)
+}
+
+.purple a.ref, .purple a.param, .purple a.value {
+  color: var(--wong-purple)
+}
+
 a.def {
   color: var(--nearly-black);
   font-style: italic;

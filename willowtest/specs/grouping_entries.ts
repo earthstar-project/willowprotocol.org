@@ -1,6 +1,6 @@
 import { def_value, link, lis, pinformative, quotes, site_template } from "../main.ts";
 import { hsection } from "../../hsection.ts";
-import { code, em, figcaption, figure, img } from "../../h.ts";
+import { code, em, figcaption, figure, img, span } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
 import { Expression, surpress_output } from "macro";
@@ -18,7 +18,7 @@ export const grouping_entries: Expression = site_template({
   marginale_inlineable(
     [
       img(asset("grouping_entries/axes.png")),
-      figcaption("The three dimensions of a Willow namespace.")
+      figcaption("The three dimensions of a ", r("namespace"), ".")
     ]
   ),
   
@@ -33,7 +33,7 @@ export const grouping_entries: Expression = site_template({
     
     figure(
       img(asset("grouping_entries/ranges.png")),
-      figcaption("A ", r('closed_range'), " and a ", r('open_range'), ".")
+      figcaption("A ", span({class: "vermillion"}, r('closed_range')), " and an ", span({class: "green"}, r('open_range')), ".")
     ),
 
     pinformative("The Willow protocols use three types of ", rs("range"), ":"),
@@ -103,7 +103,7 @@ export const grouping_entries: Expression = site_template({
     marginale_inlineable(
       [
         img(asset("grouping_entries/3d_range.png")),
-        figcaption("A 3d range composed of a time range, path range, and subspace range.")
+        figcaption("A ", span({class: "orange"}, r("3dRange")), " composed of a ", span({class: "green"}, r("TimeRange")), ", ", span({class: "blue"}, r("PathRange")), ", and ", span({class: "purple"}, r("SubspaceRange")), ".")
       ]
     ),
 
@@ -141,12 +141,12 @@ export const grouping_entries: Expression = site_template({
 
     pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("3dRange"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
-    marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some (most, even) boxes do not correspond to any ", r("Area"), "."]),
+    marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some boxes do not correspond to any ", r("Area"), "."]),
     
     marginale(
       [
         img(asset("grouping_entries/area.png")),
-        figcaption("This diagram attempts to show the key difference between a ", r('3dRange'), ' and a ', r('Area'), ', namely that its dimensions are ', em('derived'), ' from its ', r('AreaPath'), ' ', r('AreaSubspace'), '.') 
+        figcaption("This diagram attempts to show the key difference between a ", r('3dRange'), ' and an ', r('Area'), ', namely that its dimensions are ', em('derived'), ' from its ', span({class: "blue"}, r('AreaPath')), ' and its ', span({class: "purple"}, r('AreaSubspace')), '.') 
       ]
     ),
 
@@ -183,7 +183,7 @@ export const grouping_entries: Expression = site_template({
       [code(field_access(r("area_include_a"), "AreaSubspace"), " == ", r("area_any")), " or ", code(field_access(r("area_include_a"), "AreaSubspace"), " == ", field_access(r("area_include_e"), "entry_subspace_id")), "."],
     )),
 
-    pinformative("An ", r("Area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), marginale(["In particular, every ", r("Area"), " ", rs("area_include_area"), " itself."]), " another ", r("Area"), " if the first ", r("Area"), " ", rs("area_include"), " all ", rs("Entry"), " that the second ", r("Area"), " ", rs("area_include"), "."),
+    pinformative("An ", r("Area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), " another ", r("Area"), " if the first ", r("Area"), " ", rs("area_include"), " all ", rs("Entry"), " that the second ", r("Area"), " ", rs("area_include"), ". In particular, every ", r("Area"), " ", rs("area_include_area"), " itself."),
 
     // pinformative("Let ", code("a1"), " and ", code("a2"), " be ", rs("area"), " consisting of ", rs("time_range"), " ", code("t1"), " and ", code("t2"), ", ", rs("path"), " ", code("p1"), " and ", code("p2"), ", and optional ", rs("subspace_id"), " ", code("s1"), " and ", code("s2"), " respectively. If there exist ", rs("Entry"), " ", r("area_include", "included"), " in both of them, then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", code("a1"), " and ", code("a2"), " as the ", r("range_intersection"), " of ", code("t1"), " and ", code("t2"), ", the longer of ", code("p1"), " and ", code("p2"), " (one is a prefix of the other, otherwise the intersection would be empty), and either no ", r("subspace_id"), " (if neither ", code("s1"), " nor ", code("s2"), " are given), or any of the given ", rs("subspace_id"), " otherwise (if both are given, then they are equal, as otherwise the intersection would be empty)."),
 

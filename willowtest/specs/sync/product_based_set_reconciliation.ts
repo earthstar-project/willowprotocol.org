@@ -73,7 +73,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     figure(
       img(asset("3d_rbsr/drilling_down.png")),
-      figcaption(span({class: 'vermillion'},"Non-equal ranges"),  " are  split apart in order to hone in on the location of the difference, and ", span({class: 'blue'}, "equal ranges"),   " are disregarded.")
+      figcaption("Split apart ", span({class: 'vermillion'},"non-equal ranges"),  " to hone in on the locations of any differences, while disregarding ", span({class: 'blue'}, "equal ranges"), ".")
     ),
 
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
