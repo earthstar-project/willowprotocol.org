@@ -5,6 +5,7 @@ import {
   figcaption,
   figure,
   img,
+  span,
   table,
   tbody,
   td,
@@ -45,7 +46,10 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     pinformative("At any point, a peer can opt to send a ", r("range_entry_set"), " instead of a ", r("range_fingerprint"), ". A ", def({ id: "range_entry_set", singular: "range_entry_set" }), " consists of a ", r("3dRange"), ", the set of all ", rs("Entry"), " that the peer has within that ", r("3dRange"), ", and a boolean flag to indicate whether the other peer should reply with its ", r("range_entry_set"), " for the same ", r("3dRange"), " as well. Such a reply should ", em("not"), " set that flag, and it should not contain any of the ", rs("Entry"), " that were part of the ", r("range_entry_set"), " that it is replying to."),
 
-    figure(img(asset("3d_rbsr/drilling_down.png"))),
+    figure(
+      img(asset("3d_rbsr/drilling_down.png")),
+      figcaption(span({class: 'vermillion'},"Non-equal ranges"),  " are  split apart in order to hone in on the location of the difference, and ", span({class: 'blue'}, "equal ranges"),   " are disregarded.")
+    ),
 
     pinformative("By recursively splitting ", rs("3dRange"), " with non-equal ", rs("entry_fingerprint"), ", the peers can drill down to the subareas where actual reconciliation (by exchanging ", r("range_entry_set"), ") is required. Note that the peers need not agree on when to switch from ", rs("range_fingerprint"), " to ", rs("range_entry_set"), ", or even on into how many ", rs("3dRange"), " to subdivide in each recursion step. As long as they both make progress on every ", r("range_fingerprint"), " they receive, they will successfully reconcile their ", rs("Entry"), "."),
 
