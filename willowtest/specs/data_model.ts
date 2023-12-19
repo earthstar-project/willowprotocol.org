@@ -178,7 +178,7 @@ export const data_model: Expression = site_template(
 
       pinformative(
         marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]),
-        "A ", r("Path"), " ", def_value({ id: "prefix_s", singular: "s" }), " is a ", def({ id: "path_prefix", singular: "prefix", plural: "prefixes" }), " of a ", r("Path"), " ", def_value({ id: "prefix_t", singular: "t" }), " if the first items (that is, bytestrings) of ", r("prefix_t"), " are exactly the items of ", r("prefix_s"), ".",
+        "A ", r("Path"), " ", def_value({ id: "prefix_s", singular: "s" }), " is a ", def({ id: "path_prefix", singular: "prefix", plural: "prefixes" }), " of a ", r("Path"), " ", def_value({ id: "prefix_t", singular: "t" }), " if the first components (that is, bytestrings) of ", r("prefix_t"), " are exactly the components of ", r("prefix_s"), ".",
       ),
 
       pinformative("We can now formally define which ", rs("Entry"), " overwrite each other and which can coexist. ", preview_scope(
