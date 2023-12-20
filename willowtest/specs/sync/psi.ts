@@ -1,5 +1,5 @@
-import { def, preview_scope, r, rs } from "../../../defref.ts";
-import { code, em, img } from "../../../h.ts";
+import { def, preview_scope, r, rs, r$, R } from "../../../defref.ts";
+import { code, div, em, img } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
 import { $, $comma, $dot } from "../../../katex.ts";
 import {
@@ -11,11 +11,13 @@ import { asset } from "../../../out.ts";
 import { Expression } from "macro";
 import {
   def_value,
+  def_value$,
   link,
   lis,
   pinformative,
   site_template,
 } from "../../main.ts";
+import { def_type, function_call } from "../../../pseudocode.ts";
 
 const apo = "’";
 
@@ -29,195 +31,105 @@ export const psi: Expression = site_template(
   },
   [
     pinformative(
-      link(
-        "Private set intersection",
-        "https://en.wikipedia.org/wiki/Private_set_intersection",
-      ),
-      " (",
-      def({ id: "psi", singular: "PSI" }),
-      ") protocols allow two peers to establish which items they have in common without revealing any non-common items to the other party. The ",
-      r("wgps"),
-      " employs a classic ",
-      link(
-        "technique by Huberman, Franklin, and Hogg",
-        "https://dl.acm.org/doi/pdf/10.1145/336992.337012",
-      ),
-      ", which we explain in this document.",
+      link("Private set intersection", "https://en.wikipedia.org/wiki/Private_set_intersection", ),
+      " (", def({ id: "psi", singular: "PSI" }), ") protocols allow two peers to establish which items they have in common without revealing any non-common items to the other party. The ", r("WGPS"), " employs a classic ", link("technique by Huberman, Franklin, and Hogg", "https://dl.acm.org/doi/pdf/10.1145/336992.337012"), ", which we explain in this document.",
     ),
 
     hsection("private_equality_testing", "Private Equality Testing", [
       pinformative(
-        "We start by considering a related but simpler problem: two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of ",
-        sidenote("inequality", [
+        "We start by considering a related but simpler problem: two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of ", sidenote("inequality", [
           "If the peers simply exchanged hashes of their items, peers could learn which other peers have equal items, so this is not a sufficiently private solution.",
-        ]),
-        ". Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
+        ]), ". Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
       ),
 
       marginale_inlineable(img(asset("psi/psi_paint.png"))),
 
       pinformative(
-        "Imagine the items were ",
-        em("colors"),
-        ". Assume colors can easily be mixed with other colors, but unmixing a given color into its components is impossible. The following procedure then solves the problem:",
+        "Imagine the items were ", em("colors"), ". Assume colors can easily be mixed with other colors, but unmixing a given color into its components is impossible. The following procedure then solves the problem:",
       ),
 
       lis(
         [preview_scope(
-          "Alfie and Betty each start with a data color ",
-          def_value("data_A"),
-          " and ",
-          def_value("data_B"),
-          " respectively.",
+          "Alfie and Betty each start with a data color ", def_value("data_A"), " and ", def_value("data_B"), " respectively.",
         )],
         [preview_scope(
-          "Alfie and Betty each randomly select a secret color ",
-          def_value("secret_A"),
-          " and ",
-          def_value("secret_B"),
-          " respectively.",
+          "Alfie and Betty each randomly select a secret color ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
         )],
         [
-          "They each mix their data color with their secret color and send the result to the other person (",
-          code("combine(", r("data_A"), ", ", r("secret_A"), ")"),
-          " and ",
-          code("combine(", r("data_B"), ", ", r("secret_B"), ")"),
-          ").",
+          "They each mix their data color with their secret color and send the result to the other person (", function_call("mix", r("data_A"), r("secret_A")), " and ", function_call("mix", r("data_B"), r("secret_B")), ").",
         ],
         [
-          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (",
-          code(
-            "combine(combine(",
-            r("data_B"),
-            ", ",
-            r("secret_B"),
-            "), ",
-            r("secret_A"),
-            ")",
-          ),
-          " and ",
-          code(
-            "combine(combine(",
-            r("data_A"),
-            ", ",
-            r("secret_A"),
-            "), ",
-            r("secret_B"),
-            ")",
-          ),
-          ").",
+          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A")), " and ", function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B")), ").",
         ],
       ),
 
       pinformative(
-        "If they receive the same color they remembered, then they started with the same data color, and otherwise they did not. Because unmixing colors is impossible and mixing with a randomly chosen secret color essentially yields a new random-looking color, the peers cannot learn anything about each other",
-        apo,
-        "s colors in case of ",
-        sidenote("inequality", [
-          "Neither can any eavesdropper learn about the data colors. The procedure is highly related to a ",
-          link(
-            "Diffie–Hellman key exchange",
-            "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange",
-          ),
-          " for that reason, and we have borrowed the color metaphor from its wikipedia page.",
+        "If both peers receive the same color they remembered, then they started with the same data color, and otherwise they did not. Because unmixing colors is impossible and mixing with a randomly chosen secret color essentially yields a new random-looking color, the peers cannot learn anything about each other’s colors in case of ", sidenote("inequality", [
+          "Neither can any eavesdropper learn about the data colors. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the color metaphor from its wikipedia page.",
         ]),
         ".",
       ),
+
+      div({style: "clear: right;"}), // this is only temporary
 
       pinformative(
         marginale([
           "Note that the color analogy is not fully accurate: data colors correspond to group members but secret colors correspond to scalars, which are of a different type than group members.",
         ]),
-        "Leaving the world of analogy, the actual cryptographic primitives we use are ",
-        link(
-          "finite cyclic groups",
-          "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups",
-        ),
-        " — such as the ",
-        link(
-          "X25519 elliptic curve",
-          "https://en.wikipedia.org/wiki/Curve25519",
-        ),
-        " — equipped with a way of serializing group members for transport and with a way of generating pseudo-random group members from the items to test for equality.",
+        "Leaving the world of analogy, the actual cryptographic primitives we use are ", link("finite cyclic groups", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), " — such as the ", link("X25519 elliptic curve", "https://en.wikipedia.org/wiki/Curve25519"), " — equipped with a way of serializing group members for transport and with a way of generating pseudo-random group members from the items to test for equality.",
       ),
 
       pinformative(
         marginale([
           "Do not worry if the mathy description here does not fully make sense to you. We merely give it for completeness sake, it is not required to fully understand it.",
         ]),
-        "Let ",
-        $(Items),
-        " be the set of items for which we want to be able to privately test for equality. Let ",
-        $("G"),
-        " be a ",
-        link(
-          "finite cyclic group",
-          "https://en.wikipedia.org/wiki/Cyclic_group",
-        ),
-        " with a well-known ",
-        link(
-          "generator",
-          "https://en.wikipedia.org/wiki/Generating_set_of_a_group",
-        ),
-        " ",
-        $("g"),
-        " and group operation ",
-        $("*"),
-        ", and let ",
-        $(item_to_group),
-        " be a hash function from ",
-        $(Items),
-        " into ",
-        $dot("G"),
+        "Let ", def_type({id: "psi_Items", singular: "Items", plural: "Items"}), " be the set of items for which we want to be able to privately test for equality. Let ", def_type({id: "psi_G", singular: "G"}), " be a ", link("finite cyclic group", "https://en.wikipedia.org/wiki/Cyclic_group"), " with a well-known ", link("generator", "https://en.wikipedia.org/wiki/Generating_set_of_a_group"), " ", def_value({id: "psi_g", singular: "g"}), " and group operation ", def_value({id: "psi_times", singular: "*"}), ", and let ", def_value({id: "psi_item_to_group", singular: "item_to_group", math: "item\\_to\\_group"}), " be a hash function from ", r("psi_Items"), " into ", r("psi_G"), ".",
       ),
 
       pinformative(
-        "Now let Alfie be a peer that holds some item ",
-        $(`i_{\\alpha} \\in ${Items}`),
-        " and Betty be a peer that holds some item ",
-        $dot(`i_{\\beta} \\in ${Items}`),
+        "Now, let ", def({id: "psi_Alfie", singular: "Alfie"}), " be a peer that holds some item ",
+        $([def_value$({id: "psi_ialpha", math: "i_{\\alpha}"}), ` \\in `, r$("psi_Items")]),
+        " and ", def({id: "psi_Betty", singular: "Betty"}), " be a peer that holds some item ",
+        $([def_value$({id: "psi_ibeta", math: "i_{\\beta}"}), ` \\in `, r$("psi_Items")], "."),
         " Define ",
-        $(`d_{\\alpha} := ${item_to_group}(i_{\\alpha})`),
+        $([def_value$({id: "psi_dalpha", math: "d_{\\alpha}"}), " := ", r$("psi_item_to_group"), "(", r$("psi_ialpha"), ")"]),
         " and ",
-        $dot(`d_{\\beta} := ${item_to_group}(i_{\\beta})`),
+        $([def_value$({id: "psi_dbeta", math: "d_{\\beta}"}), " := ", r$("psi_item_to_group"), "(", r$("psi_ibeta"), ")"]),
       ),
 
       pinformative(
-        "To privately test for equality of ",
-        $("i_{\\alpha}"),
+        "To privately test for equality of ", $(r$("psi_ialpha")), " and ", $comma(r$("psi_ibeta")),
+        " ", r("psi_Alfie"), " and ", r("psi_Betty"), " each randomly select scalars (natural numbers) ",
+        $(def_value$({id: "psi_salpha", math: "s_{\\alpha}"})),
         " and ",
-        $comma("i_{\\beta}"),
-        " Alfie and Betty each randomly select scalars (natural numbers) ",
-        $("s_{\\alpha}"),
-        " and ",
-        $("s_{\\beta}"),
-        " respectively. Alfie then transmits ",
-        $("d_{\\alpha}^{s_{\\alpha}}"),
+        $(def_value$({id: "psi_sbeta", math: "s_{\\beta}"})),
+        " respectively. ", R("psi_Alfie"), " then transmits ",
+        $([r$("psi_dalpha"), "^{", r$("psi_salpha"), "}"]),
         marginale([$("x^n := x * x * \\ldots * x"), " (", $("n"), " times)"]),
-        " and Betty transmits ",
-        $dot("d_{\\beta}^{s_{\\beta}}"),
+        " and ", r("psi_Betty"), " transmits ",
+        $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), "}"]),
       ),
 
       pinformative(
-        "After receiving these messages, Alfie answers with ",
-        $("d_{\\beta}^{s_{\\beta} \\cdot s_{\\alpha}}"),
+        "After receiving these messages, ", r("psi_Alfie"), " answers with ",
+        $comma([r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}"]),
         marginale([
           "They can compute these because ",
           $dot("x^{n \\cdot m} = {(x^n)}^m"),
         ]),
-        " and Betty answers with ",
-        $dot("d_{\\alpha}^{s_{\\alpha} \\cdot s_{\\beta}}"),
+        " and ", r("psi_Betty"), " answers with ",
+        $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}"]),
       ),
 
       pinformative(
-        "If ",
-        $("G"),
-        " was chosen so that accidental (or maliciously crafted) collisions are unlikely (or infeasible), then ",
-        $("i_{\\alpha} = i_{\\beta}"),
+        "If ", r("psi_G"), " was chosen so that accidental (or maliciously crafted) collisions are unlikely (or infeasible), then ",
+        $([r$("psi_ialpha"), " = ", r$("psi_ibeta")]),
         " if and only if ",
-        $dot(
-          "d_{\\beta}^{s_{\\beta} \\cdot s_{\\alpha}} = d_{\\alpha}^{s_{\\alpha} \\cdot s_{\\beta}}",
-        ),
+        $dot([
+          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
+          "=",
+          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}",
+        ]),
         marginale(["Because ", $dot("x^{n \\cdot m} = x^{m \\cdot n}")]),
       ),
     ]),

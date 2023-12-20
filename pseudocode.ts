@@ -24,7 +24,7 @@ import {
 import { get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { Def, def_generic, r, set_def } from "./defref.ts";
+import { Def, def_generic, def_generic$, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -71,6 +71,26 @@ export function def_fake_type(
     ? { id: info, clazz: "type defined_here" }
     : { ...info, clazz: "type defined_here" };
   return def_generic(info_, true, text, preview);
+}
+
+export function def_type$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type" }
+    : { ...info, clazz: "type" };
+  return def_generic$(info_, false, preview);
+}
+
+export function def_fake_type$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type" }
+    : { ...info, clazz: "type" };
+  return def_generic$(info_, true, preview);
 }
 
 interface PseudocodeState {

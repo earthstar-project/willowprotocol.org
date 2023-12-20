@@ -12,6 +12,7 @@ import {
 } from "./tsgen.ts";
 import {
   get_output_file,
+  PerNameState,
   style_name,
   try_resolve_name,
   try_resolve_name_any,
@@ -95,12 +96,7 @@ function link_name_(
           return null;
         }
       } else {
-        const link = `/${
-          relative(
-            link_name_state(ctx).root.join("/"),
-            get_output_file(resolved).join("/"),
-          )
-        }#${id}`;
+        const link = build_actual_link_url(id, resolved, ctx);
 
         const attributes_ = {
           ...attributes,
@@ -116,6 +112,15 @@ function link_name_(
   );
 
   return new Invocation(macro, contents);
+}
+
+export function build_actual_link_url(id: string, resolved: PerNameState, ctx: Context) {
+  return `/${
+    relative(
+      link_name_state(ctx).root.join("/"),
+      get_output_file(resolved).join("/"),
+    )
+  }#${id}`;
 }
 
 export function link_name_kind(

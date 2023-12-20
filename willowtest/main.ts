@@ -29,7 +29,7 @@ import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def_generic, preview_scope } from "../defref.ts";
+import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
@@ -197,6 +197,26 @@ export function def_fake_value(
     ? { id: info, clazz: "value defined_here" }
     : { ...info, clazz: "value defined_here" };
   return def_generic(info_, true, text, preview);
+}
+
+export function def_value$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value" }
+    : { ...info, clazz: "value" };
+  return def_generic$(info_, false, preview);
+}
+
+export function def_fake_value$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value" }
+    : { ...info, clazz: "value" };
+  return def_generic$(info_, true, preview);
 }
 
 function normative(

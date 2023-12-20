@@ -9,7 +9,7 @@ import {
 } from "./tsgen.ts";
 import { new_name, PerNameState, try_resolve_name } from "./names.ts";
 import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
-import { get_root_directory, link_name } from "./linkname.ts";
+import { build_actual_link_url, get_root_directory, link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 import { out_file_absolute, write_file_absolute } from "./out.ts";
 import { createHash } from "npm:sha256-uint8array";
@@ -110,6 +110,7 @@ export interface Def {
   plural?: string;
   Singular?: string;
   Plural?: string;
+  math?: string;
   clazz?: string;
 }
 
@@ -196,6 +197,79 @@ export function def_generic(
   );
 
   return new Invocation(macro, [text ? text : "never used"]);
+}
+
+export function def_generic$(
+  info: string | Def,
+  is_fake: boolean,
+  preview?: Expression,
+): Expression {
+  const info_: Def = (typeof info === "string") ? { id: info } : info;
+
+  const macro = new_macro(
+    (args, ctx) => {
+      if (!preview_state(ctx).currently_defining) {
+        const state = new_name(info_.id, "def", ctx);
+        if (state === null) {
+          return "";
+        } else {
+          if (!is_fake) {
+            state?.set(def_key, info_);
+          }
+        }
+      }
+      
+      let manual_preview: Expression = "";
+      if (!preview_state(ctx).currently_defining && !is_fake) {
+        if (preview) {
+          manual_preview = out_file_absolute([
+            ...get_root_directory(ctx),
+            "previews",
+            `${info_.id}.html`,
+          ], preview);
+        } else {
+          add_preview_id(info_.id, ctx);
+        }
+      }
+
+      const name = try_resolve_name(info_.id, "def", ctx)!;
+
+      const link_url = build_actual_link_url(info_.id, name, ctx);
+      const preview_url = `/previews/${info_.id}.html`;
+
+      const the_def = get_def(name);
+      const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
+      const the_tex = `\\htmlClass{def ${the_def.clazz ? the_def.clazz : ""}}{${inner}}`;
+
+      return [
+        manual_preview,
+        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+        html5_dependency_js("/named_assets/tooltips.js"),
+        html5_dependency_js("/named_assets/previews.js"),
+        the_tex,
+      ];
+    },
+    (expanded, ctx) => {
+      if (!is_fake) {
+        // Create etag
+        const hash = createHash().update(expanded).digest("hex");
+
+        write_file_absolute(
+          [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
+          hash,
+          ctx,
+        );
+      }
+
+      return expanded;
+    },
+    (ctx) => preview_state(ctx).currently_defining = true,
+    (ctx) => preview_state(ctx).currently_defining = false,
+    2,
+  );
+
+  return new Invocation(macro, ["never used"]);
 }
 
 export function def(
@@ -300,6 +374,43 @@ function ref_invocation(
   return new Invocation(macro, [text ? text : "never used"]);
 }
 
+export function r$(
+  id: string,
+): Expression {
+  const macro = new_macro(
+    (_args, ctx) => {
+      const name = try_resolve_name(id, "def", ctx);
+      const preview_url = `/previews/${id}.html`;
+      let the_tex: Expression = "";
+      if (name) {
+        const link_url = build_actual_link_url(id, name, ctx);
+        
+        const the_def = get_def(name);
+        const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
+        if (the_def.clazz) {
+          the_tex = `\\htmlClass{${the_def.clazz}}{${inner}}`;
+        } else {
+          the_tex = inner;
+        }
+      } else if (ctx.must_make_progress) {
+        the_tex = id;
+      } else {
+        return null;
+      }
+
+      return [
+        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+        html5_dependency_js("/named_assets/tooltips.js"),
+        html5_dependency_js("/named_assets/previews.js"),
+        the_tex,
+      ];
+    },
+  );
+
+  return new Invocation(macro, ["never used"]);
+}
+
 export function get_singular(d: Def): string {
   if (d.singular === undefined) {
     return d.id;
@@ -329,6 +440,14 @@ export function get_Plural(d: Def): string {
     return naive_capitalize(get_plural(d));
   } else {
     return d.Plural;
+  }
+}
+
+export function get_math(d: Def): string {
+  if (d.math === undefined) {
+    return get_singular(d);
+  } else {
+    return d.math;
   }
 }
 

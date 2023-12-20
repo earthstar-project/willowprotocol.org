@@ -1069,7 +1069,7 @@ export const resource_control: Expression = site_template(
           "",
           r("handle_bind", "bound"),
           " by the same peer as ",
-          $("delta_handle_h"),
+          r("delta_handle_h"),
           ", for which the peer who is determining the ",
           r("delta_handle"),
           " has not yet sent a ",
