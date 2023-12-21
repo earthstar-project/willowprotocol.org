@@ -19,6 +19,7 @@ import { asset } from "../../../out.ts";
 import { def_type, pseudo_array, pseudocode, Struct } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
 import {
+def_parameter_fn,
   def_parameter_type,
   def_parameter_value,
   def_value,
@@ -148,9 +149,9 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     hsection("3drbsr_parameters", "Fingerprinting", [
       pinformative(R("3drbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("3drbsr_fp"), ". To quickly compute ", rs("3drbsr_fp"), ", it helps if the ", r("3drbsr_fp"), " for a ", r("3dRange"), " can be assembled from precomputed ", rs("3drbsr_fp"), " of other, smaller ", r("3dRange"), ". For this reason, we define the fingerprinting function in terms of some building blocks:"),
 
-      pinformative("First, we require a function ", def_parameter_value({id: "3drbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("3drbsr_fp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("3drbsr_fp"), "."),
+      pinformative("First, we require a function ", def_parameter_fn({id: "3drbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("3drbsr_fp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("3drbsr_fp"), "."),
 
-      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearize three-dimensional data into a single order."]), " function ", def_parameter_value({id: "3drbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("3drbsr_fp"), " to a single new ", r("3drbsr_fp"), ". The ", r("3drbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def({ id: "3drbsr_neutral", singular: "fingerprint_neutral"}), "."),
+      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearize three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "3drbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("3drbsr_fp"), " to a single new ", r("3drbsr_fp"), ". The ", r("3drbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "3drbsr_neutral", singular: "fingerprint_neutral"}), "."),
 
       marginale_inlineable(
         figure(

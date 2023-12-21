@@ -98,10 +98,15 @@ function link_name_(
       } else {
         const link = build_actual_link_url(id, resolved, ctx);
 
-        const attributes_ = {
+        const attributes_: Attributes = {
           ...attributes,
           href: link,
         };
+        if (attributes.class) {
+          attributes_.class = `internal ${attributes.class}`;
+        } else {
+          attributes_.class = "internal";
+        }
         return a(attributes_, args);
       }
     },

@@ -67,9 +67,18 @@ export function preview_scope(...expressions: Expression[]): Invocation {
             `(<a[^>]*id="${id}"[^>]*class=")([^"]*)("{1}[^>]*>)`,
           );
 
-          const withDefinedHereClass = expanded.replace(
+          const withDefinedHereClassAlmost = expanded.replace(
             regex,
             `$1$2 defined_here$3`,
+          );
+
+          const katexRegex = new RegExp(
+            `(class="enclosing normal_text[^"]*)("><span class="enclosing" data-preview="\/previews\/${id}\.html">)`,
+          );
+
+          const withDefinedHereClass = withDefinedHereClassAlmost.replace(
+            katexRegex,
+            `$1 defined_here$2`,
           );
 
           write_file_absolute(
@@ -239,7 +248,7 @@ export function def_generic$(
 
       const the_def = get_def(name);
       const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
-      const the_tex = `\\htmlClass{def ${the_def.clazz ? the_def.clazz : ""}}{${inner}}`;
+      const the_tex = `\\htmlClass{${the_def.clazz ? `normal_text ${the_def.clazz}` : "normal_text"}}{${inner}}`;
 
       return [
         manual_preview,
@@ -388,7 +397,7 @@ export function r$(
         const the_def = get_def(name);
         const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
         if (the_def.clazz) {
-          the_tex = `\\htmlClass{${the_def.clazz}}{${inner}}`;
+          the_tex = `\\htmlClass{${the_def.clazz ? `normal_text ${the_def.clazz}` : "normal_text"}}{${inner}}`;
         } else {
           the_tex = inner;
         }
@@ -445,7 +454,7 @@ export function get_Plural(d: Def): string {
 
 export function get_math(d: Def): string {
   if (d.math === undefined) {
-    return get_singular(d);
+    return `\\text{${get_singular(d)}}`;
   } else {
     return d.math;
   }

@@ -22,7 +22,6 @@ import {
   span,
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
-import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
 import { Def, def_generic, def_generic$, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
@@ -440,7 +439,7 @@ function render_simple_enum_variant(variant: SimpleEnumVariant): Expression {
       if (state === null) {
         return "";
       } else {
-        set_def(state, { id: variant.id, clazz: "variant", singular: variant_name });
+        set_def(state, { id: variant.id, clazz: "symbol", singular: variant_name });
       }
 
       let comment: Expression = "";
@@ -451,7 +450,7 @@ function render_simple_enum_variant(variant: SimpleEnumVariant): Expression {
       const attributes: Attributes = {
         id: variant.id,
       };
-      attributes.class = "variant";
+      attributes.class = "symbol";
 
       const member_name = dfn(
         link_name(
@@ -569,7 +568,6 @@ export function pseudocode(...toplevels: Toplevel[]): Expression {
   const macro = new_macro(
     (_args, _ctx) => {
       return [
-        html5_dependency_css("/named_assets/code.css"),
         code({ class: "pseudocode" }, ...toplevels.map(render_toplevel)),
       ];
     },

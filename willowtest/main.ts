@@ -177,6 +177,28 @@ export function def_fake_parameter_value(
   return def_generic(info_, true, text, preview);
 }
 
+export function def_parameter_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param fn" }
+    : { ...info, clazz: "param fn" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param fn defined_here" }
+    : { ...info, clazz: "param fn defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
 export function def_value(
   info: string | Def,
   text?: Expression,
@@ -196,6 +218,28 @@ export function def_fake_value(
   const info_ = typeof info === "string"
     ? { id: info, clazz: "value defined_here" }
     : { ...info, clazz: "value defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "fn" }
+    : { ...info, clazz: "fn" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "fn defined_here" }
+    : { ...info, clazz: "fn defined_here" };
   return def_generic(info_, true, text, preview);
 }
 

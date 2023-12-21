@@ -14,6 +14,7 @@ import {
 } from "../../pseudocode.ts";
 import { Expression } from "macro";
 import {
+def_parameter_fn,
   def_parameter_type,
   def_parameter_value,
   def_value,
@@ -101,7 +102,7 @@ export const data_model: Expression = site_template(
           marginale([
             "Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
           ]),
-          "A function ", def_parameter_value("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
+          "A function ", def_parameter_fn("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
         ],
         [
           "A type ", def_parameter_type("AuthorizationToken", "AuthorizationToken", ["A protocol parameter of Willow, required to define ", rs("PossiblyAuthorizedEntry"), "."]), " for proving write permission.",
@@ -110,7 +111,7 @@ export const data_model: Expression = site_template(
           marginale([
             link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function.",
           ]),
-          "A function ", def_parameter_value("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("AuthorizedEntry"), "."]), " that maps an ", r("Entry"), " (defined later) and an ", r("AuthorizationToken"), " to a ", r("Bool"), ", indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("Entry"), ".",
+          "A function ", def_parameter_fn("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("AuthorizedEntry"), "."]), " that maps an ", r("Entry"), " (defined later) and an ", r("AuthorizationToken"), " to a ", r("Bool"), ", indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("Entry"), ".",
         ],
       ),
     ]),
