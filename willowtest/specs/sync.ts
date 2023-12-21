@@ -4,7 +4,7 @@ import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes } from "../main.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
@@ -17,7 +17,11 @@ export const sync: Expression = site_template(
         name: "sync",
     },
     [
-        pinformative("The ", link_name("data_model", "willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronize data. In this document, we specify one possible way for performing synchronization: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "willow data model"), "."),
+        aside_block(
+            pinformative("This document is still in flux, the design that we curretly present here does not yet take end-to-end encryption and private area intersection into account. The parts of the protocol that are not affected by these are fairly stable however."),
+        ),
+
+        pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronize data. In this document, we specify one possible way for performing synchronization: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
             pinformative("The WGPS aims to be appropriate for a variety of networking settings, particularly those of peer-to-peer systems where the replicating parties might not necessarily trust each other. Quite a bit of engineering went into the WGPS to satisfy the following requirements:"),
@@ -33,12 +37,10 @@ export const sync: Expression = site_template(
             ),
 
             pinformative("The WGPS provides a shared vocabulary for peers to communicate with, but nothing more. It cannot and does not force peers to use it efficiently or to use the most efficient data structures internally. That is a feature! Implementations can start out with inefficient but simple implementation choices and later replace those with better-scaling ones. Throughout that evolution, the implementations stay compatible with any other implementation, regardless of its degree of sophistication."),
-
-            // pnormative("Throughout this specification, paragraphs styled like this one are normative. Implementations ", link("MUST", "https://datatracker.ietf.org/doc/html/rfc2119"), " adhere to all normative content. The other (informative) content is for human eyes only, don", apo, "t show it to your computer."),
         ]),
 
         hsection("sync_concepts", "Concepts", [
-            pinformative("Data synchronization for willow needs to solve a number of sub-problems, which we summarize in this section."),
+            pinformative("Data synchronization for Willow needs to solve a number of sub-problems, which we summarize in this section."),
 
             hsection("sync_psi", "Private Set Intersection", [
                 pinformative("The WGPS allows two peers to determine which ", rs("namespace"), " they share an interest in without leaking any information about the ", rs("namespace"), " which they do not both know about. We explain the underlying ", link_name("psi", "private set intersection protocol here"), "."),
@@ -49,21 +51,21 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
-                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". The ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("entry"), " that need to be synchronized."),
+                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". The ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("Entry"), " that need to be synchronized."),
 
                 pinformative("The WGPS synchronizes these ", rs("aoi_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("range3d_based_set_reconciliation", "explain in detail here"), "."),
 
-                // pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("entry"), " to Alfie, only to then receive an even newer ", r("entry"), " from Gemma. Betty should forward that ", r("entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
+                // pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
-                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("entry"), " that fall into their shared ", rs("aoi"), ". Hence, the WGPS allows peers to transmit ", rs("entry"), " unsolicitedly."),
+                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("aoi"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
             ]),
 
             hsection("sync_payloads", "Payload transmissions", [
-                pinformative("When peers send an ", r("entry"), ", they can choose whether to include the full ", r("payload"), " or only its ", r("payload_hash", "hash"), ". Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers", apo, " ", rs("aoi"), " can be quadratic in the number of ", rs("aoi"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("payload"), " transmission based on ", rs("payload_length"), " and ", rs("aoi"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
+                pinformative("When a peer send an ", r("Entry"), ", it can choose whether to immediately send its ", r("Payload"), ". Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("aoi"), " can be quadratic in the number of ", rs("aoi"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " and ", rs("aoi"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
-                pinformative("Peers can further explicitly request the ", rs("payload"), " of arbitrary ", rs("entry"), "."),
+                pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), "."),
             ]),
 
             hsection("sync_resources", "Resource Limits", [
@@ -72,13 +74,13 @@ export const sync: Expression = site_template(
         ]),
         
         hsection("sync_parameters", "Parameters", [
-            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters","parameters of the core willow data model"), ". The WGPS also introduces some additional parameters for ", link_name("psi", "private set intersection"), ", ", link_name("access_control", "access control"), ", and ", link_name("range3d_based_set_reconciliation", "3d-range-based set reconciliation"), "."),
+            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS also introduces some additional parameters for ", link_name("psi", "private set intersection"), ", ", link_name("access_control", "access control"), ", and ", link_name("range3d_based_set_reconciliation", "3d-range-based set reconciliation"), "."),
 
-            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_value("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter_value("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("namespace_id"), " into ", r("PsiGroup"), "."),
+            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter_fn("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("NamespaceId"), " into ", r("PsiGroup"), "."),
 
-            pinformative(link_name("3drbsr", "3d-range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of ", rs("entry_fingerprint"), ", a hash function ", def_parameter_value("fingerprint_singleton"), " from ", rs("lengthy_entry"), " into ", r("Fingerprint"), " for computing ", rs("entry_fingerprint"), " of singleton ", r("lengthy_entry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_value("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("entry_fingerprint"), " of larger ", r("lengthy_entry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("entry_fingerprint"), " of the empty set."),
+            pinformative(link_name("3drbsr", "3d-range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
 
-            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_value("challenge_hash"), ". We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", rs("ReadCapability"), " that does not encode their ", r("granted_namespace"), "."),
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), ". We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", rs("ReadCapability"), " that does not encode their ", r("granted_namespace"), "."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -88,7 +90,7 @@ export const sync: Expression = site_template(
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
-            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "This sets a limit on when the other peer may include ", rs("payload"), " directly when transmitting ", rs("entry"), ": when a ", r("payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", it may only be transmitted when explicitly requested."),
+            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "The ", r("peer_max_payload_size"), " limits when the other peer may include ", rs("Payload"), " directly when transmitting ", rs("Entry"), ": when an ", r("Entry"), "’s ", r("entry_payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", its ", r("Payload"), " may only be transmitted when explicitly requested."),
 
             pinformative("The next ", r("challenge_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
@@ -103,7 +105,7 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "NamespaceHandle",
-                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("aoi"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
+                            comment: [R("resource_handle"), " for ", rs("Namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("aoi"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
                                 [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_fake_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
                                 [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_fake_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
                                 [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_fake_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer", apo, "s interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
@@ -111,7 +113,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "CapabilityHandle",
-                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some ", rs("entry"), "."],
+                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some ", rs("Entry"), "."],
                         },
                         {
                             id: "AreaOfInterestHandle",
@@ -119,7 +121,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "PayloadRequestHandle",
-                            comment: [R("resource_handle"), " that controls the matching from ", r("payload"), " transmissions to ", r("payload"), " requests."],
+                            comment: [R("resource_handle"), " that controls the matching from ", r("Payload"), " transmissions to ", r("Payload"), " requests."],
                         },
                     ],
                 }),
@@ -138,7 +140,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting ", rs("entry"), " and ", rs("payload"), " outside of ", r("3drbsr"), "."],
+                            comment: [R("logical_channel"), " for transmitting ", rs("Entry"), " and ", rs("Payload"), " outside of ", r("3drbsr"), "."],
                         },
                         {
                             id: "NamespaceChannel",
@@ -188,12 +190,12 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindNamespacePrivate",
-                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("NamespaceHandle"), " for performing ", r("psi"), "."],
+                            comment: [R("handle_bind"), " a ", r("NamespaceId"), " to a ", r("NamespaceHandle"), " for performing ", r("psi"), "."],
                             fields: [
                                 {
                                     id: "BindNamespacePrivateGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of first applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), " and then performing scalar multiplication with ", r("scalar"), "."],
+                                    comment: ["The result of first applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " to ", r("handle_bind"), " and then performing scalar multiplication with ", r("scalar"), "."],
                                     rhs: r("PsiGroup"),
                                 },
                             ],
@@ -201,8 +203,8 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the color mixing metaphor, a ", r("BindNamespacePrivate"), " message corresponds to mixing a data color with one", apo, "s secret color and sending the mixture to the other peer."]),
-                        "The ", r("BindNamespacePrivate"), " messages let peers submit a ", r("namespace"), " for ", r("psi"), " by transmitting the result of first applying ", r("psi_id_to_group"), " to the ", r("namespace"), " and then applying ", r("psi_scalar_multiplication"), " to the result and ", r("scalar"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePrivateGroupMember"), " in the ", r("psi_state_private_pending"), " state.",
+                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("BindNamespacePrivate"), " message corresponds to mixing a data color with one’s secret color and sending the mixture to the other peer."]),
+                        "The ", r("BindNamespacePrivate"), " messages let peers submit a ", r("NamespaceId"), " for ", r("psi"), " by transmitting the result of first applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " and then applying ", r("psi_scalar_multiplication"), " to the result and ", r("scalar"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePrivateGroupMember"), " in the ", r("psi_state_private_pending"), " state.",
                     ]),
                 
                     pinformative(R("BindNamespacePrivate"), " messages use the ", r("NamespaceChannel"), "."),
@@ -212,13 +214,13 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "PsiReply",
-                            comment: ["Finalize ", r("psi"), " for a single ", r("namespace"), "."],
+                            comment: ["Finalize ", r("psi"), " for a single ", r("NamespaceId"), "."],
                             fields: [
                                 {
                                     id: "PsiReplyHandle",
                                     name: "handle",
                                     comment: ["The ", r("resource_handle"), " of the ", r("BindNamespacePrivate"), " message which this finalizes."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "PsiReplyGroupMember",
@@ -231,8 +233,8 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the color mixing metaphor, a ", r("PsiReply"), " message corresponds to mixing one", apo, "s secret color with a color mixture received from the other peer and sending the resulting color back."]),
-                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("namespace"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
+                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret color with a color mixture received from the other peer and sending the resulting color back."]),
+                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("NamespaceId"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
                     ]),
 
                     pinformative("The ", r("PsiReplyHandle"), " must refer to a ", r("NamespaceHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindNamespacePrivate"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("NamespaceHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to the ", r("PsiReplyGroupMember"), " of the message, and its state to ", r("psi_state_private_completed"), "."),
@@ -242,12 +244,12 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindNamespacePublic",
-                            comment: [R("handle_bind"), " a ", r("namespace"), " to a ", r("NamespaceHandle"), ", skipping the hassle of ", r("psi"), "."],
+                            comment: [R("handle_bind"), " a ", r("NamespaceId"), " to a ", r("NamespaceHandle"), ", skipping the hassle of ", r("psi"), "."],
                             fields: [
                                 {
                                     id: "BindNamespacePublicGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), " to ", r("handle_bind"), "."],
+                                    comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " to ", r("handle_bind"), "."],
                                     rhs: r("PsiGroup"),
                                 },
                             ],
@@ -255,8 +257,8 @@ export const sync: Expression = site_template(
                     ),
     
                     pinformative([
-                        marginale(["In the color mixing metaphor, a ", r("BindNamespacePublic"), " message corresponds to sending a data color in the clear, with a small note attached that says “I trust you, here", apo, "s a data color of mine.”"]),
-                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("NamespaceHandle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("namespace"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
+                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("BindNamespacePublic"), " message corresponds to sending a data color in the clear, with a small note attached that says “I trust you, here’s a data color of mine.”"]),
+                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("NamespaceHandle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
                     ]),
 
                     pinformative(R("BindNamespacePublic"), " messages use the ", r("NamespaceChannel"), "."),
@@ -278,7 +280,7 @@ export const sync: Expression = site_template(
                                     id: "BindCapabilityHandle",
                                     name: "handle",
                                     comment: ["The ", r("resource_handle"), " of the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "BindCapabilitySignature",
@@ -303,25 +305,25 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "EntryPush",
-                            comment: ["Unsolicitedly transmit a ", r("lengthy_entry"), " to the other peer, and optionally prepare transmission of its ", r("payload"), "."],
+                            comment: ["Unsolicitedly transmit a ", r("LengthyEntry"), " to the other peer, and optionally prepare transmission of its ", r("Payload"), "."],
                             fields: [
                                 {
                                     id: "EntryPushEntry",
                                     name: "entry",
-                                    comment: ["The ", r("entry"), " to transmit."],
-                                    rhs: r("entry"),
+                                    comment: ["The ", r("Entry"), " to transmit."],
+                                    rhs: r("Entry"),
                                 },
                                 {
                                     id: "EntryPushAvailable",
                                     name: "available_length",
-                                    comment: ["The number of consecutive bytes from the start of the ", r("entry"), apo, "s ", r("payload"), " that the sender has."],
-                                    rhs: hl_builtin("u64"),
+                                    comment: ["The number of consecutive bytes from the start of the ", r("Entry"), "’s ", r("Payload"), " that the sender has."],
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "EntryPushOffset",
                                     name: "offset",
-                                    comment: ["The offset in the ", r("payload"), " in bytes at which ", r("payload"), " transmission will begin. If this is equal to the ", r("entry"), apo, "s ", r("payload_length"), ", the ", r("payload"), " will not be transmitted."],
-                                    rhs: hl_builtin("u64"),
+                                    comment: ["The offset in the ", r("Payload"), " in bytes at which ", r("Payload"), " transmission will begin. If this is equal to the ", r("Entry"), "’s ", r("entry_payload_length"), ", the ", r("Payload"), " will not be transmitted."],
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
@@ -329,10 +331,10 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["The message", apo, "s ", r("EntryPushAvailable"), " is informative metadata that peers may use to inform their communication, or they may simply ignore it."]),
-                        "The ", r("EntryPush"), " messages let peers transmit ", rs("lengthy_entry"), " outside of ", r("3drbsr"), ". It further sets up later ", r("payload"), " transmissions (via ", r("PayloadPush"), " messages).",
+                        "The ", r("EntryPush"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("3drbsr"), ". It further sets up later ", r("Payload"), " transmissions (via ", r("PayloadPush"), " messages).",
                     ]),
 
-                    pinformative("To map ", r("payload"), " transmissions to ", rs("entry"), ", each peer maintains two pieces of state: an ", r("entry"), " ", def_value("currently_received_entry"), ", and a 64-bit unsigned integer ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), apo, "s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
+                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), apo, "s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
                 
                     pinformative(R("EntryPush"), " messages use the ", r("DataChannel"), "."),
                 ]),
@@ -341,25 +343,25 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "PayloadPush",
-                            comment: ["Unsolicitedly transmit some ", r("payload"), " bytes."],
+                            comment: ["Unsolicitedly transmit some ", r("Payload"), " bytes."],
                             fields: [
                                 {
                                     id: "PayloadPushAmount",
                                     name: "amount",
                                     comment: ["The number of transmitted bytes."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "PayloadPushBytes",
                                     name: "bytes",
-                                    comment: [r("PayloadPushAmount"), " many bytes, to be added to the ", r("payload"), " of the receiver", apo, "s ", r("currently_received_entry"), " at offset ", r("currently_received_offset"), "."],
+                                    comment: [r("PayloadPushAmount"), " many bytes, to be added to the ", r("Payload"), " of the receiver", apo, "s ", r("currently_received_entry"), " at offset ", r("currently_received_offset"), "."],
                                     rhs: ["[", hl_builtin("u8"), "]"],
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("payload"), "."),
+                    pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("Payload"), "."),
 
                     pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver", apo, "s ", r("currently_received_offset"), " is less than or equal to the ", r("payload_length"), " of the receiver", apo, "s ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
 
@@ -372,33 +374,33 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindPayloadRequest",
-                            comment: [R("handle_bind"), " an ", r("entry"), " to a ", r("PayloadRequestHandle"), " and request transmission of its ", r("payload"), " from an offset."],
+                            comment: [R("handle_bind"), " an ", r("Entry"), " to a ", r("PayloadRequestHandle"), " and request transmission of its ", r("Payload"), " from an offset."],
                             fields: [
                                 {
                                     id: "BindPayloadRequestEntry",
                                     name: "entry",
-                                    comment: ["The ", r("entry"), " to request."],
-                                    rhs: r("entry"),
+                                    comment: ["The ", r("Entry"), " to request."],
+                                    rhs: r("Entry"),
                                 },
                                 {
                                     id: "BindPayloadRequestOffset",
                                     name: "offset",
-                                    comment: ["The offset in the ", r("payload"), " starting from which the sender would like to receive the ", r("payload"), " bytes."],
-                                    rhs: hl_builtin("u64"),
+                                    comment: ["The offset in the ", r("Payload"), " starting from which the sender would like to receive the ", r("Payload"), " bytes."],
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "BindPayloadRequestCapability",
                                     name: "capability",
-                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("entry"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("Entry"), "."],
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
                 
                     pinformative([
-                        marginale(["If the receiver of a ", r("BindPayloadRequest"), " does not have the requested ", r("payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_area"), " must ", r("3d_range_contain"), " the requested ", r("entry"), ".",
+                        marginale(["If the receiver of a ", r("BindPayloadRequest"), " does not have the requested ", r("Payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
+                        "The ", r("BindPayloadRequest"), " messages let peers explicitly request ", rs("Payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("BindPayloadRequestEntry"), " and ", r("BindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("Payload"), ", starting at the specified ", r("BindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_area"), " must ", r("area_include"), " the requested ", r("Entry"), ".",
                     ]),
                 
                     pinformative(R("BindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
@@ -414,13 +416,13 @@ export const sync: Expression = site_template(
                                     id: "PayloadResponseHandle",
                                     name: "handle",
                                     comment: ["The ", r("PayloadRequestHandle"), " to which to reply."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("PayloadResponse"), " messages let peers reply to ", r("BindPayloadRequest"), " messages, by indicating that future ", r("PayloadPush"), " messages will pertain to the requested ", r("payload"), ". More precisely, upon receiving a ", r("PayloadResponse"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message", apo, "s ", r("PayloadResponseHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("The ", r("PayloadResponse"), " messages let peers reply to ", r("BindPayloadRequest"), " messages, by indicating that future ", r("PayloadPush"), " messages will pertain to the requested ", r("Payload"), ". More precisely, upon receiving a ", r("PayloadResponse"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message", apo, "s ", r("PayloadResponseHandle"), " is ", r("handle_bind", "bound"), "."),
                 ]),
 
                 hsection("bind_aoi", code("BindAreaOfInterest"), [
@@ -439,13 +441,13 @@ export const sync: Expression = site_template(
                                     id: "BindAreaOfInterestCapability",
                                     name: "authorization",
                                     comment: ["A ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "BindAreaOfInterestKnown",
                                     name: "known_intersections",
                                     comment: ["How many intersections with other ", rs("aoi"), " the sender knows about already."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
@@ -453,7 +455,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["Development note: if we go for private 3d-range intersection, this message would become a ", code("BindAreaOfInterestPublic"), " message, and we would add ", code("BindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
-                        "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), ".",
+                        "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), ".",
                     ]),
 
                     aside_block([
@@ -473,31 +475,31 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "RangeFingerprint",
-                            comment: ["Send a fingerprint as part of ", r("3drbsr"), "."],
+                            comment: ["Send a ", r("Fingerprint"), " as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
                                     id: "RangeFingerprintRange",
                                     name: "range",
-                                    comment: ["The ", r("3d_range"), " whose fingerprint is transmitted."],
-                                    rhs: r("3d_range"),
+                                    comment: ["The ", r("3dRange"), " whose ", r("Fingerprint"), " is transmitted."],
+                                    rhs: r("3dRange"),
                                 },
                                 {
                                     id: "RangeFingerprintFingerprint",
                                     name: "fingerprint",
-                                    comment: ["The fingerprint of the ", r("RangeFingerprintRange"), ", that is, of all ", rs("lengthy_entry"), " the peer has in the ", r("RangeFingerprintRange"), "."],
+                                    comment: ["The ", r("Fingerprint"), " of the ", r("RangeFingerprintRange"), ", that is, of all ", rs("LengthyEntry"), " the peer has in the ", r("RangeFingerprintRange"), "."],
                                     rhs: r("Fingerprint"),
                                 },
                                 {
                                     id: "RangeFingerprintSenderHandle",
                                     name: "sender_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeFingerprintRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "RangeFingerprintReceiverHandle",
                                     name: "receiver_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeFingerprintRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
@@ -512,43 +514,43 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "RangeEntries",
-                            comment: ["Send the ", rs("lengthy_entry"), " a peer has in a ", r("3d_range"), " as part of ", r("3drbsr"), "."],
+                            comment: ["Send the ", rs("LengthyEntry"), " a peer has in a ", r("3dRange"), " as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
                                     id: "RangeEntriesRange",
                                     name: "range",
-                                    comment: ["The ", r("3d_range"), " whose ", rs("lengthy_entry"), " are transmitted."],
-                                    rhs: r("3d_range"),
+                                    comment: ["The ", r("3dRange"), " whose ", rs("LengthyEntry"), " are transmitted."],
+                                    rhs: r("3dRange"),
                                 },
                                 {
                                     id: "RangeEntriesEntries",
                                     name: "entries",
-                                    comment: ["The ", rs("lengthy_entry"), " in the ", r("RangeEntriesRange"), "."],
-                                    rhs: [code("["), r("lengthy_entry"), code("]")],
+                                    comment: ["The ", rs("LengthyEntry"), " in the ", r("RangeEntriesRange"), "."],
+                                    rhs: [code("["), r("LengthyEntry"), code("]")],
                                 },
                                 {
                                     id: "RangeEntriesFlag",
                                     name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("RangeEntries"), " message for the same ", r("3d_range"), " in return."],
-                                    rhs: hl_builtin("bool"),
+                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("RangeEntries"), " message for the same ", r("3dRange"), " in return."],
+                                    rhs: r("Bool"),
                                 },
                                 {
                                     id: "RangeEntriesSenderHandle",
                                     name: "sender_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeEntriesRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "RangeEntriesReceiverHandle",
                                     name: "receiver_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeEntriesRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("RangeEntries"), " messages let peers conclude ", r("3drbsr"), " for a ", r("3d_range"), " by transmitting their ", rs("lengthy_entry"), " in the ", r("3d_range"), ". Each ", r("RangeEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeEntries"), " messages let peers conclude ", r("3drbsr"), " for a ", r("3dRange"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("3dRange"), ". Each ", r("RangeEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("RangeEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
@@ -557,31 +559,31 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "RangeConfirmation",
-                            comment: ["Signal fingerprint equality as part of ", r("3drbsr"), "."],
+                            comment: ["Signal ", r("Fingerprint"), " equality as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
                                     id: "RangeConfirmationRange",
                                     name: "range",
-                                    comment: ["The ", r("3d_range"), " in question."],
-                                    rhs: r("3d_range"),
+                                    comment: ["The ", r("3dRange"), " in question."],
+                                    rhs: r("3dRange"),
                                 },
                                 {
                                     id: "RangeConfirmationSenderHandle",
                                     name: "sender_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "RangeConfirmationReceiverHandle",
                                     name: "receiver_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("RangeConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("3drbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3d_range"), ".", marginale(["Upon sending or receiving a ", r("RangeConfirmation"), ", a peer should switch operation to forwarding any new entries inside the ", r("3d_range"), " to the other peer."]), " Each ", r("RangeConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("3drbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3dRange"), ".", marginale(["Upon sending or receiving a ", r("RangeConfirmation"), ", a peer should switch operation to forwarding any new ", rs("Entry"), " inside the ", r("3dRange"), " to the other peer."]), " Each ", r("RangeConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("RangeConfirmation"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
@@ -590,31 +592,31 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "Eagerness",
-                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("payload"), " in the intersection of two ", rs("aoi"), "."],
+                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("Payload"), " in the intersection of two ", rs("aoi"), "."],
                             fields: [
                                 {
                                     id: "EagernessEagerness",
                                     name: "is_eager",
-                                    comment: ["Whether ", rs("payload"), " should be pushed."],
-                                    rhs: hl_builtin("bool"),
+                                    comment: ["Whether ", rs("Payload"), " should be pushed."],
+                                    rhs: r("Bool"),
                                 },
                                 {
                                     id: "EagernessSenderHandle",
                                     name: "sender_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "EagernessReceiverHandle",
                                     name: "receiver_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message."],
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("payload"), " from the intersection of two ", rs("aoi"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
+                    pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("aoi"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
 
                     pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
                 ]),
@@ -631,7 +633,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncGuaranteeAmount",
                                     name: "amount",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncGuaranteeChannel",
@@ -649,7 +651,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncAbsolveAmount",
                                     name: "amount",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncAbsolveChannel",
@@ -667,7 +669,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncOopsTarget",
                                     name: "target",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncOopsChannel",
@@ -717,13 +719,13 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncHandleFreeHandle",
                                     name: "handle",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncHandleFreeMine",
-                                    comment: ["Indicates whether the peer sending this message is the one who created the ", r("SyncHandleFreeHandle"), "(", code("true"), ") or not (", code("false"), ")."],
+                                    comment: ["Indicates whether the peer sending this message is the one who created the ", r("SyncHandleFreeHandle"), " (", code("true"), ") or not (", code("false"), ")."],
                                     name: "mine",
-                                    rhs: hl_builtin("bool"),
+                                    rhs: r("Bool"),
                                 },
                                 {
                                     id: "SyncHandleFreeType",
@@ -741,7 +743,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncHandleConfirmNumber",
                                     name: "number",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncHandleConfirmType",
@@ -759,7 +761,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncHandleStartedDroppingAt",
                                     name: "at",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncHandleStartedDroppingType",
@@ -777,7 +779,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SyncHandleApologyAt",
                                     name: "at",
-                                    rhs: hl_builtin("u64"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "SyncHandleApologyType",
@@ -791,160 +793,161 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
-                marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
-                pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
+                pinformative("Defining the precise encodings has to wait until the repercussions of e2e encryption and private area intersection have settled into specific message types for this protocol. We ", em("could"), " spend time on defining non-optimized encoding for the set of message types that are currently defined in this document, but nobody would actually benefit from this, and we'd rather spend the time finalizing the message types."),
+                // marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
+                // pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
 
-                hsection("encoding_reveal_commitment", code("RevealCommitment"), [
-                    pinformative("When encoding a ", r("RevealCommitment"), " message, the five least significant bits of the first byte are ", code("00000"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("RevealCommitmentNonce"), "."),
-                ]),
+                // hsection("encoding_reveal_commitment", code("RevealCommitment"), [
+                //     pinformative("When encoding a ", r("RevealCommitment"), " message, the five least significant bits of the first byte are ", code("00000"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("RevealCommitmentNonce"), "."),
+                // ]),
 
-                hsection("encoding_bind_namespace_private", code("BindNamespacePrivate"), [
-                    pinformative("When encoding a ", r("BindNamespacePrivate"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePrivateGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                ]),
+                // hsection("encoding_bind_namespace_private", code("BindNamespacePrivate"), [
+                //     pinformative("When encoding a ", r("BindNamespacePrivate"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePrivateGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                // ]),
 
-                hsection("encoding_psi_reply", code("PsiReply"), [
-                    pinformative("When encoding a ", r("PsiReply"), " message, the five least significant bits of the first byte are ", code("00010"), "."),
+                // hsection("encoding_psi_reply", code("PsiReply"), [
+                //     pinformative("When encoding a ", r("PsiReply"), " message, the five least significant bits of the first byte are ", code("00010"), "."),
 
-                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PsiReplyHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PsiReplyHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PsiReplyHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PsiReplyHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
 
-                    pinformative("This is followed by the ", r("PsiReplyGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                ]),
+                //     pinformative("This is followed by the ", r("PsiReplyGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                // ]),
 
-                hsection("encoding_bind_namespace_public", code("BindNamespacePublic"), [
-                    pinformative("When encoding a ", r("BindNamespacePublic"), " message, the five least significant bits of the first byte are ", code("00011"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePublicGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                ]),
+                // hsection("encoding_bind_namespace_public", code("BindNamespacePublic"), [
+                //     pinformative("When encoding a ", r("BindNamespacePublic"), " message, the five least significant bits of the first byte are ", code("00011"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePublicGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                // ]),
 
-                hsection("encoding_bind_capability", code("BindCapability"), [
-                    pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00100"), "."),
+                // hsection("encoding_bind_capability", code("BindCapability"), [
+                //     pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00100"), "."),
 
-                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("BindCapabilityHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
 
-                    pinformative("This is followed by the ", r("BindCapabilitySignature"), ", encoded with the ", r("encoding_function"), " for ", r("PsiSignature"), "."),
+                //     pinformative("This is followed by the ", r("BindCapabilitySignature"), ", encoded with the ", r("encoding_function"), " for ", r("PsiSignature"), "."),
 
-                    pinformative("This is followed by the ", r("BindCapabilityCapability"), ", encoded with the ", r("encoding_function"), " for ", r("ReadCapability"), " (which need not encode the ", r("granted_namespace"), ")."),
-                ]),
+                //     pinformative("This is followed by the ", r("BindCapabilityCapability"), ", encoded with the ", r("encoding_function"), " for ", r("ReadCapability"), " (which need not encode the ", r("granted_namespace"), ")."),
+                // ]),
 
-                hsection("encoding_entry_push", code("EntryPush"), [
-                    pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00101"), "."),
+                // hsection("encoding_entry_push", code("EntryPush"), [
+                //     pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00101"), "."),
 
-                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("EntryPushAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("EntryPushEntry"), " can be encoded efficiently, as can such an ", r("EntryPushOffset"), ". The ", r("EntryPushEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("EntryPushAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("EntryPushEntry"), " can be encoded efficiently, as can such an ", r("EntryPushOffset"), ". The ", r("EntryPushEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_payload_push", code("PayloadPush"), [
-                    pinformative("When encoding a ", r("PayloadPush"), " message, the five least significant bits of the first byte are ", code("00110"), "."),
+                // hsection("encoding_payload_push", code("PayloadPush"), [
+                //     pinformative("When encoding a ", r("PayloadPush"), " message, the five least significant bits of the first byte are ", code("00110"), "."),
 
-                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("PayloadPushAmount"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("PayloadPushAmount"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("PayloadPushAmount"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("PayloadPushAmount"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
 
-                    pinformative("This is followed by ", r("PayloadPushAmount"), " bytes of ", r("payload"), "."),
-                ]),
+                //     pinformative("This is followed by ", r("PayloadPushAmount"), " bytes of ", r("Payload"), "."),
+                // ]),
 
-                hsection("encoding_bind_payload_request", code("BindPayloadRequest"), [
-                    pinformative("When encoding a ", r("BindPayloadRequest"), " message, the five least significant bits of the first byte are ", code("00111"), "."),
+                // hsection("encoding_bind_payload_request", code("BindPayloadRequest"), [
+                //     pinformative("When encoding a ", r("BindPayloadRequest"), " message, the five least significant bits of the first byte are ", code("00111"), "."),
 
-                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("BindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("BindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_payload_response", code("PayloadResponse"), [
-                    pinformative("When encoding a ", r("PayloadResponse"), " message, the five least significant bits of the first byte are ", code("01000"), "."),
+                // hsection("encoding_payload_response", code("PayloadResponse"), [
+                //     pinformative("When encoding a ", r("PayloadResponse"), " message, the five least significant bits of the first byte are ", code("01000"), "."),
 
-                    pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
-                ]),
+                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PayloadResponseHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
+                // ]),
 
-                hsection("encoding_bind_aoi", code("BindAreaOfInterest"), [
-                    pinformative("When encoding a ", r("BindAreaOfInterest"), " message, the five least significant bits of the first byte are ", code("01001"), "."),
+                // hsection("encoding_bind_aoi", code("BindAreaOfInterest"), [
+                //     pinformative("When encoding a ", r("BindAreaOfInterest"), " message, the five least significant bits of the first byte are ", code("01001"), "."),
 
-                    pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("BindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("BindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("BindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("BindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_range_fp", code("RangeFingerprint"), [
-                    pinformative("When encoding a ", r("RangeFingerprint"), " message, the five least significant bits of the first byte are ", code("01010"), "."),
+                // hsection("encoding_range_fp", code("RangeFingerprint"), [
+                //     pinformative("When encoding a ", r("RangeFingerprint"), " message, the five least significant bits of the first byte are ", code("01010"), "."),
 
-                    pinformative("The ", r("RangeFingerprintRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeFingerprintSenderHandle"), " and the ", r("RangeFingerprintReceiverHandle"), " as a ", r("RangeInArea"), "."),
+                //     pinformative("The ", r("RangeFingerprintRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeFingerprintSenderHandle"), " and the ", r("RangeFingerprintReceiverHandle"), " as a ", r("RangeInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_range_entries", code("RangeEntries"), [
-                    pinformative("When encoding a ", r("RangeEntries"), " message, the five least significant bits of the first byte are ", code("01011"), "."),
+                // hsection("encoding_range_entries", code("RangeEntries"), [
+                //     pinformative("When encoding a ", r("RangeEntries"), " message, the five least significant bits of the first byte are ", code("01011"), "."),
 
-                    pinformative("The ", r("RangeEntriesRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeEntriesSenderHandle"), " and the ", r("RangeEntriesReceiverHandle"), " as a ", r("RangeInArea"), "."),
+                //     pinformative("The ", r("RangeEntriesRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeEntriesSenderHandle"), " and the ", r("RangeEntriesReceiverHandle"), " as a ", r("RangeInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_range_confirmation", code("RangeConfirmation"), [
-                    pinformative("When encoding a ", r("RangeConfirmation"), " message, the five least significant bits of the first byte are ", code("01100"), "."),
+                // hsection("encoding_range_confirmation", code("RangeConfirmation"), [
+                //     pinformative("When encoding a ", r("RangeConfirmation"), " message, the five least significant bits of the first byte are ", code("01100"), "."),
 
-                    pinformative("The ", r("RangeConfirmationRange"), " can be either encoded relative to the precedingly transmitted ", r("3d_range"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeConfirmationSenderHandle"), " and the ", r("RangeConfirmationReceiverHandle"), " as a ", r("RangeInArea"), "."),
+                //     pinformative("The ", r("RangeConfirmationRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeConfirmationSenderHandle"), " and the ", r("RangeConfirmationReceiverHandle"), " as a ", r("RangeInArea"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_eagerness", code("Eagerness"), [
-                    pinformative("When encoding a ", r("Eagerness"), " message, the five least significant bits of the first byte are ", code("01101"), "."),
+                // hsection("encoding_eagerness", code("Eagerness"), [
+                //     pinformative("When encoding a ", r("Eagerness"), " message, the five least significant bits of the first byte are ", code("01101"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_guarantee", code("Guarantee"), [
-                    pinformative("When encoding a ", r("SyncGuarantee"), " message, the five least significant bits of the first byte are ", code("01110"), "."),
+                // hsection("encoding_guarantee", code("Guarantee"), [
+                //     pinformative("When encoding a ", r("SyncGuarantee"), " message, the five least significant bits of the first byte are ", code("01110"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_absolve", code("Absolve"), [
-                    pinformative("When encoding a ", r("SyncAbsolve"), " message, the five least significant bits of the first byte are ", code("01111"), "."),
+                // hsection("encoding_absolve", code("Absolve"), [
+                //     pinformative("When encoding a ", r("SyncAbsolve"), " message, the five least significant bits of the first byte are ", code("01111"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_oops", code("Oops"), [
-                    pinformative("When encoding a ", r("SyncOops"), " message, the five least significant bits of the first byte are ", code("10000"), "."),
+                // hsection("encoding_oops", code("Oops"), [
+                //     pinformative("When encoding a ", r("SyncOops"), " message, the five least significant bits of the first byte are ", code("10000"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_started_dropping", code("ChannelStartedDropping"), [
-                    pinformative("When encoding a ", r("SyncStartedDropping"), " message, the five least significant bits of the first byte are ", code("10001"), "."),
+                // hsection("encoding_started_dropping", code("ChannelStartedDropping"), [
+                //     pinformative("When encoding a ", r("SyncStartedDropping"), " message, the five least significant bits of the first byte are ", code("10001"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_apology", code("ChannelApology"), [
-                    pinformative("When encoding a ", r("SyncApology"), " message, the five least significant bits of the first byte are ", code("10010"), "."),
+                // hsection("encoding_apology", code("ChannelApology"), [
+                //     pinformative("When encoding a ", r("SyncApology"), " message, the five least significant bits of the first byte are ", code("10010"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_handle_free", code("Free"), [
-                    pinformative("When encoding a ", r("SyncHandleFree"), " message, the five least significant bits of the first byte are ", code("10011"), "."),
+                // hsection("encoding_handle_free", code("Free"), [
+                //     pinformative("When encoding a ", r("SyncHandleFree"), " message, the five least significant bits of the first byte are ", code("10011"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_handle_confirm", code("Confirm"), [
-                    pinformative("When encoding a ", r("SyncHandleConfirm"), " message, the five least significant bits of the first byte are ", code("10100"), "."),
+                // hsection("encoding_handle_confirm", code("Confirm"), [
+                //     pinformative("When encoding a ", r("SyncHandleConfirm"), " message, the five least significant bits of the first byte are ", code("10100"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_handle_started_dropping", code("HandleStartedDropping"), [
-                    pinformative("When encoding a ", r("SyncHandleStartedDropping"), " message, the five least significant bits of the first byte are ", code("10101"), "."),
+                // hsection("encoding_handle_started_dropping", code("HandleStartedDropping"), [
+                //     pinformative("When encoding a ", r("SyncHandleStartedDropping"), " message, the five least significant bits of the first byte are ", code("10101"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
-                hsection("encoding_handle_apology", code("HandleApology"), [
-                    pinformative("When encoding a ", r("SyncHandleApology"), " message, the five least significant bits of the first byte are ", code("10110"), "."),
+                // hsection("encoding_handle_apology", code("HandleApology"), [
+                //     pinformative("When encoding a ", r("SyncHandleApology"), " message, the five least significant bits of the first byte are ", code("10110"), "."),
 
-                    pinformative("TODO define an encoding"),
-                ]),
+                //     pinformative("TODO define an encoding"),
+                // ]),
 
                 // pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
                 // pinformative("6 logical channels, 4 handle kinds"),

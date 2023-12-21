@@ -192,6 +192,57 @@ export const grouping_entries: Expression = site_template({
     pinformative("The ", def({id: "subspace_area", singular: "subspace area"}), " of the ", r("SubspaceId"), " ", def_value({id: "subspacearea_sub", singular: "sub"}), " is the ", r("Area"), " whose ", r("AreaTime"), " is the ", r("open_range", "open"), " ", r("TimeRange"), " with ", r("TimeRangeStart"), " ", $comma("0"), " whose ", r("AreaPath"), " is the empty ", r("Path"), ", and whose ", r("AreaSubspace"), " is ", r("subspacearea_sub"), ". It ", rs("area_include"), " exactly the ", rs("Entry"), " with ", r("entry_subspace_id"), " ", r("subspacearea_sub"), "."),
   ]),
 
+  // hsection("aois", "Areas of Interest", [
+  //   pinformative("Occasionally, we wish to group ", rs("Entry"), " based on the contents of some ", r("store"), ". For example, a space-constrained peer might ask for the 100 newest ", rs("Entry"), " when synchronizing data."),
+
+  //   pinformative("We serve these use cases by combining an ", r("Area"), " with limits to restrict the contents to the greatest ", rs("Entry"), " in some ", r("store"), " with respect to any of the three dimensions."),
+
+  //   pseudocode(
+  //     new Struct({
+  //       id: "AreaOfInterest",
+  //       comment: ["A grouping of ", rs("Entry"), " that are amongst the greatest in some ", r("store"), "."],
+  //       fields: [
+  //         {
+  //           id: "aoi_area",
+  //           name: "area",
+  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), " must be ", r("area_include", "included"), " in the ", r("aoi_area"), "."],
+  //           rhs: r("Area"),
+  //         },
+  //         {
+  //           id: "aoi_tc",
+  //           name: "time_count",
+  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be amongst the ", r("aoi_tc"), " greatest ", rs("Timestamp"), "."],
+  //           rhs: r("U64"),
+  //         },
+  //         {
+  //           id: "aoi_ts",
+  //           name: "time_size",
+  //           comment: ["The total ", rs("entry_payload_length"), " of all ", r("aoi_include", "included"), " ", rs("Entry"), " is at most the", r("aoi_ts"), "."],
+  //           rhs: r("U64"),
+  //         },
+  //         {
+  //           id: "aoi_pc",
+  //           name: "path_count",
+  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_path"), " must be amongst the ", r("aoi_pc"), " greatest ", rs("Path"), "."],
+  //           rhs: r("U64"),
+  //         },
+  //         {
+  //           id: "aoi_ps",
+  //           name: "path_size",
+  //           comment: ["The total ", rs("entry_payload_length"), " of all ", r("aoi_include", "included"), " ", rs("Entry"), " is at most the", r("aoi_ps"), "."],
+  //           rhs: r("U64"),
+  //         },
+  //       ],
+  //     }),
+  //   ),
+
+    // pinformative("An ", r("Area"), " ", def_value({id: "area_include_a", singular: "a"}), " ", def({id: "area_include", singular: "include"}, "includes"), " an ", r("Entry"), " ", def_value({id: "area_include_e", singular: "e"}), " if ", lis(
+    //   [field_access(r("area_include_a"), "AreaTime"), " ", rs("range_include"), " ", field_access(r("area_include_e"), "entry_timestamp"), ","],
+    //   [field_access(r("area_include_a"), "AreaPath"), " id a ", rs("path_prefix"), " ", field_access(r("area_include_e"), "entry_path"), ", and"],
+    //   [code(field_access(r("area_include_a"), "AreaSubspace"), " == ", r("area_any")), " or ", code(field_access(r("area_include_a"), "AreaSubspace"), " == ", field_access(r("area_include_e"), "entry_subspace_id")), "."],
+    // )),
+  // ]),
+
   // hsection("grouping_entries_aois", "Areas of Interest", [
   //   pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("Entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("Entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
 
