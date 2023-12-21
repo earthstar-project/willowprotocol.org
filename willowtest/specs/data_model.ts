@@ -87,13 +87,13 @@ export const data_model: Expression = site_template(
         [ "A type ", def_parameter_type("SubspaceId", "SubspaceId", ["A protocol parameter of Willow, the type of ", rs("entry_subspace_id"), "."]), " for identifying subspaces.",
         ],
         [
-          "A natural number ", def_parameter_value("max_component_length", "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", rs("Component"), "."]), " for limiting the length of path components.",
+          "A natural number ", def_parameter_value({id: "max_component_length", math: "max\\_component\\_length"}, "max_component_length", ["A protocol parameter of Willow, the maximal length of individual ", rs("Component"), "."]), " for limiting the length of path components.",
         ],
         [
-          "A natural number ", def_parameter_value("max_component_count", "max_component_count", ["A protocol parameter of Willow, the maximal number of ", rs("Component"), " in a single ", r("Path"), ".", ]), " for limiting the number of path components.",
+          "A natural number ", def_parameter_value({id: "max_component_count", math: "max\\_component\\_count"}, "max_component_count", ["A protocol parameter of Willow, the maximal number of ", rs("Component"), " in a single ", r("Path"), ".", ]), " for limiting the number of path components.",
         ],
         [
-          "A natural number ", def_parameter_value("max_path_length", "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the ", rs("Component"), "  of a single ", r("Path"), " in bytes."]), " for limiting the overall size of paths.",
+          "A natural number ", def_parameter_value({id: "max_path_length", math: "max\\_path\\_length"}, "max_path_length", ["A protocol parameter of Willow, the maximal sum of the lengths of the ", rs("Component"), "  of a single ", r("Path"), " in bytes."]), " for limiting the overall size of paths.",
         ],
         [
           "A ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " type ", def_parameter_type("PayloadDigest", "PayloadDigest", ["A protocol parameter of Willow, the totally ordered type of ", rs("entry_payload_digest"), "."]), " for ", link("content-addressing", "https://en.wikipedia.org/wiki/Content_addressing"), " the data that Willow stores.",
