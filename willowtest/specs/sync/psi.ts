@@ -106,7 +106,7 @@ export const psi: Expression = site_template(
         $(def_value$({id: "psi_sbeta", math: "s_{\\beta}"})),
         " respectively. ", R("psi_Alfie"), " then transmits ",
         $([r$("psi_dalpha"), "^{", r$("psi_salpha"), "}"]),
-        marginale([$(["x^n := x ", r$("psi_times"), " x ", r$("psi_times"), " \\ldots ", r$("psi_times"), " x"]), " (", $("n"), " times)"]),
+        marginale([$(["x^n := x * x * \\ldots * x"]), " (", $("n"), " times)"]),
         " and ", r("psi_Betty"), " transmits ",
         $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), "}"]),
       ),
