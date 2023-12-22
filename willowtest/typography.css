@@ -6,49 +6,13 @@ body, .normal_text, code .aside {
     font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
 }
 
-a {
-    color: var(--dark-green);
-    transition: 100ms all;
-}
-
-a:hover {
-    color: var(--green)
-}
-
-main a[href]:not(:where(
-  /* exclude hash only links */
-  [href^="#"],
-  /* exclude relative but not double slash only links */
-  [href^="/"]:not([href^="//"]),
-  /* domains to exclude */
-  [href*="//willowprotocol.org"]
-)):after {
-  color: var(--nearly-black);
-  display: inline-block;
-  content: '↗';
-  font-family: ui-sans-serif;
-  margin-left: 0.3ch;
-  font-size: 0.9em;
-  text-decoration: none;
-  color: grey;
-}
-
 strong {
     font-variant: all-small-caps;
     font-weight: normal;
 }
 
-a[aria-disabled=true] {
-    color: grey;
-}
-
-a[aria-disabled=true]:hover {
-    color: grey;
-}
-
-h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
-    color: inherit;
-    text-decoration: none;
+h1, h2, h3, h4, h5, h6 {
+  margin: 1.25em 0 0.5em 0;
 }
 
 p {
@@ -63,105 +27,6 @@ p {
 .aside.long {
     border: 1px solid var(--light-green);
     border-width: 1px 0;
-}
-
-/* Definitions produced by the `def` macro. */
-dfn>a {
-    font-style: normal;
-    font-weight: normal;
-    color: #185ecc;
-    text-decoration: unset;
-}
-
-dfn>a:hover {
-    color: #185ecc;
-}
-
-/* Inline normative content, produced by the `normative` macro. */
-span.normative {
-    padding: 0 1ch;
-    background: radial-gradient(ellipse, rgb(210, 255, 143), #f2f2f2);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 18px;
-    border-bottom-left-radius: 11px;
-    box-decoration-break: clone;
-}
-
-/* A normative paragraph, produced by the `pnormative` macro. */
-/* p.normative {
-    border-left: var(--green) 8px solid;
-    padding-left: 1rem;
-    margin-left: calc(-1rem - 8px);
-    background: linear-gradient(to right, #e0ffd5, #fff);
-} */
-
-/* An informative paragraph, produced by the `pinformative` macro. */
-p.normative {
-    border-left: #0979c4 8px solid;
-    padding-left: 1rem;
-    margin-left: calc(-1rem - 8px);
-    background: linear-gradient(to right, #e3f3ff, #fff 16%);
-}
-
-/* code, a.ref.type, a.ref.member, a.ref.variant {
-    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-    font-size: 0.8em;
-    background: rgba(0, 0, 0, 0.03);
-    padding: 0.2em;
-    border-radius: 10%;
-    word-break: break-word;
-    text-decoration: inherit;
-} */
-
-a.ref, a.param, a.value {
-  color: var(--nearly-black);
-  text-decoration-style: dotted;
-  text-decoration-color: rgb(112, 132, 132);
-  white-space: nowrap; 
-}
-
-a.def {
-  color: var(--nearly-black);
-  font-style: italic;
-}
-
-a.def.ref {
-  font-style: normal;
-}
-
-a.def:hover {
-  color: inherit;
-}
-
-a.ref:hover, a.param:hover, a.value:hover {
-  background: rgba(255, 228, 0, 0.199);
-  padding: 0.2em 0;
-  text-decoration-color: var(--nearly-black);
-  border-radius: 5px;
-}
-
-code, a.ref.type, a.ref.member, a.ref.variant, a.ref.param, dfn > a.param, a.ref.value, dfn > a.value {
-    font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-    font-size: 0.9em;
-    word-break: break-word;
-}
-
-.pseudocode a.value, .pseudocode a.param, .pseudocode a.ref, .pseudocode a.def, .pseudocode a.ref.def {
-  color: inherit;
-  font-size: 1em;
-  font-style: normal;
-  text-decoration: underline;
-  text-decoration-style: dotted;
-  text-decoration-color: inherit;
-}
-
-.defined_here {
-  color: var(--nearly-black);
-  text-decoration: none;
-  background: rgba(255, 228, 0, 0.309);
-  border-radius: 5px;
-  padding: 0.2em;  
 }
 
 /* since `important` is evil... */
@@ -183,4 +48,225 @@ figcaption {
 
 p.introductory  {
   font-size: 1.5rem;
+}
+
+.path {
+  white-space: nowrap;
+}
+
+.path_segment {
+  padding: 0.1em 0.3em;
+  transform: skewX(-13deg);
+  display: inline-block;
+  margin: 0 1px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.path_segment_txt {
+  transform: skewX(13deg);
+  display: inline-block;
+}
+
+.path_segment:first-child {
+  border-radius: 3px 0 0 3px;
+}
+
+.path_segment:last-child {
+  border-radius: 0 3px 3px 0;
+}
+
+.path_segment:only-child {
+  border-radius: 3px;
+}
+
+.path_segment:nth-child(even) {
+   color: rgb(86,180,233);
+
+}
+
+.path_segment:nth-child(odd) {
+  color: rgb(0,114, 178);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+code.pseudocode {
+  color: var(--nearly-nearly-black);
+  line-height: 1.5em;
+  margin: 1em 0;
+  display: block;
+  border-radius: 0;
+}
+
+.pseudocode p {
+  margin: 0;
+  margin-top: 1em;
+}
+
+.pseudocode p:first-child {
+  margin-top: 0;
+}
+
+.preview code.pseudocode {
+  margin: 0;
+}
+
+.pseudocode dfn {
+  font-style: normal;
+}
+
+.hl_kw {
+  color: var(--color-prettylights-syntax-keyword);
+}
+
+.hl_punct {
+  color: var(--color-punctuation);
+}
+
+.hl_doccom {
+  color: var(--color-comment);
+  display: inline-block;
+  border-left: solid #00000020 2px;
+  padding-left: 1rem;
+  text-decoration: inherit;
+}
+
+.item_spacing:not(:first-child) {
+  margin-top: 1em;
+}
+
+a {
+  color: var(--nearly-black);
+  transition: 100ms all;
+  text-decoration: none;
+}
+
+a.external, a.internal:not(.ref, dfn > a) {
+  color: var(--dark-green);
+  text-decoration: underline;
+}
+
+a.external:hover, a.internal:not(.ref, dfn > a):hover {
+  color: var(--green)
+}
+
+a.external:after {
+  display: inline;
+  content: '↗';
+  font-family: ui-sans-serif;
+  font-size: 0.9em;
+  text-decoration: none;
+  text-decoration-thickness: 0;
+}
+
+a[aria-disabled=true] {
+  color: grey;
+}
+
+a[aria-disabled=true]:hover {
+  color: grey;
+}
+
+dfn {
+  font-style: italic;
+}
+
+a.ref, .enclosing a {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgb(112, 132, 132);
+}
+
+.orange a.ref, .orange a.type, .orange a.value, .orange a.symbol {
+  color: var(--wong-orange);
+}
+
+.sky-blue a.ref, .sky-blue a.type, .sky-blue a.value , .sky-blue a.symbol {
+  color: var(--wong-blue);
+}
+
+.green a.ref, .green a.type, .green a.value, .green a.symbol {
+  color: var(--wong-green);
+}
+
+.yellow a.ref, .yellow a.type, .yellow a.value, .yellow a.symbol {
+  color: var(--wong-yellow);
+}
+
+.blue a.ref, .blue a.type, .blue a.value, .blue a.symbol {
+  color: var(--wong-blue);
+}
+
+.vermillion a.ref, .vermillion a.type, .vermillion a.value, .vermillion a.symbol {
+  color: var(--wong-vermillion);
+}
+
+.purple  a.ref, .purple a.type, .purple a.value , .purple a.symbol {
+  color: var(--wong-purple);
+}
+
+a.ref:hover, dfn > a:hover, .enclosing a:hover {
+  background: rgba(255, 228, 0, 0.199);
+  padding: 0.2em 0;
+  text-decoration-color: var(--nearly-black);
+  border-radius: 5px;
+}
+
+code, a.ref.type, a.ref.member, a.ref.symbol, a.ref.value, a.ref.fn, dfn > a.type, dfn > a.member, dfn > a.value, dfn > a.symbol, dfn > a.fn, .path {
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 0.9em;
+  word-break: break-word;
+  font-style: normal;
+}
+
+a.type, .enclosing.type a {
+  color: var(--color-type);
+}
+
+a.member, .enclosing.member a {
+  color: var(--color-member);
+}
+
+a.symbol, .enclosing.symbol a {
+  color: var(--color-symbol);
+}
+
+a.value, .enclosing.value a {
+  color: var(--color-value);
+}
+
+a.fn, .enclosing.fn a {
+  color: var(--color-fn);
+}
+
+.hl_doccom a.ref {
+  color: inherit;
+}
+
+.hl_doccom a.type, .hl_doccom .enclosing.type a {
+  color: var(--color-comment-type);
+}
+
+.hl_doccom a.member, .hl_doccom .enclosing.member a {
+  color: var(--color-comment-member);
+}
+
+.hl_doccom a.symbol, .hl_doccom .enclosing.symbol a {
+  color: var(--color-comment-symbol);
+}
+
+.hl_doccom a.value, .hl_doccom .enclosing.value a {
+  color: var(--color-comment-value);
+}
+
+.hl_doccom a.fn, .hl_doccom .enclosing.fn a {
+  color: var(--color-comment-fn);
+}
+
+/* Highlighting in tooltips */
+.defined_here {
+  color: var(--nearly-black);
+  text-decoration: none;
+  background: rgba(255, 228, 0, 0.309);
+  border-radius: 5px;
+  padding: 0.2em;  
 }

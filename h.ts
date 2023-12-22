@@ -2,19 +2,27 @@ import { Expression, Macro, Invocation, new_macro, is_expression } from "./tsgen
 
 export type Attributes = Record<PropertyKey, Expression>;
 
-function mac(tag_name: string, attributes: Attributes, is_non_void_element: boolean): Macro {
+function mac(tag_name: string, attributes: Attributes): Macro {
     return new_macro(
         (args, _state) => {
-            if (is_non_void_element) {
-                return [`<${tag_name}`, render_attributes(attributes), `>`, ...args, `</${tag_name}>`];
-            } else {
-                return [`<${tag_name}`, render_attributes(attributes), `/>`];
-            }
+            return [`<${tag_name}`, render_attributes(attributes), `>`, ...args, `</${tag_name}>`];
         },
         undefined,
         undefined,
         undefined,
         3,
+    );
+}
+
+function mac_void(tag_name: string, attributes: Attributes): Macro {
+    return new_macro(
+        (_args, _state) => {
+            return [`<${tag_name}`, render_attributes(attributes), `/>`];
+        },
+        undefined,
+        undefined,
+        undefined,
+        2,
     );
 }
 
@@ -30,7 +38,7 @@ function render_attributes(attributes: Attributes): Expression {
         }
     }
 
-    return fragments.map((f, i) => {
+    return fragments.map(f => {
         f.unshift(" ");
         return f;
     });
@@ -38,33 +46,33 @@ function render_attributes(attributes: Attributes): Expression {
 
 export function h(tag_name: string, attributes: Attributes = {}, ...args: Expression[]): Expression {
     return new Invocation(
-        mac(tag_name, attributes, true),
+        mac(tag_name, attributes),
         args,
     );
 }
 
 export function area(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("area", attributes, false), []);
+    return new Invocation(mac_void("area", attributes), []);
 }
 
 export function base(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("base", attributes, false), []);
+    return new Invocation(mac_void("base", attributes), []);
 }
 
 export function br(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("br", attributes, false), []);
+    return new Invocation(mac_void("br", attributes), []);
 }
 
 export function col(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("col", attributes, false), []);
+    return new Invocation(mac_void("col", attributes), []);
 }
 
 export function embed(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("embed", attributes, false), []);
+    return new Invocation(mac_void("embed", attributes), []);
 }
 
 export function hr(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("hr", attributes, false), []);
+    return new Invocation(mac_void("hr", attributes), []);
 }
 
 export function img(src: Expression, attributes: Attributes = {}): Expression {
@@ -79,27 +87,27 @@ export function img(src: Expression, attributes: Attributes = {}): Expression {
 }
 
 export function input(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("input", attributes, false), []);
+    return new Invocation(mac_void("input", attributes), []);
 }
 
 export function link(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("link", attributes, false), []);
+    return new Invocation(mac_void("link", attributes), []);
 }
 
 export function meta(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("meta", attributes, false), []);
+    return new Invocation(mac_void("meta", attributes), []);
 }
 
 export function source(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("source", attributes, false), []);
+    return new Invocation(mac_void("source", attributes), []);
 }
 
 export function track(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("track", attributes, false), []);
+    return new Invocation(mac_void("track", attributes), []);
 }
 
 export function wbr(attributes: Attributes = {}): Expression {
-    return new Invocation(mac("wbr", attributes, false), []);
+    return new Invocation(mac_void("wbr", attributes), []);
 }
 
 export function a(attributes: Attributes, ...args: Expression[]): Expression;

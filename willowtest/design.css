@@ -5,7 +5,58 @@
     --nearly-black: rgb(17, 17, 17);
     --nearly-nearly-black: rgb(19, 50, 21);
     --nearly-white: rgb(255, 253, 252);
-    --nearly-nearly-white: rgb(255, 252, 250)
+    --nearly-nearly-white: rgb(255, 252, 250);
+    
+    --wong-orange: rgb(230, 159, 0);
+    --wong-sky-blue: rgb(86, 180, 233);
+    --wong-green: rgb(0, 158, 115);
+    --wong-yellow: rgb(240,228,66);
+    --wong-blue: rgb(0, 114, 178);
+    --wong-vermillion: rgb(213, 94, 0);
+    --wong-purple: rgb(204, 121, 167);
+
+    --color-comment: #6a737d;
+    --color-punctuation: #4f5459;
+
+    --color-type: #6f42c1;
+    --color-value: #032f62;
+    --color-member: #22863a;
+    --color-symbol: #005cc5;
+    --color-fn: #735c0f;
+
+    --color-comment-type: #736195;
+    --color-comment-value: #577599;
+    --color-comment-member: #527d5c;
+    --color-comment-symbol: #6b89aa;
+    --color-comment-fn: #685209;
+}
+
+.orange {
+    color: var(--wong-orange)
+}
+
+.sky-blue {
+    color: var(--wong-blue)
+}
+
+.green {
+    color: var(--wong-green)
+}
+
+.yellow {
+    color: var(--wong-yellow)
+}
+
+.blue {
+    color: var(--wong-blue)
+}
+
+.vermillion {
+    color: var(--wong-vermillion)
+}
+
+.purple {
+    color: var(--wong-purple)
 }
 
 body {

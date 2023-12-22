@@ -1,15 +1,11 @@
 import { createHash } from "npm:sha256-uint8array";
-import { evaluate, Expression, Invocation, new_macro } from "../tsgen.ts";
+import { evaluate, Expression, Invocation, new_macro } from "macro";
 import { html5, html5_dependency_css } from "../html5.ts";
 import {
   a,
   aside,
-  code,
   div,
-  em,
   footer,
-  h1,
-  header,
   img,
   li,
   main,
@@ -29,11 +25,11 @@ import {
   write_file_relative,
 } from "../out.ts";
 import { read_file } from "../input.ts";
-import { marginale, marginale_inlineable, sidenote } from "../marginalia.ts";
+import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def, def_generic, preview_scope, r, rs } from "../defref.ts";
+import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
@@ -44,11 +40,32 @@ import { access_control } from "./specs/sync/access_control.ts";
 import { timestamps_really } from "./specs/more/timestamps_really.ts";
 import { specifications } from "./specs/specifications.ts";
 import { encodings } from "./specs/encodings.ts";
-import { threedProducts } from "./specs/3d_products.ts";
+import { grouping_entries } from "./specs/grouping_entries.ts";
+import { e2e } from "./specs/e2e.ts";
+import { more } from "./specs/more/more.ts";
 
-interface Document {
+export function quotes(...contents: Expression[]) {
+  const macro = new_macro(
+    (args, _ctx) => ["“", args, "”"],
+  );
+
+  return new Invocation(macro, contents);
+}
+
+export function single_quotes(...contents: Expression[]) {
+  const macro = new_macro(
+    (args, _ctx) => ["‘", args, "’"],
+  );
+
+  return new Invocation(macro, contents);
+}
+
+export const apo = "’";
+
+export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
+  heading?: Expression;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -63,16 +80,22 @@ export function site_template(meta: Document, body: Expression): Invocation {
           div(
             { class: "container_main" },
             main(
-              hsection(meta.name, { wide: true }, meta.title, args[0]),
+              hsection(
+                meta.name,
+                { wide: true },
+                meta.heading ? meta.heading : meta.title,
+                args[0],
+              ),
             ),
             footer(
               nav(
                 ul(
-                  li(a({ href: "/" }, "Home")),
+                  li(a({ href: "/", class: "internal" }, "Home")),
                   li(link_name("specifications", "Specs")),
+                  li(link_name("more", "More")),
                   li(
                     a(
-                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden" },
+                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden", class: "internal" },
                       "Contact us",
                     ),
                   ),
@@ -80,11 +103,24 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 div(
                   marginale_inlineable(
                     a(
-                      { href: "https://nlnet.nl" },
+                      { href: "https://nlnet.nl", class: "funder" },
                       img(asset("nlnet.svg")),
                     ),
                   ),
-                  p("This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission's Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073."),
+                  pinformative(
+                    "This project was funded through the NGI Assure Fund, a fund established by NLnet with financial support from the European Commission",
+                    apo,
+                    "s Next Generation Internet programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement № 957073.",
+                  ),
+                  marginale_inlineable(
+                    a(
+                      { href: "https://iroh.computer", class: "sponsor" },
+                      img(asset("iroh.svg")),
+                    ),
+                  ),
+                  pinformative(
+                    "We also thank our other sponsors for their support.",
+                  ),
                 ),
               ),
             ),
@@ -97,25 +133,69 @@ export function site_template(meta: Document, body: Expression): Invocation {
   return new Invocation(macro, [body]);
 }
 
-export function def_parameter(
+export function def_parameter_type(
   info: string | Def,
   text?: Expression,
   preview?: Expression,
 ): Expression {
   const info_ = typeof info === "string"
-    ? { id: info, clazz: "param" }
-    : { ...info, clazz: "param" };
+    ? { id: info, clazz: "param type" }
+    : { ...info, clazz: "param type" };
   return def_generic(info_, false, text, preview);
 }
 
-export function def_fake_parameter(
+export function def_fake_parameter_type(
   info: string | Def,
   text?: Expression,
   preview?: Expression,
 ): Expression {
   const info_ = typeof info === "string"
-    ? { id: info, clazz: "param defined_here" }
-    : { ...info, clazz: "param defined_here" };
+    ? { id: info, clazz: "param type defined_here" }
+    : { ...info, clazz: "param type defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_parameter_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param value" }
+    : { ...info, clazz: "param value" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter_value(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param value defined_here" }
+    : { ...info, clazz: "param value defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_parameter_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param fn" }
+    : { ...info, clazz: "param fn" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_parameter_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "param fn defined_here" }
+    : { ...info, clazz: "param fn defined_here" };
   return def_generic(info_, true, text, preview);
 }
 
@@ -139,6 +219,48 @@ export function def_fake_value(
     ? { id: info, clazz: "value defined_here" }
     : { ...info, clazz: "value defined_here" };
   return def_generic(info_, true, text, preview);
+}
+
+export function def_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "fn" }
+    : { ...info, clazz: "fn" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_fn(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "fn defined_here" }
+    : { ...info, clazz: "fn defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_value$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value" }
+    : { ...info, clazz: "value" };
+  return def_generic$(info_, false, preview);
+}
+
+export function def_fake_value$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "value" }
+    : { ...info, clazz: "value" };
+  return def_generic$(info_, true, preview);
 }
 
 function normative(
@@ -175,6 +297,28 @@ export function aside_block(
   ...body: Expression[]
 ): Expression {
   return aside({ class: "long" }, body);
+}
+
+export function path(
+  ...components: Expression[]
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const e: Expression[] = [];
+      for (let i = 0; i < args.length; i++) {
+        e.push(
+          span(
+            { class: "path_segment" },
+            span({ class: "path_segment_txt" }, args[i]),
+          ),
+        );
+      }
+
+      return span({ class: "path" }, e);
+    },
+  );
+
+  return new Invocation(macro, components);
 }
 
 export function lis(
@@ -249,22 +393,16 @@ evaluate([
     "build",
     out_directory("previews"),
     out_file(
-      "anotherfile.html",
-      site_template({ title: "Hi", name: "testfoo" }, [
-        link_name("my_favorite_section", "Linking to another document."),
-      ]),
-    ),
-    out_file(
       "index.html",
       site_template(
         {
           title: "Willow",
           name: "willow",
+          heading: img("emblem.png"),
         },
         [
-          header(h1(img("emblem.png"))),
           pintroductory(
-            "A protocol specification for local-first key-value stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
+            "A protocol specification for local-first data stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
           ),
           nav(
             lis(
@@ -357,7 +495,8 @@ evaluate([
       out_file("index.html", specifications),
       out_index_directory("data-model", data_model),
       out_index_directory("encodings", encodings),
-      out_index_directory("3d-products", threedProducts),
+      out_index_directory("grouping_entries", grouping_entries),
+      out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
       out_directory("sync", [
         out_file("index.html", create_etags(sync)),
@@ -371,6 +510,7 @@ evaluate([
       ]),
     ]),
     out_directory("more", [
+      out_file("index.html", more),
       out_index_directory("timestamps-really", timestamps_really),
     ]),
     copy_statics("assets"),

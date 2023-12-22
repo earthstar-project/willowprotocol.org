@@ -1,6 +1,5 @@
 code {
     font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-    font-size: 0.8em;
     background: rgba(0, 0, 0, 0.05);
     padding: 0.2em;
     border-radius: 10%;
@@ -18,10 +17,10 @@ nav ul li {
 }
 
 footer {
+    margin: 1em 0 0 0;
     border-top: 2px solid rgb(225, 225, 225);
     /* margin: 5em auto 0 auto; */
     padding: 0.5em 0;
-    margin: 5em 0 0 0;
     clear: right;
 }
 
@@ -29,8 +28,17 @@ footer p {
     font-variant-numeric: oldstyle-nums;
 }
 
-footer img {
-    max-width: 7em;
+footer .funder img {
+  max-width: 9em;
+}
+
+footer .sponsor img {
+  max-width: 4em;
+}
+
+main {
+  flex: 1;
+  margin-bottom: 2rem;
 }
 
 main nav ul li:has(> a) {
@@ -59,12 +67,11 @@ img {
 }
 
 h1 img {
-  width: 100%;
+  width: 32rem;
 }
 
 main table {
   width: 100%;
-  max-width: var(--paragraph-width);
   border-collapse: collapse;
   margin-bottom: 0.5em;
   border-radius: 4px
@@ -87,6 +94,6 @@ td, th {
  vertical-align: middle;
 }
 
-td img {
-  height: 25%;
+figure {
+  margin: 1.5em 0;
 }

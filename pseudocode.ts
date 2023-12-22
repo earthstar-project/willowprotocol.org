@@ -22,11 +22,75 @@ import {
   span,
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
-import { html5_dependency_css, html5_dependency_js } from "./html5.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { set_def } from "./defref.ts";
+import { Def, def_generic, def_generic$, r, set_def } from "./defref.ts";
+import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
+
+export function def_symbol(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "symbol" }
+    : { ...info, clazz: "symbol" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_symbol(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "symbol defined_here" }
+    : { ...info, clazz: "symbol defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_type(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type" }
+    : { ...info, clazz: "type" };
+  return def_generic(info_, false, text, preview);
+}
+
+export function def_fake_type(
+  info: string | Def,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type defined_here" }
+    : { ...info, clazz: "type defined_here" };
+  return def_generic(info_, true, text, preview);
+}
+
+export function def_type$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type" }
+    : { ...info, clazz: "type" };
+  return def_generic$(info_, false, preview);
+}
+
+export function def_fake_type$(
+  info: string | Def,
+  preview?: Expression,
+): Expression {
+  const info_ = typeof info === "string"
+    ? { id: info, clazz: "type" }
+    : { ...info, clazz: "type" };
+  return def_generic$(info_, true, preview);
+}
 
 interface PseudocodeState {
   indentation: number;
@@ -54,6 +118,7 @@ export interface Field {
   id: string;
   comment?: Expression;
   name?: string;
+  marginale?: Expression;
   rhs: Expression;
 }
 
@@ -61,6 +126,7 @@ export interface Struct_ {
   id: string;
   comment?: Expression;
   name?: string;
+  plural?: string;
   fields: Field[];
 }
 
@@ -68,12 +134,14 @@ export class Struct {
   id: string;
   comment?: Expression;
   name?: string;
+  plural?: string;
   fields: Field[];
 
   constructor(struct: Struct_) {
     this.id = struct.id;
     this.comment = struct.comment;
     this.name = struct.name;
+    this.plural = struct.plural;
     this.fields = struct.fields;
   }
 }
@@ -151,6 +219,82 @@ function render_doc_comment(...exps: Expression[]): Expression {
   return render_line(div({ class: "hl_doccom" }, ...exps));
 }
 
+export function pseudo_choices(
+  ...components: Expression[]
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const e: Expression[] = [];
+      for (let i = 0; i < args.length; i++) {
+        if (i != 0) {
+          e.push(hl_punctuation(" | "));
+        }
+        e.push(args[i]);
+      }
+      return e;
+    }
+  );
+  
+  return new Invocation(macro, components);
+}
+
+export function pseudo_tuple(
+  ...components: Expression[]
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const e: Expression[] = [hl_punctuation("(")];
+      for (let i = 0; i < args.length; i++) {
+        if (i != 0) {
+          e.push(hl_punctuation(", "));
+        }
+        e.push(args[i]);
+      }
+      e.push(hl_punctuation(")"));
+      return e;
+    }
+  );
+  
+  return new Invocation(macro, components);
+}
+
+export function pseudo_array(exp: Expression): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [hl_punctuation("["), args[0], hl_punctuation("]")];
+    }
+  );
+  
+  return new Invocation(macro, [exp]);
+}
+
+export function field_access(obj: Expression, field_id: string): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [args[0], hl_punctuation("."), r(field_id)];
+    }
+  );
+  
+  return new Invocation(macro, [obj]);
+}
+
+export function function_call(fn: Expression, ...args: Expression[]): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const args_to_render: Expression[] = [hl_punctuation("(")];
+      for (let i = 1; i < args.length; i++) {
+        if (i > 1) {
+          args_to_render.push(hl_punctuation(", "));
+        }
+        args_to_render.push(args[i]);
+      }
+      args_to_render.push(hl_punctuation(")"));
+      return code(args[0], args_to_render);
+    }
+  );
+  
+  return new Invocation(macro, [fn, ...args]);
+}
 function render_field(field: Field): Expression {
   const field_name = field.name ? field.name : field.id;
 
@@ -161,6 +305,11 @@ function render_field(field: Field): Expression {
         return "";
       } else {
         set_def(state, { id: field.id, clazz: "member", singular: field_name });
+      }
+
+      let field_marginale: Expression = "";
+      if (field.marginale) {
+        field_marginale = marginale(field.marginale);
       }
 
       let comment: Expression = "";
@@ -189,6 +338,7 @@ function render_field(field: Field): Expression {
       );
 
       return [
+        field_marginale,
         comment,
         field_line,
       ];
@@ -216,7 +366,7 @@ function render_struct(struct: Struct): Expression {
       if (state === null) {
         return "";
       } else {
-        set_def(state, { id: struct.id, clazz: "type", singular: struct_name });
+        set_def(state, { id: struct.id, clazz: "type", singular: struct_name, plural: struct.plural });
       }
 
       const attributes: Attributes = {
@@ -289,7 +439,7 @@ function render_simple_enum_variant(variant: SimpleEnumVariant): Expression {
       if (state === null) {
         return "";
       } else {
-        set_def(state, { id: variant.id, clazz: "variant", singular: variant_name });
+        set_def(state, { id: variant.id, clazz: "symbol", singular: variant_name });
       }
 
       let comment: Expression = "";
@@ -300,7 +450,7 @@ function render_simple_enum_variant(variant: SimpleEnumVariant): Expression {
       const attributes: Attributes = {
         id: variant.id,
       };
-      attributes.class = "variant";
+      attributes.class = "symbol";
 
       const member_name = dfn(
         link_name(
@@ -418,7 +568,6 @@ export function pseudocode(...toplevels: Toplevel[]): Expression {
   const macro = new_macro(
     (_args, _ctx) => {
       return [
-        html5_dependency_css("/named_assets/code.css"),
         code({ class: "pseudocode" }, ...toplevels.map(render_toplevel)),
       ];
     },
