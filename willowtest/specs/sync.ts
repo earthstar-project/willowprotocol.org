@@ -51,11 +51,9 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
-                pinformative(marginale(["Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."]), "To synchronize data, peers specify any number of ", rs("aoi"), ". The ", r("aoi_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("aoi"), " from both peers contain the ", rs("Entry"), " that need to be synchronized."),
+                pinformative("To synchronize data, peers specify any number of ", rs("Area"), " per ", r("Namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("area_intersection"), " of ", rs("Area"), " from both peers contain the ", rs("Entry"), " to synchronize."),
 
-                pinformative("The WGPS synchronizes these ", rs("aoi_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
-
-                // pinformative("Note that peers need abide to the ", rs("aoi_count_limit"), " and ", rs("aoi_size_limit"), " of the ", rs("aoi"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."),
+                pinformative("The WGPS synchronizes these ", rs("area_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
@@ -63,7 +61,7 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_payloads", "Payload transmissions", [
-                pinformative("When a peer send an ", r("Entry"), ", it can choose whether to immediately send its ", r("Payload"), ". Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("aoi"), " can be quadratic in the number of ", rs("aoi"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " and ", rs("aoi"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
+                pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately send its ", r("Payload"), ". Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("aoi"), " can be quadratic in the number of ", rs("aoi"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " and ", rs("aoi"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
                 pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), "."),
             ]),

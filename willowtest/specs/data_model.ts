@@ -183,6 +183,20 @@ export const data_model: Expression = site_template(
       ),
 
       pinformative("We can now formally define which ", rs("Entry"), " overwrite each other and which can coexist. ", preview_scope(
+        "An ", r("Entry"), " ", def_value({id: "new_e1", singular: "e1"}), " is ", def({id: "entry_newer", singular: "newer"}), " than another ", r("Entry"), " ", def_value({id: "new_e2", singular: "e2"}), " if ", lis(
+          [
+            code(field_access(r("new_e2"), "entry_timestamp"), " < ", field_access(r("store_new"), "entry_timestamp")), ", or",
+          ],
+          [
+            code(field_access(r("new_e2"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("new_e2"), "entry_payload_digest"), " < ", marginale([
+                "We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison.",
+              ]), field_access(r("store_new"), "entry_payload_digest")), ", or",
+          ],
+          [
+            code(field_access(r("new_e2"), "entry_timestamp"), " == ", field_access(r("new_e1"), "entry_timestamp")), " and ", code(field_access(r("new_e2"), "entry_payload_digest"), " == ", field_access(r("new_e1"), "entry_payload_digest")), " and ", code(field_access(r("new_e2"), "entry_payload_length"), " < ", field_access(r("new_e1"), "entry_payload_length")), ".",
+          ],
+        ),
+      ), preview_scope(
         "A ", def("store"), " is a set of ", rs("AuthorizedEntry"), " such that",
           lis(
             ["all its ", rs("Entry"), " have the same ", r("entry_namespace_id"), ", and"],
@@ -192,20 +206,10 @@ export const data_model: Expression = site_template(
                   code(field_access(r("store_old"), "entry_subspace_id"), " == ", field_access(r("store_new"), "entry_subspace_id")), ", and",
                 ],
                 [
-                  field_access(r("store_old"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(r("store_old"), "entry_path"), ", and",
-                  lis(
-                    [
-                      code(field_access(r("store_old"), "entry_timestamp"), " < ", field_access(r("store_new"), "entry_timestamp")), ", or",
-                    ],
-                    [
-                      code(field_access(r("store_old"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("store_old"), "entry_payload_digest"), " < ", marginale([
-                          "We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison.",
-                        ]), field_access(r("store_new"), "entry_payload_digest")), ", or",
-                    ],
-                    [
-                      code(field_access(r("store_old"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("store_old"), "entry_payload_digest"), " == ", field_access(r("store_new"), "entry_payload_digest")), " and ", code(field_access(r("store_old"), "entry_payload_length"), " < ", field_access(r("store_new"), "entry_payload_length")), ".",
-                    ],
-                  ),
+                  field_access(r("store_new"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(r("store_old"), "entry_path"), ", and",                  
+                ],
+                [
+                  r("store_new"), " is ", r("entry_newer"), " than ", r("store_old"), "."
                 ],
               ),
             ],

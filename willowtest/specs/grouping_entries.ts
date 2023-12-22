@@ -29,7 +29,7 @@ export const grouping_entries: Expression = site_template({
   pinformative("In this document, we develop and define some precise terminology for grouping ", rs("Entry"), " based on their ", rs("entry_path"), ", ", rs("entry_subspace_id"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
 
   hsection("ranges", "Ranges", [
-    pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one).")),
+    pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one). A ", r("range"), " is ", def({id: "range_empty", singular: "empty"}), " if it ", rs("range_include"), " no values.")),
     
     figure(
       img(asset("grouping_entries/ranges.png")),
@@ -150,6 +150,8 @@ export const grouping_entries: Expression = site_template({
       ]
     ),
 
+    surpress_output(def_symbol({id: "area_any", singular: "any"}, "any", ["A value that signals that an ", r("Area"), " ", rs("area_include"), " ", rs("Entry"), " with arbitrary ", rs("entry_subspace_id"), "."])),
+
     pseudocode(
       new Struct({
         id: "Area",
@@ -171,7 +173,7 @@ export const grouping_entries: Expression = site_template({
             id: "AreaSubspace",
             name: "included_subspace_id",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_subspace_id"), " must be equal to the ", r("AreaSubspace"), ", unless it is ", r("area_any"), "."],
-            rhs: pseudo_choices(r("SubspaceId"), def_symbol({id: "area_any", singular: "any"}, "any", ["A value that signals that an ", r("Area"), " ", rs("area_include"), " ", rs("Entry"), " with arbitrary ", rs("entry_subspace_id"), "."])),
+            rhs: pseudo_choices(r("SubspaceId"), r("area_any")),
           },
         ],
       }),
@@ -183,65 +185,88 @@ export const grouping_entries: Expression = site_template({
       [code(field_access(r("area_include_a"), "AreaSubspace"), " == ", r("area_any")), " or ", code(field_access(r("area_include_a"), "AreaSubspace"), " == ", field_access(r("area_include_e"), "entry_subspace_id")), "."],
     )),
 
+    pinformative("An ", r("Area"), " is ", def({id: "area_empty", singular: "empty"}), " if it ", rs("area_include"), " no ", rs("Entry"), ". This is the case if and only if its ", r("AreaTime"), " is ", r("range_empty"), "."),
+
     pinformative("An ", r("Area"), " ", def({id: "area_include_area", singular: "include"}, "includes"), " another ", r("Area"), " if the first ", r("Area"), " ", rs("area_include"), " all ", rs("Entry"), " that the second ", r("Area"), " ", rs("area_include"), ". In particular, every ", r("Area"), " ", rs("area_include_area"), " itself."),
-
-    // pinformative("Let ", code("a1"), " and ", code("a2"), " be ", rs("area"), " consisting of ", rs("time_range"), " ", code("t1"), " and ", code("t2"), ", ", rs("path"), " ", code("p1"), " and ", code("p2"), ", and optional ", rs("subspace_id"), " ", code("s1"), " and ", code("s2"), " respectively. If there exist ", rs("Entry"), " ", r("area_include", "included"), " in both of them, then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", code("a1"), " and ", code("a2"), " as the ", r("range_intersection"), " of ", code("t1"), " and ", code("t2"), ", the longer of ", code("p1"), " and ", code("p2"), " (one is a prefix of the other, otherwise the intersection would be empty), and either no ", r("subspace_id"), " (if neither ", code("s1"), " nor ", code("s2"), " are given), or any of the given ", rs("subspace_id"), " otherwise (if both are given, then they are equal, as otherwise the intersection would be empty)."),
-
+    
     pinformative("The ", def({id: "full_area", singular: "full area"}), " is the ", r("Area"), " whose ", r("AreaTime"), " is the ", r("open_range", "open"), " ", r("TimeRange"), " with ", r("TimeRangeStart"), " ", $comma("0"), " whose ", r("AreaPath"), " is the empty ", r("Path"), ", and whose ", r("AreaSubspace"), " is ", r("area_any"), ". It ", rs("area_include"), " all ", rs("Entry"), "."),
-
+    
     pinformative("The ", def({id: "subspace_area", singular: "subspace area"}), " of the ", r("SubspaceId"), " ", def_value({id: "subspacearea_sub", singular: "sub"}), " is the ", r("Area"), " whose ", r("AreaTime"), " is the ", r("open_range", "open"), " ", r("TimeRange"), " with ", r("TimeRangeStart"), " ", $comma("0"), " whose ", r("AreaPath"), " is the empty ", r("Path"), ", and whose ", r("AreaSubspace"), " is ", r("subspacearea_sub"), ". It ", rs("area_include"), " exactly the ", rs("Entry"), " with ", r("entry_subspace_id"), " ", r("subspacearea_sub"), "."),
+
+    pinformative("If two ", rs("Area"), " overlap, the overlap is again an ", r("Area"), ". ", preview_scope(
+      "Let ", def_value({id: "area_inter_a1", singular: "a1"}), " and ", def_value({id: "area_inter_a2", singular: "a2"}), " be ", rs("Area"), ". If there exists at least one ", r("Entry"), " ", r("area_include", "included"), " in both ", r("area_inter_a1"), ", and ", r("area_inter_a2"), ", then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", r("area_inter_a1"), ", and ", r("area_inter_a2"), " as the ", r("Area"), " whose", lis(
+        [
+          r("AreaTime"), " is the ", r("range_intersection"), " of ", field_access(r("area_inter_a1"), "AreaTime"), " and ", field_access(r("area_inter_a2"), "AreaTime"), ", whose",
+        ],
+        [
+          r("AreaPath"), " is the longer of ", field_access(r("area_inter_a1"), "AreaPath"), " and ", marginale([
+            "One is a prefix of the other, otherwise the intersection would be empty."
+          ]), field_access(r("area_inter_a2"), "AreaPath"), ", and whose",
+        ],
+        [
+          r("AreaSubspace"), " is ", r("area_any"), ", if ", field_access(r("area_inter_a2"), "AreaSubspace"), " is ", r("area_any"), ", or ", field_access(r("area_inter_a1"), "AreaSubspace"), ", otherwise."
+        ],
+      )),
+    ),    
   ]),
 
-  // hsection("aois", "Areas of Interest", [
-  //   pinformative("Occasionally, we wish to group ", rs("Entry"), " based on the contents of some ", r("store"), ". For example, a space-constrained peer might ask for the 100 newest ", rs("Entry"), " when synchronizing data."),
+  hsection("aois", "Areas of Interest", [
+    pinformative("Occasionally, we wish to group ", rs("Entry"), " based on the contents of some ", r("store"), ". For example, a space-constrained peer might ask for the 100 newest ", rs("Entry"), " when synchronizing data."),
 
-  //   pinformative("We serve these use cases by combining an ", r("Area"), " with limits to restrict the contents to the greatest ", rs("Entry"), " in some ", r("store"), " with respect to any of the three dimensions."),
+    pinformative("We serve these use cases by combining an ", r("Area"), " with limits to restrict the contents to the ", rs("Entry"), " with the greatest ", rs("entry_timestamp"), "."),
 
-  //   pseudocode(
-  //     new Struct({
-  //       id: "AreaOfInterest",
-  //       comment: ["A grouping of ", rs("Entry"), " that are amongst the greatest in some ", r("store"), "."],
-  //       fields: [
-  //         {
-  //           id: "aoi_area",
-  //           name: "area",
-  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), " must be ", r("area_include", "included"), " in the ", r("aoi_area"), "."],
-  //           rhs: r("Area"),
-  //         },
-  //         {
-  //           id: "aoi_tc",
-  //           name: "time_count",
-  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be amongst the ", r("aoi_tc"), " greatest ", rs("Timestamp"), "."],
-  //           rhs: r("U64"),
-  //         },
-  //         {
-  //           id: "aoi_ts",
-  //           name: "time_size",
-  //           comment: ["The total ", rs("entry_payload_length"), " of all ", r("aoi_include", "included"), " ", rs("Entry"), " is at most the", r("aoi_ts"), "."],
-  //           rhs: r("U64"),
-  //         },
-  //         {
-  //           id: "aoi_pc",
-  //           name: "path_count",
-  //           comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_path"), " must be amongst the ", r("aoi_pc"), " greatest ", rs("Path"), "."],
-  //           rhs: r("U64"),
-  //         },
-  //         {
-  //           id: "aoi_ps",
-  //           name: "path_size",
-  //           comment: ["The total ", rs("entry_payload_length"), " of all ", r("aoi_include", "included"), " ", rs("Entry"), " is at most the", r("aoi_ps"), "."],
-  //           rhs: r("U64"),
-  //         },
-  //       ],
-  //     }),
-  //   ),
+    pseudocode(
+      new Struct({
+        id: "AreaOfInterest",
+        comment: ["A grouping of ", rs("Entry"), " that are amongst the newest in some ", r("store"), "."],
+        fields: [
+          {
+            id: "aoi_area",
+            name: "area",
+            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), " must be ", r("area_include", "included"), " in the ", r("aoi_area"), "."],
+            rhs: r("Area"),
+          },
+          {
+            id: "aoi_count",
+            name: "max_count",
+            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be amongst the ", r("aoi_count"), " greatest ", rs("Timestamp"), ", unless ", r("aoi_count"), " is zero."],
+            rhs: r("U64"),
+          },
+          {
+            id: "aoi_size",
+            name: "max_size",
+            comment: ["The total ", rs("entry_payload_length"), " of all ", r("aoi_include", "included"), " ", rs("Entry"), " is at most ", r("aoi_size"), ", unless ", r("aoi_size"), " is zero."],
+            rhs: r("U64"),
+          },
+        ],
+      }),
+    ),
 
-    // pinformative("An ", r("Area"), " ", def_value({id: "area_include_a", singular: "a"}), " ", def({id: "area_include", singular: "include"}, "includes"), " an ", r("Entry"), " ", def_value({id: "area_include_e", singular: "e"}), " if ", lis(
-    //   [field_access(r("area_include_a"), "AreaTime"), " ", rs("range_include"), " ", field_access(r("area_include_e"), "entry_timestamp"), ","],
-    //   [field_access(r("area_include_a"), "AreaPath"), " id a ", rs("path_prefix"), " ", field_access(r("area_include_e"), "entry_path"), ", and"],
-    //   [code(field_access(r("area_include_a"), "AreaSubspace"), " == ", r("area_any")), " or ", code(field_access(r("area_include_a"), "AreaSubspace"), " == ", field_access(r("area_include_e"), "entry_subspace_id")), "."],
-    // )),
-  // ]),
+    pinformative("An ", r("AreaOfInterest"), " ", def_value({id: "aoi_include_a", singular: "aoi"}), " ", def({id: "aoi_include", singular: "include"}, "includes"), " an ", r("Entry"), " ", def_value({id: "aoi_include_e", singular: "e"}), " from a ", r("store"), " ", def_value({id: "aoi_include_s", singular: "store"}), " if ", lis(
+      [
+        field_access(r("aoi_include_a"), "aoi_area"), " ", rs("area_include"), " ", r("aoi_include_e"), ","
+      ],
+      [
+        field_access(r("aoi_include_a"), "aoi_count"), " is zero, or ", r("aoi_include_e"), " is among the ", field_access(r("aoi_include_a"), "aoi_count"), " ", r("entry_newer", "newest"), " ", rs("Entry"), " of ", r("aoi_include_s"), ", and"
+      ],
+      [
+        field_access(r("aoi_include_a"), "aoi_size"), " is zero, or the sum of the ", rs("entry_payload_length"), " of  ", r("aoi_include_e"), " and all ", r("entry_newer"), " ", rs("Entry"), " in ", r("aoi_include_s"), " is less than or equal to ", field_access(r("aoi_include_a"), "aoi_size"), ".",
+      ],
+    )),
+
+    pinformative("Let ", def_value({id: "aoi_inter_a1", singular: "aoi1"}), " and ", def_value({id: "aoi_inter_a2", singular: "aoi2"}), " be ", rs("AreaOfInterest"), ". If there exists at least one ", r("Entry"), " ", r("area_include", "included"), " in both ", field_access(r("aoi_inter_a1"), "aoi_area"), ", and ", field_access(r("aoi_inter_a2"), "aoi_area"), ", then we define the ", def({id: "aoi_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", r("aoi_inter_a1"), ", and ", r("aoi_inter_a2"), " as the ", r("AreaOfInterest"), " whose ", lis(
+      [
+        r("aoi_area"), " is the ", r("area_intersection"), " of ", field_access(r("aoi_inter_a1"), "aoi_area"), " and ", field_access(r("aoi_inter_a2"), "aoi_area"), ", whose ",
+      ],
+      [
+        r("aoi_count"), " is zero if any of ", field_access(r("aoi_inter_a1"), "aoi_count"), " or ", field_access(r("aoi_inter_a2"), "aoi_count"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_count"), " and ", field_access(r("aoi_inter_a2"), "aoi_count"), " otherwise, and whose ",
+      ],
+      [
+        r("aoi_size"), " is zero if any of ", field_access(r("aoi_inter_a1"), "aoi_size"), " or ", field_access(r("aoi_inter_a2"), "aoi_size"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_size"), " and ", field_access(r("aoi_inter_a2"), "aoi_size"), " otherwise.",
+      ],
+    )),
+
+  ]),
 
   // hsection("grouping_entries_aois", "Areas of Interest", [
   //   pinformative(Rs("3d_range"), ", ", rs("area"), ", ", rs("3d_range_product"), ", and ", rs("area_product"), " all group ", rs("Entry"), " independently of any outside state. But sometimes it is useful to request, for example, the newest 100 ", rs("Entry"), " available in some ", r("store"), ". For this and similar purposes, we define the ", r("aoi"), "."),
