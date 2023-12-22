@@ -90,12 +90,12 @@ export function site_template(meta: Document, body: Expression): Invocation {
             footer(
               nav(
                 ul(
-                  li(a({ href: "/" }, "Home")),
+                  li(a({ href: "/", class: "internal" }, "Home")),
                   li(link_name("specifications", "Specs")),
                   li(link_name("more", "More")),
                   li(
                     a(
-                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden" },
+                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden", class: "internal" },
                       "Contact us",
                     ),
                   ),
