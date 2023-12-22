@@ -51,7 +51,7 @@ export const specifications: Expression = site_template(
         link_name("encodings", "On Encodings"),
         link_name("e2e", "Encrypting Entries"),
         link_name("psi", "Private Set Intersection"),
-        link_name("3drbsr", "3d Range-Based Set Reconciliation"),
+        link_name("3d_range_based_set_reconciliation", "3d Range-Based Set Reconciliation"),
         link_name("resource_control", "Multiplexing and Flow Control"),
       ),
     ),
