@@ -51,23 +51,25 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_partial", "Partial Synchronization", [
-                pinformative("To synchronize data, peers specify any number of ", rs("Area"), " per ", r("Namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("area_intersection"), " of ", rs("Area"), " from both peers contain the ", rs("Entry"), " to synchronize."),
+                pinformative("To synchronize data, peers specify any number of ", rs("AreaOfInterest"), marginale([
+                    "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
+                ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronize."),
 
                 pinformative("The WGPS synchronizes these ", rs("area_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
-                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("aoi"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
+                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
             ]),
 
             hsection("sync_payloads", "Payload transmissions", [
-                pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately send its ", r("Payload"), ". Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("aoi"), " can be quadratic in the number of ", rs("aoi"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " and ", rs("aoi"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
+                pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately transmit the corresponding ", r("Payload"), " as well. Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("AreaOfInterest"), " can be quadratic in the number of ", rs("AreaOfInterest"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " for each ", r("aoi_intersection"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
-                pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), "."),
+                pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), " (that they are allowed to access)."),
             ]),
 
             hsection("sync_resources", "Resource Limits", [
-                pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overloads the other. We describe a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " ", link_name("resource_control", "here"), "."),
+                pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overloads the other. We use a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " that we describe ", link_name("resource_control", "here"), "."),
             ]),
         ]),
         
@@ -103,7 +105,7 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "NamespaceHandle",
-                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("aoi"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
+                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("AreaOfInterest"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
                                 [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_fake_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
                                 [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_fake_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
                                 [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_fake_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer", apo, "s interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
@@ -115,7 +117,7 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "AreaOfInterestHandle",
-                            comment: [R("resource_handle"), " for ", rs("aoi"), " that peers wish to sync."],
+                            comment: [R("resource_handle"), " for ", rs("AreaOfInterest"), " that peers wish to sync."],
                         },
                         {
                             id: "PayloadRequestHandle",
@@ -332,7 +334,7 @@ export const sync: Expression = site_template(
                         "The ", r("EntryPush"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("3drbsr"), ". It further sets up later ", r("Payload"), " transmissions (via ", r("PayloadPush"), " messages).",
                     ]),
 
-                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), apo, "s ", r("payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
+                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), apo, "s ", r("entry_payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
                 
                     pinformative(R("EntryPush"), " messages use the ", r("DataChannel"), "."),
                 ]),
@@ -361,7 +363,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("PayloadPush"), " messages let peers transmit ", rs("Payload"), "."),
 
-                    pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver", apo, "s ", r("currently_received_offset"), " is less than or equal to the ", r("payload_length"), " of the receiver", apo, "s ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("A ", r("PayloadPush"), " message may only be sent if its ", r("PayloadPushAmount"), " of ", r("PayloadPushBytes"), " plus the receiver", apo, "s ", r("currently_received_offset"), " is less than or equal to the ", r("entry_payload_length"), " of the receiver", apo, "s ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("PayloadPushAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("PayloadResponse"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
 
                     pinformative("A ", r("PayloadPush"), " message may only be sent if the receiver has a well-defined ", r("currently_received_entry"), "."),
                 
@@ -427,13 +429,13 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "BindAreaOfInterest",
-                            comment: [R("handle_bind"), " an ", r("aoi"), " to an ", r("AreaOfInterestHandle"), "."],
+                            comment: [R("handle_bind"), " an ", r("AreaOfInterest"), " to an ", r("AreaOfInterestHandle"), "."],
                             fields: [
                                 {
                                     id: "BindAreaOfInterestAOI",
                                     name: "area_of_interest",
-                                    comment: ["An ", r("aoi"), " that the peer wishes to reference in future messages."],
-                                    rhs: r("aoi"),
+                                    comment: ["An ", r("AreaOfInterest"), " that the peer wishes to reference in future messages."],
+                                    rhs: r("AreaOfInterest"),
                                 },
                                 {
                                     id: "BindAreaOfInterestCapability",
@@ -444,7 +446,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindAreaOfInterestKnown",
                                     name: "known_intersections",
-                                    comment: ["How many intersections with other ", rs("aoi"), " the sender knows about already."],
+                                    comment: ["How many intersections with other ", rs("AreaOfInterest"), " the sender knows about already."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -453,17 +455,17 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["Development note: if we go for private 3d-range intersection, this message would become a ", code("BindAreaOfInterestPublic"), " message, and we would add ", code("BindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
-                        "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("aoi"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("aoi"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), ".",
+                        "The ", r("BindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), ".",
                     ]),
 
                     aside_block([
-                        p("The ", r("BindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("BindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("aoi"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("BindAreaOfInterest"), " messages for overlapping ", rs("aoi"), ". If both peers, upon receiving the other", apo, "s message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
+                        p("The ", r("BindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("BindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("AreaOfInterest"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("BindAreaOfInterest"), " messages for overlapping ", rs("AreaOfInterest"), ". If both peers, upon receiving the other", apo, "s message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
 
-                        p("A simple workaround is to let ", r("alfie"), " be the only peer to initiate reconciliation. But this can introduce unnecessary delay when ", r("betty"), " sends a ", r("BindAreaOfInterest"), " message for which she already knows there are intersections with ", rs("aoi"), " that ", r("alfie"), " had previously ", r("handle_bind", "bound"), "."),
+                        p("A simple workaround is to let ", r("alfie"), " be the only peer to initiate reconciliation. But this can introduce unnecessary delay when ", r("betty"), " sends a ", r("BindAreaOfInterest"), " message for which she already knows there are intersections with ", rs("AreaOfInterest"), " that ", r("alfie"), " had previously ", r("handle_bind", "bound"), "."),
 
-                        p("In this situation, ", r("betty"), " sets the ", r("BindAreaOfInterestKnown"), " field of her ", r("BindAreaOfInterest"), " message to the number of reconciliation messages that she will send pertaining to her newly ", r("handle_bind", "bound"), " ", r("aoi"), ". ", R("alfie"), " should not initiate reconciliation based on the received message until he has also received ", r("BindAreaOfInterestKnown"), " many reconciliation messages pertaining to this ", r("aoi"), " from ", r("betty"), "."),
+                        p("In this situation, ", r("betty"), " sets the ", r("BindAreaOfInterestKnown"), " field of her ", r("BindAreaOfInterest"), " message to the number of reconciliation messages that she will send pertaining to her newly ", r("handle_bind", "bound"), " ", r("AreaOfInterest"), ". ", R("alfie"), " should not initiate reconciliation based on the received message until he has also received ", r("BindAreaOfInterestKnown"), " many reconciliation messages pertaining to this ", r("AreaOfInterest"), " from ", r("betty"), "."),
 
-                        p(R("betty"), " should never initiate reconciliation based on messages she receives, and when she initiates reconciliation pertaining to ", rs("aoi"), " she ", r("handle_bind", "binds"), " herself, she should meaningfully set the ", r("BindAreaOfInterestKnown"), "field. ", R("alfie"), " should set the ", r("BindAreaOfInterestKnown"), " field of all his ", r("BindAreaOfInterest"), " messages to zero, and eagerly initiate reconciliation sessions as long as he respects ", r("betty"), apo, "s ", r("BindAreaOfInterestKnown"), " fields."),
+                        p(R("betty"), " should never initiate reconciliation based on messages she receives, and when she initiates reconciliation pertaining to ", rs("AreaOfInterest"), " she ", r("handle_bind", "binds"), " herself, she should meaningfully set the ", r("BindAreaOfInterestKnown"), "field. ", R("alfie"), " should set the ", r("BindAreaOfInterestKnown"), " field of all his ", r("BindAreaOfInterest"), " messages to zero, and eagerly initiate reconciliation sessions as long as he respects ", r("betty"), apo, "s ", r("BindAreaOfInterestKnown"), " fields."),
                     ]),
                 
                     pinformative(R("BindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
@@ -590,7 +592,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "Eagerness",
-                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("Payload"), " in the intersection of two ", rs("aoi"), "."],
+                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("Payload"), " in the intersection of two ", rs("AreaOfInterest"), "."],
                             fields: [
                                 {
                                     id: "EagernessEagerness",
@@ -614,7 +616,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("aoi"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
+                    pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
 
                     pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
                 ]),
