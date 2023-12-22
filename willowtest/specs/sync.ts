@@ -43,7 +43,7 @@ export const sync: Expression = site_template(
             pinformative("Data synchronization for Willow needs to solve a number of sub-problems, which we summarize in this section."),
 
             hsection("sync_psi", "Private Set Intersection", [
-                pinformative("The WGPS allows two peers to determine which ", rs("namespace"), " they share an interest in without leaking any information about the ", rs("namespace"), " which they do not both know about. We explain the underlying ", link_name("psi", "private set intersection protocol here"), "."),
+                pinformative("The WGPS allows two peers to determine which ", rs("namespace"), " they share an interest in without leaking any information about the ", rs("namespace"), " which they do not both know about. We explain the underlying ", link_name("private_set_intersection", "private set intersection protocol here"), "."),
             ]),
 
             hsection("sync_access", "Access Control", [
