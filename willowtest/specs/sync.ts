@@ -793,7 +793,8 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
-                pinformative("Defining the precise encodings has to wait until the repercussions of e2e encryption and private area intersection have settled into specific message types for this protocol. We ", em("could"), " spend time on defining non-optimized encoding for the set of message types that are currently defined in this document, but nobody would actually benefit from this, and we'd rather spend the time finalizing the message types."),
+                aside_block("Defining the precise message encodings has to wait until the repercussions of e2e encryption and private area intersection have settled into specific message types for this protocol."),
+
                 // marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
                 // pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
 
