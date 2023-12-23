@@ -61,7 +61,7 @@ export const encodings: Expression = site_template({
   ),
 
   pinformative(
-    "Nevertheless, protocols that deal with persistent storage and network transmissions eventually have to serialize data. In this document, we give both some generic definitions around arbitrary encodings, and some specific encodings that recur throughout the Willow family of specifications.",
+    "Nevertheless, protocols that deal with persistent storage and network transmissions eventually have to serialise data. In this document, we give both some generic definitions around arbitrary encodings, and some specific encodings that recur throughout the Willow family of specifications.",
   ),
 
   hsection("encodings_what", "Encodings, In Detail", [

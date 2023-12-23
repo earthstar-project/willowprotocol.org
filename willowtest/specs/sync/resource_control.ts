@@ -61,7 +61,7 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        "We now present some properties we would like our solution to fulfill.",
+        "We now present some properties we would like our solution to fulfil.",
       ),
 
       pinformative(
@@ -187,7 +187,7 @@ export const resource_control: Expression = site_template(
         r("resources_server"),
         " cannot simply decrease the buffer size and then inform the ",
         r("resources_client"),
-        ": while that information is traveling to the ",
+        ": while that information is travelling to the ",
         r("resources_client"),
         ", the ",
         r("resources_client"),
@@ -351,7 +351,7 @@ export const resource_control: Expression = site_template(
 
     hsection("resources_message_types", "Message Types", [
       pinformative(
-        "The following pseudo-types summarize the different kinds of ",
+        "The following pseudo-types summarise the different kinds of ",
         rs("control_message"),
         " that this approach introduces. The parameter ",
         def_parameter_type("C", "C", [
@@ -825,7 +825,7 @@ export const resource_control: Expression = site_template(
 
       hsection("handles_message_types", "Message Types", [
         pinformative(
-          "The following pseudo-types summarize the messages for maintaining ",
+          "The following pseudo-types summarise the messages for maintaining ",
           rs("resource_handle"),
           ". The parameter ",
           def_parameter_type("H", "H", [

@@ -57,7 +57,7 @@ export const data_model: Expression = site_template(
       figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
     ),
 
-    pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorization from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
+    pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorisation from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
 
     figure(
       img(asset("data_model/namespaces.png")),
@@ -105,13 +105,13 @@ export const data_model: Expression = site_template(
           "A function ", def_parameter_fn("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
         ],
         [
-          "A type ", def_parameter_type("AuthorizationToken", "AuthorizationToken", ["A protocol parameter of Willow, required to define ", rs("PossiblyAuthorizedEntry"), "."]), " for proving write permission.",
+          "A type ", def_parameter_type("AuthorisationToken", "AuthorisationToken", ["A protocol parameter of Willow, required to define ", rs("PossiblyAuthorisedEntry"), "."]), " for proving write permission.",
         ],
         [
           marginale([
-            link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorization. But any system works, as long as it defines a type of ", rs("AuthorizationToken"), " and an ", r("is_authorized_write"), " function.",
+            link_name("meadowcap", "Meadowcap"), " is our bespoke capability system for handling authorisation. But any system works, as long as it defines a type of ", rs("AuthorisationToken"), " and an ", r("is_authorised_write"), " function.",
           ]),
-          "A function ", def_parameter_fn("is_authorized_write", "is_authorized_write", ["A protocol parameter of Willow, required to define ", rs("AuthorizedEntry"), "."]), " that maps an ", r("Entry"), " (defined later) and an ", r("AuthorizationToken"), " to a ", r("Bool"), ", indicating whether the ", r("AuthorizationToken"), " does prove write permission for the ", r("Entry"), ".",
+          "A function ", def_parameter_fn("is_authorised_write", "is_authorised_write", ["A protocol parameter of Willow, required to define ", rs("AuthorisedEntry"), "."]), " that maps an ", r("Entry"), " (defined later) and an ", r("AuthorisationToken"), " to a ", r("Bool"), ", indicating whether the ", r("AuthorisationToken"), " does prove write permission for the ", r("Entry"), ".",
         ],
       ),
     ]),
@@ -175,7 +175,7 @@ export const data_model: Expression = site_template(
         ),
       ),
 
-      pinformative( "A ", def_type({id: "PossiblyAuthorizedEntry", plural: "PossiblyAuthorizedEntries"}), " is a pair of an ", r("Entry"), " and an ", r("AuthorizationToken"), ". An ", def_type({ id: "AuthorizedEntry", plural: "AuthorizedEntries" }), " is a ", r("PossiblyAuthorizedEntry"), " for which ", r("is_authorized_write"), " returns ", code("true"), "."),
+      pinformative( "A ", def_type({id: "PossiblyAuthorisedEntry", plural: "PossiblyAuthorisedEntries"}), " is a pair of an ", r("Entry"), " and an ", r("AuthorisationToken"), ". An ", def_type({ id: "AuthorisedEntry", plural: "AuthorisedEntries" }), " is a ", r("PossiblyAuthorisedEntry"), " for which ", r("is_authorised_write"), " returns ", code("true"), "."),
 
       pinformative(
         marginale([path("a"), " is a ", r("path_prefix"), " of ", path("a"), " and of ", path("a", "b"), ", but not of ", path("ab"), "."]),
@@ -197,7 +197,7 @@ export const data_model: Expression = site_template(
           ],
         ),
       ), preview_scope(
-        "A ", def("store"), " is a set of ", rs("AuthorizedEntry"), " such that",
+        "A ", def("store"), " is a set of ", rs("AuthorisedEntry"), " such that",
           lis(
             ["all its ", rs("Entry"), " have the same ", r("entry_namespace_id"), ", and"],
             ["there are no two of its ", rs("Entry"), " ", def_value({ id: "store_old", singular: "old" }), " and ", def_value({ id: "store_new", singular: "new" }), " such that",
@@ -253,13 +253,13 @@ export const data_model: Expression = site_template(
     hsection("data_further", "Further Reading", [
       pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
 
-      pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterized) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
+      pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
 
-      pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterized nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
+      pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterised nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
 
-      pinformative("How should we select the ", r("AuthorizationToken"), " and ", r("is_authorized_write"), " parameters? Different deployments of Willow will have different needs. We provide ", link_name("meadowcap", "Meadowcap"), ", a capability-based solution that should be suitable for most use-cases."),
+      pinformative("How should we select the ", r("AuthorisationToken"), " and ", r("is_authorised_write"), " parameters? Different deployments of Willow will have different needs. We provide ", link_name("meadowcap", "Meadowcap"), ", a capability-based solution that should be suitable for most use-cases."),
 
-      pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronize data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
+      pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronise data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
 
       pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
     ]),

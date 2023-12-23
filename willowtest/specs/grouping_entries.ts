@@ -26,7 +26,7 @@ export const grouping_entries: Expression = site_template({
 
   pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to use precise terminology) in the three-dimensional willow space."),
 
-  pinformative("In this document, we develop and define a vocabulary for grouping ", rs("Entry"), " based on their ", rs("entry_path"), ", ", rs("entry_subspace_id"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronization protocol"), "."),
+  pinformative("In this document, we develop and define a vocabulary for grouping ", rs("Entry"), " based on their ", rs("entry_path"), ", ", rs("entry_subspace_id"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronisation protocol"), "."),
 
   hsection("ranges", "Ranges", [
     pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one). A ", r("range"), " is ", def({id: "range_empty", singular: "empty"}), " if it ", rs("range_include"), " no values.")),
@@ -211,14 +211,14 @@ export const grouping_entries: Expression = site_template({
   ]),
 
   hsection("aois", "Areas of Interest", [
-    pinformative("Occasionally, we wish to group ", rs("Entry"), " based on the contents of some ", r("store"), ". For example, a space-constrained peer might ask for the 100 newest ", rs("Entry"), " when synchronizing data."),
+    pinformative("Occasionally, we wish to group ", rs("Entry"), " based on the contents of some ", r("store"), ". For example, a space-constrained peer might ask for the 100 newest ", rs("Entry"), " when synchronising data."),
 
     pinformative("We serve these use cases by combining an ", r("Area"), " with limits to restrict the contents to the ", rs("Entry"), " with the greatest ", rs("entry_timestamp"), "."),
 
     pseudocode(
       new Struct({
         id: "AreaOfInterest",
-        comment: ["A grouping of ", rs("Entry"), " that are amongst the newest in some ", r("store"), "."],
+        comment: ["A grouping of ", rs("Entry"), " that are among the newest in some ", r("store"), "."],
         fields: [
           {
             id: "aoi_area",
@@ -229,7 +229,7 @@ export const grouping_entries: Expression = site_template({
           {
             id: "aoi_count",
             name: "max_count",
-            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be amongst the ", r("aoi_count"), " greatest ", rs("Timestamp"), ", unless ", r("aoi_count"), " is zero."],
+            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be among the ", r("aoi_count"), " greatest ", rs("Timestamp"), ", unless ", r("aoi_count"), " is zero."],
             rhs: r("U64"),
           },
           {
@@ -274,10 +274,10 @@ export const grouping_entries: Expression = site_template({
   //   pinformative("An ", def({id: "aoi", singular: "area of interest", plural: "areas of interest"}), " consists of an ", r("area"), ", an optional 64 bit unsigned integer ", def({id: "time_count", singular: "timestamp count limit"}), ", an optional 64 bit unsigned integer ", def({id: "time_size", singular: "timestamp size limit"}), ", an optional 64 bit unsigned integer ", def({id: "path_count", singular: "path count limit"}), ", and an optional 64 bit unsigned integer ", def({id: "path_size", singular: "path size limit"}), ". The set of ", rs("Entry"), " ", def({id: "aoi_include", singular: "include"}, "included"), " in an ", r("aoi"), " depends on some set ", code("S"), " of ", rs("Entry"), " that are ", r("aoi_include", "included"), " by the ", r("area"), ", to which the ", r("aoi"), " is being applied, and is defined as the largest subset ", code("T"), " of ", code("S"), " such that"),
 
   //   lis(
-  //     ["if there is a ", r("time_count"), ", then every ", r("Entry"), " in ", code("T"), " is amongst the ", r("time_count"), " many ", rs("Entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
+  //     ["if there is a ", r("time_count"), ", then every ", r("Entry"), " in ", code("T"), " is among the ", r("time_count"), " many ", rs("Entry"), " in ", code("S"), " with the greatest ", rs("timestamp"), ","],
   //     ["if there is a ", r("time_size"), ", then no ", r("Entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("timestamp"), " than any ", r("Entry"), " in ", code("T"), ","],
   //     ["if there is a ", r("time_size"), ", then the sum of the ", r("payload_length"), " of the ", r("Entry"), " in ", code("T"), " is at most the ", r("time_size"), " many ", rs("Entry"), " in ", code("S"), ","],
-  //     ["if there is a ", r("path_count"), ", then every ", r("Entry"), " in ", code("T"), " is amongst the ", r("path_count"), " many ", rs("Entry"), " in ", code("S"), " with the (lexicographically) greatest ", rs("path"), ","],
+  //     ["if there is a ", r("path_count"), ", then every ", r("Entry"), " in ", code("T"), " is among the ", r("path_count"), " many ", rs("Entry"), " in ", code("S"), " with the (lexicographically) greatest ", rs("path"), ","],
   //     ["if there is a ", r("path_size"), ", then no ", r("Entry"), " that is in ", code("S"), " but not in ", code("T"), " has a greater ", r("path"), " than any ", r("Entry"), " in ", code("T"), ","],
   //     ["if there is a ", r("path_size"), ", then the sum of the ", r("payload_length"), " of the ", r("Entry"), " in ", code("T"), " is at most the ", r("path_size"), " many ", rs("Entry"), " in ", code("S"), "."],
   //   ),

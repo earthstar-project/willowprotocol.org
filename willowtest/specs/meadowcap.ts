@@ -77,7 +77,7 @@ export const meadowcap: Expression = site_template(
 
       pinformative("Verifying whether a delegated capability bestows access rights is done recursively: check that the last delegation step is accompanied by a valid signature, then verify the capability that was being delegated."),
 
-      pinformative("The next important feature of Meadowcap is that of ", em("restricting"), " capabilities. Suppose I maintain several code repositories inside my personal ", r("subspace"), ". I use different ", rs("Path"), " to organize the data pertaining to different repositories, say ", path("code", "seasonal-clock"), " and ", path("code", "earthstar"), ". If I wanted to give somebody write-access to the ", path("code", "seasonal-clock"), " repository, I should ", em("not"), " simply grant them write access to my complete ", r("subspace"), " — if I did, they could also write to ", path("code", "earthstar"), ". Or to ", path("blog", "embarrassing-facts"), " for that matter.", ),
+      pinformative("The next important feature of Meadowcap is that of ", em("restricting"), " capabilities. Suppose I maintain several code repositories inside my personal ", r("subspace"), ". I use different ", rs("Path"), " to organise the data pertaining to different repositories, say ", path("code", "seasonal-clock"), " and ", path("code", "earthstar"), ". If I wanted to give somebody write-access to the ", path("code", "seasonal-clock"), " repository, I should ", em("not"), " simply grant them write access to my complete ", r("subspace"), " — if I did, they could also write to ", path("code", "earthstar"), ". Or to ", path("blog", "embarrassing-facts"), " for that matter.", ),
 
       // marginale(img(asset("meadowcap/capability_types.png"))),
 
@@ -203,7 +203,7 @@ export const meadowcap: Expression = site_template(
                   {
                       id: "communal_cap_delegations",
                       name: "delegations",
-                      comment: ["Successive authorizations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
+                      comment: ["Successive authorisations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
                       rhs: pseudo_array(pseudo_tuple(r("Area"), r("UserPublicKey"), r("UserSignature"))),
                   },
               ],
@@ -276,17 +276,17 @@ export const meadowcap: Expression = site_template(
                       rhs: r("UserPublicKey"),
                   },
                   {
-                      id: "owned_cap_initial_authorization",
-                      name: "initial_authorization",
+                      id: "owned_cap_initial_authorisation",
+                      name: "initial_authorisation",
                       comment: [
-                        pinformative("Authorization of the ", r("owned_cap_user"), " by the ", r("owned_cap_namespace"), "."),
+                        pinformative("Authorisation of the ", r("owned_cap_user"), " by the ", r("owned_cap_namespace"), "."),
                       ],
                       rhs: r("NamespaceSignature"),
                   },
                   {
                       id: "owned_cap_delegations",
                       name: "delegations",
-                      comment: ["Successive authorizations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
+                      comment: ["Successive authorisations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
                       rhs: pseudo_array(pseudo_tuple(r("Area"), r("UserPublicKey"), r("UserSignature"))),
                   },
               ],
@@ -303,7 +303,7 @@ export const meadowcap: Expression = site_template(
   
         pinformative(R("owned_cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("An ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("Area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " inductively based on the number of ", r("owned_cap_delegations"), "."),
   
-        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorization"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
   
         pinformative("For the inductive case, let ", def_value({id: "owned_prev_cap", singular: "prev_cap"}), " be a ", r("owned_cap_valid"), " ", r("OwnedCapability"), " with ", r("owned_cap_receiver"), " ", def_value({id: "owned_prev_receiver", singular: "prev_receiver"}), ", and ", r("owned_cap_granted_area"), " ", def_value({id: "owned_prev_area", singular: "prev_area"}), ". Now let ", def_value({id: "owned_cap_defvalid", singular: "cap"}), " be an ", r("OwnedCapability"), " obtained from ", r("owned_prev_cap"), " by appending a triplet ", code("(", def_value({id: "owned_new_area", singular: "new_area"}), ", ", def_value({id: "owned_new_user", singular: "new_user"}), ", ", def_value({id: "owned_new_signature", singular: "new_signature"}), ")"), " to ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."),
   
@@ -314,7 +314,7 @@ export const meadowcap: Expression = site_template(
             "If ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), " is empty, then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
             lis(
               [function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area")), ","],
-              [function_call(r("encode_user_sig"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorization")), "."],
+              [function_call(r("encode_user_sig"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorisation")), "."],
               [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
             ),
           ],
@@ -331,7 +331,7 @@ export const meadowcap: Expression = site_template(
       ]),
 
       hsection("proper_capabilities", "Bringing Everything Together", [
-        pinformative(Rs("CommunalCapability"), " and ", rs("OwnedCapability"), " are capability types for realizing ", rs("communal_namespace"), " and ", rs("owned_namespace"), " respectively. It remains", marginale(["If you do not need to support both cases, you can also use one of ", rs("CommunalCapability"), " or ", rs("OwnedCapability"), " directly."]), " to define a type that unifies both."),
+        pinformative(Rs("CommunalCapability"), " and ", rs("OwnedCapability"), " are capability types for realising ", rs("communal_namespace"), " and ", rs("owned_namespace"), " respectively. It remains", marginale(["If you do not need to support both cases, you can also use one of ", rs("CommunalCapability"), " or ", rs("OwnedCapability"), " directly."]), " to define a type that unifies both."),
         
         pinformative("Crucially, for a given ", r("NamespaceId"), ", all its valid capabilities should implement either a ", r("communal_namespace"), " or an ", r("owned_namespace"), ", but there should be no mixture of capabilities. It should be impossible to have people believe they work in a ", r("communal_namespace"), ", for example, only to later present an ", r("OwnedCapability"), " that allows you to read or edit all their ", rs("Entry"), "."),
 
@@ -366,14 +366,14 @@ export const meadowcap: Expression = site_template(
       pinformative("We have defined capabilities and their semantics. Now what?"),
 
       hsection("mc_writing_entries", "Writing Entries", [
-        pinformative(Rs("Capability"), " with ", r("cap_mode"), " ", r("access_write"), " can be used to control who gets to write ", rs("Entry"), " in which ", rs("namespace"), " and with which ", rs("entry_subspace_id"), ", ", rs("entry_path"), ", and/or ", rs("entry_timestamp"), ". Intuitively, you authorize writing an ", r("Entry"), " by supplying a ", r("Capability"), " that grants ", r("access_write"), " ", r("cap_mode", "access"), " to the ", r("Entry"), " together with a ", r("dss_signature"), " over the ", r("Entry"), " by the ", r("cap_receiver"), " of the ", r("Capability"), "."),
+        pinformative(Rs("Capability"), " with ", r("cap_mode"), " ", r("access_write"), " can be used to control who gets to write ", rs("Entry"), " in which ", rs("namespace"), " and with which ", rs("entry_subspace_id"), ", ", rs("entry_path"), ", and/or ", rs("entry_timestamp"), ". Intuitively, you authorise writing an ", r("Entry"), " by supplying a ", r("Capability"), " that grants ", r("access_write"), " ", r("cap_mode", "access"), " to the ", r("Entry"), " together with a ", r("dss_signature"), " over the ", r("Entry"), " by the ", r("cap_receiver"), " of the ", r("Capability"), "."),
 
-        pinformative("More precisely, Willow verifies ", rs("Entry"), " via its ", r("AuthorizationToken"), " and ", r("is_authorized_write"), " parameters. Meadowcap supplies concrete choices of these parameters:"),
+        pinformative("More precisely, Willow verifies ", rs("Entry"), " via its ", r("AuthorisationToken"), " and ", r("is_authorised_write"), " parameters. Meadowcap supplies concrete choices of these parameters:"),
 
         pseudocode(
           new Struct({
-              id: "MeadowcapAuthorizationToken",
-              comment: ["To be used as an ", r("AuthorizationToken"), " for Willow."],
+              id: "MeadowcapAuthorisationToken",
+              comment: ["To be used as an ", r("AuthorisationToken"), " for Willow."],
               fields: [
                   {
                       id: "mcat_cap",
@@ -395,7 +395,7 @@ export const meadowcap: Expression = site_template(
           }),
         ),
 
-      pinformative("The function ", def_value("meadowcap_is_authorized_write"), " maps an ", r("Entry"), " and a ", r("MeadowcapAuthorizationToken"), " to a ", r("Bool"), ". It maps ", def_value({id: "mcia_entry", singular: "entry"}), " and ", def_value({id: "mcia_cap", singular: "cap"}), " to ", code("true"), " if and only if", lis(
+      pinformative("The function ", def_value("meadowcap_is_authorised_write"), " maps an ", r("Entry"), " and a ", r("MeadowcapAuthorisationToken"), " to a ", r("Bool"), ". It maps ", def_value({id: "mcia_entry", singular: "entry"}), " and ", def_value({id: "mcia_cap", singular: "cap"}), " to ", code("true"), " if and only if", lis(
         [r("mcia_cap"), " is ", r("cap_valid"), ","],
         ["the ", r("cap_mode"), " of ", r("mcia_cap"), " is ", r("access_write"), ","],
         ["the ", r("cap_granted_area"), " of ", r("mcia_cap"), " ", rs("area_include"), " ", r("mcia_entry"), ", and"],

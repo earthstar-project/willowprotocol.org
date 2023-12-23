@@ -21,15 +21,15 @@ export const sync: Expression = site_template(
             pinformative("This document is still in flux, the design that we curretly present here does not yet take end-to-end encryption and private area intersection into account. The parts of the protocol that are not affected by these are fairly stable however."),
         ),
 
-        pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronize data. In this document, we specify one possible way for performing synchronization: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
+        pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
             pinformative("The WGPS aims to be appropriate for a variety of networking settings, particularly those of peer-to-peer systems where the replicating parties might not necessarily trust each other. Quite a bit of engineering went into the WGPS to satisfy the following requirements:"),
 
             lis(
                 "Incremental sync: peers can detect regions of shared data with relatively sparse communication to avoid redundant data transfer.",
-                "Partial sync: peers synchronize only those regions of data they both care about, at sub-namespace granularity.",
-                "Access control: conformant peers only hand out data if the request authorizes its access.",
+                "Partial sync: peers synchronise only those regions of data they both care about, at sub-namespace granularity.",
+                "Access control: conformant peers only hand out data if the request authorises its access.",
                 "Private set intersection: peers can discover which namespaces they have in common without disclosing any non-common namespaces to each other.",
                 "Resource control: peers communicate (and enforce) their computational resource limits so as not to overload each other.",
                 "Transport independence: peers can communicate over arbitrary reliable, ordered, byte-oriented channels, whether tcp, quic, or unix pipe.",
@@ -40,7 +40,7 @@ export const sync: Expression = site_template(
         ]),
 
         hsection("sync_concepts", "Concepts", [
-            pinformative("Data synchronization for Willow needs to solve a number of sub-problems, which we summarize in this section."),
+            pinformative("Data synchronisation for Willow needs to solve a number of sub-problems, which we summarise in this section."),
 
             hsection("sync_psi", "Private Set Intersection", [
                 pinformative("The WGPS allows two peers to determine which ", rs("namespace"), " they share an interest in without leaking any information about the ", rs("namespace"), " which they do not both know about. We explain the underlying ", link_name("private_set_intersection", "private set intersection protocol here"), "."),
@@ -50,12 +50,12 @@ export const sync: Expression = site_template(
                 pinformative("Peers only transfer data to peers that can prove that they are allowed to access that data. We describe how peers authenticate their requests ", link_name("access_control", "here"), "."),
             ]),
 
-            hsection("sync_partial", "Partial Synchronization", [
-                pinformative("To synchronize data, peers specify any number of ", rs("AreaOfInterest"), marginale([
+            hsection("sync_partial", "Partial Synchronisation", [
+                pinformative("To synchronise data, peers specify any number of ", rs("AreaOfInterest"), marginale([
                     "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
-                ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronize."),
+                ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronise."),
 
-                pinformative("The WGPS synchronizes these ", rs("area_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
+                pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
@@ -76,7 +76,7 @@ export const sync: Expression = site_template(
         hsection("sync_parameters", "Parameters", [
             pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS also introduces some additional parameters for ", link_name("psi", "private set intersection"), ", ", link_name("access_control", "access control"), ", and ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
 
-            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter_fn("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("NamespaceId"), " into ", r("PsiGroup"), "."),
+            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter_fn("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("NamespaceId"), " into ", r("PsiGroup"), "."),
 
             pinformative(link_name("3d_range_based_set_reconciliation", "3 range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
 
@@ -84,9 +84,9 @@ export const sync: Expression = site_template(
         ]),
 
         hsection("sync_protocol", "Protocol", [
-            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronization session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def_fake("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def_fake("betty", "Betty"), " refers to the peer that accepted a WGPS synchronization session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
+            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronisation session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def_fake("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronisation session. We occasionally use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def_fake("betty", "Betty"), " refers to the peer that accepted a WGPS synchronisation session. We occasionally use this terminology to break symmetry in the protocol."]), "."),
 
-            pinformative("Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behavior must abort the sync session. We indicate such situations by writing that something ", quotes("is an error"), ". Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfill some criteria, but a peer receives a message that does not fulfill these criteria, that is an error."),
+            pinformative("Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behaviour must abort the sync session. We indicate such situations by writing that something ", quotes("is an error"), ". Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfil some criteria, but a peer receives a message that does not fulfil these criteria, that is an error."),
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
 
@@ -203,7 +203,7 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("BindNamespacePrivate"), " message corresponds to mixing a data color with one’s secret color and sending the mixture to the other peer."]),
+                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindNamespacePrivate"), " message corresponds to mixing a data colour with one’s secret colour and sending the mixture to the other peer."]),
                         "The ", r("BindNamespacePrivate"), " messages let peers submit a ", r("NamespaceId"), " for ", r("psi"), " by transmitting the result of first applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " and then applying ", r("psi_scalar_multiplication"), " to the result and ", r("scalar"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePrivateGroupMember"), " in the ", r("psi_state_private_pending"), " state.",
                     ]),
                 
@@ -214,12 +214,12 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "PsiReply",
-                            comment: ["Finalize ", r("psi"), " for a single ", r("NamespaceId"), "."],
+                            comment: ["Finalise ", r("psi"), " for a single ", r("NamespaceId"), "."],
                             fields: [
                                 {
                                     id: "PsiReplyHandle",
                                     name: "handle",
-                                    comment: ["The ", r("resource_handle"), " of the ", r("BindNamespacePrivate"), " message which this finalizes."],
+                                    comment: ["The ", r("resource_handle"), " of the ", r("BindNamespacePrivate"), " message which this finalises."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -233,7 +233,7 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret color with a color mixture received from the other peer and sending the resulting color back."]),
+                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer and sending the resulting colour back."]),
                         "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("NamespaceId"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
                     ]),
 
@@ -257,7 +257,7 @@ export const sync: Expression = site_template(
                     ),
     
                     pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "color mixing metaphor"), ", a ", r("BindNamespacePublic"), " message corresponds to sending a data color in the clear, with a small note attached that says “I trust you, here’s a data color of mine.”"]),
+                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindNamespacePublic"), " message corresponds to sending a data colour in the clear, with a small note attached that says “I trust you, here’s a data colour of mine.”"]),
                         "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("NamespaceHandle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
                     ]),
 
@@ -439,7 +439,7 @@ export const sync: Expression = site_template(
                                 },
                                 {
                                     id: "BindAreaOfInterestCapability",
-                                    name: "authorization",
+                                    name: "authorisation",
                                     comment: ["A ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("BindAreaOfInterestAOI"), "."],
                                     rhs: r("U64"),
                                 },
@@ -618,7 +618,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("Eagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("EntryPush"), " messages for that intersection."),
 
-                    pinformative(R("Eagerness"), " messages are not binding, they merely present an optimization opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+                    pinformative(R("Eagerness"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
                 ]),
 
                 hsection("sync_logical_channels", "Logical Channels", [
@@ -831,7 +831,7 @@ export const sync: Expression = site_template(
                 // hsection("encoding_entry_push", code("EntryPush"), [
                 //     pinformative("When encoding a ", r("BindCapability"), " message, the five least significant bits of the first byte are ", code("00101"), "."),
 
-                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("EntryPushAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("EntryPushEntry"), " can be encoded efficiently, as can such an ", r("EntryPushOffset"), ". The ", r("EntryPushEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("EntryPushAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("EntryPushEntry"), " can be encoded efficiently, as can such an ", r("EntryPushOffset"), ". The ", r("EntryPushEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
 
                 //     pinformative("TODO define an encoding"),
                 // ]),
@@ -847,7 +847,7 @@ export const sync: Expression = site_template(
                 // hsection("encoding_bind_payload_request", code("BindPayloadRequest"), [
                 //     pinformative("When encoding a ", r("BindPayloadRequest"), " message, the five least significant bits of the first byte are ", code("00111"), "."),
 
-                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("BindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("BindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("BindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
 
                 //     pinformative("TODO define an encoding"),
                 // ]),
@@ -861,7 +861,7 @@ export const sync: Expression = site_template(
                 // hsection("encoding_bind_aoi", code("BindAreaOfInterest"), [
                 //     pinformative("When encoding a ", r("BindAreaOfInterest"), " message, the five least significant bits of the first byte are ", code("01001"), "."),
 
-                //     pinformative("The remaining encoding employs a couple of optimizations: an ", r("BindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("BindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("BindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
+                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("BindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("BindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("BindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
 
                 //     pinformative("TODO define an encoding"),
                 // ]),

@@ -1,5 +1,5 @@
 import { def, preview_scope, r, rs, r$, R } from "../../../defref.ts";
-import { code, div, em, img } from "../../../h.ts";
+import { code, div, em, img, table } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
 import { $, $comma, $dot } from "../../../katex.ts";
 import {
@@ -46,18 +46,18 @@ export const psi: Expression = site_template(
       marginale_inlineable(img(asset("psi/psi_paint.png"))),
 
       pinformative(
-        "Imagine the items were ", em("colors"), ". Assume colors can easily be mixed with other colors, but unmixing a given color into its components is impossible. The following procedure then solves the problem:",
+        "Imagine the items were ", em("colours"), ". Assume colours can easily be mixed with other colours, but unmixing a given colour into its components is impossible. The following procedure then solves the problem:",
       ),
 
       lis(
         [preview_scope(
-          "Alfie and Betty each start with a data color ", def_value("data_A"), " and ", def_value("data_B"), " respectively.",
+          "Alfie and Betty each start with a data colour ", def_value("data_A"), " and ", def_value("data_B"), " respectively.",
         )],
         [preview_scope(
-          "Alfie and Betty each randomly select a secret color ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
+          "Alfie and Betty each randomly select a secret colour ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
         )],
         [
-          "They each mix their data color with their secret color and send the result to the other person (", function_call("mix", r("data_A"), r("secret_A")), " and ", function_call("mix", r("data_B"), r("secret_B")), ").",
+          "They each mix their data colour with their secret colour and send the result to the other person (", function_call("mix", r("data_A"), r("secret_A")), " and ", function_call("mix", r("data_B"), r("secret_B")), ").",
         ],
         [
           "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A")), " and ", function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B")), ").",
@@ -65,8 +65,8 @@ export const psi: Expression = site_template(
       ),
 
       pinformative(
-        "If both peers receive the same color they remembered, then they started with the same data color, and otherwise they did not. Because unmixing colors is impossible and mixing with a randomly chosen secret color essentially yields a new random-looking color, the peers cannot learn anything about each other’s colors in case of ", sidenote("inequality", [
-          "Neither can any eavesdropper learn about the data colors. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the color metaphor from its wikipedia page.",
+        "If both peers receive the same colour they remembered, then they started with the same data colour, and otherwise they did not. Because unmixing colours is impossible and mixing with a randomly chosen secret colour essentially yields a new random-looking colour, the peers cannot learn anything about each other’s colours in case of ", sidenote("inequality", [
+          "Neither can any eavesdropper learn about the data colours. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the colour metaphor from its wikipedia page.",
         ]),
         ".",
       ),
@@ -75,9 +75,9 @@ export const psi: Expression = site_template(
 
       pinformative(
         marginale([
-          "Note that the color analogy is not fully accurate: data colors correspond to group members but secret colors correspond to scalars, which are of a different type than group members.",
+          "Note that the colour analogy is not fully accurate: data colours correspond to group members but secret colours correspond to scalars, which are of a different type than group members.",
         ]),
-        "Leaving the world of analogy, the actual cryptographic primitives we use are ", link("finite cyclic groups", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalization_to_finite_cyclic_groups"), " — such as the ", link("X25519 elliptic curve", "https://en.wikipedia.org/wiki/Curve25519"), " — equipped with a way of serializing group members for transport and with a way of generating pseudo-random group members from the items to test for equality.",
+        "Leaving the world of analogy, the actual cryptographic primitives we use are ", link("finite cyclic groups", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), " — such as the ", link("X25519 elliptic curve", "https://en.wikipedia.org/wiki/Curve25519"), " — equipped with a way of serialising group members for transport and with a way of generating pseudo-random group members from the items to test for equality.",
       ),
 
       pinformative(
@@ -137,15 +137,15 @@ export const psi: Expression = site_template(
 
     hsection("psi_actual", "From Equality Testing to Set Intersection", [
       pinformative(
-        "We can generalize the equality test to computing set intersection by essentially sending the same information but for multiple items at once. We return to the analogy of colors again, before giving the mathematically precise formulation.",
+        "We can generalise the equality test to computing set intersection by essentially sending the same information but for multiple items at once. We return to the analogy of colours again, before giving the mathematically precise formulation.",
       ),
 
       pinformative(
-        "Suppose Alfie and Betty start with ", em("sets"), " of data colors. They independently (and arbitrarily) number their data colors as ", def_value("data_A_0"), ", ", def_value("data_A_1"), ", ... and ", def_value("data_B_0"), ", ", def_value("data_B_1"), ", ...` respectively.",
+        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", def_value("data_A_0"), ", ", def_value("data_A_1"), ", ... and ", def_value("data_B_0"), ", ", def_value("data_B_1"), ", ...` respectively.",
       ),
 
       pinformative(
-        "Alfie and Betty still choose only a single random secret (", r("secret_A"), " and ", r("secret_B"), " respectively), and they send the results of mixing each of their data colors with their secret color individually (",
+        "Alfie and Betty still choose only a single random secret (", r("secret_A"), " and ", r("secret_B"), " respectively), and they send the results of mixing each of their data colours with their secret colour individually (",
         code("{0: ", function_call("mix", r("data_A_0"), r("secret_A")), ", ", function_call("mix", r("data_A_1"), r("secret_A")), ", ...", "}"),
         " and ",
         code("{0: ", function_call("mix", r("data_B_0"), r("secret_B")), ", ", function_call("mix", r("data_B_1"), r("secret_B")), ", ...", "}"),
@@ -153,11 +153,11 @@ export const psi: Expression = site_template(
       ),
 
       pinformative(
-        "For each numbered color mix they receive, they reply by adding their own secret, keeping the numbering identical.",
+        "For each numbered colour mix they receive, they reply by adding their own secret, keeping the numbering identical.",
       ),
 
       pinformative(
-        "Any color that occurs both in the final set of colors they sent and in the final set of colors they received corresponds to a shared data color, and the numbering tells each of them which of the original colors are shared. But for any other color, they cannot reconstruct the corresponding original data color of the other peer.",
+        "Any colour that occurs both in the final set of colours they sent and in the final set of colours they received corresponds to a shared data colour, and the numbering tells each of them which of the original colours are shared. But for any other colour, they cannot reconstruct the corresponding original data colour of the other peer.",
       ),
 
       pinformative(

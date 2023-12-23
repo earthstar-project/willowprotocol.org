@@ -36,11 +36,11 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     name: "3d_range_based_set_reconciliation",
   },
   [
-    pinformative("When two peers wish to synchronize data, they typically first exchange which ", rs("Area"), " in which ", rs("namespace"), " they are interested in. Intersecting these ", rs("Area"), " yields the sets of ", rs("Entry"), " for which they then need to bring each other up to speed. In this document, we present a strategy for doing so efficiently."),
+    pinformative("When two peers wish to synchronise data, they typically first exchange which ", rs("Area"), " in which ", rs("namespace"), " they are interested in. Intersecting these ", rs("Area"), " yields the sets of ", rs("Entry"), " for which they then need to bring each other up to speed. In this document, we present a strategy for doing so efficiently."),
 
     pinformative("Given the ", rs("Entry"), " that the peers have available, there can be two cases that necessitate data exchange. First, one peer might have an ", r("Entry"), " that the other does not have, and second, the peers might hold nonequal parts of the ", r("Payload"), " of some common ", r("Entry"), "."),
 
-    pinformative("As a first step to solving the problem, we simplify it. If ", rs("Entry"), " contained information about locally available ", r("Payload"), " bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronize ", rs("Entry"), " directly, but ", rs("LengthyEntry"), ":"),
+    pinformative("As a first step to solving the problem, we simplify it. If ", rs("Entry"), " contained information about locally available ", r("Payload"), " bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronise ", rs("Entry"), " directly, but ", rs("LengthyEntry"), ":"),
 
     pseudocode(
       new Struct({
@@ -151,7 +151,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
       pinformative("First, we require a function ", def_parameter_fn({id: "3drbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("3drbsr_fp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("3drbsr_fp"), "."),
 
-      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearize three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "3drbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("3drbsr_fp"), " to a single new ", r("3drbsr_fp"), ". The ", r("3drbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "3drbsr_neutral", singular: "fingerprint_neutral"}), "."),
+      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearise three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "3drbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("3drbsr_fp"), " to a single new ", r("3drbsr_fp"), ". The ", r("3drbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "3drbsr_neutral", singular: "fingerprint_neutral"}), "."),
 
       marginale_inlineable(
         figure(
@@ -205,7 +205,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
         ["applying ", r("3drbsr_fingerprint"), " to any other set of ", rs("LengthyEntry"), " yields the result of applying ", r("3drbsr_fp_singleton"), " to all members of the set individually and then combining the resulting ", rs("3drbsr_fp"), " with ", r("3drbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity)."],
       )),
 
-      pinformative("For ", r("3drbsr"), " to work correctly, ", r("3drbsr_fingerprint"), " must map distinct sets of ", rs("LengthyEntry"), " to disting ", rs("3drbsr_fp"), " with high probability, even when facing maliciously crafted input sets. The ", link("range-based set reconciliation paper", "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " surveys suitable, cryptographically secure hash functions in section 5B. All but the Cayley hashes use commutative ", r("3drbsr_fp_combine"), " functions, and are thus suitable for ", r("3drbsr"), "."),
+      pinformative("For ", r("3drbsr"), " to work correctly, ", r("3drbsr_fingerprint"), " must map distinct sets of ", rs("LengthyEntry"), " to distinct ", rs("3drbsr_fp"), " with high probability, even when facing maliciously crafted input sets. The ", link("range-based set reconciliation paper", "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " surveys suitable, cryptographically secure hash functions in section 5B. All but the Cayley hashes use commutative ", r("3drbsr_fp_combine"), " functions, and are thus suitable for ", r("3drbsr"), "."),
     ]),
   ],
 );
