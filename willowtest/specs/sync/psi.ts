@@ -27,14 +27,20 @@ const item_to_group = "\\mathrm{item\\_to\\_group}";
 
 export const psi: Expression = site_template(
   {
-    title: "Private Set Intersection",
-    name: "private_set_intersection",
+    title: "Private Area Intersection",
+    name: "private_area_intersection",
   },
   [
-    pinformative(
-      link("Private set intersection", "https://en.wikipedia.org/wiki/Private_set_intersection", ),
-      " (", def({ id: "psi", singular: "PSI" }), ") protocols allow two peers to establish which items they have in common without revealing any non-common items to the other party. The ", r("WGPS"), " employs a classic ", link("technique by Huberman, Franklin, and Hogg", "https://dl.acm.org/doi/pdf/10.1145/336992.337012"), ", which we explain in this document.",
-    ),
+    pinformative("In order to synchronize data, peers must inform each other about which data they are interested in. If done openly, this would let peers learn about details such as ", rs("NamespaceId"), ", ", rs("SubspaceId"), ", or ", rs("Path"), " that they have no business knowing about. Im this document, we describe a technique that does not leak this information."),
+
+    hsection("pai_goals", "Setting and Goals", [
+      pinformative(""),
+    ]),
+
+    // pinformative(
+    //   link("Private set intersection", "https://en.wikipedia.org/wiki/Private_set_intersection", ),
+    //   " (", def({ id: "psi", singular: "PSI" }), ") protocols allow two peers to establish which items they have in common without revealing any non-common items to the other party. The ", r("WGPS"), " employs a classic ", link("technique by Huberman, Franklin, and Hogg", "https://dl.acm.org/doi/pdf/10.1145/336992.337012"), ", which we explain in this document.",
+    // ),
 
     hsection("private_equality_testing", "Private Equality Testing", [
       pinformative(
