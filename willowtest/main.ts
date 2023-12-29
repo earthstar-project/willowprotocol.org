@@ -416,6 +416,10 @@ evaluate([
             ),
             "Data storage which never goes offline. You get local-first key value stores for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores belong to the same namespace, they deterministically sync with each other.",
           ),
+          
+          pinformative(
+            "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. After that, they still have to be able to decrypt synced data to make any sense of it."
+          ),
 
           pinformative(
             marginale_inlineable(
@@ -423,6 +427,7 @@ evaluate([
             ),
             "Total erasure of data. Distributed systems use tombstones to communicate deletes, but even these leave metadata behind. Prefix pruning deletes many entries and all of their metadata in their entirety, leaving a single tombstone in their place.",
           ),
+          
 
           pinformative(
             marginale_inlineable(
