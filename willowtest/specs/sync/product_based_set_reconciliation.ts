@@ -20,9 +20,7 @@ import { def_type, pseudo_array, pseudocode, Struct } from "../../../pseudocode.
 import { Expression } from "../../../tsgen.ts";
 import {
 def_parameter_fn,
-  def_parameter_type,
   def_parameter_value,
-  def_value,
   link,
   lis,
   pinformative,
@@ -70,14 +68,26 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     pinformative("To perform set reconciliation, we adapt the approach of ", em("range-based set "), sidenote(em("reconciliation"), [link(`https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf`, "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " (this peer-reviewed paper was presented at ", link("SRDS2023", "https://srds-conference.org/"), ", the proceedings have not been published yet)"]), marginale(["For a more accessible introduction to the technique, see also ", link("this webpage", "https://logperiodic.com/rbsr.html"), "."]), "."),
 
-    pinformative("Range-based set reconciliation solves the problem recursively. To reconcile two sets, one peer first computes a hash over all items in its set, and sends this fingerprint to the other peer. That peer then computes the fingerprint over its items as well. If the fingerprints match, they are done reconciling. If they do not match, there are two options. First, the peer can split its set in half and then initiate set reconciliation for each half concurrently (by transmitting its hashes for both halves). Second, if the set is sufficiently small, the peer can instead simply transmit its items in the set. The other peer responds to this with all other items that it held in the set, completing the process of reconciliation."),
+    pinformative("Range-based set reconciliation solves the problem recursively. To reconcile two sets, one peer first computes a hash over all items in its set, and sends this fingerprint to the other peer. That peer then computes the fingerprint over its items as well. If the fingerprints match, they are done reconciling."),
+    
+    figure(
+      img(asset("3d_rbsr/fp_match.png")),
+      figcaption(span({ class: 'purple'}, r('alfie')), " and ", span({ class: "orange" }, r("betty")), " produce matching ",   rs("3drbsr_fp"), " for all their entries within a given range.")
+    ),
+    
+    pinformative("If they do not match, there are two options. First, the peer can split its set in half and then initiate set reconciliation for each half concurrently (by transmitting its hashes for both halves). Second, if the set is sufficiently small, the peer can instead simply transmit its items in the set. The other peer responds to this with all other items that it held in the set, completing the process of reconciliation."),
 
+    figure(
+      img(asset("3d_rbsr/fp_nonmatching.png")),
+      figcaption("sam: I think this image could do with a caption, and I think you would be really good at writing it.")
+    ),
+   
+    pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
+    
     figure(
       img(asset("3d_rbsr/drilling_down.png")),
       figcaption("Split apart ", span({class: 'vermillion'},"non-equal ranges"),  " to hone in on the locations of any differences, while disregarding ", span({class: 'blue'}, "equal ranges"), ".")
     ),
-
-    pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
 
     pinformative(def({id: "3drbsr", singular: "3d range-based set reconciliation"}, "3d range-based set reconciliation", [
       def_fake({id: "3drbsr", singular: "3d range-based set reconciliation"}), " is an algorithm for letting two peers compute the union of their ", rs("LengthyEntry"), " in some ", r("3dRange"), " by exchanging ", rs("3dRangeFingerprint"), ", ", rs("3dRangeEntrySet"), ", and ", rs("3dRangeConfirmation"), ".",
