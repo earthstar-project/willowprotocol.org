@@ -79,7 +79,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     figure(
       img(asset("3d_rbsr/fp_nonmatching.png")),
-      figcaption("sam: I think this image could do with a caption, and I think you would be really good at writing it.")
+      figcaption("Alfie and Betty produce mismatched fingerprints. Alfie splits the range including these entries into two parts, yielding a range including entries A and B, and another range including C, and sends these ranges and their fingerprints to Betty. Betty produces a matching fingerprint for the range including A and B, but not for the second range, which includes entries Q and Y. As the mismatched range includes so few entries, Alfie sends entry C to Betty. In response, Betty sends entries Q and Y to Alfie.")
     ),
    
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
