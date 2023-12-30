@@ -402,7 +402,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol specification for local-first data stores which sync. The best parts? Fine-grained permissions, destructive edits, and deletion without leaving metadata behind.",
+            "A protocol for local-first data stores which sync. The best parts? Fine-grained permissions,  zealous privacy, destructive edits, and deletion without leaving metadata behind.",
           ),
           nav(
             lis(
@@ -414,11 +414,14 @@ evaluate([
             marginale_inlineable(
               img(asset("landing/local-first.png")),
             ),
-            "Data storage which never goes offline. You get local-first key value stores for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores belong to the same namespace, they deterministically sync with each other.",
+            "Data storage which never goes offline. You get local-first storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores belong to the same namespace, they deterministically sync with each other.",
           ),
           
           pinformative(
-            "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. If they get that far, they still have to be able to decrypt synced data to make any sense of it."
+            marginale_inlineable(
+              img(asset("landing/privacy.png")),
+            ),
+            "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. And if they get that far, they still have to be able to decrypt synced data to make any sense of it."
           ),
 
           pinformative(
