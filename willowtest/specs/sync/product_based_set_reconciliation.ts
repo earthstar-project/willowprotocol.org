@@ -194,9 +194,11 @@ export const range3d_based_set_reconciliation: Expression = site_template(
                 small_img(asset("3d_rbsr/fp_apple.png"), {
                   style: "vertical-align:middle",
                 }),
+                " ",
                 small_img(asset("3d_rbsr/fp_celery.png"), {
                   style: "vertical-align:middle",
                 }),
+                " ",
                 small_img(asset("3d_rbsr/fp_lemon.png"), {
                   style: "vertical-align:middle",
                 }),
