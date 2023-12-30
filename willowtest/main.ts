@@ -418,7 +418,7 @@ evaluate([
           ),
           
           pinformative(
-            "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. After that, they still have to be able to decrypt synced data to make any sense of it."
+            "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. If they get that far, they still have to be able to decrypt synced data to make any sense of it."
           ),
 
           pinformative(
