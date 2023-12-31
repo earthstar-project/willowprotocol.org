@@ -6,7 +6,7 @@ import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
-import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
+import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
 
 const apo = "’";
@@ -77,6 +77,10 @@ export const sync: Expression = site_template(
             pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes pairs of ", rs("NamespaceId"), " and ", rs("Path"), " or triplets of ", rs("NamespaceId"), ", ", rs("SubspaceId"), "", " and ", rs("Path"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
             pinformative(link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
+
+            pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
+                "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type ", r("UserSignature"), ", which together yield a ", r("MeadowcapAuthorisationToken"), ".",
+            ]), " (which differs between any two ", rs("Entry"), "). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -118,6 +122,10 @@ export const sync: Expression = site_template(
                             id: "PayloadRequestHandle",
                             comment: [R("resource_handle"), " that controls the matching from ", r("Payload"), " transmissions to ", r("Payload"), " requests."],
                         },
+                        {
+                            id: "StaticTokenHandle",
+                            comment: [R("resource_handle"), " for ", rs("StaticToken"), " that peers need to transmit."],
+                        },
                     ],
                 }),
             ),
@@ -139,19 +147,23 @@ export const sync: Expression = site_template(
                         },
                         {
                             id: "IntersectionChannel",
-                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("IntersectionHandle"), "."],
+                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("IntersectionHandle"), "."],
                         },
                         {
                             id: "CapabilityChannel",
-                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("CapabilityHandle"), "."],
+                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("CapabilityHandle"), "."],
                         },
                         {
                             id: "AreaOfInterestChannel",
-                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("AreaOfInterestHandle"), "."],
+                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("AreaOfInterestHandle"), "."],
                         },
                         {
                             id: "PayloadRequestChannel",
-                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("PayloadRequestHandle"), "."],
+                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("PayloadRequestHandle"), "."],
+                        },
+                        {
+                            id: "StaticTokenChannel",
+                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("StaticTokenHandle"), "."],
                         },
                     ],
                 }),
@@ -196,7 +208,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindPsiIsSecondary",
                                     name: "is_secondary",
-                                    comment: ["Set to ", r("true"), " if the private set intersection item corresponds to a pair of a ", r("NamespaceId"), " and a ", r("Path"), ", sent because the sender claims access to data in a specific ", r("subspace"), "."],
+                                    comment: ["Set to ", code("true"), " if the private set intersection item corresponds to a pair of a ", r("NamespaceId"), " and a ", r("Path"), ", sent because the sender claims access to data in a specific ", r("subspace"), "."],
                                     rhs: r("Bool"),
                                 },
                             ],
@@ -335,11 +347,30 @@ export const sync: Expression = site_template(
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
                 ]),
 
+                hsection("bind_static_token", code("BindStaticToken"), [
+                    pseudocode(
+                        new Struct({
+                            id: "BindStaticToken",
+                            comment: [R("handle_bind"), " a ", r("StaticToken"), " to a ", r("StaticTokenHandle"), "."],
+                            fields: [
+                                {
+                                    id: "BindStaticTokenToken",
+                                    name: "static_token",
+                                    comment: ["The ", r("StaticToken"), " to bind."],
+                                    rhs: r("StaticToken"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("BindStaticToken"), " messages let peers ", r("handle_bind"), " ", rs("StaticToken"), ". Transmission of ", rs("AuthorisedEntry"), " in other messages refers to ", rs("StaticTokenHandle"), " rather than transmitting ", rs("StaticToken"), " verbatim."),
+                ]),
+
                 hsection("entry_push", code("EntryPush"), [
                     pseudocode(
                         new Struct({
                             id: "EntryPush",
-                            comment: ["Unsolicitedly transmit a ", r("LengthyEntry"), " to the other peer, and optionally prepare transmission of its ", r("Payload"), "."],
+                            comment: ["Transmit a ", r("LengthyEntry"), " to the other peer, and optionally prepare transmission of its ", r("Payload"), "."],
                             fields: [
                                 {
                                     id: "EntryPushEntry",
@@ -348,10 +379,16 @@ export const sync: Expression = site_template(
                                     rhs: r("Entry"),
                                 },
                                 {
-                                    id: "EntryPushAvailable",
-                                    name: "available_length",
-                                    comment: ["The number of consecutive bytes from the start of the ", r("Entry"), "’s ", r("Payload"), " that the sender has."],
-                                    rhs: r("U64"),
+                                    id: "EntryPushStatic",
+                                    name: "static_token_handle",
+                                    comment: ["A ", r("StaticTokenHandle"), " ", r("handle_bind", "bound"), " to the ", r("StaticToken"), " of the ", r("Entry"), " to transmit."],
+                                    rhs: r("Entry"),
+                                },
+                                {
+                                    id: "EntryPushDynamic",
+                                    name: "dynamic_token",
+                                    comment: ["The ", r("DynamicToken"), " of the ", r("Entry"), " to transmit."],
+                                    rhs: r("Entry"),
                                 },
                                 {
                                     id: "EntryPushOffset",
@@ -363,10 +400,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative([
-                        marginale(["The message", apo, "s ", r("EntryPushAvailable"), " is informative metadata that peers may use to inform their communication, or they may simply ignore it."]),
-                        "The ", r("EntryPush"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("3drbsr"), ". It further sets up later ", r("Payload"), " transmissions (via ", r("PayloadPush"), " messages).",
-                    ]),
+                    pinformative("The ", r("EntryPush"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("3drbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("PayloadPush"), " messages)."),
 
                     pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("PayloadPush"), " messages."]), ". When receiving an ", r("EntryPush"), " message whose ", r("EntryPushOffset"), " is strictly less than the ", r("EntryPushEntry"), apo, "s ", r("entry_payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("EntryPushEntry"), " and its ", r("currently_received_offset"), " to the received ", r("EntryPushOffset"), "."),
                 
@@ -559,8 +593,8 @@ export const sync: Expression = site_template(
                                 {
                                     id: "RangeEntriesEntries",
                                     name: "entries",
-                                    comment: ["The ", rs("LengthyEntry"), " in the ", r("RangeEntriesRange"), "."],
-                                    rhs: [code("["), r("LengthyEntry"), code("]")],
+                                    comment: ["The ", rs("LengthyEntry"), " in the ", r("RangeEntriesRange"), ", together with authorisation in form of a ", r("StaticTokenHandle"), " and a ", r("DynamicToken"), "."],
+                                    rhs: pseudo_array(pseudo_tuple(r("LengthyEntry"), r("U64"), r("DynamicToken"))),
                                 },
                                 {
                                     id: "RangeEntriesFlag",
