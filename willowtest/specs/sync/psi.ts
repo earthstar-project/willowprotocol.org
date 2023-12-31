@@ -41,7 +41,7 @@ export const psi: Expression = site_template(
 
       pinformative("The simplemost solution consists in the peers openly exchanging ", rs("read_capability"), " and then specifying their ", rs("AreaOfInterest"), ", which must be fully ", r("area_include_area", "included"), " in the ", rs("granted_area"), " of the ", rs("read_capability"), ". This works well for managing read access control and determining which ", rs("Entry"), " to synchronise, but it leaks some potentially sensitive information. Two examples:"),
 
-      pinformative("First, suppose that Alfie creates an ", r("Entry"), " at ", r("Path"), " ", path("gemma_stinks"), ", and gives a ", r("read_capability"), " for this ", r("Path"), " to Betty. Later, Betty connects to Gemma's machine for syncing, and asks for ", path("gemma_stinks"), " in Alfie’s ", r("subspace"), ". In sending her ", r("read_capability"), ", she hands a signed proof to Gemma that Alfie ", sidenote("thinks", ["Gemma does not, in fact, stink."]), " she stinks. Not good."),
+      pinformative("First, suppose that Alfie creates an ", r("Entry"), " at ", r("Path"), " ", path("gemma_stinks"), ", and gives a ", r("read_capability"), " for this ", r("Path"), " to Betty. Later, Betty connects to Gemma's machine for syncing, and asks for ", path("gemma_stinks"), " in Alfie’s ", r("subspace"), ". In sending her ", r("read_capability"), ", she hands a signed proof to Gemma that Alfie ", sidenote("thinks", ["Gemma does not, in fact, stink."], ["Also, Alfie is really very nice and would never say such a thing outside a thought experiment for demonstrating the dangers of leaking ", rs("Path"), "."]), " she stinks. Not good."),
 
       pinformative("Second, suppose a scenario where everyone ", link_name("e2e_paths", "uses encrypted paths"), ", with individual encryption keys per ", r("namespace"), ". Alfie synchronises with Betty, asking her for random-looking ", rs("Path"), " of the same structure in ten different ", rs("subspace"), ". Betty has the decryption keys for all but one of the ", rs("subspace"), ". All the paths she can decrypt happen to decrypt to ", path("gemma_stinks"), ". This gives Betty a strong idea about what the tenth person thinks of Gemma, despite the fact that Betty cannot decrypt the ", r("Path"), ". Not good."),
 
@@ -52,14 +52,7 @@ export const psi: Expression = site_template(
       pinformative("Such solutions cannot prevent peers from confirming guesses about data they shouldn't know about. Hence, it is important that ", rs("NamespaceId"), " and ", rs("SubspaceId"), " are sufficiently long and random-looking. Similarly, encrypting ", rs("Component"), " with different encryption keys for different ", rs("subspace"), " can ensure that ", rs("Path"), " are unguessable. Because valid ", rs("Timestamp"), marginale(["Finding efficient encryption schemes and privacy-preserving synchronisation techniques that work for ", rs("Timestamp"), " is an interesting research endeavour, but out of scope for us."]), " can easily be guessed, we do not try to hide information about them."),
 
       pinformative("We present our solution in three stages. First, we show how to privately test two items for equality, then we generalise to privately intersecting two sets, and then we reduce our problem of intersecting ", rs("namespace"), " and ", rs("AreaOfInterest"), " to that of intersecting sets."),
-
-      // - main challenge: disallow learning more specific information. example: any subspace, empty path
     ]),
-
-    // pinformative(
-    //   link("Private set intersection", "https://en.wikipedia.org/wiki/Private_set_intersection", ),
-    //   " (", def({ id: "psi", singular: "PSI" }), ") protocols allow two peers to establish which items they have in common without revealing any non-common items to the other party. The ", r("WGPS"), " employs a classic ", link("technique by Huberman, Franklin, and Hogg", "https://dl.acm.org/doi/pdf/10.1145/336992.337012"), ", which we explain in this document.",
-    // ),
 
     hsection("private_equality_testing", "Private Equality Testing", [
       pinformative(
@@ -237,7 +230,7 @@ export const psi: Expression = site_template(
 
       pinformative("This separation is crucial. Any peer can claim to have access to all ", rs("Path"), " in all ", rs("subspace"), " in some ", r("namespace"), ", such a claim requires no knowledge of any specific ", rs("SubspaceId"), " or ", rs("Path"), ". Hence, a peer that has access to only a specific ", r("subspace"), " must not reveal the ", r("SubspaceId"), " until the other peer has proven that it is actually allowed to learn about arbitrary ", rs("SubspaceId"), " in that ", r("namespace"), " by producing a valid ", r("read_capability"), " whose ", r("granted_area"), " has an ", r("AreaSubspace"), " of ", r("area_any"), "."),
 
-      pinformative("To claim access rights, peers enter certain items into a private set intersection computation. To claim access to the ", rs("Entry"), " of ", r("entry_namespace_id"), " ", def_value({id: "pai_ns1", singular: "n"}), ", a ", r("entry_path"), " starting with ", def_value({id: "pai_path1", singular: "p"}), ", and an arbitrary ", r("SubspaceId"), ", a peer submits pairs ", code("(", r("pai_ns1"), ", ", r("pai_prefix1"), ")"), " for each ", r("path_prefix"), " ", def_value({id: "pai_prefix1", singular: "prefix"}), " of ", r("pai_path1"), ". To claim access to the ", rs("Entry"), " of ", r("entry_namespace_id"), " ", def_value({id: "pai_ns2", singular: "n"}), ", ", r("entry_subspace_id"), " ", def_value({id: "pai_ss2", singular: "s"}), ", and a ", r("entry_path"), " starting with ", def_value({id: "pai_path2", singular: "p"}), ", a peer submits triplets ", code("(", r("pai_ns2"), ", ", r("pai_ss2"), ", ", r("pai_prefix2"), ")"), " for each ", r("path_prefix"), " ", def_value({id: "pai_prefix2", singular: "prefix"}), " of ", r("pai_path2"), ", as well as pairs ", code("(", r("pai_ns2"), ", ", r("pai_prefix2"), ")"), "."),
+      pinformative("To claim access rights, peers enter certain items into a private set intersection computation. To claim access to the ", rs("Entry"), " of ", r("entry_namespace_id"), " ", def_value({id: "pai_ns1", singular: "n"}), ", a ", r("entry_path"), " starting with ", def_value({id: "pai_path1", singular: "p"}), ", and an arbitrary ", r("SubspaceId"), ", a peer submits pairs ", code("(", r("pai_ns1"), ", ", r("pai_prefix1"), ")"), " for each ", r("path_prefix"), " ", def_value({id: "pai_prefix1", singular: "prefix"}), " of ", r("pai_path1"), ". To claim access to the ", rs("Entry"), " of ", r("entry_namespace_id"), " ", def_value({id: "pai_ns2", singular: "n"}), ", ", r("entry_subspace_id"), " ", def_value({id: "pai_ss2", singular: "s"}), ", and a ", r("entry_path"), " starting with ", def_value({id: "pai_path2", singular: "p"}), ", a peer submits triplets ", code("(", r("pai_ns2"), ", ", r("pai_ss2"), ", ", r("pai_prefix2"), ")"), " for each ", r("path_prefix"), " ", def_value({id: "pai_prefix2", singular: "prefix"}), " of ", r("pai_path2"), ", as well as pairs ", code("(", r("pai_ns2"), ", ", r("pai_prefix2"), ")"), ". Outside of the private set intersection process, the peer marks the ", em("pairs"), " as not belonging to an arbitrary-subspace claim."),
 
       pinformative("Assume Alfie submits the pairs for a combination of ", r("NamespaceId"), " and ", r("Path"), " (expressing interest in matching ", rs("Entry"), " of ", em("all"), " ", rs("SubspaceId"), "), and all these pairs lie in the intersection with the items submitted by Betty. Alfie can then conclude that Betty knows about the same ", r("NamespaceId"), " and ", r("Path"), ". Hence, Alfie can safely transmit a ", r("read_capability"), " for this combination, regardless of whether Betty cares about only a particular ", r("SubspaceId"), " or about all of them."),
 
@@ -251,7 +244,7 @@ export const psi: Expression = site_template(
 
       pinformative("To solve this standoff, we employ a second type of unforgeable token, that lets Betty prove that she has access to the full ", r("subspace"), " at ", em("some"), " ", r("Path"), ", without specifying the ", r("Path"), " explicitly. Alfie detects the situation and requests this token, Betty proves that she is indeed authorised to know about arbitrary ", rs("SubspaceId"), " in this ", r("namespace"), ", and Alfie can then send his ", r("read_capability"), ", to which Betty replies with her own, proper ", r("read_capability"), "."),
 
-      pinformative("We call these unforgeable tokens ", def({id: "subspace_capability", singular: "subspace capability", plural: "subspace capabilities"}, "subspace capabilities"), "; whenever a peer receives a ", r("read_capability"), " whose ", r("granted_area"), " has a ", r("AreaSubspace"), " of ", r("area_any"), " and a non-empty ", r("AreaPath"), ", it should also receive a corresponding ", r("subspace_capability"), ". Each ", r("subspace_capability"), " must have a single ", def({ id: "subspace_receiver", singular: "receiver" }), " (a ", r("dss_pk"), " of some ", r("signature_scheme"), "), a single ", def({ id: "subspace_granted_namespace", singular: "granted namespace" }), " (a ", r("NamespaceId"), "), and a single ", def({ id: "granted_subspace", singular: "granted subspace" }), " (a ", r("SubspaceId"), ")."),
+      pinformative("We call these unforgeable tokens ", def({id: "subspace_capability", singular: "subspace capability", plural: "subspace capabilities"}, "subspace capabilities"), "; whenever a peer receives a ", r("read_capability"), " whose ", r("granted_area"), " has a ", r("AreaSubspace"), " of ", r("area_any"), " and a non-empty ", r("AreaPath"), ", it should also receive a corresponding ", r("subspace_capability"), ". Each ", r("subspace_capability"), " must have a single ", def({ id: "subspace_receiver", singular: "receiver" }), " (a ", r("dss_pk"), " of some ", r("signature_scheme"), "), and a single ", def({ id: "subspace_granted_namespace", singular: "granted namespace" }), " (a ", r("NamespaceId"), ")."),
     ]),
 
     hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
@@ -259,7 +252,8 @@ export const psi: Expression = site_template(
 
       pseudocode(
         new Struct({
-            id: "SubspaceCapability",
+            id: "McSubspaceCapability",
+            name: "SubspaceCapability",
             plural: "SubspaceCapabilities",
             comment: ["A capability that certifies read access to arbitrary ", rs("SubspaceId"), " at some unspecified ", r("Path"), "."],
             fields: [
@@ -268,12 +262,6 @@ export const psi: Expression = site_template(
                     name: "namespace_key",
                     comment: ["The ", r("namespace"), " for which this grants access."],
                     rhs: r("NamespacePublicKey"),
-                },
-                {
-                    id: "subspace_cap_subspace",
-                    name: "subspace_key",
-                    comment: ["The ", r("subspace"), " for which this grants access."],
-                    rhs: r("UserPublicKey"),
                 },
                 {
                     id: "subspace_cap_user",
@@ -301,17 +289,15 @@ export const psi: Expression = site_template(
         }),
       ),
 
-      pinformative("The ", r("subspace_cap_receiver"), " of a ", r("SubspaceCapability"), " is the user to whom it grants access. Formally, the ", def({id: "subspace_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("subspace_cap_delegations"), ", or the ", r("subspace_cap_user"), " if the ", r("subspace_cap_delegations"), " are empty."),
+      pinformative("The ", r("subspace_cap_receiver"), " of a ", r("McSubspaceCapability"), " is the user to whom it grants access. Formally, the ", def({id: "subspace_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("subspace_cap_delegations"), ", or the ", r("subspace_cap_user"), " if the ", r("subspace_cap_delegations"), " are empty."),
 
-      pinformative("The ", r("subspace_cap_granted_namespace"), " of a ", r("SubspaceCapability"), " is the ", r("namespace"), " for which it grants access. Formally, the ", def({id: "subspace_cap_granted_namespace", singular: "granted namespace"}), " of a ", r("SubspaceCapability"), " is its ", r("subspace_cap_namespace"), "."),
+      pinformative("The ", r("subspace_cap_granted_namespace"), " of a ", r("McSubspaceCapability"), " is the ", r("namespace"), " for which it certifies access to all ", rs("subspace"), ". Formally, the ", def({id: "subspace_cap_granted_namespace", singular: "granted namespace"}), " of a ", r("McSubspaceCapability"), " is its ", r("subspace_cap_namespace"), "."),
 
-      pinformative("The ", r("subspace_cap_granted_subspace"), " of a ", r("SubspaceCapability"), " is the ", r("subspace"), " for which it grants access. Formally, the ", def({id: "subspace_cap_granted_subspace", singular: "granted subspace"}), " of a ", r("SubspaceCapability"), " is its ", r("subspace_cap_subspace"), "."),
+      pinformative(R("subspace_cap_valid", "Validity"), " governs how ", rs("McSubspaceCapability"), " can be delegated. We define ", def({id: "subspace_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("McSubspaceCapability"), " is ", def_fake("subspace_cap_valid", "valid"), " if its ", r("subspace_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), "."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("subspace_cap_delegations"), "."),
 
-      pinformative(R("subspace_cap_valid", "Validity"), " governs how ", rs("SubspaceCapability"), " can be delegated. We define ", def({id: "subspace_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("SubspaceCapability"), " is ", def_fake("subspace_cap_valid", "valid"), " if its ", r("subspace_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), "."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("subspace_cap_delegations"), "."),
+      pinformative("A ", r("McSubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
 
-      pinformative("A ", r("SubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
-
-      pinformative("For a ", rs("SubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), "be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("SubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
+      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), "be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
 
       pinformative("Then ", r("subspace_cap_defvalid"), " is ", r("subspace_cap_valid"), " if ", r("subspace_prev_cap"), " is ", r("subspace_cap_valid"), ", and ", r("subspace_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("subspace_prev_receiver"), " over the bytestring ", def_value({id: "subspace_handover", singular: "handover"}), ", which is defined as follows:"),
 

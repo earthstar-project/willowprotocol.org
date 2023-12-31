@@ -1,4 +1,4 @@
-import { R, def, def_fake, r, rs } from "../../defref.ts";
+import { R, Rs, def, def_fake, r, rs } from "../../defref.ts";
 import { aside, code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
@@ -17,10 +17,6 @@ export const sync: Expression = site_template(
         name: "sync",
     },
     [
-        aside_block(
-            pinformative("This document is still in flux, the design that we curretly present here does not yet take end-to-end encryption and private area intersection into account. The parts of the protocol that are not affected by these are fairly stable however."),
-        ),
-
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
@@ -30,7 +26,7 @@ export const sync: Expression = site_template(
                 "Incremental sync: peers can detect regions of shared data with relatively sparse communication to avoid redundant data transfer.",
                 "Partial sync: peers synchronise only those regions of data they both care about, at sub-namespace granularity.",
                 "Access control: conformant peers only hand out data if the request authorises its access.",
-                "Private set intersection: peers can discover which namespaces they have in common without disclosing any non-common namespaces to each other.",
+                "Private area intersection: peers can discover common interests without disclosing any non-shared information to each other.",
                 "Resource control: peers communicate (and enforce) their computational resource limits so as not to overload each other.",
                 "Transport independence: peers can communicate over arbitrary reliable, ordered, byte-oriented channels, whether tcp, quic, or unix pipe.",
                 "General efficiency: peers can make use of efficient implementation techniques, and the overall bandwidth consumption stays low.",
@@ -42,8 +38,8 @@ export const sync: Expression = site_template(
         hsection("sync_concepts", "Concepts", [
             pinformative("Data synchronisation for Willow needs to solve a number of sub-problems, which we summarise in this section."),
 
-            hsection("sync_psi", "Private Set Intersection", [
-                pinformative("The WGPS allows two peers to determine which ", rs("namespace"), " they share an interest in without leaking any information about the ", rs("namespace"), " which they do not both know about. We explain the underlying ", link_name("private_set_intersection", "private set intersection protocol here"), "."),
+            hsection("sync_pai", "Private Area Intersection", [
+                pinformative("The WGPS lets two peers determine which ", rs("namespace"), " and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronize. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
             ]),
 
             hsection("sync_access", "Access Control", [
@@ -74,13 +70,13 @@ export const sync: Expression = site_template(
         ]),
         
         hsection("sync_parameters", "Parameters", [
-            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS also introduces some additional parameters for ", link_name("psi", "private set intersection"), ", ", link_name("access_control", "access control"), ", and ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
+            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS further requires parameters for ", link_name("access_control", "access control"), ", ", link_name("private_area_intersection", "private area intersection"), ", and ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
 
-            pinformative(link_name("psi", "Private set intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ". Finally, we require a function ", def_parameter_fn("psi_id_to_group", "psi_id_to_group"), " that hashes arbitrary ", rs("NamespaceId"), " into ", r("PsiGroup"), "."),
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), "."),
 
-            pinformative(link_name("3d_range_based_set_reconciliation", "3 range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
+            pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes pairs of ", rs("NamespaceId"), " and ", rs("Path"), " or triplets of ", rs("NamespaceId"), ", ", rs("SubspaceId"), "", " and ", rs("Path"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
-            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type("ReadCapability"), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), ". We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", rs("ReadCapability"), " that does not encode their ", r("granted_namespace"), "."),
+            pinformative(link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -104,11 +100,10 @@ export const sync: Expression = site_template(
                     comment: ["The different ", rs("resource_handle"), " employed by the ", r("WGPS"), "."],
                     variants: [
                         {
-                            id: "NamespaceHandle",
-                            comment: [R("resource_handle"), " for ", rs("namespace"), " that the peers wish to sync. More precisely, a ", r("NamespaceHandle"), " stores a ", r("PsiGroup"), " member together with one of three possible states", marginale(["When registering ", rs("AreaOfInterest"), ", peers can only specify namespaces by giving ", rs("NamespaceHandle"), " of state ", r("psi_state_public"), " or ", r("psi_state_private_completed"), "."]), ": ", lis(
-                                [def_value({id: "psi_state_private_pending", singular: "private_pending"}, "private_pending", ["The ", def_fake_value("psi_state_private_pending", "private_pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", r("psi"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), "(waiting for the other peer to perform scalar multiplication)"],
-                                [def_value({id: "psi_state_private_completed", singular: "private_completed"}, "private_completed", ["The ", def_fake_value("psi_state_private_completed", "private_completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), "(both peers performed scalar multiplication)"],
-                                [def_value({id: "psi_state_public", singular: "public"}, "public", ["The ", def_fake_value("psi_state_public", "public"), " state indicates that the stored value is a raw ", r("PsiGroup"), " member and no scalar multiplication will be performed (leaking the peer", apo, "s interest in the ", r("namespace"), ")."]), "(do not perform ", r("psi"), ")"],
+                            id: "IntersectionHandle",
+                            comment: [R("resource_handle"), " for the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". More precisely, an ", r("IntersectionHandle"), " stores a ", r("PsiGroup"), " member together with one of two possible states", ": ", lis(
+                                [def_value({id: "psi_state_pending", singular: "pending"}, "pending", ["The ", def_fake_value("psi_state_pending", "pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", link_name("private_area_intersection", "private area intersection"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), " (waiting for the other peer to perform scalar multiplication),"],
+                                [def_value({id: "psi_state_completed", singular: "private_completed"}, "completed", ["The ", def_fake_value("psi_state_completed", "completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), " (both peers performed scalar multiplication)."],
                             )],
                         },
                         {
@@ -143,8 +138,8 @@ export const sync: Expression = site_template(
                             comment: [R("logical_channel"), " for transmitting ", rs("Entry"), " and ", rs("Payload"), " outside of ", r("3drbsr"), "."],
                         },
                         {
-                            id: "NamespaceChannel",
-                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("NamespaceHandle"), "."],
+                            id: "IntersectionChannel",
+                            comment: [R("logical_channel"), " for controlling the issuing of new ", rs("IntersectionHandle"), "."],
                         },
                         {
                             id: "CapabilityChannel",
@@ -186,46 +181,52 @@ export const sync: Expression = site_template(
                     pinformative("Upon receiving a ", r("RevealCommitment"), " message, a peer can determine its ", def_value({id: "value_challenge", singular: "challenge"}), ": for ", r("alfie"), ", ", r("value_challenge"), " is the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of his ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), ". For ", r("betty"), ", ", r("value_challenge"), " is the ", link("bitwise complement", "https://en.wikipedia.org/wiki/Bitwise_operation#NOT"), " of the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of her ", r("nonce"), " and the received ", r("RevealCommitmentNonce"), "."),
                 ]),
                 
-                hsection("bind_namespace_private", code("BindNamespacePrivate"), [
+                hsection("bind_psi", code("BindPsi"), [
                     pseudocode(
                         new Struct({
-                            id: "BindNamespacePrivate",
-                            comment: [R("handle_bind"), " a ", r("NamespaceId"), " to a ", r("NamespaceHandle"), " for performing ", r("psi"), "."],
+                            id: "BindPsi",
+                            comment: [R("handle_bind"), " data to an ", r("IntersectionHandle"), " for performing ", link_name("private_area_intersection", "private area intersection"), "."],
                             fields: [
                                 {
-                                    id: "BindNamespacePrivateGroupMember",
+                                    id: "BindPsiGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of first applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " to ", r("handle_bind"), " and then performing scalar multiplication with ", r("scalar"), "."],
+                                    comment: ["The result of first applying ", r("hash_into_group"), " to some data for ", link_name("private_area_intersection", "private area intersection"), " and then performing scalar multiplication with ", r("scalar"), "."],
                                     rhs: r("PsiGroup"),
+                                },
+                                {
+                                    id: "BindPsiIsSecondary",
+                                    name: "is_secondary",
+                                    comment: ["Set to ", r("true"), " if the private set intersection item corresponds to a pair of a ", r("NamespaceId"), " and a ", r("Path"), ", sent because the sender claims access to data in a specific ", r("subspace"), "."],
+                                    rhs: r("Bool"),
                                 },
                             ],
                         }),
                     ),
                 
                     pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindNamespacePrivate"), " message corresponds to mixing a data colour with one’s secret colour and sending the mixture to the other peer."]),
-                        "The ", r("BindNamespacePrivate"), " messages let peers submit a ", r("NamespaceId"), " for ", r("psi"), " by transmitting the result of first applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " and then applying ", r("psi_scalar_multiplication"), " to the result and ", r("scalar"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePrivateGroupMember"), " in the ", r("psi_state_private_pending"), " state.",
+                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindPsi"), " message corresponds to mixing a data colour with one’s secret colour, and sending the mixture to the other peer."]),
+                        "The ", r("BindPsi"), " messages let peers submit items to the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". The freshly created ", r("IntersectionHandle"), " ", r("handle_bind", "binds"), " the ", r("BindPsiGroupMember"), " in the ", r("psi_state_pending"), " state.",
                     ]),
                 
-                    pinformative(R("BindNamespacePrivate"), " messages use the ", r("NamespaceChannel"), "."),
+                    pinformative(R("BindPsi"), " messages use the ", r("IntersectionChannel"), "."),
                 ]),
 
                 hsection("psi_reply", code("PsiReply"), [
                     pseudocode(
                         new Struct({
                             id: "PsiReply",
-                            comment: ["Finalise ", r("psi"), " for a single ", r("NamespaceId"), "."],
+                            comment: ["Finalise private set intersection for a single item."],
                             fields: [
                                 {
                                     id: "PsiReplyHandle",
                                     name: "handle",
-                                    comment: ["The ", r("resource_handle"), " of the ", r("BindNamespacePrivate"), " message which this finalises."],
+                                    comment: ["The ", r("IntersectionHandle"), " of the ", r("BindPsi"), " message which this finalises."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "PsiReplyGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of performing scalar multiplication between the ", r("BindNamespacePrivateGroupMember"), " of the message that this is replying to and ", r("scalar"), "."],
+                                    comment: ["The result of performing scalar multiplication between the ", r("BindPsiGroupMember"), " of the message that this is replying to and ", r("scalar"), "."],
                                     rhs: r("PsiGroup"),
                                 },
                             ],
@@ -233,41 +234,74 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer and sending the resulting colour back."]),
-                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("NamespaceId"), " in the ", r("psi"), " process by performing scalar multiplication of a ", r("PsiGroup"), " member that the other peer sent and their own ", r("scalar"), ".",
+                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer, and sending the resulting colour back."]),
+                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single item submitted to private set intersection in the ", link_name("private_area_intersection", "private area intersection"), " process.",
                     ]),
 
-                    pinformative("The ", r("PsiReplyHandle"), " must refer to a ", r("NamespaceHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindNamespacePrivate"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("NamespaceHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to the ", r("PsiReplyGroupMember"), " of the message, and its state to ", r("psi_state_private_completed"), "."),
+                    pinformative("The ", r("PsiReplyHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindPsi"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PsiReplyGroupMember"), " of the message, in the state ", r("psi_state_completed"), "."),
                 ]),
 
-                hsection("bind_namespace_public", code("BindNamespacePublic"), [
+                hsection("request_subspace_capability", code("RequestSubspaceCapability"), [
                     pseudocode(
                         new Struct({
-                            id: "BindNamespacePublic",
-                            comment: [R("handle_bind"), " a ", r("NamespaceId"), " to a ", r("NamespaceHandle"), ", skipping the hassle of ", r("psi"), "."],
+                            id: "RequestSubspaceCapability",
+                            comment: ["Ask the receiver to send a ", r("SubspaceCapability"), "."],
                             fields: [
                                 {
-                                    id: "BindNamespacePublicGroupMember",
-                                    name: "group_member",
-                                    comment: ["The result of applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), " to ", r("handle_bind"), "."],
-                                    rhs: r("PsiGroup"),
+                                    id: "RequestSubspaceCapabilityHandle",
+                                    name: "handle",
+                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender to a pair of the ", r("NamespaceId"), " for which to request the ", r("SubspaceCapability"), " and the empty ", r("Path"), "."],
+                                    rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
     
-                    pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindNamespacePublic"), " message corresponds to sending a data colour in the clear, with a small note attached that says “I trust you, here’s a data colour of mine.”"]),
-                        "The ", r("BindNamespacePublic"), " messages let peers ", r("handle_bind"), " ", rs("NamespaceHandle"), " without keeping the interest in the ", r("namespace"), " secret, by directly transmitting the result of applying ", r("psi_id_to_group"), " to the ", r("NamespaceId"), ". The freshly created ", r("NamespaceHandle"), " ", r("handle_bind", "binds"), " the ", r("BindNamespacePublicGroupMember"), " in the ", r("psi_state_public"), " state.",
-                    ]),
+                    pinformative("The ", r("RequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("IntersectionHandle"), " of the pair of the ", r("NamespaceId"), " in question and the empty ", r("Path"), "."),
 
-                    pinformative(R("BindNamespacePublic"), " messages use the ", r("NamespaceChannel"), "."),
+                    pinformative("A peer may send at most one such message per ", r("IntersectionHandle"), "."),
+                ]),
+
+                hsection("supply_subspace_capability", code("SupplySubspaceCapability"), [
+                    pseudocode(
+                        new Struct({
+                            id: "SupplySubspaceCapability",
+                            plural: "SupplySubspaceCapabilities",
+                            comment: ["Send a previously requested ", r("SubspaceCapability"), "."],
+                            fields: [
+                                {
+                                    id: "SupplySubspaceCapabilityHandle",
+                                    name: "handle",
+                                    comment: ["The ", r("IntersectionHandle"), " of the request this answers."],
+                                    rhs: r("U64"),
+                                },
+                                {
+                                    id: "SupplySubspaceCapabilityCapability",
+                                    name: "capability",
+                                    comment: ["A ", r("SubspaceCapability"), " whose ", r("subspace_granted_namespace"), " corresponds to the request this answers."],
+                                    rhs: r("SubspaceCapability"),
+                                },
+                                {
+                                    id: "SupplySubspaceCapabilitySignature",
+                                    name: "signature",
+                                    comment: ["The ", r("sync_subspace_signature"), " issued by the ", r("subspace_receiver"), " of the ", r("SupplySubspaceCapabilityCapability"), " over the sender’s ", r("value_challenge"), "."],
+                                    rhs: r("sync_subspace_signature"),
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative(
+                        marginale(["Note that ", r("SupplySubspaceCapability"), " messages do not use any logical channel. Hence, peers must be able to process them in a constant amount of memory."]),
+                        "The ", r("SupplySubspaceCapability"), " messages let peers answer requests for ", rs("SubspaceCapability"), ". To do so, they must present a valid ", r("sync_subspace_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the ", r("subspace_receiver"), " of the ", r("SubspaceCapability"), ".",
+                    ),
                 ]),
 
                 hsection("bind_capability", code("BindCapability"), [
                     pseudocode(
                         new Struct({
                             id: "BindCapability",
+                            plural: "BindCapabilities",
                             comment: [R("handle_bind"), " a ", r("ReadCapability"), " to a ", r("CapabilityHandle"), "."],
                             fields: [
                                 {
@@ -279,24 +313,24 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("resource_handle"), " of the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender, of the item corresponding to the latest common ", r("Component"), " of both peers of an item whose ", r("NamespaceId"), " matches that of the ", r("BindCapabilityCapability"), " and whose ", r("SubspaceId"), " matches that of the ", r("BindCapabilityCapability"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "BindCapabilitySignature",
                                     name: "signature",
-                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " of the ", r("BindCapabilityCapability"), " over the sender", apo, "s ", r("value_challenge"), "."],
+                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " of the ", r("BindCapabilityCapability"), " over the sender’s ", r("value_challenge"), "."],
                                     rhs: r("sync_signature"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative(
-                        "The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the public key for which the ", r("ReadCapability"), " was issued.",
-                    ),
+                    pinformative("The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to ", r("access_receiver"), " of the ", r("ReadCapability"), "."),
 
-                    pinformative("The ", r("BindCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), ". We enforce this on the encoding layer: the encoding used for the ", r("BindCapabilityCapability"), " simply does not contain the ", r("granted_namespace"), ", instead the ", r("namespace"), " to which the ", r("BindCapabilityHandle"), " is ", r("handle_bind", "bound"), " is used as the ", r("granted_namespace"), "."),
+                    pinformative("TODO: properly explain the handle to reference, needs some restructuring and definition of terminology"),
+
+                    // pinformative("The ", r("BindCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), ". We enforce this on the encoding layer: the encoding used for the ", r("BindCapabilityCapability"), " simply does not contain the ", r("granted_namespace"), ", instead the ", r("namespace"), " to which the ", r("BindCapabilityHandle"), " is ", r("handle_bind", "bound"), " is used as the ", r("granted_namespace"), "."),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
                 ]),
@@ -795,6 +829,18 @@ export const sync: Expression = site_template(
             hsection("sync_encodings", "Encodings", [
                 aside_block("Defining the precise message encodings has to wait until the repercussions of e2e encryption and private area intersection have settled into specific message types for this protocol."),
 
+
+
+                // We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", r("ReadCapability"), ". The ", r("encoding_function"), " for ", r("ReadCapability"), " need not encode the ", r("granted_namespace"), ", it can be inferred from context.
+
+                // Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ".
+
+                // , and an ", r("encoding_function"), " for ", r("SubspaceCapability"), ". This ", r("encoding_function"), " need not encode the ", r("subspace_granted_namespace"), ", it can be inferred from context.", Rs("SubspaceCapability"), " must use the same signature scheme as the ", rs("ReadCapability"), "."
+
+
+
+
+
                 // marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
                 // pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
 
@@ -802,8 +848,8 @@ export const sync: Expression = site_template(
                 //     pinformative("When encoding a ", r("RevealCommitment"), " message, the five least significant bits of the first byte are ", code("00000"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("RevealCommitmentNonce"), "."),
                 // ]),
 
-                // hsection("encoding_bind_namespace_private", code("BindNamespacePrivate"), [
-                //     pinformative("When encoding a ", r("BindNamespacePrivate"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePrivateGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
+                // hsection("encoding_bind_psi", code("BindPsi"), [
+                //     pinformative("When encoding a ", r("BindPsi"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindPsiGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
                 // ]),
 
                 // hsection("encoding_psi_reply", code("PsiReply"), [
@@ -956,7 +1002,7 @@ export const sync: Expression = site_template(
 
                 // ols(
                 //     r("RevealCommitment"),
-                //     r("BindNamespacePrivate"),
+                //     r("BindPsi"),
                 //     r("PsiReply"),
                 //     r("BindNamespacePublic"),
                 //     r("BindCapability"),
