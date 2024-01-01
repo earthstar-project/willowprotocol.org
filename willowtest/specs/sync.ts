@@ -74,7 +74,7 @@ export const sync: Expression = site_template(
 
             pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), "."),
 
-            pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes pairs of ", rs("NamespaceId"), " and ", rs("Path"), " or triplets of ", rs("NamespaceId"), ", ", rs("SubspaceId"), "", " and ", rs("Path"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
+            pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
             pinformative(link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
 
@@ -202,13 +202,13 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindPsiGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of first applying ", r("hash_into_group"), " to some data for ", link_name("private_area_intersection", "private area intersection"), " and then performing scalar multiplication with ", r("scalar"), "."],
+                                    comment: ["The result of first applying ", r("hash_into_group"), " to some ", r("fragment"), " for ", link_name("private_area_intersection", "private area intersection"), " and then performing scalar multiplication with ", r("scalar"), "."],
                                     rhs: r("PsiGroup"),
                                 },
                                 {
                                     id: "BindPsiIsSecondary",
                                     name: "is_secondary",
-                                    comment: ["Set to ", code("true"), " if the private set intersection item corresponds to a pair of a ", r("NamespaceId"), " and a ", r("Path"), ", sent because the sender claims access to data in a specific ", r("subspace"), "."],
+                                    comment: ["Set to ", code("true"), " if the private set intersection item is a ", r("fragment_secondary"), " ", r("fragment"), "."],
                                     rhs: r("Bool"),
                                 },
                             ],
@@ -217,7 +217,7 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("BindPsi"), " message corresponds to mixing a data colour with one’s secret colour, and sending the mixture to the other peer."]),
-                        "The ", r("BindPsi"), " messages let peers submit items to the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". The freshly created ", r("IntersectionHandle"), " ", r("handle_bind", "binds"), " the ", r("BindPsiGroupMember"), " in the ", r("psi_state_pending"), " state.",
+                        "The ", r("BindPsi"), " messages let peers submit ", rs("fragment"), " to the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". The freshly created ", r("IntersectionHandle"), " ", r("handle_bind", "binds"), " the ", r("BindPsiGroupMember"), " in the ", r("psi_state_pending"), " state.",
                     ]),
                 
                     pinformative(R("BindPsi"), " messages use the ", r("IntersectionChannel"), "."),
@@ -247,10 +247,10 @@ export const sync: Expression = site_template(
                 
                     pinformative([
                         marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PsiReply"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer, and sending the resulting colour back."]),
-                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single item submitted to private set intersection in the ", link_name("private_area_intersection", "private area intersection"), " process.",
+                        "The ", r("PsiReply"), " messages let peers complete the information exchange regarding a single ", r("fragment"), " submitted to private set intersection in the ", link_name("private_area_intersection", "private area intersection"), " process.",
                     ]),
 
-                    pinformative("The ", r("PsiReplyHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindPsi"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PsiReplyGroupMember"), " of the message, in the state ", r("psi_state_completed"), "."),
+                    pinformative("The ", r("PsiReplyHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("BindPsi"), " message. A peer may send at most one ", r("PsiReply"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PsiReply"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PsiReplyGroupMember"), " of the ", r("PsiReply"), " message, in the state ", r("psi_state_completed"), "."),
                 ]),
 
                 hsection("request_subspace_capability", code("RequestSubspaceCapability"), [
@@ -262,16 +262,16 @@ export const sync: Expression = site_template(
                                 {
                                     id: "RequestSubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender to a pair of the ", r("NamespaceId"), " for which to request the ", r("SubspaceCapability"), " and the empty ", r("Path"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose ", r("SubspaceId"), " to request the ", r("SubspaceCapability"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
     
-                    pinformative("The ", r("RequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("IntersectionHandle"), " of the pair of the ", r("NamespaceId"), " in question and the empty ", r("Path"), "."),
+                    pinformative("The ", r("RequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the ", r("subspace"), " in question."),
 
-                    pinformative("A peer may send at most one such message per ", r("IntersectionHandle"), "."),
+                    pinformative("A peer may send at most one ", r("RequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
                 ]),
 
                 hsection("supply_subspace_capability", code("SupplySubspaceCapability"), [
@@ -284,7 +284,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "SupplySubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " of the request this answers."],
+                                    comment: ["The ", r("RequestSubspaceCapabilityHandle"), " of the ", r("RequestSubspaceCapability"), " message that this answers (hence, an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the ", em("receiver"), " of this message)."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -304,9 +304,11 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative(
-                        marginale(["Note that ", r("SupplySubspaceCapability"), " messages do not use any logical channel. Hence, peers must be able to process them in a constant amount of memory."]),
+                        marginale(["Note that ", r("SupplySubspaceCapability"), " messages do not use any logical channel. Hence, peers must be able to verify them in a constant amount of memory. Whether this is possible, depends on the capability system."]),
                         "The ", r("SupplySubspaceCapability"), " messages let peers answer requests for ", rs("SubspaceCapability"), ". To do so, they must present a valid ", r("sync_subspace_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the ", r("subspace_receiver"), " of the ", r("SubspaceCapability"), ".",
                     ),
+
+                    pinformative("A peer may send at most one ", r("SupplySubspaceCapability"), " message per ", r("RequestSubspaceCapability"), " it received."),
                 ]),
 
                 hsection("bind_capability", code("BindCapability"), [
@@ -325,7 +327,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender, of the item corresponding to the latest common ", r("Component"), " of both peers of an item whose ", r("NamespaceId"), " matches that of the ", r("BindCapabilityCapability"), " and whose ", r("SubspaceId"), " matches that of the ", r("BindCapabilityCapability"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, for the ", r("fragment_primary"), " ", r("fragment_least_specific"), " ", r("fragment"), " of the ", r("BindCapabilityCapability"), ", or its ", r("fragment_secondary"), " ", r("fragment_least_specific"), " ", r("fragment"), " if the ", r("fragment_primary"), " ", r("fragment_least_specific"), " ", r("fragment"), " is not in the intersection of the ", rs("fragment"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -340,9 +342,10 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("BindCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to ", r("access_receiver"), " of the ", r("ReadCapability"), "."),
 
-                    pinformative("TODO: properly explain the handle to reference, needs some restructuring and definition of terminology"),
-
-                    // pinformative("The ", r("BindCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("granted_namespace"), " of the ", r("BindCapabilityCapability"), ". We enforce this on the encoding layer: the encoding used for the ", r("BindCapabilityCapability"), " simply does not contain the ", r("granted_namespace"), ", instead the ", r("namespace"), " to which the ", r("BindCapabilityHandle"), " is ", r("handle_bind", "bound"), " is used as the ", r("granted_namespace"), "."),
+                    pinformative(
+                        marginale(["These requirements allow us to encode ", r("BindCapability"), " messages more efficiently."]),
+                        "The ", r("BindCapabilityHandle"), " must of a ", r("fragment_least_specific"), " ", r("fragment"), " in the intersection of the two peers’ ", rs("fragment"), ", and it must be of a ", r("fragment_primary"), " ", r("fragment"), " if possible.",
+                    ),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
                 ]),
@@ -364,6 +367,8 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative("The ", r("BindStaticToken"), " messages let peers ", r("handle_bind"), " ", rs("StaticToken"), ". Transmission of ", rs("AuthorisedEntry"), " in other messages refers to ", rs("StaticTokenHandle"), " rather than transmitting ", rs("StaticToken"), " verbatim."),
+
+                    pinformative(R("BindStaticToken"), " messages use the ", r("StaticTokenChannel"), "."),
                 ]),
 
                 hsection("entry_push", code("EntryPush"), [
