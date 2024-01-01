@@ -262,6 +262,10 @@ a.fn, .enclosing.fn a {
   color: var(--color-comment-fn);
 }
 
+.hl_kw {
+  color: var(--color-keyword);
+}
+
 /* Highlighting in tooltips */
 .defined_here {
   color: var(--nearly-black);

@@ -159,16 +159,16 @@ export const data_model: Expression = site_template(
                 rhs: r("Timestamp"),
               },
               {
-                id: "entry_payload_digest",
-                name: "payload_digest",
-                comment: ["The result of applying ", r("hash_payload"), " to the ", r("Payload"), "."],
-                rhs: r("PayloadDigest"),
-              },
-              {
                 id: "entry_payload_length",
                 name: "payload_length",
                 comment: ["The length of the ", r("Payload"), " in bytes."],
                 rhs: r("U64"),
+              },
+              {
+                id: "entry_payload_digest",
+                name: "payload_digest",
+                comment: ["The result of applying ", r("hash_payload"), " to the ", r("Payload"), "."],
+                rhs: r("PayloadDigest"),
               },
             ],
           }),

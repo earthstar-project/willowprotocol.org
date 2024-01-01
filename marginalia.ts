@@ -44,22 +44,34 @@ export function marginale(marginale: Expression): Expression {
 
 // In the margins on larger screens, disappears on small screens.
 // The first argument renders in the main text, the sidenote renders at the same height as the end of the first argument.
-export function sidenote(anchor: Expression, note: Expression): Expression {
+export function sidenote(anchor: Expression, ...notes: Expression[]): Expression {
   const macro = new_macro(
     (args, ctx) => {
-      const num = get_sidenote_count(ctx);
-      set_sidenote_count(ctx, num + 1);
+      const counters: Expression[] = [];
+      const the_notes: Expression[] = [];
+
+      for (let i = 0; i < notes.length; i++) {
+        const num = get_sidenote_count(ctx);
+        set_sidenote_count(ctx, num + 1);
+        
+        counters.push(`${num}`);
+        the_notes.push(span({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[i + 1]));
+
+        if (i + 1 < notes.length) {
+          counters.push(",");
+        }
+      }
+
 
       return [
         span({class: "nowrap"}, [
           args[0],
-          span({class: "aside_counter"}, `${num}`),
+          span({class: "aside_counter"}, counters),
         ]),
-        span({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[1]),
-        // div({class: "aside"}, span({class: "aside_counter"}, `${num}`), args[1]),
+        the_notes,
       ];
     }
   );
   
-  return new Invocation(macro, [anchor, note]);
+  return new Invocation(macro, [anchor, ...notes]);
 }
