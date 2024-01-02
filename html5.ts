@@ -71,6 +71,11 @@ export function html5(
               type: "image/svg+xml"
             }),
             link({
+              rel: "icon",
+              href: "/named_assets/favicon.png",
+              type: "image/png"
+            }),
+            link({
               rel: "apple-touch-icon",
               href: "/named_assets/apple-touch-icon.png"
             }),
