@@ -402,7 +402,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol for syncable local-first data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and itʼs frugal with bandwidth and memory.",
+            "A protocol for syncable local-first data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
           ),
           nav(
             lis(
