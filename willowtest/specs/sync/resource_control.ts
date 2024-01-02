@@ -694,12 +694,7 @@ export const resource_control: Expression = site_template(
           }),
         ),
       ]),
-
-      hsection("delta_handles", "Delta Handles", [
-        pinformative("When encoding ", rs("resource_handle"), " as part of a message, we can do better than simply encoding their numeric values. After a ", r("resource_handle"), " has been ", r("handle_free", "freed"), ", we know that its value will never be communicated again. Instead of transmitting actual numeric values, we can instead transmit the difference between the numeric value and the numeric value of the oldest ", r("resource_handle"), " that has not yet been ", r("handle_free", "freed"), ". This way, we transmit smaller numbers, which can be encoded more efficiently. More precisely:"),
-
-        pinformative("Let ", def_value({id: "delta_handle_h", singular: "h"}), " be a ", r("resource_handle"), " (greater than or equal to ", code("0"), " and strictly less than ", code("2^64 - 1"), ". The ", def({ id: "delta_handle", singular: "delta handle" }), " of ", r("delta_handle_h"), " is ", code(r("delta_handle_h"), " - ", r("delta_handle_l")), " where ", def_value({id: "delta_handle_l", singular: "l"}), " is the numerically least ", r("resource_handle"), " of the same ", r("handle_type"), "", r("handle_bind", "bound"), " by the same peer as ", r("delta_handle_h"), ", for which the peer who is determining the ", ("delta_handle"), " has not yet sent a ", r("HandleFree"), " message."),
-      ]),
+      
     ]),
   ],
 );
