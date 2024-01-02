@@ -375,7 +375,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "EntryPush",
-                            comment: ["Transmit a ", r("LengthyEntry"), " to the other peer, and optionally prepare transmission of its ", r("Payload"), "."],
+                            comment: ["Transmit an ", r("AuthorisedEntry"), " to the other peer, and optionally prepare transmission of its ", r("Payload"), "."],
                             fields: [
                                 {
                                     id: "EntryPushEntry",
@@ -416,7 +416,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "PayloadPush",
-                            comment: ["Unsolicitedly transmit some ", r("Payload"), " bytes."],
+                            comment: ["Transmit some ", r("Payload"), " bytes."],
                             fields: [
                                 {
                                     id: "PayloadPushAmount",
@@ -985,19 +985,23 @@ export const sync: Expression = site_template(
                 // pinformative("6 logical channels, 4 handle kinds"),
                 // pinformative("Group messages whose header byte contains no information beyond the message type together."),
 
+                // pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
+
+                // pinformative("3dRange X: RangeInArea, RangeRelativeRange"),
+
                 // ols(
                 //     [r("RevealCommitment"), " 0"],
                 //     [r("BindPsi"), " 1"],
                 //     [r("PsiReply"), " 2"],
                 //     [r("RequestSubspaceCapability"), " 2"],
-                //     [r("SupplySubspaceCapability"), " 2", " + SubspaceCapability"],
-                //     [r("BindCapability"), " 2", " + ReadCapability"],
+                //     [r("SupplySubspaceCapability"), " 2"],
+                //     [r("BindCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
                 //     [r("BindStaticToken"), " 0"],
-                //     [r("EntryPush"), " 2 + 2.5 + Entry"],
+                //     [r("EntryPush"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
                 //     [r("PayloadPush"), " 2"],
-                //     [r("BindPayloadRequest"), " 2.5 + Entry + ReadCapability"],
+                //     [r("BindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
                 //     [r("PayloadResponse"), " 2"],
-                //     [r("BindAreaOfInterest"), " 2 + 2.5 + AreaOfInterest"],
+                //     [r("BindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
                 //     [r("RangeFingerprint"), " 2 + 2 + 3dRange (+ special case empty fingerprint?)"],
                 //     [r("RangeEntries"), " 2 + 2 + 1 + 3dRange"],
                 //     [r("RangeConfirmation"), " 2 + 2 + 3dRange"],
