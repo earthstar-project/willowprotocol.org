@@ -6,7 +6,7 @@ import {
   new_macro,
 } from "./tsgen.ts";
 
-import { body_, head, html, meta } from "./h.ts";
+import { body_, head, html, meta, link } from "./h.ts";
 
 const statekey = Symbol();
 
@@ -64,6 +64,20 @@ export function html5(
             meta({
               name: "viewport",
               content: "width=device-width, initial-scale=1.0",
+            }),
+            link({
+              rel: "icon",
+              href: "/named_assets/favicon.svg",
+              type: "image/svg+xml"
+            }),
+            link({
+              rel: "icon",
+              href: "/named_assets/favicon.png",
+              type: "image/png"
+            }),
+            link({
+              rel: "apple-touch-icon",
+              href: "/named_assets/apple-touch-icon.png"
             }),
             notify(
               (_) => is_head_done = true,
