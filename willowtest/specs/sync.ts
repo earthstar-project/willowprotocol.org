@@ -807,60 +807,6 @@ export const sync: Expression = site_template(
                                 },
                             ],
                         }),
-    
-                        new Struct({
-                            id: "SyncHandleConfirm",
-                            name: "Confirm",
-                            comment: ["Confirm that you have successfully processed the ", r("SyncHandleConfirmNumber"), " oldest messages that ", r("handle_bind"), " a ", r("resource_handle"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), " you received."],
-                            fields: [
-                                {
-                                    id: "SyncHandleConfirmNumber",
-                                    name: "number",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "SyncHandleConfirmType",
-                                    name: "handle_type",
-                                    rhs: r("HandleKind"),
-                                },
-                            ],
-                        }),
-    
-                        new Struct({
-                            id: "SyncHandleStartedDropping",
-                            name: "HandleStartedDropping",
-                            comment: ["Notify the other peer that you have started dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("SyncHandleStartedDroppingAt"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), " and will continue to do so until you receive an ", r("SyncHandleApology"), " message."],
-                            fields: [
-                                {
-                                    id: "SyncHandleStartedDroppingAt",
-                                    name: "at",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "SyncHandleStartedDroppingType",
-                                    name: "handle_type",
-                                    rhs: r("HandleKind"),
-                                },
-                            ],
-                        }),
-    
-                        new Struct({
-                            id: "SyncHandleApology",
-                            name: "HandleApology",
-                            comment: ["Notify the other peer that it can stop dropping messages that refer to ", rs("resource_handle"), " greater than or equal to ", r("SyncHandleApologyAt"), " with ", r("handle_type"), " ", r("SyncHandleConfirmType"), "."],
-                            fields: [
-                                {
-                                    id: "SyncHandleApologyAt",
-                                    name: "at",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "SyncHandleApologyType",
-                                    name: "handle_type",
-                                    rhs: r("HandleKind"),
-                                },
-                            ],
-                        }),
                     ),
                 ]),
             ]),
@@ -1062,9 +1008,6 @@ export const sync: Expression = site_template(
                     [r("SyncStartedDropping"), " 3"],
                     [r("SyncApology"), " 3"],
                     [r("SyncHandleFree"), " 2 + 1 + 3"],
-                    [r("SyncHandleConfirm"), " 2 + 3"],
-                    [r("SyncHandleStartedDropping"), " 2 + 3"],
-                    [r("SyncHandleApology"), " 2 + 3 (requires reworking)"],
                 ),
             ]),
         ]),
