@@ -2,7 +2,7 @@ import { R, Rs, def, def_fake, r, rs } from "../../defref.ts";
 import { aside, code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
-import { marginale, sidenote } from "../../marginalia.ts";
+import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
@@ -20,8 +20,12 @@ export const sync: Expression = site_template(
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
+            marginale_inlineable(
+              img(asset("sync/syncing.png"))  
+            ),
+            
             pinformative("The WGPS aims to be appropriate for a variety of networking settings, particularly those of peer-to-peer systems where the replicating parties might not necessarily trust each other. Quite a bit of engineering went into the WGPS to satisfy the following requirements:"),
-
+            
             lis(
                 "Incremental sync: peers can detect regions of shared data with relatively sparse communication to avoid redundant data transfer.",
                 "Partial sync: peers synchronise only those regions of data they both care about, at sub-namespace granularity.",
