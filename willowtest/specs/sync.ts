@@ -262,7 +262,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "RequestSubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose ", r("SubspaceId"), " to request the ", r("SubspaceCapability"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose ", r("NamespaceId"), " to request the ", r("SubspaceCapability"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
