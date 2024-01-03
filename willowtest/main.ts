@@ -402,7 +402,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol for syncable local-first data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
+            "A protocol for peer-to-peer networks. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
           ),
           nav(
             lis(
@@ -414,7 +414,7 @@ evaluate([
             marginale_inlineable(
               img(asset("landing/local-first.png")),
             ),
-            "Data storage which never goes offline. You get local-first storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
+            "Data storage which never goes offline. You get always-available storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
           ),
           
           pinformative(
