@@ -402,7 +402,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol for peer-to-peer networks. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
+            "A protocol for peer-to-peer data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
           ),
           nav(
             lis(
