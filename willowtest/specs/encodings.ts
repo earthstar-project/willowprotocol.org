@@ -1,4 +1,5 @@
 import {
+bitfield_doc,
 def_fn,
   def_value,
   link,
@@ -31,6 +32,7 @@ import { hsection } from "../../hsection.ts";
 import { Struct, def_type, field_access, function_call, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { $comma, $dot, $ } from "../../katex.ts";
 import { surpress_output } from "../../tsgen.ts";
+import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
 
 const apo = "’";
 
@@ -402,6 +404,80 @@ export const encodings: Expression = site_template({
         lis(
           [
             "a byte whose bits are set as follows (bit 0 is the most significant bit, bit 7 the least significant):",
+            bitfield_doc(
+              [
+                "0",
+                [
+                  "Set to ", code("1"), " if ",
+                code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
+                " and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "This flag indicates whether the main encoding has to include the ", r("end_value"), " of ", field_access(r("area_in_area_inner"), "AreaTime"), ".",
+                ],
+              ],
+              [
+                "1",
+                [
+                  "Set to ", code("1"), " if ",
+                  code(field_access(r("area_in_area_inner"), "AreaSubspace"), " != ", field_access(r("area_in_area_outer"), "AreaSubspace")),
+                  " and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "This flag indicates whether the main encoding has to include ", field_access(r("area_in_area_inner"), "AreaSubspace"), ".",
+                ]
+              ],
+              [
+                "2",
+                [
+                  "Set to ", code("1"), " if ",
+                  code(r("aia_start"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"),
+                  " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")),
+                  " and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "This flag indicates whether the encoding of ", r("aia_start"), " must be added to ",
+                  field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart"),
+                  " or subtracted from ",
+                  field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+                  ".",
+                ]
+              ],
+              [
+                "3",
+                [
+                  "Set to ", code("1"), " if ",
+                  code(r("aia_end"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"),
+                  " - ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart")),
+                  " and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "This flag indicates whether the encoding of ", r("aia_end"), " must be added to ",
+                  field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"),
+                  " or subtracted from ",
+                  field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+                  ".",
+                ],
+              ],
+              [
+                "4, 5",
+                [
+                  "Bit 4 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise. Bit 5 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_start")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "Bits 4 and 5 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " for the ", r("TimeRange"), " ", r("start_value"), ".",
+                ],
+              ],
+              [
+                "6, 7",
+                [
+                  "Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise. Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), r("aia_end")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise.",
+                ],
+                [
+                  "Bit 6 and 7 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " for the ", r("TimeRange"), " ", r("end_value"), ".",
+                ],
+              ],
+            ),
             ul(
               li(
                 { style: "clear: right;" },
@@ -495,8 +571,8 @@ export const encodings: Expression = site_template({
         ),
       ),
 
-      pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_target", singular: "target" }), " relative to another ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "reference" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_target"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
-      function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_target"), r("entry_rel_entry_reference")), " as the concatenation of",
+      pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "primary" }), " relative to another ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "reference" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
+      function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference")), " as the concatenation of",
       lis(
         [
           "a byte whose bits are set as follows (bit 0 is the most significant bit, bit 7 the least significant):",
@@ -504,19 +580,19 @@ export const encodings: Expression = site_template({
             li(
               { style: "clear: right;" },
               marginale([
-                "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_target"), "entry_namespace_id"), ".",
+                "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), ".",
               ]),
               "Bit 0 is set to ", code("1"), " if ",
-              code(field_access(r("entry_rel_entry_target"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
+              code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
               " and to ", code("0"), " otherwise,",
             ),
             li(
               { style: "clear: right;" },
               marginale([
-                "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_target"), "entry_subspace_id"), ".",
+                "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), ".",
               ]),
               "Bit 1 is set to ", code("1"), " if ",
-              code(field_access(r("entry_rel_entry_target"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
+              code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
               " and to ", code("0"), " otherwise,",
             ),
             li(
@@ -525,7 +601,7 @@ export const encodings: Expression = site_template({
                 "This flag indicates whether ", r("erele_time_difference"), " must be added to or subtracted from ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), ".",
               ]),
               "Bit 2 is set to ", code("1"), " if ",
-              code(field_access(r("entry_rel_entry_target"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
+              code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
               " and to ", code("0"), " otherwise,",
             ),
             li(
@@ -545,33 +621,33 @@ export const encodings: Expression = site_template({
             li(
               { style: "clear: right;" },
               marginale([
-                "Bit 6 and 7 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " of ", field_access(r("entry_rel_entry_target"), "entry_payload_length"), ".",
+                "Bit 6 and 7 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " of ", field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ".",
               ]),
-              "Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_target"), "entry_payload_length")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,",
+              "Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise,",
             ),
             li(
-              "Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_target"), "entry_payload_length")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,",
+              "Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise,",
             ),
           ),
         ],
         [
           function_call(
             r("encode_namespace_id"),
-            field_access(r("entry_rel_entry_target"), "entry_namespace_id"),
+            field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
           ), ",  or the empty string, if ",
-          code(field_access(r("entry_rel_entry_target"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")), ",",
+          code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")), ",",
         ],
         [
           function_call(
             r("encode_subspace_id"),
-            field_access(r("entry_rel_entry_target"), "entry_subspace_id"),
+            field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
           ), ",  or the empty string, if ",
-          code(field_access(r("entry_rel_entry_target"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")), ",",
+          code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")), ",",
         ],
         [
           function_call(
             r("encode_path_relative"),
-            field_access(r("entry_rel_entry_target"), "entry_path"),
+            field_access(r("entry_rel_entry_primary"), "entry_path"),
             field_access(r("entry_rel_entry_reference"), "entry_path"),
           ), ",",
         ],
@@ -579,19 +655,156 @@ export const encodings: Expression = site_template({
           r("erele_time_difference"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("erele_time_difference")), "-byte integer,",
         ],
         [
-          field_access(r("entry_rel_entry_target"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("entry_rel_entry_target"), "entry_payload_length")), "-byte integer,",
+          field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), "-byte integer,",
         ],
         [
           function_call(
             r("encode_payload_digest"),
-            field_access(r("entry_rel_entry_target"), "entry_payload_digest"),
+            field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
           ),
           ".",
         ],
       )),
 
+      encodingdef(
+        new Bitfields(
+          new BitfieldRow(
+            1,
+            [
+              "Set to ", code("1"), " if ",
+              code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
+              " and to ", code("0"), " otherwise.",
+            ],
+            [
+              "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), ".",
+            ],
+          ),
+          new BitfieldRow(
+            1,
+            [
+              "Set to ", code("1"), " if ",
+              code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
+              " and to ", code("0"), " otherwise.",
+            ],
+            [
+              "This flag indicates whether the main encoding has to include ", field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), ".",
+            ],
+          ),
+          new BitfieldRow(
+            1,
+            [
+              "Set to ", code("1"), " if ",
+              code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
+              " and to ", code("0"), " otherwise.",
+            ],
+            [
+              "This flag indicates whether ", r("erele_time_difference"), " must be added to or subtracted from ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), ".",
+            ],
+          ),
+          new BitfieldRow(
+            1,
+            [
+              "Always set to ", code("0"), ".",
+            ],
+          ),
+          new BitfieldRow(
+            2,
+            [
+              "Bit 4 is set to ", code("1"), " if ", function_call(r("compact_width"), r("erele_time_difference")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise. Bit 5 is set to ", code("1"), " if ", function_call(r("compact_width"), r("erele_time_difference")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise."
+            ],
+            [
+              "Bits 4 and 5 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " of ", r("erele_time_difference"), ".",
+            ],
+          ),
+          new BitfieldRow(
+            2,
+            [
+              "Bit 6 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), " is ", code("4"), " or ", code("8"), ", and to ", code("0"), " otherwise. Bit 7 is set to ", code("1"), " if ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), " is ", code("2"), " or ", code("8"), ", and to ", code("0"), " otherwise.",
+            ],
+            [
+              "Bit 6 and 7 form a 2-bit integer ", code("n"), " such that ", code("2^n"), " is the ", r("compact_width"), " of ", field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ".",
+            ],
+          ),
+        ),
+        [
+          [
+            function_call(
+              r("encode_namespace_id"),
+              field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
+            ), ",  or the empty string, if ",
+            code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")), ",",
+          ],
+        ],
+        [
+          [
+            function_call(
+              r("encode_subspace_id"),
+              field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
+            ), ",  or the empty string, if ",
+            code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")), ",",
+          ],
+        ],
+        [
+          [
+            function_call(
+              r("encode_path_relative"),
+              field_access(r("entry_rel_entry_primary"), "entry_path"),
+              field_access(r("entry_rel_entry_reference"), "entry_path"),
+            ), ",",
+          ],
+        ],
+        [
+          [
+            r("erele_time_difference"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("erele_time_difference")), "-byte integer,",
+          ],
+        ],
+        [
+          [
+            field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), "-byte integer,",
+          ],
+        ],
+        [
+          [
+            function_call(
+              r("encode_payload_digest"),
+              field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
+            ),
+            ".",
+          ],
+        ],
+      ),
 
+      pinformative("Above is a real encoding. Have a fake one for styling purposes below:"),
 
+      encodingdef(
+        new Bitfields(
+          new BitfieldRow(
+            1,
+            "Some definition, lorem ipsum dolor sit est I wonder how many people have actually memorized the full, original lorem ipsum text. Probably quite a few. Those poor souls...",
+            "Short remark."
+          ),
+          new BitfieldRow(
+            2,
+            "Short definition",
+            "A longer remark that probably needs breaking into several lines. It also perpares you for the harsh truth that the next row will not have any remark. Bla, bla, bla.",
+          ),
+          new BitfieldRow(
+            5,
+            "A definition with no accompanying remark. Rather rare for bitfields."
+          ),
+        ),
+        [
+          "A bunch more bytes go here. These kinds of instructions can again have a remark, how great. Bgwg herher ffef  er hrth  qwqwqwfqwfqw.",
+          "Short remark."
+        ],
+        [
+          "Short def",
+          "But a looooooooong, long, loooong, long, loooooong, long, looong, remark, again. So many words, much linewrap!"
+        ],
+        [
+          "A definition without a remark. This is probably the most common case."
+        ],
+      ),
 
   pseudocode(
     
