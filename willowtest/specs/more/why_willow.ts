@@ -26,7 +26,7 @@ export const why_willow: Expression = site_template(
 					]), "."
 				),
 				pinformative(
-					"The dominant form of data network is also the most frail. These networks are housed in enormous data centres which require ", sidenote("exponentially", [
+					"The dominant form of data network is also the most frail. These networks are housed in enormous data centres which require ", sidenote("exponentially", ["Yes, exponential. ", 
 						link("Energy Consumption of Datacenters", "https://media.ccc.de/v/37c3-11796-energy_consumption_of_datacenters"), " Thomas Fricke, 27th December 2023."
 					]), " increasing amounts of electricity and (often potable) water to operate. These facilities are brittle in the face of resource shortages, climate disaster, and are easily seized in times of political upheaval. They consume resources without moderation while an increasingly uncertain future comes into being around us."
 				),
@@ -40,8 +40,8 @@ export const why_willow: Expression = site_template(
 					"Unfortunately, this arrangement is far more complicated than querying a single source of truth. In a bid to wrangle this complexity, many peer-to-peer protocol designers traded away basic features like editing and deletion, demurred on privacy, and employed data structures which are only capable of growing larger and larger. There is also an apparent preoccupation with global-scale networks to the exclusion of smaller, private ones."
 				),
 				pinformative(
-					"This is the problem space we wanted to reckon with."
-		), pinformative("We want Willow to be a credible solution to digital networking in an uncertain era. We wanted a protocol which could make running a network together a sustainable practice. We wanted a protocol resilient to inevitable change, and respectful of the resources we have."
+					"This is the problem space we want to reckon with."
+		), pinformative("We want Willow to be a credible solution to digital networking in an uncertain era. We want a protocol which can make running a network together a sustainable practice. We want a protocol resilient to inevitable change, and respectful of the resources we have."
 				),
 		],
 );
