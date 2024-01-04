@@ -1,8 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: [main, dotty]
-
+    branches: [main]
+  pull_request:
+    types: [opened, reopened, synchronized]
 jobs:
   deploy:
     name: Deploy

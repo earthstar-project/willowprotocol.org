@@ -1,6 +1,6 @@
 import { Expression } from "macro";
 import { link, pinformative, site_template } from "../../main.ts";
-import { em, p } from "../../../h.ts";
+import { em } from "../../../h.ts";
 import { sidenote } from "../../../marginalia.ts";
 
 export const why_willow: Expression = site_template(
