@@ -43,6 +43,7 @@ import { encodings } from "./specs/encodings.ts";
 import { grouping_entries } from "./specs/grouping_entries.ts";
 import { e2e } from "./specs/e2e.ts";
 import { more } from "./specs/more/more.ts";
+import { why_willow } from "./specs/more/why_willow.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -406,6 +407,7 @@ evaluate([
           ),
           nav(
             lis(
+              link_name("why_willow", "Why did we make Willow?"),
               link_name("specifications", "The specifications"),
             ),
           ),
@@ -520,6 +522,7 @@ evaluate([
     out_directory("more", [
       out_file("index.html", more),
       out_index_directory("timestamps-really", timestamps_really),
+      out_index_directory("why", why_willow)
     ]),
     copy_statics("assets"),
   ),

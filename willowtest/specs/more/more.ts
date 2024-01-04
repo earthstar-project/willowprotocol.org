@@ -14,6 +14,9 @@ export const more: Expression = site_template(
     ),
     nav(
       lis(
+        link_name("why_willow", "Why did we make Willow?"),
+      ),
+      lis(
         link_name("timestamps_really", "Timestamps, really?"),
       ),
     ),
