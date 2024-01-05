@@ -70,7 +70,7 @@ h1 img {
   width: 32rem;
 }
 
-table {
+main table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 0.5em;
@@ -96,25 +96,4 @@ td, th {
 
 figure {
   margin: 1.5em 0;
-}
-
-/* encodingdef styling */
-
-.encodingdef {
-
-}
-
-.encodingdef td, .encodingdef th {
-  text-align: left;
-  vertical-align: top;
-  border: 2px solid;
-}
-
-.bitCount {
-  width: auto;
-  white-space: nowrap;
-}
-
-.bitDef {
-  width: 100%;
 }

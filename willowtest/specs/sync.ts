@@ -331,7 +331,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "BindCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, of the ", r("BindCapabilityCapability"), "’s ", r("fragment"), " with the longest ", r("Path"), " in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
+                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, for the ", r("fragment_primary"), " ", r("fragment_least_specific"), " ", r("fragment"), " of the ", r("BindCapabilityCapability"), ", or its ", r("fragment_secondary"), " ", r("fragment_least_specific"), " ", r("fragment"), " if the ", r("fragment_primary"), " ", r("fragment_least_specific"), " ", r("fragment"), " is not in the intersection of the ", rs("fragment"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -348,7 +348,7 @@ export const sync: Expression = site_template(
 
                     pinformative(
                         marginale(["These requirements allow us to encode ", r("BindCapability"), " messages more efficiently."]),
-                        "The ", r("BindCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("BindCapabilityCapability"), " with the longest ", r("Path"), " ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
+                        "The ", r("BindCapabilityHandle"), " must of a ", r("fragment_least_specific"), " ", r("fragment"), " in the intersection of the two peers’ ", rs("fragment"), ", and it must be of a ", r("fragment_primary"), " ", r("fragment"), " if possible.",
                     ),
                 
                     pinformative(R("BindCapability"), " messages use the ", r("CapabilityChannel"), "."),
@@ -816,6 +816,8 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
+                aside_block("Defining the precise message encodings has to wait until the repercussions of e2e encryption and private area intersection have settled into specific message types for this protocol."),
+
 
 
                 // We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", r("ReadCapability"), ". The ", r("encoding_function"), " for ", r("ReadCapability"), " need not encode the ", r("granted_namespace"), ", it can be inferred from context.
@@ -983,34 +985,38 @@ export const sync: Expression = site_template(
                 //     pinformative("TODO define an encoding"),
                 // ]),
 
-                pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
+                // pinformative("Possibly BindAreaOfInterestPrivate and PaoiiReply"),
+                // pinformative("6 logical channels, 4 handle kinds"),
+                // pinformative("Group messages whose header byte contains no information beyond the message type together."),
 
-                pinformative("3dRange 1: RangeInArea, or RangeRelativeRange"),
+                // pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
 
-                ols(
-                    [r("RevealCommitment"), " 0"],
-                    [r("BindPsi"), " 1"],
-                    [r("PsiReply"), " 2"],
-                    [r("RequestSubspaceCapability"), " 2"],
-                    [r("SupplySubspaceCapability"), " 2"],
-                    [r("BindCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
-                    [r("BindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
-                    [r("EntryPush"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
-                    [r("PayloadPush"), " 2"],
-                    [r("BindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
-                    [r("PayloadResponse"), " 2"],
-                    [r("BindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
-                    [r("RangeFingerprint"), " 2 + 2 + 1 + 1 (3dRange), (special case empty fingerprint)"],
-                    [r("RangeEntries"), " 2 + 2 + 1 + 1 + 2 (3dRange), (array length width)"],
-                    [r("RangeConfirmation"), " 2 + 2 + 1 (3dRange)"],
-                    [r("Eagerness"), " 1 + 2 + 2"],
-                    [r("SyncGuarantee"), " 2 + 3"],
-                    [r("SyncAbsolve"), " 2 + 3"],
-                    [r("SyncOops"), " 2 + 3"],
-                    [r("SyncStartedDropping"), " 3"],
-                    [r("SyncApology"), " 3"],
-                    [r("SyncHandleFree"), " 2 + 1 + 3"],
-                ),
+                // pinformative("3dRange X: RangeInArea, RangeRelativeRange"),
+
+                // ols(
+                //     [r("RevealCommitment"), " 0"],
+                //     [r("BindPsi"), " 1"],
+                //     [r("PsiReply"), " 2"],
+                //     [r("RequestSubspaceCapability"), " 2"],
+                //     [r("SupplySubspaceCapability"), " 2"],
+                //     [r("BindCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
+                //     [r("BindStaticToken"), " 0"],
+                //     [r("EntryPush"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
+                //     [r("PayloadPush"), " 2"],
+                //     [r("BindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
+                //     [r("PayloadResponse"), " 2"],
+                //     [r("BindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
+                //     [r("RangeFingerprint"), " 2 + 2 + 3dRange (+ special case empty fingerprint?)"],
+                //     [r("RangeEntries"), " 2 + 2 + 1 + 3dRange"],
+                //     [r("RangeConfirmation"), " 2 + 2 + 3dRange"],
+                //     [r("Eagerness"), " 1 + 2 + 2"],
+                //     [r("SyncGuarantee"), " 2 + 3"],
+                //     [r("SyncAbsolve"), " 2 + 3"],
+                //     [r("SyncOops"), " 2 + 3"],
+                //     [r("SyncStartedDropping"), " 3"],
+                //     [r("SyncApology"), " 3"],
+                //     [r("SyncHandleFree"), " 2 + 1 + 3"],
+                // ),
             ]),
         ]),
 
