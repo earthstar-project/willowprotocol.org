@@ -22,6 +22,9 @@ export const more: Expression = site_template(
       lis(
         link_name("3dstorage", "Three-Dimensional Data Storage"),
       ),
+      lis(
+        link_name("changes", "Changes we had to make")
+      )
     ),
   ],
 );
