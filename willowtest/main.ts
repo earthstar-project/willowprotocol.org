@@ -52,6 +52,8 @@ import { more } from "./specs/more/more.ts";
 import { why_willow } from "./specs/more/why_willow.ts";
 import { threedstorage } from "./specs/more/3dstorage.ts";
 import { changes } from "./specs/more/changes.ts";
+import { build_rss_feeds } from "../rss.ts";
+import { set_root_url } from "../root_url.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -409,11 +411,6 @@ export function bitfield_doc(
       }
       return div(
         {class: "bitfields wide"},
-        // [
-        //   div("Bits"),
-        //   div("Definitions"),
-        //   div("Remarks"),
-        // ],
         the_rows,
       );
     },
@@ -424,6 +421,7 @@ export function bitfield_doc(
 const layout_opts = new LayoutOptions();
 
 evaluate([
+  set_root_url("https://willowprotocol.org/"),
   set_root_directory(["build"]),
   out_directory(
     "build",
@@ -564,4 +562,26 @@ evaluate([
     ]),
     copy_statics("assets"),
   ),
+
+  build_rss_feeds([{
+    path: ["rss_changelog.xml"],
+    feed_info: {
+      title: "Willow Protocol Changelog",
+      link: "https://willowprotocol.org/more/changes/index.html",
+      description: "TODO",
+      language: "en-gb",
+      copyright: "TODO",
+      managingEditor: "TODO", // do we want to place an email here? Or require people to go to the website?
+      webMaster: "TODO", // do we want to place an email here? Or require people to go to the website?
+      ttl: 42, // TODO
+      image: {
+        url: "TODO",
+        title: "TODO",
+        link: "TODO",
+        width: 42, // TODO
+        height: 42, // TODO
+        description: "TODO",
+      },
+    },
+  }]),
 ]);
