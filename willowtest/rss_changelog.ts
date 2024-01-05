@@ -10,7 +10,7 @@ import {
 
 export interface ChangelogEntryMetadata {
     title: string;
-    pubDate: string; // use `dd MON yy`, e.g. `31 JUL 24`; more prexisely, adhere to https://datatracker.ietf.org/doc/html/rfc822#section-5
+    pubDate: Date;
 }
 
 function build_url(id: string, ctx: Context): string {
@@ -27,7 +27,7 @@ export function changelog_entry(meta: ChangelogEntryMetadata, description: Expre
         rss_add_item("Willow Protocol Changelog", {
             title: meta.title,
             link: build_url(id, ctx),
-            description: expanded,
+            description: `<![CDATA[${expanded}]]>`,
             pubDate: meta.pubDate,
             guid: {
                 guid: build_url(id, ctx),
@@ -46,6 +46,6 @@ export function changelog_entry(meta: ChangelogEntryMetadata, description: Expre
     return new Invocation(macro, [description]);
 }
 
-function date_to_id(date: string): string {
-    return `${date.replace(/ /g, '')}`;
+function date_to_id(date: Date): string {
+    return `${date.toUTCString().replace(/ /g, '')}`;
 }

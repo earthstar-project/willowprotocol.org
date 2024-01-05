@@ -569,15 +569,16 @@ evaluate([
       title: "Willow Protocol Changelog",
       link: "https://willowprotocol.org/more/changes/index.html",
       description: "TODO",
+      atomSelf: "https://willowprotocol.org/rss_changelog.xml",
       language: "en-gb",
       copyright: "TODO",
-      managingEditor: "TODO", // do we want to place an email here? Or require people to go to the website?
-      webMaster: "TODO", // do we want to place an email here? Or require people to go to the website?
+      managingEditor: "TODO@example.org (Firstname Lastname)", // do we want to place an email here? Or require people to go to the website?
+      webMaster: "TODO@example.org (Firstname Lastname)", // do we want to place an email here? Or require people to go to the website?
       ttl: 42, // TODO
       image: {
-        url: "TODO",
-        title: "TODO",
-        link: "TODO",
+        url: "https://example.org/image.png",
+        title: "Willow Protocol Changelog",
+        link: "https://willowprotocol.org/more/changes/index.html",
         width: 42, // TODO
         height: 42, // TODO
         description: "TODO",

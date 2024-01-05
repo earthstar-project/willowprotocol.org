@@ -14,12 +14,12 @@ export const changes: Expression = site_template({
 	
 	ul(
 		changelog_entry(
-			{ title: "Test", pubDate: "18 JAN 24"},
+			{ title: "Test", pubDate: new Date(2024, 1, 18, 0)},
 			["This is a test update, to be deleted before publishing any of this. ", em("The description of changelog entries can use macros"), ", title and pubDate cannot."],
 		),
 
 		changelog_entry(
-			{ title: "Launch", pubDate: "17 JAN 24"},
+			{ title: "Launch", pubDate: new Date(2024, 1, 17, 0)},
 			["The first publication of Willow!"],
 		),
 	),

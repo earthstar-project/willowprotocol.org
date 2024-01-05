@@ -117,12 +117,12 @@ export interface RssFeed {
 
     /* Created automatically by the macros, set to the pubDate of the topmost item. */
     // The publication date for the content in the channel. For example, the New York Times publishes on a daily basis, the publication date flips once every 24 hours. That's when the pubDate of the channel changes. All date-times in RSS conform to the Date and Time Specification of [RFC 822](https://datatracker.ietf.org/doc/html/rfc822#section-5), with the exception that the year may be expressed with two characters or four characters (four preferred).
-    // pubDate?: string;
+    // pubDate?: Date;
     /* Created automatically by the macros, set to the pubDate of the topmost item. */
 
     /* Created automatically by the macros, set to the pubDate of the topmost item. */
     // The last time the content of the channel changed.
-    // lastBuildDate?: string;
+    // lastBuildDate?: Date;
     /* Created automatically by the macros, set to the pubDate of the topmost item. */
 
     // Specify one or more categories that the channel belongs to. Follows the same rules as the <item>-level [category](https://www.rssboard.org/rss-specification#ltcategorygtSubelementOfLtitemgt) element. More [info](https://www.rssboard.org/rss-specification#syndic8).
@@ -154,6 +154,9 @@ export interface RssFeed {
 
     // A hint for aggregators telling them which days they can skip. This element contains up to seven <day> sub-elements whose value is Monday, Tuesday, Wednesday, Thursday, Friday, Saturday or Sunday. Aggregators may not read the channel during days listed in the <skipDays> element.
     skipDays?: Day[];
+
+    // According to the RSS Advisory Board's Best Practices Profile, identifying a feed's URL within the feed makes it more portable, self-contained, and easier to cache. For these reasons, a feed should contain an atom:link used for this purpose.
+    atomSelf?: string;
 }
 
 interface RssCategory {
@@ -226,7 +229,7 @@ interface RssItem {
 
     // Indicates when the item was published.
     // Its value is a [date]((https://datatracker.ietf.org/doc/html/rfc822#section-5)), indicating when the item was published. If it's a date in the future, aggregators may choose to not display the item until that date.
-    pubDate?: string;
+    pubDate?: Date;
 
     // The RSS channel that the item came from. 
     source?: RssSource;
@@ -265,12 +268,12 @@ interface RssSource {
 // Yes, this code is extremely simplistic and could be made more compact. 
 function feed_to_xml(feed: RssFeed, items: RssItem[]): string {
     return `<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
 <title>${feed.title}</title>
 <link>${feed.link}</link>
-<description>${feed.description}</description>${feed.language ? `\n<language>${feed.language}</language>` : ""}${feed.copyright ? `\n<copyright>${feed.copyright}</copyright>` : ""}${feed.managingEditor ? `\n<managingEditor>${feed.managingEditor}</managingEditor>` : ""}${feed.webMaster ? `\n<webMaster>${feed.webMaster}</webMaster>` : ""}${items.length > 0 && items[0].pubDate ? `\n<pubDate>${items[0].pubDate}</pubDate>` : ""}${items.length > 0 && items[0].pubDate ? `\n<lastBuildDate>${items[0].pubDate}</lastBuildDate>` : ""}${feed.category ? `\n<category>${feed.category.map(category_to_xml).join("\n")}</category>` : ""}${feed.generator ? `\n<generator>${feed.generator}</generator>` : ""}${feed.docs ? `\n<docs>${feed.docs}</docs>` : ""}${feed.cloud ? `\n<cloud>${feed.cloud}</cloud>` : ""}${feed.ttl != undefined ? `\n<ttl>${feed.ttl}</ttl>` : ""}${feed.image ? `\n<image>${image_to_xml(feed.image)}</image>` : ""}${feed.rating ? `\n<rating>${feed.rating}</rating>` : ""}${feed.textInput ? `\n<textInput>${feed.textInput}</textInput>` : ""}${feed.skipHours ? `\n<skipHours>${feed.skipHours.map(hour => `<hour>${hour}</hour>`)}</skipHours>` : ""}${feed.skipDays ? `\n<skipDays>${feed.skipDays.map(day_to_xml)}</skipDay>` : ""}
-${items.map(item => `${item_to_xml(item)}\n`)}</channel>
+<description>${feed.description}</description>${feed.atomSelf ? `\n<atom:link href="${feed.atomSelf}" rel="self" type="application/rss+xml" />` : ""}${feed.language ? `\n<language>${feed.language}</language>` : ""}${feed.copyright ? `\n<copyright>${feed.copyright}</copyright>` : ""}${feed.managingEditor ? `\n<managingEditor>${feed.managingEditor}</managingEditor>` : ""}${feed.webMaster ? `\n<webMaster>${feed.webMaster}</webMaster>` : ""}${items.length > 0 && items[0].pubDate ? `\n<pubDate>${format_date_rfc822(items[0].pubDate)}</pubDate>` : ""}${items.length > 0 && items[0].pubDate ? `\n<lastBuildDate>${format_date_rfc822(items[0].pubDate)}</lastBuildDate>` : ""}${feed.category ? `\n${feed.category.map(category_to_xml).join("\n")}` : ""}${feed.generator ? `\n<generator>${feed.generator}</generator>` : ""}${feed.docs ? `\n<docs>${feed.docs}</docs>` : ""}${feed.cloud ? `\n<cloud>${feed.cloud}</cloud>` : ""}${feed.ttl != undefined ? `\n<ttl>${feed.ttl}</ttl>` : ""}${feed.image ? `\n${image_to_xml(feed.image)}` : ""}${feed.rating ? `\n<rating>${feed.rating}</rating>` : ""}${feed.textInput ? `\n<textInput>${feed.textInput}</textInput>` : ""}${feed.skipHours ? `\n<skipHours>${feed.skipHours.map(hour => `<hour>${hour}</hour>`).join("\n")}</skipHours>` : ""}${feed.skipDays ? `\n<skipDays>${feed.skipDays.map(day_to_xml).join("\n")}</skipDay>` : ""}
+${items.map(item => `${item_to_xml(item)}\n`).join("\n")}</channel>
 </rss>`;
 }
 
@@ -306,7 +309,7 @@ function day_to_xml(day: Day): string {
 }
 
 function item_to_xml(item: RssItem): string {
-    return `<item>${item.title ? `\n<title>${item.title}</title>` : ""}${item.link ? `\n<link>${item.link}</link>` : ""}${item.description ? `\n<description>${item.description}</description>` : ""}${item.author ? `\n<author>${item.author}</author>` : ""}${item.categories ? `\n<categories>${item.categories.map(category_to_xml).join("\n")}</categories>` : ""}${item.comments ? `\n<comments>${item.comments}</comments>` : ""}${item.enclosure ? `\n<enclosure>${enclosure_to_xml(item.enclosure)}</enclosure>` : ""}${item.guid ? `\n<guid>${guid_to_xml(item.guid)}</guid>` : ""}${item.pubDate ? `\n<pubDate>${item.pubDate}</pubDate>` : ""}${item.source ? `\n<source>${source_to_xml(item.source)}</source>` : ""}
+    return `<item>${item.title ? `\n<title>${item.title}</title>` : ""}${item.link ? `\n<link>${item.link}</link>` : ""}${item.description ? `\n<description>${item.description}</description>` : ""}${item.author ? `\n<author>${item.author}</author>` : ""}${item.categories ? `\n<categories>${item.categories.map(category_to_xml).join("\n")}</categories>` : ""}${item.comments ? `\n<comments>${item.comments}</comments>` : ""}${item.enclosure ? `\n${enclosure_to_xml(item.enclosure)}` : ""}${item.guid ? `\n${guid_to_xml(item.guid)}` : ""}${item.pubDate ? `\n<pubDate>${format_date_rfc822(item.pubDate)}</pubDate>` : ""}${item.source ? `\n${source_to_xml(item.source)}` : ""}
 </item>`;
 }
 
@@ -324,4 +327,33 @@ function guid_to_xml(category: RssGuid): string {
 
 function source_to_xml(source: RssSource): string {
     return `<source url="${source.url}">${source.source}</source>`;
+}
+
+// rfc-822 date formatting adapted from https://whitep4nth3r.com/blog/how-to-format-dates-for-rss-feeds-rfc-822/
+
+// zero-left-ad numbers to two digits
+function pad_number(num_: number) {
+    let num = `${num_}`;
+    while (num.length < 2) num = `0${num}`;
+    return num;
+}
+
+function format_date_rfc822(date: Date) {
+    const dayStrings = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthStrings = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    const day = dayStrings[date.getDay()];
+    const dayNumber = pad_number(date.getDate());
+    const month = monthStrings[date.getMonth()];
+    const year = date.getFullYear();
+    const time = `${pad_number(date.getHours())}:${pad_number(date.getMinutes())}:00`;
+
+    const zone = date.getTimezoneOffset();
+    const zone_positive = zone >= 0;
+    const zone_hours = Math.floor(Math.abs(zone) / 60);
+    const zone_minutes = Math.abs(zone) % 60;
+
+    const timezone = `${zone_positive ? "+" : "-"}${pad_number(zone_hours)}${pad_number(zone_minutes)}`;
+
+    return `${day}, ${dayNumber} ${month} ${year} ${time} ${timezone}`;
 }
