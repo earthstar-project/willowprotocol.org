@@ -72,6 +72,15 @@ body {
     clear: right;
 }
 
+@media (min-width: ${opts.wide_and_margins()}rem) {
+    .wideIfPossible {
+        position: relative;
+        width: ${opts.wide()}rem;
+        max-width: calc(100vw - ${opts.padding_left}rem - 2 * ${opts.padding_right}rem);
+        clear: right;
+    }
+}
+
 .widefixed {
     position: relative;
     width: ${opts.wide()}rem;
