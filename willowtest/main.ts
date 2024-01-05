@@ -13,7 +13,13 @@ import {
   ol,
   p,
   span,
+  table,
+  tbody,
+  td,
+  th,
+  thead,
   title,
+  tr,
   ul,
 } from "../h.ts";
 import {
@@ -44,6 +50,7 @@ import { grouping_entries } from "./specs/grouping_entries.ts";
 import { e2e } from "./specs/e2e.ts";
 import { more } from "./specs/more/more.ts";
 import { why_willow } from "./specs/more/why_willow.ts";
+import { threedstorage } from "./specs/more/3dstorage.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -386,6 +393,33 @@ export function out_index_directory(
   return new Invocation(macro, contents);
 }
 
+export function bitfield_doc(
+  ...rows: [Expression, Expression, Expression][]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => {
+      const the_rows: Expression[] = [];
+      for (let i = 0; i < rows.length * 3; i += 3) {
+        the_rows.push([
+          div({class: "bitfields_bits"}, args[i]),
+          div({class: "bitfields_def"}, args[i + 1]),
+          div({class: "bitfields_remark"}, args[i + 2]),
+        ]);
+      }
+      return div(
+        {class: "bitfields wide"},
+        // [
+        //   div("Bits"),
+        //   div("Definitions"),
+        //   div("Remarks"),
+        // ],
+        the_rows,
+      );
+    },
+  );
+  return new Invocation(macro, rows.flat(1));
+}
+
 const layout_opts = new LayoutOptions();
 
 evaluate([
@@ -403,7 +437,7 @@ evaluate([
         },
         [
           pintroductory(
-            "A protocol for syncable local-first data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
+            "A protocol for peer-to-peer data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
           ),
           nav(
             lis(
@@ -416,7 +450,7 @@ evaluate([
             marginale_inlineable(
               img(asset("landing/local-first.png")),
             ),
-            "Data storage which never goes offline. You get local-first storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
+            "Data storage which never goes offline. You get always-available storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
           ),
           
           pinformative(
@@ -499,6 +533,7 @@ evaluate([
     font-size: 1.2em;
   }
 }`,
+  "\n",
     ]),
     copy_file("named_assets"),
     out_directory("specs", [
@@ -522,7 +557,8 @@ evaluate([
     out_directory("more", [
       out_file("index.html", more),
       out_index_directory("timestamps-really", timestamps_really),
-      out_index_directory("why", why_willow)
+      out_index_directory("why", why_willow),
+      out_index_directory("3dstorage", threedstorage),
     ]),
     copy_statics("assets"),
   ),

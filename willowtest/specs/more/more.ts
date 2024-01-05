@@ -10,7 +10,7 @@ export const more: Expression = site_template(
   },
   [
     pinformative(
-      "Information which you might want to know but doesn't really belong anywhere else, starting with a very frequently asked question:",
+      "Information which you might want to know but that goes beyond purely technical specifications:",
     ),
     nav(
       lis(
@@ -18,6 +18,9 @@ export const more: Expression = site_template(
       ),
       lis(
         link_name("timestamps_really", "Timestamps, really?"),
+      ),
+      lis(
+        link_name("3dstorage", "Three-Dimensional Data Storage"),
       ),
     ),
   ],
