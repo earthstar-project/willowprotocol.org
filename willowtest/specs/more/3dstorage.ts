@@ -62,7 +62,7 @@ title: "Three-Dimensional Data Storage",
     hsection("3dstorage_beginning", "Just the Beginning...", [
         pinformative("Three-dimensional storage lies at the heart of a performant Willow database, but any implementation effort must ask several further questions. How do applications interface with a data store? Can they subscribe to updates in real time? Or even request replays of changes after reconnecting to the database after a longer time span? Who controls which payloads should be requested, persisted, deleted? Can applications issue atomic transactions? Should there be indexes for efficient access beyond the three-dimensional data model, based on payload contents?"),
 
-        pinformative("Insert uplifting final paragraph here."),
+        pinformative("Each of these questions is an exciting project on its own, and we're committed to exploring them further."),
     ]),
 
 ]);
