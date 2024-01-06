@@ -123,7 +123,7 @@ export interface Def {
   clazz?: string;
 }
 
-const def_key = Symbol("Def");
+export const def_key = Symbol("Def");
 
 export function get_def(name_state: PerNameState): Def {
   return name_state.get(def_key)!;
