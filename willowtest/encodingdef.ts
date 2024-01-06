@@ -37,7 +37,7 @@ export function encodingdef(
         if (row instanceof Bitfields) {
           the_rows.push(tr(th({ colspan: "2" }, "Bitfield")));
           the_rows.push(tr(
-            th("Bits"),
+            th("Bit"),
             th("most-significant bit is bit 0"),
           ));
 
@@ -87,9 +87,13 @@ export function encodingdef(
         const field_row = row.rows[j];
         if (field_row.count === 1) {
           the_args.push(`${bit_counter}`);
+        } else if (field_row.count === 2) {
+          the_args.push(
+            `${bit_counter}, ${bit_counter + field_row.count - 1}`,
+          );
         } else {
           the_args.push(
-            `${bit_counter} - ${bit_counter + field_row.count - 1}`,
+            `${bit_counter} – ${bit_counter + field_row.count - 1}`,
           );
         }
         bit_counter += field_row.count;
