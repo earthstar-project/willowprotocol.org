@@ -543,12 +543,16 @@ export const encodings: Expression = site_template({
                       field_access(r("eia_inner"), "entry_timestamp"),
                       " - ",
                       field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
+                      " <= ",
+                      field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeEnd"),
+                      " - ",
+                      field_access(r("eia_inner"), "entry_timestamp"),
                     ),
                   ],
                   [
                     "Add ", r("eia_time"), " to ",
                     field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
-                    " or subtract from ",
+                    ", or subtract from ",
                     field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeEnd"),
                     "?",
                   ],
@@ -581,6 +585,113 @@ export const encodings: Expression = site_template({
                 function_call(
                   r("encode_payload_digest"),
                   field_access(r("eia_inner"), "entry_payload_digest"),
+                ),
+              ]],
+            ),
+          ),
+        ),
+      ]),
+
+      hsection("enc_entry_in_namespace_3drange", code("encode_entry_in_namespace_3drange"), [
+        pinformative(
+          preview_scope(
+            "To encode an ", r("Entry"), " ", def_value({ id: "eir_inner", singular: "inner" }), " that is ", r("3d_range_include", "included"), " in some ", r("3dRange"), " ", def_value({ id: "eir_outer", singular: "outer" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eir_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eir_time", singular: "time_diff" }), " as the minimum absolute of ",
+            code(
+              field_access(r("eir_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeStart"),
+            ),
+            " and ",
+            code(
+              field_access(r("eir_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeEnd"),
+            ),
+            ".We then define ",
+            function_call(def_fn({id: "encode_entry_in_namespace_3drange", math: "encode\\_enrty\\_in\\_namespace\\_3drange"}), r("eir_inner"), r("eir_outer"), r("eir_namespace_id")), " as:",
+
+            encodingdef(
+              new Bitfields(
+                new BitfieldRow(
+                  1,
+                  [
+                    code("1"), " ", r("iff"), " ",
+                    code(field_access(r("eir_inner"), "entry_subspace_id"), " == ", field_access(field_access(r("eir_outer"), "3dRangeSubspace"), "SubspaceRangeStart")),
+                  ],
+                  [
+                    inclusion_flag_remark(field_access(r("eir_inner"), "entry_subspace_id")),
+                  ],
+                ),
+                new BitfieldRow(
+                  1,
+                  [
+                    code("1"), " ", r("iff"), " the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"),
+                  ],
+                  [
+                    "Encode ", field_access(r("eir_inner"), "entry_path"), " relative to ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"), " or to ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"), "?",
+                  ],
+                ),
+                new BitfieldRow(
+                  1,
+                  [
+                    code("1"), " ", r("iff"), " ",
+                    code(r("eir_time"), " == ", function_call("abs", code(
+                      field_access(r("eir_inner"), "entry_timestamp"),
+                      " - ",
+                      field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeStart"),
+                    ))),
+                  ],
+                  [
+                    "Combine ", r("eir_time"), " with ",
+                    field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeStart"),
+                    ", or with ",
+                    field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeEnd"),
+                    "?",
+                  ],
+                ),
+                new BitfieldRow(
+                  1,
+                  [
+                    code("1"), " ", r("iff"), "  bit two is ", code("1"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeStart")), ", or ",
+                    " bit two is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " <= ", field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeEnd")), ".",
+                  ],
+                  [
+                    "Add or subtract ", r("eir_time"), "?",
+                  ],
+                ),
+                two_bit_int(4, r("eir_time")),
+                two_bit_int(6, field_access(r("eir_inner"), "entry_payload_length")),
+              ),
+              [[
+                function_call(
+                  r("encode_subspace_id"),
+                  field_access(r("eir_inner"), "entry_subspace_id"),
+                ), ",  or the empty string, if ",
+                code(field_access(r("eir_inner"), "entry_subspace_id"), " == ", field_access(field_access(r("eir_outer"), "3dRangeSubspace"), "SubspaceRangeStart"))
+              ]],
+              [[
+                function_call(
+                  r("encode_path_relative"),
+                  field_access(r("eir_inner"), "entry_path"),
+                  field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"),
+                ),
+                " if the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
+                function_call(
+                  r("encode_path_relative"),
+                  field_access(r("eir_inner"), "entry_path"),
+                  field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"),
+                ),
+              ]],
+              [[
+                r("eir_time"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("eir_time")), "-byte integer",
+              ]],
+              [[
+                field_access(r("eir_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("eir_inner"), "entry_payload_length")), "-byte integer",
+              ]],
+              [[
+                function_call(
+                  r("encode_payload_digest"),
+                  field_access(r("eir_inner"), "entry_payload_digest"),
                 ),
               ]],
             ),
@@ -651,7 +762,7 @@ export const encodings: Expression = site_template({
                 [
                   "Add ", r("aia_start"), " to ",
                   field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart"),
-                  " or subtract from ",
+                  ", or subtract from ",
                   field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
                   "?",
                 ]
@@ -666,7 +777,7 @@ export const encodings: Expression = site_template({
                 [
                   "Add ", r("aia_end"), " to ",
                   field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"),
-                  " or subtract from ",
+                  ", or subtract from ",
                   field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
                   "?",
                 ],
