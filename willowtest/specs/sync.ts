@@ -591,24 +591,30 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "RangeEntries",
-                            comment: ["Send the ", rs("LengthyEntry"), " a peer has in a ", r("3dRange"), " as part of ", r("3drbsr"), "."],
+                            comment: ["Prepare transmission of the ", rs("LengthyEntry"), " a peer has in a ", r("3dRange"), " as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
                                     id: "RangeEntriesRange",
                                     name: "range",
-                                    comment: ["The ", r("3dRange"), " whose ", rs("LengthyEntry"), " are transmitted."],
+                                    comment: ["The ", r("3dRange"), " whose ", rs("LengthyEntry"), " to transmit."],
                                     rhs: r("3dRange"),
                                 },
                                 {
-                                    id: "RangeEntriesEntries",
-                                    name: "entries",
-                                    comment: ["The ", rs("LengthyEntry"), " in the ", r("RangeEntriesRange"), ", together with authorisation in form of a ", r("StaticTokenHandle"), " and a ", r("DynamicToken"), "."],
-                                    rhs: pseudo_array(pseudo_tuple(r("LengthyEntry"), r("U64"), r("DynamicToken"))),
+                                    id: "RangeEntriesCount",
+                                    name: "count",
+                                    comment: ["The number of ", rs("Entry"), " the sender has in the ", r("RangeEntriesRange"), "."],
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "RangeEntriesFlag",
                                     name: "want_response",
                                     comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("RangeEntries"), " message for the same ", r("3dRange"), " in return."],
+                                    rhs: r("Bool"),
+                                },
+                                {
+                                    id: "RangeEntriesWillSort",
+                                    name: "will_sort",
+                                    comment: ["Whether the sender promises to send the ", rs("Entry"), " in the ", r("RangeEntriesRange"), " sorted from ", r("entry_newer", "oldest to newest"), "."],
                                     rhs: r("Bool"),
                                 },
                                 {
@@ -627,42 +633,50 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("RangeEntries"), " messages let peers conclude ", r("3drbsr"), " for a ", r("3dRange"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("3dRange"), ". Each ", r("RangeEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("RangeEntries"), " messages let peers announce how many ", rs("Entry"), " they have in a ", r("3dRange"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("3dRange"), ". Each ", r("RangeEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("RangeEntriesRange"), "; this upholds read access control."),
+
+                    pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("RangeEntriesRange"), " happens via ", r("ReconEntry"), " messages. The ", r("RangeEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
+                        "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("3drbsr"), "."
+                    ]), "sorted from ", r("entry_newer", "oldest to newest"), ", if the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
+
+                    pinformative("No ", r("RangeEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("RangeEntries"), " massage have been sent."),
+
+                    pinformative("When a peer receives a ", r("RangeFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("RangeEntries"), " message of ", r("RangeEntriesCount"), " zero and ", r("RangeEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("3dRange"), " has concluded successfully."),
 
                     pinformative(R("RangeEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
-                hsection("range_confirmation", code("RangeConfirmation"), [
+                hsection("recon_entry", code("ReconEntry"), [
                     pseudocode(
                         new Struct({
-                            id: "RangeConfirmation",
-                            comment: ["Signal ", r("Fingerprint"), " equality as part of ", r("3drbsr"), "."],
+                            id: "ReconEntry",
+                            comment: ["Transmit a ", r("LengthyEntry"), " as part of ", r("3drbsr"), "."],
                             fields: [
                                 {
-                                    id: "RangeConfirmationRange",
-                                    name: "range",
-                                    comment: ["The ", r("3dRange"), " in question."],
-                                    rhs: r("3dRange"),
+                                    id: "ReconEntryEntry",
+                                    name: "entry",
+                                    comment: ["The ", r("LengthyEntry"), " itself."],
+                                    rhs: r("LengthyEntry"),
                                 },
                                 {
-                                    id: "RangeConfirmationSenderHandle",
-                                    name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
+                                    id: "ReconEntryStaticTokenHandle",
+                                    name: "static_token_handle",
+                                    comment: ["A ", r("StaticTokenHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that is ", r("handle_bind", "bound"), " to the static part of the ", r("ReconEntryEntry"), "’s ", r("AuthorisationToken"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
-                                    id: "RangeConfirmationReceiverHandle",
-                                    name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("RangeConfirmationRange"), "."],
-                                    rhs: r("U64"),
+                                    id: "ReconEntryDynamicToken",
+                                    name: "dynamic_token",
+                                    comment: ["The dynamic part of the ", r("ReconEntryEntry"), "’s ", r("AuthorisationToken"), "."],
+                                    rhs: r("DynamicToken"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("RangeConfirmation"), " messages let peers signal that they received a ", r("Fingerprint"), " as part of ", r("3drbsr"), " that equals their local ", r("Fingerprint"), " for that ", r("3dRange"), ".", marginale(["Upon sending or receiving a ", r("RangeConfirmation"), ", a peer should switch operation to forwarding any new ", rs("Entry"), " inside the ", r("3dRange"), " to the other peer."]), " Each ", r("RangeConfirmation"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ReconEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("3drbsr"), ". These messages may only be sent after a ", r("RangeEntries"), " message has announced the containing ", r("3dRange"), ", and the number of messages must not exceed the announced number of ", rs("Entry"), ". The transmitted ", rs("Entry"), " must be ", r("3d_range_include", "included"), " in the announced ", r("3dRange"), "."),
 
-                    pinformative(R("RangeConfirmation"), " messages use the ", r("ReconciliationChannel"), "."),
+                    pinformative(R("ReconEntry"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_eagerness", code("Eagerness"), [
@@ -985,8 +999,6 @@ export const sync: Expression = site_template(
 
                 pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
 
-                pinformative("3dRange 1: RangeInArea, or RangeRelativeRange"),
-
                 ols(
                     [r("RevealCommitment"), " 0"],
                     [r("BindPsi"), " 1"],
@@ -1000,9 +1012,9 @@ export const sync: Expression = site_template(
                     [r("BindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
                     [r("PayloadResponse"), " 2"],
                     [r("BindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
-                    [r("RangeFingerprint"), " 2 + 2 + 1 + 1 (3dRange), (special case empty fingerprint)"],
-                    [r("RangeEntries"), " 2 + 2 + 1 + 1 + 2 (3dRange), (array length width)"],
-                    [r("RangeConfirmation"), " 2 + 2 + 1 (3dRange)"],
+                    [r("RangeFingerprint"), " 2 + 2 + 1, (special case empty fingerprint)"],
+                    [r("RangeEntries"), " 2 + 2 + 2 + 1 + 1"],
+                    [r("ReconEntry"), " 2 + 2"],
                     [r("Eagerness"), " 1 + 2 + 2"],
                     [r("SyncGuarantee"), " 2 + 3"],
                     [r("SyncAbsolve"), " 2 + 3"],

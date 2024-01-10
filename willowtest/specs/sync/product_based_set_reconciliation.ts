@@ -90,8 +90,8 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     ),
 
     pinformative(def({id: "3drbsr", singular: "3d range-based set reconciliation"}, "3d range-based set reconciliation", [
-      def_fake({id: "3drbsr", singular: "3d range-based set reconciliation"}), " is an algorithm for letting two peers compute the union of their ", rs("LengthyEntry"), " in some ", r("3dRange"), " by exchanging ", rs("3dRangeFingerprint"), ", ", rs("3dRangeEntrySet"), ", and ", rs("3dRangeConfirmation"), ".",
-    ]), " takes these ideas and applies them to Willow. The core design decision is to delimit sets of ", rs("LengthyEntry"), " via ", rs("3dRange"), ". When a peer splits its ", rs("3dRange"), ", it is crucial for overall efficiency to not split based on volume (for example by splitting the ", rs("3dRangeTime"), " in half)", ", but to split into subranges in which the peer holds roughly the same number of ", rs("Entry"), "."),
+      def_fake({id: "3drbsr", singular: "3d range-based set reconciliation"}), " is an algorithm for letting two peers compute the union of their ", rs("LengthyEntry"), " in some ", r("3dRange"), " by exchanging ", rs("3dRangeFingerprint"), " and ", rs("3dRangeEntrySet"), ".",
+    ]), " takes these ideas and applies them to Willow. The core design decision is to delimit sets of ", rs("LengthyEntry"), " via ", rs("3dRange"), ". When a peer splits its ", rs("3dRange"), ", it is crucial for overall efficiency to not split based on volume (for example, by splitting the ", rs("3dRangeTime"), " in half numerically)", ", but to split into subranges in which the peer holds roughly the same number of ", rs("Entry"), "."),
 
     pinformative("Let ", def_type({id: "3drbsr_fp", singular: "Fingerprint", plural: "Fingerprints"}), " denote the type of hashes of ", rs("LengthyEntry"), " that the peers exchange. Then the precise pieces of information that peers exchange are the following:"),
 
@@ -139,22 +139,15 @@ export const range3d_based_set_reconciliation: Expression = site_template(
           },
         ],
       }),
-
-      new Struct({
-        id: "3dRangeConfirmation",
-        comment: ["Lets a peer confirm to the other peer that no further work needs to be performed in some ", r("3dRange"), " (because of matching ", rs("3drbsr_fp"), ")."],
-        fields: [
-          {
-            id: "3dRangeConfirmationRange",
-            name: "3d_range",
-            comment: ["The ", r("3dRange"), " in question."],
-            rhs: r("3dRange"),
-          },
-        ],
-      }),
     ),
 
-    pinformative("To initiate reconciliation of a ", r("3dRange"), ", a peer sends its ", r("3dRangeFingerprint"), ". Upon receiving a ", r("3dRangeFingerprint"), ", a peer computes the ", r("3drbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same range. If it matches, the peer sends a ", r("3dRangeConfirmation"), " for that range. Otherwise, it either sends a number of ", rs("3dRangeFingerprint"), " whose ", rs("3dRange"), " cover the ", r("3dRange"), " for which it received the mismatching ", r("3drbsr_fp"), ". Or it replies with its ", r("3dRangeEntrySet"), " for that ", r("3dRange"), ", with the ", r("3dRangeEntrySetWantResponse"), " flag set to ", code("true"), ". To any such ", r("3dRangeEntrySet"), ", a peer replies with its own ", r("3dRangeEntrySet"), ", setting the ", r("3dRangeEntrySetWantResponse"), " flag to ", code("false"), ", and omitting all ", rs("LengthyEntry"), " it had just received in the other peer’s ", r("3dRangeEntrySet"), "."),
+    pinformative("To initiate reconciliation of a ", r("3dRange"), ", a peer sends its ", r("3dRangeFingerprint"), ". Upon receiving a ", r("3dRangeFingerprint"), ", a peer computes the ", r("3drbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same range."),
+
+    pinformative("If does not match, the peer either sends a number of ", rs("3dRangeFingerprint"), " whose ", rs("3dRange"), " cover the ", r("3dRange"), " for which it received the mismatching ", r("3drbsr_fp"), ". Or it replies with its ", r("3dRangeEntrySet"), " for that ", r("3dRange"), ", with the ", r("3dRangeEntrySetWantResponse"), " flag set to ", code("true"), "."),
+
+    pinformative("To any such ", r("3dRangeEntrySet"), ", a peer replies with its own ", r("3dRangeEntrySet"), ", setting the ", r("3dRangeEntrySetWantResponse"), " flag to ", code("false"), ", and omitting all ", rs("LengthyEntry"), " it had just received in the other peer’s ", r("3dRangeEntrySet"), "."),
+
+    pinformative("When a peer receives a ", r("3dRangeFingerprint"), " that matches the ", r("3drbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same ", r("3dRange"), ", the peer should reply with an empty ", r("3dRangeEntrySet"), " for that ", r("3dRange"), ", setting the ", r("3dRangeEntrySetWantResponse"), " flag to ", code("false"), ". This notifies the sender of the ", r("3dRangeFingerprint"), " that reconciliation has successfully concluded for the ", r("3dRange"), "."),
 
     hsection("3drbsr_parameters", "Fingerprinting", [
       pinformative(R("3drbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("3drbsr_fp"), ". To quickly compute ", rs("3drbsr_fp"), ", it helps if the ", r("3drbsr_fp"), " for a ", r("3dRange"), " can be assembled from precomputed ", rs("3drbsr_fp"), " of other, smaller ", r("3dRange"), ". For this reason, we define the fingerprinting function in terms of some building blocks:"),
