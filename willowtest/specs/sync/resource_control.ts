@@ -129,6 +129,10 @@ export const resource_control: Expression = site_template(
         rs("guarantee"),
         " will be buffered.",
       ),
+      
+      figure(
+        img(asset("resource_control/rc_simplest_case.png"))
+      ),
 
       pinformative(
         "When the ",
@@ -153,6 +157,10 @@ export const resource_control: Expression = site_template(
         r("resources_server"),
         " begins its operation by increasing its buffer capacities from zero to their actual starting amounts.",
       ),
+      
+      figure(
+        img(asset("resource_control/increasing_buffer_capacity.png"))
+      ),
 
       pinformative(
         "The second way of giving ",
@@ -169,6 +177,10 @@ export const resource_control: Expression = site_template(
         r("logical_channel"),
         ".",
       ),
+      
+      figure(
+        img(asset("resource_control/processing_messages.png"))
+      ),
 
       pinformative(
         "When the ",
@@ -178,6 +190,10 @@ export const resource_control: Expression = site_template(
         ". This decreases the overall amount of ",
         rs("guarantee"),
         " in the system by the correct amount.",
+      ),
+      
+      figure(
+        img(asset("resource_control/reducing_capacity.png"))
       ),
 
       pinformative(
@@ -196,6 +212,10 @@ export const resource_control: Expression = site_template(
         ", fully expecting them to be buffered by the ",
         r("resources_server"),
         ". ",
+      ),
+      
+      figure(
+        img(asset("resource_control/good_shrinking.png"))
       ),
 
       pinformative(
@@ -245,6 +265,10 @@ export const resource_control: Expression = site_template(
         r("resources_server"),
         " of exactly the amount needed to reach the desired number of ", rs("guarantee"), ". If the ", r("resources_client"), " already has fewer ", rs("guarantee"), " by the time the request for ", r("absolution"), " arrives, the ", r("resources_client"), " simply ignores the request.",
       ),
+      
+      figure(
+        img(asset("resource_control/complex_shrinking.png"))
+      ),
 
       pinformative(
         "Taken together, these techniques make for a stable system where the ",
@@ -258,6 +282,10 @@ export const resource_control: Expression = site_template(
         " must be able to drop optimistically sent messages without processing them. This requires us to add a certain degree of retransmission logic to the protocol, since the ",
         r("resources_client"),
         " must be informed of the message dropping.",
+      ),
+      
+      figure(
+        img(asset("resource_control/optimistic_sending.png"))
       ),
 
       pinformative(
@@ -292,6 +320,16 @@ export const resource_control: Expression = site_template(
         " can send an ",
         r("apology"),
         " and can then resume normal operation.",
+      ),
+      
+      figure(
+        {class: 'wide'},
+        img(asset("resource_control/optimistic_sending_gone_awry.png"))
+      ),
+      
+      figure(
+        {class: 'wide'},
+        img(asset("resource_control/optimistic_sending_gone_really_awry.png"))
       ),
 
       pinformative(
