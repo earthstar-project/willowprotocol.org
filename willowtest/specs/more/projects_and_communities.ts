@@ -16,7 +16,7 @@ export const projects_and_communities: Expression = site_template(
 				pinformative("If you would like to implement Willow in your favourite language, we’ll gladly answer any questions you may have! Please see the ", link_name("community_and_contact", "community and contact"), " section below for some ways of getting in touch."),
 				
 				hsection("earthstar_project_implementations", "Earthstar project", [
-					pinformative("Willow is brought to you by the Earthstar Project. We are working on reference implementations of Willow in both TypeScript and Rust."),
+					pinformative("Willow is brought to you by the Earthstar Project. We are working on implementations of Willow in both TypeScript and Rust."),
 					pinformative("We are close to being finished with the TypeScript implementations of Meadowcap and Willow. These implementations have been funded by ", link("NGI Assure", "https://nlnet.nl/assure/"), "."),
 					lis(
 						link("meadowcap-js", "https://github.com/earthstar-project/meadowcap-js"),
@@ -27,7 +27,7 @@ export const projects_and_communities: Expression = site_template(
 						link("Earthstar website", "https://earthstar-project.org"),
 						link("Earthstar repo", "https://github.com/earthstar-project/earthstar"),
 					),
-					pinformative("In the first half of 2024 we will begin working on a Rust implementation funded by ", link("NGI Core", "https://nlnet.nl/core/"), ". This will include Meadowcap, the Willow Data Model, and Willow General Sync Protocol.")
+					pinformative("In the first half of 2024 we will begin working on a Rust implementation funded by ", link("NGI Core", "https://nlnet.nl/core/"), ". This will include Meadowcap, the Willow Data Model, and the Willow General Sync Protocol.")
 				]),
 				
 				hsection("iroh_implementations", "Iroh", [
