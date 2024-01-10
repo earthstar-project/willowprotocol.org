@@ -19,12 +19,16 @@ import { asset } from "../../../out.ts";
 import { def_type, pseudo_array, pseudocode, Struct } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
 import {
+blue,
 def_parameter_fn,
   def_parameter_value,
   link,
   lis,
+  orange,
   pinformative,
+  purple,
   site_template,
+  vermillion,
 } from "../../main.ts";
 import { small_img } from "../encodings.ts";
 
@@ -72,21 +76,21 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     
     figure(
       img(asset("3d_rbsr/fp_match.png")),
-      figcaption(span({ class: 'purple'}, "Alfie"), " and ", span({ class: "orange" }, "Betty"), " produce equal fingerprints for all their ", rs("Entry"), " in a given ", r("3dRange"), ".")
+      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce equal fingerprints for all their ", rs("Entry"), " in a given ", r("3dRange"), ".")
     ),
     
     pinformative("If they do not match, there are two options. First, the peer can split its set in half and then initiate set reconciliation for each half concurrently (by transmitting its hashes for both halves). Second, if the set is sufficiently small, the peer can instead simply transmit its items in the set. The other peer responds to this with all other items that it held in the set, completing the process of reconciliation."),
 
     figure(
       img(asset("3d_rbsr/fp_nonmatching.png")),
-      figcaption(span({ class: 'purple'}, "Alfie"), " and ", span({ class: "orange" }, "Betty"), " produce non-equal fingerprints. ", span({ class: 'purple'}, "Alfie"), " splits the ", r("3dRange"), " in two, yielding a ", r("3dRange"), " ", r("3d_range_include", "including"), " ", rs("Entry"), " ", code("A"), " and ", code("B"), ", and another ", r("3dRange"), " ", r("3d_range_include", "including"), " ", code("C"), ", and sends these ", rs("3dRange"), " and their fingerprints to ", span({ class: "orange" }, "Betty"), ". ", span({ class: "orange" }, "Betty"), " produces a matching fingerprint for the first ", r("3dRange"), ". As the other, mismatched ", r("3dRange"), " includes so few ", rs("Entry"), ", ", span({ class: 'orange'}, "Betty"), " sends her ", rs("Entry"), " ", code("Q"), " and ", code("Y"), " to ", span({ class: "purple" }, "Alfie"), ". In response, ", span({ class: "purple" }, "Alfie"), " sends ", r("Entry"), " ", code("C"), " to ", span({ class: 'orange'}, "Betty"), ".")
+      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce non-equal fingerprints. ", purple("Alfie"), " splits the ", r("3dRange"), " in two, yielding a ", r("3dRange"), " ", r("3d_range_include", "including"), " ", rs("Entry"), " ", code("A"), " and ", code("B"), ", and another ", r("3dRange"), " ", r("3d_range_include", "including"), " ", code("C"), ", and sends these ", rs("3dRange"), " and their fingerprints to ", orange("Betty"), ". ", orange("Betty"), " produces a matching fingerprint for the first ", r("3dRange"), ". As the other, mismatched ", r("3dRange"), " includes so few ", rs("Entry"), ", ", orange("Betty"), " sends her ", rs("Entry"), " ", code("Q"), " and ", code("Y"), " to ", purple("Alfie"), ". In response, ", purple("Alfie"), " sends ", r("Entry"), " ", code("C"), " to ", orange("Betty"), ".")
     ),
    
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
     
     figure(
       img(asset("3d_rbsr/drilling_down.png")),
-      figcaption("Split apart ", span({class: 'vermillion'},"non-equal ranges"),  " to hone in on the locations of any differences, while disregarding ", span({class: 'blue'}, "equal ranges"), ".")
+      figcaption("Split apart ", vermillion("non-equal ranges"),  " to hone in on the locations of any differences, while disregarding ", blue("equal ranges"), ".")
     ),
 
     pinformative(def({id: "3drbsr", singular: "3d range-based set reconciliation"}, "3d range-based set reconciliation", [

@@ -1,5 +1,5 @@
-import { def, def_fake, r, rs } from "../../../defref.ts";
-import { code, em, figcaption, figure, img } from "../../../h.ts";
+import { R, def, def_fake, r, rs } from "../../../defref.ts";
+import { br, code, em, figcaption, figure, img, span } from "../../../h.ts";
 import { hsection } from "../../../hsection.ts";
 import { $, $comma } from "../../../katex.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
@@ -8,11 +8,14 @@ import { hl_builtin, Struct } from "../../../pseudocode.ts";
 import { pseudocode } from "../../../pseudocode.ts";
 import { Expression } from "macro";
 import {
+blue,
   def_parameter_type,
   def_value,
   ols,
   pinformative,
+  purple,
   site_template,
+  vermillion,
 } from "../../main.ts";
 
 const apo = "’";
@@ -81,32 +84,33 @@ export const resource_control: Expression = site_template(
       ),
       
       figure(
-        img(asset("resource_control/rc_simplest_case.png"))
+        img(asset("resource_control/rc_simplest_case.png")),
+        marginale(["This diagram shows the statekeeping for only a single ", r("logical_channel"), ". The full session state consists of an independent copy for every different ", r("logical_channel"), " a protocol defines."]),
+        figcaption("Statekeeping for ", r("resources_server"), " and ", r("resources_client"), " when the ", r("resources_client"), " sends a message. The ", r("resources_server"), " tracks for how many unoccupied buffer slots it has not yet issued ", rs("guarantee"), ", the ", r("resources_client"), " tracks how many ", rs("guarantee"), " it has available. Sending a message reduces the guarantees available to the client."),
       ),
 
       pinformative("When the ", r("resources_server"), " increases a buffer’s capacity, it gives that many ", rs("guarantee"), " (measured in bytes) for the corresponding ", r("logical_channel"), " to the ", r("resources_client"), ". When establishing the connection, the ", r("resources_client"), " has no ", rs("guarantee"), ", and the ", r("resources_server"), " typically starts by sending ", rs("guarantee"), " equal to its initial buffer capacities. Conceptually, the ", r("resources_server"), " begins its operation by increasing its buffer capacities from zero to their actual starting amounts."),
       
       figure(
-        img(asset("resource_control/increasing_buffer_capacity.png"))
+        img(asset("resource_control/increasing_buffer_capacity.png")),
+        figcaption("The ", r("resources_server"), " increases its buffer capacity and then issues as many ", rs("guarantee"), "."),
       ),
 
       pinformative("The second way of giving ", rs("guarantee"), " occurs when the ", r("resources_server"), " has processed a buffered message and thus frees up buffer space. It then communicates the amount of buffer space that was freed up, and for which ", r("logical_channel"), ". The ", r("resources_server"), " need not communicate this immediately, it is free to send only the occasional update that aggregates ", rs("guarantee"), " that stem from processing several messages from the same ", r("logical_channel"), "."),
       
       figure(
-        img(asset("resource_control/processing_messages.png"))
+        img(asset("resource_control/processing_messages.png")),
+        figcaption("The ", r("resources_server"), " processes a ", vermillion("message"), ", it later processes another ", blue("message"), ", and then decides to issue ", rs("guarantee"), " for the freed buffer slots."),
       ),
 
       pinformative("When the ", r("resources_server"), " wishes to reduce the capacity of some buffer, it simply processes messages from that buffer without informing the ", r("resources_client"), ". This decreases the overall amount of ", rs("guarantee"), " in the system by the correct amount."),
       
       figure(
-        img(asset("resource_control/reducing_capacity.png"))
+        img(asset("resource_control/reducing_capacity.png")),
+        figcaption("Processing a message without issuing ", rs("guarantee"), " for it allows the ", r("resources_server"), " to shrink its buffer."),
       ),
 
       pinformative("This technique is only applicable when the ", r("resources_server"), " has some buffered messages; it does not allow it to reduce buffer capacity for empty buffers. But the ", r("resources_server"), " cannot simply decrease the buffer size and then inform the ", r("resources_client"), ": while that information is travelling to the ", r("resources_client"), ", the ", r("resources_client"), " might send messages on this ", r("logical_channel"), ", fully expecting them to be buffered by the ", r("resources_server"), ". "),
-      
-      figure(
-        img(asset("resource_control/good_shrinking.png"))
-      ),
 
       pinformative(
         "To solve this problem, we introduce a mechanism for the ", r("resources_client"), " to ",
@@ -115,21 +119,32 @@ export const resource_control: Expression = site_template(
         ]),
         " the ", r("resources_server"), " of some absolute amount of its unused ", rs("guarantee"), " on some ", r("logical_channel"), ", and we add a way for the ", r("resources_server"), " to ask for such ", r("absolution"), ". Asking for ", r("absolution"), " takes the form of specifying the ", r("logical_channel"), " and the number of ", rs("guarantee"), " the ", r("resources_server"), " would like the ", r("resources_client"), " to keep. Upon receiving this request, the ", r("resources_client"), " ", r("absolution", "absolves"), " the ", r("resources_server"), " of exactly the amount needed to reach the desired number of ", rs("guarantee"), ". If the ", r("resources_client"), " already has fewer ", rs("guarantee"), " by the time the request for ", r("absolution"), " arrives, the ", r("resources_client"), " simply ignores the request.",
       ),
-      
-      figure(
-        img(asset("resource_control/complex_shrinking.png"))
-      ),
 
-      pinformative(
-        "Taken together, these techniques make for a stable system where the ", r("resources_client"), " never overwhelms the buffer capacity of the ", r("resources_server"), ". As a final addition, however, we want to give the ability to optimistically send data, at the risk of overwhelming the ", r("resources_server"), ". To allow this, the ", r("resources_server"), " must be able to drop optimistically sent messages without processing them. This requires us to add a certain degree of retransmission logic to the protocol, since the ", r("resources_client"), " must be informed of the message dropping.",
+      figure(
+        img(asset("resource_control/good_shrinking.png")),
+        figcaption("Buffer downscaling without any concurrency issues: the ", r("resources_server"), " asks for ", r("absolution"), ", the ", r("resources_client"), " grants it."),
       ),
       
       figure(
-        img(asset("resource_control/optimistic_sending.png"))
+        img(asset("resource_control/complex_shrinking.png")),
+        figcaption("Concurrent to the ", r("resources_server"), " asking for ", r("absolution"), ", the ", r("resources_client"), " sends a message. The protocol is designed so that nothing goes wrong."),
       ),
 
       pinformative(
-        "To keep the complexity of the retransmission logic minimal, we adopt a very simple solution: when the ", r("resources_server"), " drops an ",
+        "Taken together, these techniques make for a stable system where the ", r("resources_client"), " never overwhelms the buffer capacity of the ", r("resources_server"), ". As a final addition, however, we want to allow the ", r("resources_client"), " to optimistically send data even though it might have no corresponding guarantees. The ", r("resources_server"), " may, after all, have freed up buffer space by the time the optimistically transmitted messages arrive.",
+      ),
+      
+      figure(
+        img(asset("resource_control/optimistic_sending.png")),
+        figcaption("The ", r("resources_client"), " optimistically sends a message, pushing its available ", rs("guarantee"), " below zero. The ", r("resources_server"), " has buffer space available; it simply buffers the message without taking any special action."),
+      ),
+
+      pinformative(
+        "If the ", r("resources_server"), " has insufficient buffer capacity when an optimistically transmitted message arrives, the ", r("resources_server"), " drops it without any processing. This requires us to add a certain degree of retransmission logic to the protocol, since the ", r("resources_client"), " must be informed of the message dropping.",
+      ),
+
+      pinformative(
+        "To keep the complexity of the retransmission logic minimal, we adopt a simplistic solution: when the ", r("resources_server"), " drops an ",
         sidenote("optimistically", [
           "The ", r("resources_server"), " is still ", em("not"), " allowed to drop messages for which it had previously guaranteed buffer capacity."
         ]),
@@ -142,24 +157,22 @@ export const resource_control: Expression = site_template(
       
       figure(
         {class: 'wide'},
-        img(asset("resource_control/optimistic_sending_gone_awry.png"))
+        img(asset("resource_control/optimistic_sending_gone_awry.png")),
+        figcaption("When the ", r("resources_server"), " receives an optimistic ", vermillion("message"), " it cannot buffer, it drops it and all further messages, even any ", purple("message"), " for which it has sufficient buffer capacity. Only after receiving an ", r("apology"), " does it switch state and become able to accept further messages. The ", r("resources_client"), ", when notified of message dropping, increments its counter of remaining ", rs("guarantee"), " by the number of message bytes that got dropped."),
       ),
       
+      pinformative(
+        "This approach comes with two subtleties. First, the ", r("resources_server"), " must never buffer partial messages — if it can buffer all but one byte of a message, it must still drop the full message and all subsequent ones until the ", r("apology"), ". Second, the ", r("resources_server"), " must issue ", rs("guarantee"), " for all the optimistic message bytes that it did manage to buffer, before informing the ", r("resources_client"), " that it has started to drop messages. This is necessary so that the ", r("resources_client"), " can reconstruct exactly which of its messages got dropped, and which still made it through.",
+      ),
+
       figure(
         {class: 'wide'},
-        img(asset("resource_control/optimistic_sending_gone_really_awry.png"))
-      ),
-
-      pinformative(
-        "This approach comes with two subtleties. First, the ", r("resources_server"), " must never buffer partial messages — if it can buffer all but one byte of a message, it must still drop the full message and all subsequent ones until the ", r("apology"), ". Second, the ", r("resources_server"), " must issue any ", rs("guarantee"), " for all the messages that it did manage to process before informing the ", r("resources_client"), " that it has started to drop messages. This is necessary so that the ", r("resources_client"), " can reconstruct exactly which of its messages got dropped. ",
-      ),
-
-      pinformative(
-        "An example: Suppose the ", r("resources_server"), " has issued ", rs("guarantee"), " for 100 bytes of buffer capacity, and the ", r("resources_client"), " has sent 80 bytes worth of messages. The ", r("resources_client"), " now decides to send 60 bytes more. While these messages travel through the network, the ", r("resources_server"), " processes 7 bytes, but decides not to give the corresponding seven ", rs("guarantee"), " to the ", r("resources_client"), " yet. Now the 60 bytes arrive at the ", r("resources_server"), ", while the ", r("resources_server"), " has 27 bytes of free buffer capacity. So the ", r("resources_server"), " buffers 27 bytes and drops the remaining 33 ",
-        sidenote("bytes", [
-          "For simplicity, we assume that there just happens to be a message boundary there.",
-        ]),
-        ". If its next message was to inform the ", r("resources_client"), " that it started dropping, the ", r("resources_client"), " would believe that only its first 20 bytes of the second batch got buffered, not the first 27. This is why the ", r("resources_server"), " must first issue ", rs("guarantee"), " for the seven bytes it had successfully processed before notifying the ", r("resources_client"), " that it started dropping.",
+        img(asset("resource_control/optimistic_sending_gone_really_awry.png")),
+        figcaption(
+          "Before the ", r("resources_server"), " announces that it is dropping messages, it issues ", rs("guarantee"), " for the optimistic messages bytes it did manage to buffer. The ", r("resources_client"), " maintains a queue of its optimistically transmitted messages, and tracks how many of their bytes it knows to have been processed. When the ", r("resources_client"), " receives ", rs("guarantee"), " for all bytes of a message, it can be ", purple("dequeued"), ".",
+          br(),
+          "In this example, the ", r("resources_client"), " empties its queue, whereas a realistic implementation would probably keep the queue to (transparently) retransmit all dropped messages before sending new ones. Note further that the ", r("resources_server"), " has to issue a ", r("guarantee"), " before sending the dropping notification, but it would also have been allowed to issue further ", rs("guarantee"), " — a realistic ", r("resources_server"), " would have issued all three issuable ", rs("guarantee"), "."
+        ),
       ),
     ]),
 
