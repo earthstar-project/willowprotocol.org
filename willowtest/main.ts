@@ -39,10 +39,10 @@ import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
-import { resource_control } from "./specs/sync/resource_control.ts";
-import { pai } from "./specs/sync/pai.ts";
-import { range3d_based_set_reconciliation } from "./specs/sync/range3d_based_set_reconciliation.ts";
-import { access_control } from "./specs/sync/access_control.ts";
+import { resource_control } from "./specs/resource_control.ts";
+import { pai } from "./specs/pai.ts";
+import { range3d_based_set_reconciliation } from "./specs/range3d_based_set_reconciliation.ts";
+import { access_control } from "./specs/access_control.ts";
 import { timestamps_really } from "./specs/more/timestamps_really.ts";
 import { specifications } from "./specs/specifications.ts";
 import { encodings } from "./specs/encodings.ts";
@@ -607,16 +607,14 @@ evaluate([
       out_index_directory("grouping_entries", grouping_entries),
       out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
-      out_directory("sync", [
-        out_file("index.html", create_etags(sync)),
-        out_index_directory("pai", pai),
-        out_index_directory("resource-control", resource_control),
-        out_index_directory(
-          "3d-range-based-set-reconciliation",
-          range3d_based_set_reconciliation,
-        ),
-        out_index_directory("access-control", access_control),
-      ]),
+      out_index_directory("ync", sync),
+      out_index_directory("pai", pai),
+      out_index_directory("resource-control", resource_control),
+      out_index_directory(
+        "3d-range-based-set-reconciliation",
+        range3d_based_set_reconciliation,
+      ),
+      out_index_directory("access-control", access_control),
     ]),
     out_directory("more", [
       out_file("index.html", more),

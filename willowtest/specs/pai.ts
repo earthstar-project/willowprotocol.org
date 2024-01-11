@@ -1,13 +1,13 @@
-import { def, preview_scope, r, rs, r$, R, def_fake } from "../../../defref.ts";
-import { code, div, em, img, p, table } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
-import { $, $comma, $dot } from "../../../katex.ts";
+import { def, preview_scope, r, rs, r$, R, def_fake } from "../../defref.ts";
+import { code, div, em, img, p, table } from "../../h.ts";
+import { hsection } from "../../hsection.ts";
+import { $, $comma, $dot } from "../../katex.ts";
 import {
   marginale,
   marginale_inlineable,
   sidenote,
-} from "../../../marginalia.ts";
-import { asset } from "../../../out.ts";
+} from "../../marginalia.ts";
+import { asset } from "../../out.ts";
 import { Expression } from "macro";
 import {
 def_fn,
@@ -18,9 +18,9 @@ def_fn,
   path,
   pinformative,
   site_template,
-} from "../../main.ts";
-import { Struct, def_type, field_access, function_call, pseudo_array, pseudo_tuple, pseudocode } from "../../../pseudocode.ts";
-import { link_name } from "../../../linkname.ts";
+} from "../main.ts";
+import { Struct, def_type, field_access, function_call, pseudo_array, pseudo_tuple, pseudocode } from "../../pseudocode.ts";
+import { link_name } from "../../linkname.ts";
 
 const apo = "’";
 

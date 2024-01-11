@@ -1,11 +1,11 @@
-import { def, preview_scope, r, rs } from "../../../defref.ts";
-import { code, img, p } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
-import { link_name } from "../../../linkname.ts";
-import { marginale } from "../../../marginalia.ts";
-import { asset } from "../../../out.ts";
-import { Expression } from "../../../tsgen.ts";
-import { def_value, link, pinformative, site_template } from "../../main.ts";
+import { def, preview_scope, r, rs } from "../../defref.ts";
+import { code, img, p } from "../../h.ts";
+import { hsection } from "../../hsection.ts";
+import { link_name } from "../../linkname.ts";
+import { marginale } from "../../marginalia.ts";
+import { asset } from "../../out.ts";
+import { Expression } from "../../tsgen.ts";
+import { def_value, link, pinformative, site_template } from "../main.ts";
 
 const apo = "’";
 

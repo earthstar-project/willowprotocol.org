@@ -1,4 +1,4 @@
-import { def, def_fake, R, r, rs } from "../../../defref.ts";
+import { def, def_fake, R, r, rs } from "../../defref.ts";
 import {
   code,
   em,
@@ -12,12 +12,12 @@ import {
   th,
   thead,
   tr,
-} from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
-import { marginale, marginale_inlineable, sidenote } from "../../../marginalia.ts";
-import { asset } from "../../../out.ts";
-import { def_type, pseudo_array, pseudocode, Struct } from "../../../pseudocode.ts";
-import { Expression } from "../../../tsgen.ts";
+} from "../../h.ts";
+import { hsection } from "../../hsection.ts";
+import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
+import { asset } from "../../out.ts";
+import { def_type, pseudo_array, pseudocode, Struct } from "../../pseudocode.ts";
+import { Expression } from "../../tsgen.ts";
 import {
 blue,
 def_parameter_fn,
@@ -29,8 +29,8 @@ def_parameter_fn,
   purple,
   site_template,
   vermillion,
-} from "../../main.ts";
-import { small_img } from "../encodings.ts";
+} from "../main.ts";
+import { small_img } from "./encodings.ts";
 
 export const range3d_based_set_reconciliation: Expression = site_template(
   {

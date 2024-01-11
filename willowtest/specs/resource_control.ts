@@ -1,11 +1,11 @@
-import { R, def, def_fake, r, rs } from "../../../defref.ts";
-import { br, code, em, figcaption, figure, img, span } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
-import { $, $comma } from "../../../katex.ts";
-import { marginale, sidenote } from "../../../marginalia.ts";
-import { asset } from "../../../out.ts";
-import { hl_builtin, Struct } from "../../../pseudocode.ts";
-import { pseudocode } from "../../../pseudocode.ts";
+import { R, def, def_fake, r, rs } from "../../defref.ts";
+import { br, code, em, figcaption, figure, img, span } from "../../h.ts";
+import { hsection } from "../../hsection.ts";
+import { $, $comma } from "../../katex.ts";
+import { marginale, sidenote } from "../../marginalia.ts";
+import { asset } from "../../out.ts";
+import { hl_builtin, Struct } from "../../pseudocode.ts";
+import { pseudocode } from "../../pseudocode.ts";
 import { Expression } from "macro";
 import {
 blue,
@@ -16,7 +16,7 @@ blue,
   purple,
   site_template,
   vermillion,
-} from "../../main.ts";
+} from "../main.ts";
 
 const apo = "’";
 
