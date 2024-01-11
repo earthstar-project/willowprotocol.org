@@ -7,6 +7,8 @@ export const changes: Expression = site_template({
 	name: "changes",
 	title: "News, improvements, and necessary changes"
 }, [
+	pinformative("Here, we maintain a changelog of breaking changes, and one of general site updates. You can subscribe to either via RSS."),
+
 	hsection(
 		'spec_changes', 'Necessary changes',
 		[
