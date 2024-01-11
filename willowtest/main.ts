@@ -52,6 +52,7 @@ import { more } from "./specs/more/more.ts";
 import { why_willow } from "./specs/more/why_willow.ts";
 import { threedstorage } from "./specs/more/3dstorage.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
+import { spec_statuses } from "./specs/more/statuses.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -624,6 +625,7 @@ evaluate([
       out_index_directory("why", why_willow),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("projects_and_communities", projects_and_communities),
+      out_index_directory("spec_statuses", spec_statuses),
     ]),
     copy_statics("assets"),
   ),

@@ -19,6 +19,7 @@ def_parameter_value,
   quotes,
   site_template,
 } from "../main.ts";
+import { specStatus } from "../../spec_status.ts";
 
 export const meadowcap: Expression = site_template(
   {
@@ -26,6 +27,8 @@ export const meadowcap: Expression = site_template(
     name: "meadowcap",
   },
   [
+    pinformative(specStatus('candidate')),
+    
     pinformative(
       "Meadowcap is a capability system for use with Willow. In this specification, we assume familiarity with the ",
       link_name("data_model", "Willow data model"),

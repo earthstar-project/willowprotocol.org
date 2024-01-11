@@ -63,6 +63,4 @@
 body {
     color: var(--nearly-black);
     background: var(--nearly-white);
-    background-image: url('named_assets/draft-bg.png');
-    background-size: 240px;
 }

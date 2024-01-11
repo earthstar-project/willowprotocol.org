@@ -8,6 +8,7 @@ import { site_template, pinformative, lis, pnormative, link, def_parameter_type,
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
+import { specStatus } from "../../spec_status.ts";
 
 const apo = "’";
 
@@ -17,6 +18,8 @@ export const sync: Expression = site_template(
         name: "sync",
     },
     [
+        pinformative(specStatus('candidate')),
+        
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [
