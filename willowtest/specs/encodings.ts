@@ -61,14 +61,14 @@ export function two_bit_int(start_bit: number, value_to_encode: Expression, unle
         div(code("00"), " if ", unless, ", otherwise:"),
       ] : "",
       div(
-        `Bit ${start_bit} is `, code("1"), " ", r("iff"), " ", function_call(r("compact_width"), value_to_encode), " is ", code("4"), " or ", code("8"), ".",
+        `Bit ${start_bit} is `, code("1"), " ", r("iff"), " ", code(function_call(r("compact_width"), value_to_encode)), " is ", code("4"), " or ", code("8"), ".",
       ),
       div(
-        `Bit ${start_bit + 1} is `, code("1"), " ", r("iff"), " ", function_call(r("compact_width"), value_to_encode), " is ", code("2"), " or ", code("8"), ".",
+        `Bit ${start_bit + 1} is `, code("1"), " ", r("iff"), " ", code(function_call(r("compact_width"), value_to_encode)), " is ", code("2"), " or ", code("8"), ".",
       ),
     ],
     [
-      "2-bit integer ", code("n"), " such that ", code("2^n"), " gives ", function_call(r("compact_width"), value_to_encode),
+      "2-bit integer ", code("n"), " such that ", code("2^n"), " gives ", code(function_call(r("compact_width"), value_to_encode)),
     ],
   );
 }
@@ -119,10 +119,10 @@ export const encodings: Expression = site_template({
     pinformative(
       "An ", def({ id: "encoding_function", singular: "encoding function" }), " ", def_fn({id: "encode_s", math: "encode\\_s"}), " for a set ", def_type({id: "encS", singular: "S"}), " is a function from ", r("encS"), " to the set of bytestrings, such that there exists a function ", def_fn({id: "decode_s", math: "decode\\_s"}), " such that:", lis(
         [
-          "for every ", def_value({id: "enc_s", singular: "s"}), " in ", r("encS"), " and every bytestring ", def_value({id: "enc_b", singular: "b"}), " that starts with ", function_call(r("encode_s"), r("enc_s")), ", we have ", $comma([r$("decode_s"), "(", r$("enc_b"), ") = ", r$("enc_s"), ""]), " and",
+          "for every ", def_value({id: "enc_s", singular: "s"}), " in ", r("encS"), " and every bytestring ", def_value({id: "enc_b", singular: "b"}), " that starts with ", code(function_call(r("encode_s"), r("enc_s"))), ", we have ", $comma([r$("decode_s"), "(", r$("enc_b"), ") = ", r$("enc_s"), ""]), " and",
         ],
         [
-          "for every ", def_value({id: "enc_s2", singular: "s"}), " in ", r("encS"), " and every bytestring ", def_value({id: "enc_b2", singular: "b"}), " that does not start with ", function_call(r("encode_s"), r("enc_s")), ", we have ", $dot([r$("decode_s"), "(", r$("enc_b2"), ") \\neq ", r$("enc_s2"), ""]),
+          "for every ", def_value({id: "enc_s2", singular: "s"}), " in ", r("encS"), " and every bytestring ", def_value({id: "enc_b2", singular: "b"}), " that does not start with ", code(function_call(r("encode_s"), r("enc_s"))), ", we have ", $dot([r$("decode_s"), "(", r$("enc_b2"), ") \\neq ", r$("enc_s2"), ""]),
         ],
       ),
     ),
@@ -285,7 +285,7 @@ export const encodings: Expression = site_template({
     pinformative(
       "To encode small numbers with fewer bytes than large numbers, we define for any ", r("U64"), " ",
       def_value({ id: "compact_width_n", singular: "n" }), " the value ",
-      function_call(def_fn({id: "compact_width", math: "compact\\_width"}), r("compact_width_n")),
+      code(function_call(def_fn({id: "compact_width", math: "compact\\_width"}), r("compact_width_n"))),
       " as", lis(
         [$comma("1"), " if ", $comma([r$("compact_width_n"), " < 256"]), " or"],
         [$comma("2"), " if ", $comma([r$("compact_width_n"), " < 256^2"]), " or"],
@@ -319,7 +319,7 @@ export const encodings: Expression = site_template({
 
       hsection("enc_path", code("encode_path"), [
         pinformative(
-          "To encode a ", r("Path"), " ", def_value({ id: "enc_path_p", singular: "p" }), ", we define ", function_call(def_fn({id: "encode_path", math: "encode\\_path"}), r("enc_path_p")), " as the concatenation of", lis(
+          "To encode a ", r("Path"), " ", def_value({ id: "enc_path_p", singular: "p" }), ", we define ", code(function_call(def_fn({id: "encode_path", math: "encode\\_path"}), r("enc_path_p"))), " as the concatenation of", lis(
             [
               "the number of ", rs("Component"), " of ", r("enc_path_p"), ", encoded as a big-endian ", r("UPathCountPower"), ",",
             ],
@@ -342,27 +342,27 @@ export const encodings: Expression = site_template({
           def_fn({id: "encode_subspace_id", math: "encode\\_subspace\\_id"}), " be an ", r("encoding_function"), " for ", r("SubspaceId"), ", and let ",
           def_fn({id: "encode_payload_digest", math: "encode\\_payload\\_digest"}), " be an ", r("encoding_function"), " for ", r("PayloadDigest"),
           ". We then define ",
-          function_call(def_fn({id: "encode_entry", math: "encode\\_entry"}), r("enc_entry_e")),
+          code(function_call(def_fn({id: "encode_entry", math: "encode\\_entry"}), r("enc_entry_e"))),
           " as the concatenation of:",
           
           encodingdef(
             [[
-              function_call(
+              code(function_call(
                 r("encode_namespace_id"),
                 field_access(r("enc_entry_e"), "entry_namespace_id"),
-              ),
+              )),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_subspace_id"),
                 field_access(r("enc_entry_e"), "entry_subspace_id"),
-              ),
+              )),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_path"),
                 field_access(r("enc_entry_e"), "entry_path"),
-              ),
+              )),
             ]],
             [[
               field_access(r("enc_entry_e"), "entry_timestamp"), ", encoded as a big-endian ", r("U64"),
@@ -371,10 +371,10 @@ export const encodings: Expression = site_template({
               field_access(r("enc_entry_e"), "entry_payload_length"), ", encoded as a big-endian ", r("U64"),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_payload_digest"),
                 field_access(r("enc_entry_e"), "entry_payload_digest"),
-              ),
+              )),
             ]],
           ),
         ),
@@ -399,11 +399,11 @@ export const encodings: Expression = site_template({
           " relative to another ", r("Path"), " ",
           def_value({ id: "relative_path_reference", singular: "reference" }),
           ", we define ",
-          function_call(
+          code(function_call(
             def_fn({id: "encode_path_relative", math: "encode\\_path\\_relative"}),
             r("relative_path_primary"),
             r("relative_path_reference"),
-          ),
+          )),
           " as the concatenation of:",
           
           encodingdef(
@@ -421,7 +421,7 @@ export const encodings: Expression = site_template({
 
       hsection("enc_etry_relative_entry", code("encode_entry_relative_entry"), [
         pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "primary" }), " relative to another ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "reference" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
-        function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference")), " as the concatenation of:",
+        code(function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as the concatenation of:",
 
           encodingdef(
             new Bitfields(
@@ -461,47 +461,47 @@ export const encodings: Expression = site_template({
             ),
             [
               [
-                function_call(
+                code(function_call(
                   r("encode_namespace_id"),
                   field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
-                ), ",  or the empty string, if ",
+                )), ",  or the empty string, if ",
                 code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
               ],
             ],
             [
               [
-                function_call(
+                code(function_call(
                   r("encode_subspace_id"),
                   field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
-                ), ",  or the empty string, if ",
+                )), ",  or the empty string, if ",
                 code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
               ],
             ],
             [
               [
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(r("entry_rel_entry_primary"), "entry_path"),
                   field_access(r("entry_rel_entry_reference"), "entry_path"),
-                ),
+                )),
               ],
             ],
             [
               [
-                r("erele_time_difference"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("erele_time_difference")), "-byte integer",
+                r("erele_time_difference"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("erele_time_difference"))), "-byte integer",
               ],
             ],
             [
               [
-                field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length")), "-byte integer",
+                field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length"))), "-byte integer",
               ],
             ],
             [
               [
-                function_call(
+                code(function_call(
                   r("encode_payload_digest"),
                   field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
-                ),
+                )),
               ],
             ],
           ),      
@@ -524,7 +524,7 @@ export const encodings: Expression = site_template({
               field_access(r("eia_inner"), "entry_timestamp"),
             ),
             ". We then define ",
-            function_call(def_fn({id: "encode_entry_in_namespace_area", math: "encode\\_enrty\\_in\\_namespace\\_area"}), r("eia_inner"), r("eia_outer"), r("eia_namespace_id")), " as the concatenation of:",
+            code(function_call(def_fn({id: "encode_entry_in_namespace_area", math: "encode\\_enrty\\_in\\_namespace\\_area"}), r("eia_inner"), r("eia_outer"), r("eia_namespace_id"))), " as the concatenation of:",
 
             encodingdef(
               new Bitfields(
@@ -565,30 +565,30 @@ export const encodings: Expression = site_template({
                 zero_bits(2),
               ),
               [[
-                function_call(
+                code(function_call(
                   r("encode_subspace_id"),
                   field_access(r("eia_inner"), "entry_subspace_id"),
-                ), ",  or the empty string, if ",
+                )), ",  or the empty string, if ",
                 code(field_access(r("eia_outer"), "AreaSubspace"), " != ", r("area_any")),
               ]],
               [[
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(r("eia_inner"), "entry_path"),
                   field_access(r("eia_outer"), "AreaPath"),
-                ),
+                )),
               ]],
               [[
-                r("eia_time"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("eia_time")), "-byte integer",
+                r("eia_time"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("eia_time"))), "-byte integer",
               ]],
               [[
-                field_access(r("eia_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("eia_inner"), "entry_payload_length")), "-byte integer",
+                field_access(r("eia_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("eia_inner"), "entry_payload_length"))), "-byte integer",
               ]],
               [[
-                function_call(
+                code(function_call(
                   r("encode_payload_digest"),
                   field_access(r("eia_inner"), "entry_payload_digest"),
-                ),
+                )),
               ]],
             ),
           ),
@@ -611,7 +611,7 @@ export const encodings: Expression = site_template({
               field_access(field_access(r("eir_outer"), "3dRangeTime"), "TimeRangeEnd"),
             ),
             ". We then define ",
-            function_call(def_fn({id: "encode_entry_in_namespace_3drange", math: "encode\\_enrty\\_in\\_namespace\\_3drange"}), r("eir_inner"), r("eir_outer"), r("eir_namespace_id")), " as the concatenation of:",
+            code(function_call(def_fn({id: "encode_entry_in_namespace_3drange", math: "encode\\_enrty\\_in\\_namespace\\_3drange"}), r("eir_inner"), r("eir_outer"), r("eir_namespace_id"))), " as the concatenation of:",
 
             encodingdef(
               new Bitfields(
@@ -666,36 +666,36 @@ export const encodings: Expression = site_template({
                 two_bit_int(6, field_access(r("eir_inner"), "entry_payload_length")),
               ),
               [[
-                function_call(
+                code(function_call(
                   r("encode_subspace_id"),
                   field_access(r("eir_inner"), "entry_subspace_id"),
-                ), ",  or the empty string, if ",
+                )), ",  or the empty string, if ",
                 code(field_access(r("eir_inner"), "entry_subspace_id"), " == ", field_access(field_access(r("eir_outer"), "3dRangeSubspace"), "SubspaceRangeStart"))
               ]],
               [[
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(r("eir_inner"), "entry_path"),
                   field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"),
-                ),
+                  )),
                 " if the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(r("eir_inner"), "entry_path"), " and ", field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(r("eir_inner"), "entry_path"),
                   field_access(field_access(r("eir_outer"), "3dRangePath"), "PathRangeEnd"),
-                ),
+                )),
               ]],
               [[
-                r("eir_time"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("eir_time")), "-byte integer",
+                r("eir_time"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("eir_time"))), "-byte integer",
               ]],
               [[
-                field_access(r("eir_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), field_access(r("eir_inner"), "entry_payload_length")), "-byte integer",
+                field_access(r("eir_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("eir_inner"), "entry_payload_length"))), "-byte integer",
               ]],
               [[
-                function_call(
+                code(function_call(
                   r("encode_payload_digest"),
                   field_access(r("eir_inner"), "entry_payload_digest"),
-                ),
+                )),
               ]],
             ),
           ),
@@ -731,7 +731,7 @@ export const encodings: Expression = site_template({
             ),
           ),
           ". We then define ",
-          function_call(def_fn({id: "encode_area_in_area", math: "encode\\_area\\_in\\_area"}), r("area_in_area_inner"), r("area_in_area_outer")), " as the concatenation of:",
+          code(function_call(def_fn({id: "encode_area_in_area", math: "encode\\_area\\_in\\_area"}), r("area_in_area_inner"), r("area_in_area_outer"))), " as the concatenation of:",
 
           encodingdef(
             new Bitfields(
@@ -789,24 +789,24 @@ export const encodings: Expression = site_template({
               two_bit_int(6, r("aia_end")),
             ),
             [[
-              r("aia_start"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("aia_start")), "-byte integer",
+              r("aia_start"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_start"))), "-byte integer",
             ]],
             [[
-              r("aia_end"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("aia_end")), "-byte integer, or the empty string, if ",
+              r("aia_end"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_end"))), "-byte integer, or the empty string, if ",
               code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_path_relative"),
                 field_access(r("area_in_area_inner"), "AreaPath"),
                 field_access(r("area_in_area_outer"), "AreaPath"),
-              ),
+                )),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_subspace_id"),
                 field_access(r("area_in_area_inner"), "AreaSubspace"),
-              ), ",  or the empty string, if ",
+              )), ",  or the empty string, if ",
               code(field_access(r("area_in_area_inner"), "AreaSubspace"), " == ", field_access(r("area_in_area_outer"), "AreaSubspace")),
             ]],
           ),
@@ -842,7 +842,7 @@ export const encodings: Expression = site_template({
             ),
           ),
           "We then define ",
-          function_call(def_fn({id: "encode_3drange_relative_3drange", math: "encode\\_3drange\\_relative\\_3drangearea"}), r("3dr3d_primary"), r("3dr3d_reference")), " as the concatenation of:",
+          code(function_call(def_fn({id: "encode_3drange_relative_3drange", math: "encode\\_3drange\\_relative\\_3drangearea"}), r("3dr3d_primary"), r("3dr3d_reference"))), " as the concatenation of:",
 
           encodingdef(
             new Bitfields(
@@ -976,149 +976,58 @@ export const encodings: Expression = site_template({
               two_bit_int(14, r("3dr3d_end_diff"), code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open"))),
             ),
             [[
-              function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart")),
+              code(function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"))),
               ", or the empty string if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")),
               " or ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")),
             ]],
             [[
-              function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd")),
+              code(function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"))),
               ", or the empty string if ",
               code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")),
               ", ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")),
               " or ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")),
             ]],
             [[
-              function_call(
+              code(function_call(
                 r("encode_path_relative"),
                 field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"),
                 field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"),
-              ),
+              )),
               " if the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
-              function_call(
+              code(function_call(
                 r("encode_path_relative"),
                 field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"),
                 field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
-              ),
+                )),
             ]],
             [[
               div(
                 "the empty string if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " == ", r("range_open")), ", otherwise:",
               ),
               div(
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"),
                   field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"),
-                ),
+                )),
                 " if the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
-                function_call(
+                code(function_call(
                   r("encode_path_relative"),
                   field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"),
                   field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
-                ),
+                )),
               ),
             ]],
             [[
-              r("3dr3d_start_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_start_diff")), "-byte integer",
+              r("3dr3d_start_diff"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("3dr3d_start_diff"))), "-byte integer",
             ]],
             [[
-              r("3dr3d_end_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_end_diff")), "-byte integer, or the empty string, if ",
+              r("3dr3d_end_diff"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("3dr3d_end_diff"))), "-byte integer, or the empty string, if ",
               code(field_access(field_access(r("3dr3d_end_diff"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")),
             ]],
           ),
         ),
       ]),
-
-      
-
-
-      
-
-
-
-  // pseudocode(
-   
-
-  //   new Struct({
-  //     id: "RangeRelativeRange",
-  //     comment: ["Describes a target ", r("3d_range"), " ", code("t"), " relative to a reference ", r("3d_range"), " ", code("r"), "."],
-  //     fields: [
-  //         {
-  //           id: "RangeRelativeRangeSubspaceStart",
-  //           name: "subspace_id_start",
-  //           comment: [hl_builtin("start"), " if the ", r("start_value"), " of the ", r("subspace_range"), " of ", code("t"), " is equal to the ", r("start_value"), " of the ", r("subspace_range"), " of ", code("r"), ", ", hl_builtin("end"), " if the ", r("start_value"), " of the ", r("subspace_range"), " of ", code("t"), " is equal to the ", r("end_value"), " of the ", r("subspace_range"), " of ", code("r"), ", otherwise the ", r("subspace_id"), " of ", code("t"), "."],
-  //           rhs: [r("SubspaceId"), " | ", hl_builtin("start"), " | ", hl_builtin("end")],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangeSubspaceEnd",
-  //           name: "subspace_id_end",
-  //           comment: [hl_builtin("start"), " if the ", r("end_value"), " of the ", r("subspace_range"), " of ", code("t"), " is equal to the ", r("start_value"), " of the ", r("subspace_range"), " of ", code("r"), ", ", hl_builtin("end"), " if the ", r("end_value"), " of the ", r("subspace_range"), " of ", code("t"), " is equal to the ", r("end_value"), " of the ", r("subspace_range"), " of ", code("r"), ", ", hl_builtin("open"), ", if the ", r("subspace_range"), " of ", code("t"), " is ", r("range_open", "open"), ", otherwise the ", r("subspace_id"), " of ", code("t"), "."],
-  //           rhs: [r("SubspaceId"), " | ", hl_builtin("start"), " | ", hl_builtin("end"), " | ", hl_builtin("open")],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathStartRelativeTo",
-  //           name: "path_start_relative_to",
-  //           comment: ["Whether the ", r("start_value"), " of the ", r("path_range"), " of ", code("t"), " is encoded relative to the ", r("start_value"), " (", hl_builtin("start"), ") or ", r("end_value"), " (", hl_builtin("end"), ") of the ", r("path_range"), " of ", code("r"), "."],
-  //           rhs: [hl_builtin("start"), " | ", hl_builtin("end")],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathPrefixStart",
-  //           name: "start_prefix_length",
-  //           comment: ["The length of the longest common prefix of the ", r("start_value"), " of the ", r("path_range"), " of ", code("t"), " and the value indicated by ", r("RangeRelativeRangePathStartRelativeTo"), "."],
-  //           rhs: [hl_builtin(r("ub"))],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathSuffixStart",
-  //           name: "start_suffix",
-  //           comment: ["The ", r("start_value"), " of the ", r("path_range"), " of ", code("t"), " without the first ", r("RangeRelativeRangePathPrefixStart"), " bytes."],
-  //           rhs: ["[", hl_builtin("u8"), "]"],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathEndRelativeTo",
-  //           name: "path_end_relative_to",
-  //           comment: ["Whether the ", r("end_value"), " of the ", r("path_range"), " of ", code("t"), " is encoded relative to the ", r("start_value"), " (", hl_builtin("start"), ") or to the ", r("end_value"), " (", hl_builtin("end"), ") of the ", r("path_range"), " of ", code("r"), ", or relative to the ", r("start_value"), " of the ", r("path_range"), " of ", code("t"), " (", hl_builtin("self"), "), or whether the ", r("path_range"), " of ", code("t"), " is ", r("range_open", "open"), " (", hl_builtin("open"), ")."],
-  //           rhs: [hl_builtin("start"), " | ", hl_builtin("end"), " | ", hl_builtin("self"), " | ", hl_builtin("open")],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathPrefixEnd",
-  //           name: "end_prefix_length",
-  //           comment: ["The length of the longest common prefix of the ", r("end_value"), " of the ", r("path_range"), " of ", code("t"), " and the value indicated by ", r("RangeRelativeRangePathEndRelativeTo"), "."],
-  //           rhs: [hl_builtin(r("ub"))],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangePathSuffixEnd",
-  //           name: "end_suffix",
-  //           comment: ["The ", r("end_value"), " of the ", r("path_range"), " of ", code("t"), " without the first ", r("RangeRelativeRangePathPrefixEnd"), " bytes."],
-  //           rhs: ["[", hl_builtin("u8"), "]"],
-  //         },
-  //         {
-  //           id: "RangeRelativeRangeTimeStartRelativeTo",
-  //           name: "time_start_relative_to",
-  //           comment: ["Whether the ", r("start_value"), " of the ", r("time_range"), " of ", code("t"), " is obtained by adding a value to the ", r("start_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("start_plus"), "), by subtracting a value from the ", r("start_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("start_minus"), "), by adding a value to the ", r("end_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("end_plus"), "), or by subtracting a value from the ", r("end_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("end_minus"), ")."],
-  //           rhs: [hl_builtin("start_plus"), " | ", hl_builtin("start_minus"), " | ", hl_builtin("end_plus"), " | ", hl_builtin("end_minus")],
-  //         },
-  //         {
-  //             id: "RangeRelativeRangeTimeStart",
-  //             name: "time_start_difference",
-  //             comment: ["The value to use according to ", r("RangeRelativeRangeTimeStartRelativeTo"), " to compute the ", r("start_value"), " of the ", r("time_range"), " of ", code("t"), "."],
-  //             rhs: hl_builtin("u64"),
-  //         },
-  //         {
-  //           id: "RangeRelativeRangeTimeEndRelativeTo",
-  //           name: "time_end_relative_to",
-  //           comment: ["Whether the ", r("time_range"), " of ", code("t"), " is ", r("open_range", "open"), " (", hl_builtin("none"), "), or whether ", r("end_value"), " of the ", r("time_range"), " of ", code("t"), " is obtained by adding a value to the ", r("start_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("start_plus"), "), by subtracting a value from the ", r("start_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("start_minus"), "), by adding a value to the ", r("end_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("end_plus"), "), or by subtracting a value from the ", r("end_value"), " of the ", r("time_range"), " of ", code("r"), " (", hl_builtin("end_minus"), ")."],
-  //           rhs: [hl_builtin("start_plus"), " | ", hl_builtin("start_minus"), " | ", hl_builtin("end_plus"), " | ", hl_builtin("end_minus"), " | ", hl_builtin("none")],
-  //         },
-  //         {
-  //             id: "RangeRelativeRangeTimeEnd",
-  //             name: "time_end_difference",
-  //             comment: ["The value to use according to ", r("RangeRelativeRangeTimeEndRelativeTo"), " to compute the ", r("end_value"), " of the ", r("time_range"), " of ", code("t"), ", or ", hl_builtin("none"), " if the ", r("time_range"), " of ", code("t"), " is ", r("open_range", "open"), "."],
-  //             rhs: [hl_builtin("u64"), " | ", hl_builtin("none")],
-  //         },
-  //     ],
-  //   }),
-
-  // ),
 
     ]),
   ]),

@@ -289,7 +289,7 @@ export function function_call(fn: Expression, ...args: Expression[]): Expression
         args_to_render.push(args[i]);
       }
       args_to_render.push(hl_punctuation(")"));
-      return code(args[0], args_to_render);
+      return [args[0], args_to_render];
     }
   );
   

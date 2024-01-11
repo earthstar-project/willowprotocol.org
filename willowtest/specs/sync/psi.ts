@@ -75,10 +75,10 @@ export const psi: Expression = site_template(
           "Alfie and Betty each randomly select a secret colour ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
         )],
         [
-          "They each mix their data colour with their secret colour and send the result to the other person (", function_call("mix", r("data_A"), r("secret_A")), " and ", function_call("mix", r("data_B"), r("secret_B")), ").",
+          "They each mix their data colour with their secret colour and send the result to the other person (", code(function_call("mix", r("data_A"), r("secret_A"))), " and ", code(function_call("mix", r("data_B"), r("secret_B"))), ").",
         ],
         [
-          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A")), " and ", function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B")), ").",
+          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", code(function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A"))), " and ", code(function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B"))), ").",
         ],
       ),
 
@@ -321,15 +321,15 @@ export const psi: Expression = site_template(
         [
           "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [function_call(r("encode_user_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation")), "."],
-            [function_call(r("encode_user_pk"), r("subspace_new_user")), "."],
+            [code(function_call(r("encode_user_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
           ),
         ],
         [
           preview_scope("Otherwise, let ", def_value({id: "subspace_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last pair of ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), "."), " Then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [function_call(r("encode_user_sig"), r("subspace_prev_signature")), "."],
-            [function_call(r("encode_user_pk"), r("subspace_new_user")), "."],
+            [code(function_call(r("encode_user_sig"), r("subspace_prev_signature"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
           ),
         ],
       ),
