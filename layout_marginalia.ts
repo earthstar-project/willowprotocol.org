@@ -177,6 +177,7 @@ body {
     
     .aside figcaption {
       font-size: 0.9rem;
+    }
 
     .aside:not(.inline) {
         display: initial;
