@@ -24,16 +24,14 @@ def_parameter_fn,
   pinformative,
   site_template,
 } from "../main.ts";
-import { specStatus } from "../../spec_status.ts";
 
 export const data_model: Expression = site_template(
   {
     title: "Willow Data Model",
     name: "data_model",
+    status: "final",
   },
-  [
-    pinformative(specStatus('final')),
-    
+  [    
     pinformative("In this document, we define the core data model of Willow."),
 
     pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),

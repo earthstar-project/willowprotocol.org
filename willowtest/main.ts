@@ -53,6 +53,7 @@ import { why_willow } from "./specs/more/why_willow.ts";
 import { threedstorage } from "./specs/more/3dstorage.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 import { spec_statuses } from "./specs/more/statuses.ts";
+import { SpecStatus, specStatus } from "../spec_status.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -76,6 +77,7 @@ export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
+  status?: SpecStatus;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -94,6 +96,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 meta.name,
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
+                meta.status ? pinformative(specStatus(meta.status)) : "",
                 args[0],
               ),
             ),

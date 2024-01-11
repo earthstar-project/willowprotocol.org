@@ -1,14 +1,13 @@
-import { R, Rs, def, def_fake, r, rs } from "../../defref.ts";
-import { aside, code, em, img, p } from "../../h.ts";
+import { R, def, def_fake, r, rs } from "../../defref.ts";
+import { code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
-import { $, $comma, $dot } from "../../katex.ts";
-import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array } from "../../pseudocode.ts";
+import { site_template, pinformative, lis, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
+import { $dot } from "../../katex.ts";
+import { SimpleEnum, pseudocode, hl_builtin, Struct } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
-import { specStatus } from "../../spec_status.ts";
 
 const apo = "’";
 
@@ -16,10 +15,9 @@ export const sync: Expression = site_template(
     {
         title: "Willow General Purpose Sync Protocol",
         name: "sync",
+        status: "candidate",
     },
-    [
-        pinformative(specStatus('candidate')),
-        
+    [        
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         hsection("sync_intro", "Introduction", [

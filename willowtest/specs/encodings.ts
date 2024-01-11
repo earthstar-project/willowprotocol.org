@@ -16,26 +16,22 @@ import {
   figcaption,
   figure,
   img,
-  li,
   table,
   tbody,
   td,
   th,
   thead,
   tr,
-  ul,
 } from "../../h.ts";
 import { def, preview_scope, r, r$, rs } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression, Invocation, new_macro } from "macro";
 import { hsection } from "../../hsection.ts";
-import { Struct, def_type, field_access, function_call, hl_builtin, pseudocode } from "../../pseudocode.ts";
+import { def_type, field_access, function_call } from "../../pseudocode.ts";
 import { $comma, $dot, $ } from "../../katex.ts";
 import { surpress_output } from "../../tsgen.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
-
-const apo = "’";
 
 export function small_img(
   src: Expression,
@@ -96,6 +92,7 @@ export function inclusion_flag_remark(
 export const encodings: Expression = site_template({
   name: "encodings",
   title: "On Encodings",
+  status: "candidate",
 }, [
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
