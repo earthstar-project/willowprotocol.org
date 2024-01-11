@@ -170,6 +170,13 @@ body {
         margin-bottom: 1em;
         white-space: normal;
     }
+    
+    .aside a.ref.type, .aside a.ref.symbol, .aside code, .aside a.ref.param, .aside a.ref.value, .aside a.ref.member, .aside a.ref.fn, .aside .path  {
+      font-size: 0.85rem;
+    }
+    
+    .aside figcaption {
+      font-size: 0.9rem;
 
     .aside:not(.inline) {
         display: initial;
