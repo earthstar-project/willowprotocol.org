@@ -56,9 +56,7 @@ export const psi: Expression = site_template(
 
     hsection("private_equality_testing", "Private Equality Testing", [
       pinformative(
-        "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of ", sidenote("inequality", [
-          "If Alfie and Betty simply exchanged hashes of their items, and Alfie later also performed a private equality test with Gemma, then Alfie would learn whether Betty and Gemma held the same item. Hence, exchanging hashes is not sufficiently private for our purposes.",
-        ]), ". Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
+        "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of inequality. Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
       ),
 
       marginale_inlineable(img(asset("psi/psi_paint.png"))),
