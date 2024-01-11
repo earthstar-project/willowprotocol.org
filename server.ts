@@ -57,7 +57,7 @@ Deno.serve(async (req) => {
       return new Response(file.readable, {
         headers: {
           "Content-Type": contentKind,
-          "Cache-Control": "public, max-age 31536000, s-maxage 31536000",
+          "Cache-Control": "s-max-age=31536000,max-age=31536000,public",
         },
       });
     }
@@ -102,7 +102,7 @@ Deno.serve(async (req) => {
           headers: {
             "Content-Type": "text/html",
             "ETag": etag,
-            "Cache-Control": "public, max-age 3600, s-maxage 3600",
+            "Cache-Control": "s-max-age=3600,max-age=3600,public",
           },
         });
       } catch {
@@ -120,7 +120,7 @@ Deno.serve(async (req) => {
         return new Response(htmlFile.readable, {
           headers: {
             "Content-Type": "text/html",
-            "Cache-Control": "public, max-age 3600, s-maxage 3600",
+            "Cache-Control": "s-max-age=3600,max-age=3600,public",
           },
         });
       } catch {
