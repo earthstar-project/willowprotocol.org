@@ -188,7 +188,7 @@ export const resource_control: Expression = site_template(
       pseudocode(
         new Struct({
           id: "ResourceControlGuarantee",
-          name: "Guarantee",
+          name: "IssueGuarantee",
           comment: [
             "The ", r("resources_server"), " makes a binding promise of ", r("ResourceControlGuaranteeAmount"), " many bytes of available buffer capacity to the ", r("resources_client"), ".",
           ],
@@ -226,7 +226,7 @@ export const resource_control: Expression = site_template(
         }),
         new Struct({
           id: "ResourceControlOops",
-          name: "Oops",
+          name: "Plead",
           comment: [
             "The ", r("resources_server"), " asks the ", r("resources_client"), " to send an ", r("ResourceControlAbsolve"), " message such that the client’s remaining ", rs("guarantee"), " will be ", r("ResourceControlOopsTarget"), ".",
           ],
@@ -245,7 +245,7 @@ export const resource_control: Expression = site_template(
         }),
         new Struct({
           id: "ResourceControlStartedDropping",
-          name: "StartedDropping",
+          name: "AnnounceDropping",
           comment: [
             "The ", r("resources_server"), " notifies the ", r("resources_client"), " that it has started dropping messages and will continue to do so until it receives an ", r("ResourceControlApology"), " message. The ", r("resources_server"), " must send any outstanding ", rs("guarantee"), " of the ", r("logical_channel"), " before sending a ", r("ResourceControlStartedDropping"), " message.",
           ],
@@ -259,7 +259,7 @@ export const resource_control: Expression = site_template(
         }),
         new Struct({
           id: "ResourceControlApology",
-          name: "Apology",
+          name: "Apologise",
           comment: [
             "The ", r("resources_client"), " notifies the ", r("resources_server"), " that it can stop dropping messages on this ", r("logical_channel"), ".",
           ],
@@ -351,7 +351,7 @@ export const resource_control: Expression = site_template(
         pseudocode(
           new Struct({
             id: "HandleBind",
-            name: "Bind",
+            name: "BindHandle",
             comment: [
               "The ", r("handle_client"), " directs the ", r("handle_server"), " to ", r("handle_bind"), " the next unused numeric ", r("resource_handle"), " to the given value.",
             ],
@@ -373,7 +373,7 @@ export const resource_control: Expression = site_template(
           }),
           new Struct({
             id: "HandleFree",
-            name: "Free",
+            name: "FreeHandle",
             comment: [
               "A peer asks the other peer to ", r("handle_free"), " a ", r("resource_handle"), ".",
             ],
