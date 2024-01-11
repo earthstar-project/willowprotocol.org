@@ -53,10 +53,13 @@ export function small_img(
   return new Invocation(macro, [src]);
 }
 
-export function two_bit_int(start_bit: number, value_to_encode: Expression): BitfieldRow {
+export function two_bit_int(start_bit: number, value_to_encode: Expression, unless?: Expression): BitfieldRow {
   return new BitfieldRow(
     2,
     [
+      unless ? [
+        div(code("00"), " if ", unless, ", otherwise:"),
+      ] : "",
       div(
         `Bit ${start_bit} is `, code("1"), " ", r("iff"), " ", function_call(r("compact_width"), value_to_encode), " is ", code("4"), " or ", code("8"), ".",
       ),
@@ -844,77 +847,44 @@ export const encodings: Expression = site_template({
           encodingdef(
             new Bitfields(
               new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " ",
-                  code(r("3dr3d_s2s"), " <= ", r("3dr3d_s2e")),
-                ],
-                [
-                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart"), " or ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd"), "?",
-                ],
-              ),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " bit zero is ", code("1"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart")), ", or ",
-                  " bit zero is ", code("0"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd")), ".",
-                ],
-                [
-                  "Add or subtract ", r("3dr3d_start_diff"), "?",
-                ],
-              ),
-              two_bit_int(2, r("3dr3d_start_diff")),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " ",
-                  code(r("3dr3d_e2s"), " <= ", r("3dr3d_e2e")),
-                ],
-                [
-                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart"), " or ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd"), "?",
-                ],
-              ),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " bit four is ", code("1"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart")), ", or ",
-                  " bit four is ", code("0"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd")), ".",
-                ],
-                [
-                  "Add or subtract ", r("3dr3d_end_diff"), "?",
-                ],
-              ),
-              two_bit_int(6, r("3dr3d_end_diff")),
-              new BitfieldRow(
                 2,
                 [
                   div(
-                    code("00"), " if ",
+                    code("01"), " if ",
                     code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")), ",",
                   ),
                   div(
-                    code("01"), " if ",
+                    code("10"), " if ",
                     code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")), ",",
                   ),
                   div(
-                    code("10"), " otherwise.",
+                    code("11"), " otherwise.",
                   ),
+                ],
+                [
+                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), "?"
                 ],
               ),
               new BitfieldRow(
                 2,
                 [
                   div(
-                    code("00"), " if ",
-                    code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")), ",",
+                    code("00"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")), ", and else "
                   ),
                   div(
                     code("01"), " if ",
+                    code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")), ",",
+                  ),
+                  div(
+                    code("10"), " if ",
                     code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")), ",",
                   ),
                   div(
                     code("10"), " otherwise.",
                   ),
+                ],
+                [
+                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), "?"
                 ],
               ),
               new BitfieldRow(
@@ -929,37 +899,131 @@ export const encodings: Expression = site_template({
               new BitfieldRow(
                 1,
                 [
-                  code("1"), " ", r("iff"), " the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
-                ],
-                [
-                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " or to ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), "?",
+                  code("1"), " ", r("iff"), " ", code(field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " == ", r("range_open")),
                 ],
               ),
-              zero_bits(2),
+              new BitfieldRow(
+                1,
+                [
+                  div(
+                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " == ", r("range_open")), ", otherwise "
+                  ),
+                  div(
+                    code("1"), " ", r("iff"), " the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
+                  ),
+                ],
+                [
+                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " or to ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), " (if at all)?",
+                ],
+              ),
+              new BitfieldRow(
+                1,
+                [
+                  code("1"), " ", r("iff"), " ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")),
+                ],
+              ),  
+              new BitfieldRow(
+                1,
+                [
+                  code("1"), " ", r("iff"), " ",
+                  code(r("3dr3d_s2s"), " <= ", r("3dr3d_s2e")),
+                ],
+                [
+                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart"), " or ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd"), "?",
+                ],
+              ),
+              new BitfieldRow(
+                1,
+                [
+                  code("1"), " ", r("iff"), " bit eight is ", code("1"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart")), ", or ",
+                  " bit eight is ", code("0"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd")), ".",
+                ],
+                [
+                  "Add or subtract ", r("3dr3d_start_diff"), "?",
+                ],
+              ),
+              two_bit_int(10, r("3dr3d_start_diff")),
+              new BitfieldRow(
+                1,
+                [
+                  div(
+                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")), ", otherwise "
+                  ),
+                  div(
+                    code("1"), " ", r("iff"), " ",
+                    code(r("3dr3d_e2s"), " <= ", r("3dr3d_e2e")),
+                  ),
+                ],
+                [
+                  "Encode ", field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " relative to ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart"), " or ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd"), " (if at all)?",
+                ],
+              ),
+              new BitfieldRow(
+                1,
+                [
+                  div(
+                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")), ", otherwise "
+                  ),
+                  div(
+                    code("1"), " ", r("iff"), " bit twelve is ", code("1"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart")), ", or ",
+                    " bit twelve is ", code("0"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeEnd")), ".",
+                  ),
+                ],
+                [
+                  "Add or subtract ", r("3dr3d_end_diff"), " (if encoding it at all)?",
+                ],
+              ),
+              two_bit_int(14, r("3dr3d_end_diff"), code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open"))),
             ),
             [[
-              r("3dr3d_start_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_start_diff")), "-byte integer",
+              function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart")),
+              ", or the empty string if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")),
+              " or ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")),
             ]],
             [[
-              r("3dr3d_end_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_end_diff")), "-byte integer",
-            ]],
-            [[
-              r("aia_end"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("aia_end")), "-byte integer, or the empty string, if ",
-              code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
+              function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd")),
+              ", or the empty string if ",
+              code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")),
+              ", ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeStart")),
+              " or ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("3dr3d_reference"), "3dRangeSubspace"), "SubspaceRangeEnd")),
             ]],
             [[
               function_call(
                 r("encode_path_relative"),
-                field_access(r("area_in_area_inner"), "AreaPath"),
-                field_access(r("area_in_area_outer"), "AreaPath"),
+                field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"),
+                field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"),
+              ),
+              " if the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
+              function_call(
+                r("encode_path_relative"),
+                field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeStart"),
+                field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
               ),
             ]],
             [[
-              function_call(
-                r("encode_subspace_id"),
-                field_access(r("area_in_area_inner"), "AreaSubspace"),
-              ), ",  or the empty string, if ",
-              code(field_access(r("area_in_area_inner"), "AreaSubspace"), " == ", field_access(r("area_in_area_outer"), "AreaSubspace")),
+              div(
+                "the empty string if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " == ", r("range_open")), ", otherwise:",
+              ),
+              div(
+                function_call(
+                  r("encode_path_relative"),
+                  field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"),
+                  field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"),
+                ),
+                " if the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeStart"), " is at least as long as the longest common ", r("path_prefix"), " of ", field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"), " and ", field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"), ", otherwise ",
+                function_call(
+                  r("encode_path_relative"),
+                  field_access(field_access(r("3dr3d_primary"), "3dRangePath"), "PathRangeEnd"),
+                  field_access(field_access(r("3dr3d_reference"), "3dRangePath"), "PathRangeEnd"),
+                ),
+              ),
+            ]],
+            [[
+              r("3dr3d_start_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_start_diff")), "-byte integer",
+            ]],
+            [[
+              r("3dr3d_end_diff"), ", encoded as an unsigned, big-endian ", function_call(r("compact_width"), r("3dr3d_end_diff")), "-byte integer, or the empty string, if ",
+              code(field_access(field_access(r("3dr3d_end_diff"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")),
             ]],
           ),
         ),
