@@ -1025,6 +1025,43 @@ export const sync: Expression = site_template(
                     [r("SyncApology"), " 3"],
                     [r("SyncHandleFree"), " 2 + 1 + 3"],
                 ),
+
+                lis(
+                    ["Commitment Scheme", lis(
+                        "CommitmentReveal",
+                    )],
+                    ["Private Area Intersection", lis(
+                        "PaiBindFragment",
+                        "PaiReplyFragment",
+                        "PaiRequestSubspaceCapability",
+                        "PaiReplySubspaceCapability",
+                    )],
+                    ["Setup", lis(
+                        "SetupBindReadCapability",
+                        "SetupBindStaticToken",
+                        "SetupBindAreaOfInterest",
+                    )],
+                    ["Data", lis(
+                        "DataSendEntry",
+                        "DataSendPayload",
+                        "DataSetEagerness",
+                        "DataBindPayloadRequest",
+                        "DataReplyPayload",
+                    )],
+                    ["Reconciliation", lis(
+                        "ReconciliationSendFingerprint",
+                        "ReconciliationAnnounceEntries",
+                        "ReconciliationSendEntry",
+                    )],
+                    ["Control", lis(
+                        "ControlIssueGuarantee",
+                        "ControlAbsolve",
+                        "ControlPlead",
+                        "ControlNotifyDropping",
+                        "ControlApologise",
+                        "ControlFreeHandle",
+                    )],
+                ),
             ]),
         ]),
 
