@@ -66,6 +66,18 @@ export function html5(
               content: "width=device-width, initial-scale=1.0",
             }),
             link({
+              rel: "alternate",
+              type: "application/rss+xml",
+              href: "/rss_news.xml",
+              title: "Willow News and Updates"
+            }),
+            link({
+              rel: "alternate",
+              type: "application/rss+xml",
+              href: "/rss_news.xml",
+              title: "Willow Specification Changelog"
+            }),
+            link({
               rel: "icon",
               href: "/named_assets/favicon.svg",
               type: "image/svg+xml"

@@ -45,12 +45,21 @@ export interface RssFeedItemMeta {
     format?: Intl.DateTimeFormat,
 }
 
-export function create_rss_item(item: RssFeedItemMeta, description: Expression): Expression {
+export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
+  return create_rss_item("Willow News and Updates", item, description);
+}
+
+
+export function create_changelog_item(item: RssFeedItemMeta, description: Expression): Expression {
+  return create_rss_item("Willow Specification Changelog", item, description);
+}
+
+export function create_rss_item(feedTitle: string, item: RssFeedItemMeta, description: Expression): Expression {
     const macro = new_macro(
       undefined,
 
       (expanded, ctx) => {
-        rss_add_item("Willow Protocol Changelog", {
+        rss_add_item(feedTitle, {
             title: item.title,
             link: build_url(item.name, ctx),
             description: `<![CDATA[${expanded}]]>`,
@@ -107,9 +116,8 @@ function render_rss_feed_item(item: RssFeedItemMeta, description: string): strin
     const format = item.format ? item.format : default_format;
 
     return `<div class="rssItem">
-    <time>${format.format(item.pubDate)}</time>
-    <a class="render_rss_feed_itemTitle" id="${item.name}" href="#${item.name}">${title}</a>
-    <div class="render_rss_feed_itemDescription">${description}</div>        
+    <a class="rss_item_title" id="${item.name}" href="#${item.name}">${title}</a> <time class="rss_item_time">${format.format(item.pubDate)}</time>
+    <div class="render_rss_feed_itemDescription">${description}</div>       
 </div>`;
 }
 

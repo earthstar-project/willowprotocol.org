@@ -103,6 +103,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 ul(
                   li(a({ href: "/", class: "internal" }, "Home")),
                   li(link_name("specifications", "Specs")),
+                  li(link_name("changes", "News")),
                   li(link_name("more", "More")),
                   li(
                     a(
@@ -566,23 +567,21 @@ evaluate([
   build_rss_feeds([{
     path: ["rss_changelog.xml"],
     feed_info: {
-      title: "Willow Protocol Changelog",
-      link: "https://willowprotocol.org/more/changes/index.html",
-      description: "TODO",
+      title: "Willow Specification Changelog",
+      link: "https://willowprotocol.org/more/changes/index.html#spec_changes",
+      description: "Although we consider Willow’s specifications stable, unforeseen outcomes may force us to make amendments. Rather than making this a source of exciting surprises for implementors, we prefer to list those (hopefully few) changes here.",
       atomSelf: "https://willowprotocol.org/rss_changelog.xml",
       language: "en-gb",
-      copyright: "TODO",
-      managingEditor: "TODO@example.org (Firstname Lastname)", // do we want to place an email here? Or require people to go to the website?
-      webMaster: "TODO@example.org (Firstname Lastname)", // do we want to place an email here? Or require people to go to the website?
-      ttl: 42, // TODO
-      image: {
-        url: "https://example.org/image.png",
-        title: "Willow Protocol Changelog",
-        link: "https://willowprotocol.org/more/changes/index.html",
-        width: 42, // TODO
-        height: 42, // TODO
-        description: "TODO",
-      },
+    },
+  },
+  {
+    path: ["rss_news.xml"],
+    feed_info: {
+      title: "Willow News and Updates",
+      link: "https://willowprotocol.org/more/changes/index.html#news_and_updates",
+      description: "Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful.",
+      atomSelf: "https://willowprotocol.org/rss_changelog.xml",
+      language: "en-gb",
     },
   }]),
 ]);

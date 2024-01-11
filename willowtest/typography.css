@@ -274,3 +274,11 @@ a.fn, .enclosing.fn a {
   border-radius: 5px;
   padding: 0.2em;  
 }
+
+.rss_item_title {
+  font-weight: bold;
+}
+
+.rss_item_time {
+  color: var(--dark-green)
+}

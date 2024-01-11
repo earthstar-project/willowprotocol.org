@@ -23,7 +23,7 @@ export const more: Expression = site_template(
         link_name("3dstorage", "Three-Dimensional Data Storage"),
       ),
       lis(
-        link_name("changes", "Changes we had to make")
+        link_name("changes", "News, improvements, and necessary changes")
       )
     ),
   ],
