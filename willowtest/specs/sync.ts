@@ -831,6 +831,8 @@ export const sync: Expression = site_template(
 
             hsection("sync_encodings", "Encodings", [
 
+                pinformative("Work in progress."),
+
 
                 // We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", r("ReadCapability"), ". The ", r("encoding_function"), " for ", r("ReadCapability"), " need not encode the ", r("granted_namespace"), ", it can be inferred from context.
 
@@ -1014,7 +1016,7 @@ export const sync: Expression = site_template(
                     [r("BindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
                     [r("RangeFingerprint"), " 2 + 2 + 1, (special case empty fingerprint)"],
                     [r("RangeEntries"), " 2 + 2 + 2 + 1 + 1"],
-                    [r("ReconEntry"), " 2 + 2"],
+                    [r("ReconEntry"), " 2 + 2 + 1 (entry in 3dRange or relative to previous entry)"],
                     [r("Eagerness"), " 1 + 2 + 2"],
                     [r("SyncGuarantee"), " 2 + 3"],
                     [r("SyncAbsolve"), " 2 + 3"],
