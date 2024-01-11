@@ -739,21 +739,21 @@ export const encodings: Expression = site_template({
                 1,
                 [
                   code("1"), " ", r("iff"), " ",
-                  code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
-                ],
-                [
-                  inclusion_flag_remark([r("end_value"), " of ", field_access(r("area_in_area_inner"), "AreaTime")]),
-                ],
-              ),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " ",
                   code(field_access(r("area_in_area_inner"), "AreaSubspace"), " != ", field_access(r("area_in_area_outer"), "AreaSubspace")),
                 ],
                 [
                   inclusion_flag_remark(field_access(r("area_in_area_inner"), "AreaSubspace")),
                 ]
+              ),
+              new BitfieldRow(
+                1,
+                [
+                  code("1"), " ", r("iff"), " ",
+                  code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
+                ],
+                [
+                  inclusion_flag_remark([r("end_value"), " of ", field_access(r("area_in_area_inner"), "AreaTime")]),
+                ],
               ),
               new BitfieldRow(
                 1,
@@ -789,25 +789,25 @@ export const encodings: Expression = site_template({
               two_bit_int(6, r("aia_end")),
             ),
             [[
-              r("aia_start"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_start"))), "-byte integer",
-            ]],
-            [[
-              r("aia_end"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_end"))), "-byte integer, or the empty string, if ",
-              code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
-            ]],
+              code(function_call(
+                r("encode_subspace_id"),
+                field_access(r("area_in_area_inner"), "AreaSubspace"),
+                )), ",  or the empty string, if ",
+                code(field_access(r("area_in_area_inner"), "AreaSubspace"), " == ", field_access(r("area_in_area_outer"), "AreaSubspace")),
+              ]],
             [[
               code(function_call(
                 r("encode_path_relative"),
                 field_access(r("area_in_area_inner"), "AreaPath"),
                 field_access(r("area_in_area_outer"), "AreaPath"),
-                )),
+              )),
             ]],
             [[
-              code(function_call(
-                r("encode_subspace_id"),
-                field_access(r("area_in_area_inner"), "AreaSubspace"),
-              )), ",  or the empty string, if ",
-              code(field_access(r("area_in_area_inner"), "AreaSubspace"), " == ", field_access(r("area_in_area_outer"), "AreaSubspace")),
+              r("aia_start"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_start"))), "-byte integer",
+            ]],
+            [[
+              r("aia_end"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_end"))), "-byte integer, or the empty string, if ",
+              code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
             ]],
           ),
         ),
@@ -947,7 +947,7 @@ export const encodings: Expression = site_template({
                 1,
                 [
                   div(
-                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")), ", otherwise "
+                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")), ", otherwise "
                   ),
                   div(
                     code("1"), " ", r("iff"), " ",
@@ -962,7 +962,7 @@ export const encodings: Expression = site_template({
                 1,
                 [
                   div(
-                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open")), ", otherwise "
+                    code("0"), " if ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")), ", otherwise "
                   ),
                   div(
                     code("1"), " ", r("iff"), " bit twelve is ", code("1"), " and ", code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("3dr3d_reference"), "3dRangeTime"), "TimeRangeStart")), ", or ",
@@ -973,7 +973,7 @@ export const encodings: Expression = site_template({
                   "Add or subtract ", r("3dr3d_end_diff"), " (if encoding it at all)?",
                 ],
               ),
-              two_bit_int(14, r("3dr3d_end_diff"), code(field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeEnd"), " == ", r("range_open"))),
+              two_bit_int(14, r("3dr3d_end_diff"), code(field_access(field_access(r("3dr3d_primary"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open"))),
             ),
             [[
               code(function_call(r("encode_subspace_id"), field_access(field_access(r("3dr3d_primary"), "3dRangeSubspace"), "SubspaceRangeStart"))),
