@@ -21,14 +21,13 @@ def_fn,
 } from "../../main.ts";
 import { Struct, def_type, field_access, function_call, pseudo_array, pseudo_tuple, pseudocode } from "../../../pseudocode.ts";
 import { link_name } from "../../../linkname.ts";
-import { range3d_based_set_reconciliation } from "./product_based_set_reconciliation.ts";
 
 const apo = "’";
 
 const Items = "\\mathrm{Items}";
 const item_to_group = "\\mathrm{item\\_to\\_group}";
 
-export const psi: Expression = site_template(
+export const pai: Expression = site_template(
   {
     title: "Private Area Intersection",
     name: "private_area_intersection",
