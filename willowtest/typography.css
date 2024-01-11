@@ -213,7 +213,7 @@ a.ref:hover, dfn > a:hover, .enclosing a:hover {
 
 code, a.ref.type, a.ref.member, a.ref.symbol, a.ref.value, a.ref.fn, dfn > a.type, dfn > a.member, dfn > a.value, dfn > a.symbol, dfn > a.fn, .path {
   font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
-  font-size: 0.9em;
+  font-size: 1.05rem;
   word-break: break-word;
   font-style: normal;
 }
