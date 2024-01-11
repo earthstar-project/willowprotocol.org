@@ -31,14 +31,14 @@ export function encodingdef(
       const the_rows: Expression[] = [];
 
       let args_counter = 0;
+      let hasRemarks = false;
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
 
         if (row instanceof Bitfields) {
-          the_rows.push(tr(th({ colspan: "2" }, "Bitfield")));
           the_rows.push(tr(
-            th("Bits"),
-            th("most-significant bit is bit 0"),
+            th({ class: "bitCount" }, "Bit"),
+            th("Big-endian bitfield"),
           ));
 
           for (let j = 0; j < row.rows.length; j++) {
@@ -52,10 +52,14 @@ export function encodingdef(
             if (row.rows[j].remark) {
               def_body.unshift(marginale(args[args_counter]));
               args_counter += 1;
+              hasRemarks = true;
             }
 
             cells.push(td({ class: "bitDef" }, def_body));
-            the_rows.push(tr(clearfix, cells));
+            the_rows.push(tr({
+              class: 'bitfieldDef',
+              ...clearfix
+            }, cells));
           }
         } else {
           const def_body: Expression[] = [args[args_counter]];
@@ -64,14 +68,18 @@ export function encodingdef(
           if (row.length == 2 && row[1]) {
             def_body.unshift(marginale(args[args_counter]));
             args_counter += 1;
+            hasRemarks = true
           }
 
-          the_rows.push(tr(clearfix, td({ colspan: "2" }, def_body)));
+          the_rows.push(tr({
+            class: "bytesDef",
+            ...clearfix
+          }, td({ colspan: "2" }, def_body)));
         }
       }
 
       return table(
-        { class: "encodingdef" },
+        { class: hasRemarks ? "encodingdef withremarks" : "encodingdef withoutremarks" },
         the_rows,
       );
     },
@@ -87,9 +95,13 @@ export function encodingdef(
         const field_row = row.rows[j];
         if (field_row.count === 1) {
           the_args.push(`${bit_counter}`);
+        } else if (field_row.count === 2) {
+          the_args.push(
+            `${bit_counter}, ${bit_counter + field_row.count - 1}`,
+          );
         } else {
           the_args.push(
-            `${bit_counter} - ${bit_counter + field_row.count - 1}`,
+            `${bit_counter} – ${bit_counter + field_row.count - 1}`,
           );
         }
         bit_counter += field_row.count;

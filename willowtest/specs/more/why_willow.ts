@@ -1,7 +1,6 @@
 import { Expression } from "macro";
-import { link, pinformative, site_template } from "../../main.ts";
+import { pinformative, site_template } from "../../main.ts";
 import { em } from "../../../h.ts";
-import { sidenote } from "../../../marginalia.ts";
 
 export const why_willow: Expression = site_template(
 		{
@@ -18,20 +17,3 @@ export const why_willow: Expression = site_template(
 				pinformative("We made Willow to do something to the best of our ability, and in the light of the kind of world we’d like to see.")
 		],
 );
-
-/*
-
-
-
-
-
-	
-
-	
-
-
-
-	
-
-
-*/

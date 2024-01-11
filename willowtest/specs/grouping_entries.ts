@@ -1,4 +1,4 @@
-import { def_value, link, lis, pinformative, quotes, site_template } from "../main.ts";
+import { blue, def_value, green, link, lis, orange, pinformative, purple, quotes, site_template, vermillion } from "../main.ts";
 import { hsection } from "../../hsection.ts";
 import { code, em, figcaption, figure, img, span } from "../../h.ts";
 import { asset } from "../../out.ts";
@@ -33,7 +33,7 @@ export const grouping_entries: Expression = site_template({
     
     figure(
       img(asset("grouping_entries/ranges.png")),
-      figcaption("A ", span({class: "vermillion"}, r('closed_range')), " and an ", span({class: "green"}, r('open_range')), ".")
+      figcaption("A ", vermillion(r('closed_range')), " and an ", green(r('open_range')), ".")
     ),
 
     pinformative("The Willow protocols use three types of ", rs("range"), ":"),
@@ -103,7 +103,7 @@ export const grouping_entries: Expression = site_template({
     marginale_inlineable(
       [
         img(asset("grouping_entries/3d_range.png")),
-        figcaption("A ", span({class: "orange"}, r("3dRange")), " composed of a ", span({class: "green"}, r("TimeRange")), ", ", span({class: "blue"}, r("PathRange")), ", and ", span({class: "purple"}, r("SubspaceRange")), ".")
+        figcaption("A ", orange(r("3dRange")), " composed of a ", green(r("TimeRange")), ", ", blue(r("PathRange")), ", and ", purple( r("SubspaceRange")), ".")
       ]
     ),
 

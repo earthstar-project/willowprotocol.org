@@ -54,6 +54,7 @@ import { threedstorage } from "./specs/more/3dstorage.ts";
 import { changes } from "./specs/more/changes.ts";
 import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
+import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -311,6 +312,69 @@ export function aside_block(
   return aside({ class: "long" }, body);
 }
 
+export function orange(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "orange" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function sky_blue(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "sky-blue" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function green(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "green" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function yellow(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "yellow" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function blue(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "blue" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function purple(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "purple" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function vermillion(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "vermillion" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
 export function path(
   ...components: Expression[]
 ): Expression {
@@ -560,6 +624,7 @@ evaluate([
       out_index_directory("why", why_willow),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("changes", changes),
+      out_index_directory("projects_and_communities", projects_and_communities),
     ]),
     copy_statics("assets"),
   ),
