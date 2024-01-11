@@ -308,6 +308,69 @@ export function aside_block(
   return aside({ class: "long" }, body);
 }
 
+export function orange(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "orange" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function sky_blue(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "sky-blue" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function green(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "green" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function yellow(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "yellow" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function blue(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "blue" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function purple(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "purple" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
+export function vermillion(
+  ...exps: Expression[]
+): Invocation {
+  const macro = new_macro(
+    (args, _ctx) => span({ class: "vermillion" }, ...args),
+  );
+  return new Invocation(macro, exps);
+}
+
 export function path(
   ...components: Expression[]
 ): Expression {
