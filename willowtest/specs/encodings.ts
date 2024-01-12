@@ -1,6 +1,7 @@
 import {
 bitfield_doc,
 def_fn,
+  def_parameter_fn,
   def_value,
   link,
   lis,
@@ -34,6 +35,7 @@ import { Struct, def_type, field_access, function_call, hl_builtin, pseudocode }
 import { $comma, $dot, $ } from "../../katex.ts";
 import { surpress_output } from "../../tsgen.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
+import { link_name } from "../../linkname.ts";
 
 const apo = "’";
 
@@ -99,7 +101,7 @@ export const encodings: Expression = site_template({
 }, [
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
-    sidenote("We", ["Let’ be honest: ", em("Aljoscha")]),
+    sidenote("We", ["Let’s be honest: ", em("Aljoscha")]),
     " strongly believe that specifications should concern themselves with purely logical data types as long as possible, treating encodings as a minor and ultimately interchangeable detail. When specifications define concepts in terms of their encodings, results usually end up miserably underspecified (see ", link("JSON", "https://en.wikipedia.org/wiki/JSON#Interoperability"), ") or full of incidental complexity (see ", link("XML", "https://en.wikipedia.org/wiki/XML"), ").",
   ),
 
@@ -1024,6 +1026,56 @@ export const encodings: Expression = site_template({
             [[
               r("3dr3d_end_diff"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("3dr3d_end_diff"))), "-byte integer, or the empty string, if ",
               code(field_access(field_access(r("3dr3d_end_diff"), "3dRangeTime"), "TimeRangeEnd"), " == ", r("range_open")),
+            ]],
+          ),
+        ),
+      ]),
+
+    ]),
+
+    hsection("enc_capabilitites", "Capabilities", [
+
+      pinformative("Encodings for ", link_name("meadowcap", "Meadowcap"), " and ", rs("McSubspaceCapability"), "."),
+
+      hsection("enc_subspace_capability", code("encode_subspace_capability"), [
+        pinformative(
+          "To encode a ", r("McSubspaceCapability"), " ", def_value({ id: "enc_sc_cap", singular: "c" }), ", we define ",
+          code(function_call(def_fn({id: "encode_mc_subspace_capability", math: "encode\\_mc\\_subspace\\_capability"}), r("enc_sc_cap"))), " as the concatenation of:",
+
+          encodingdef(
+            [[
+              code(function_call(
+                r("encode_namespace_pk"),
+                field_access(r("enc_sc_cap"), "subspace_cap_namespace"),
+              )),
+            ]],
+            [[
+              code(function_call(
+                r("encode_user_pk"),
+                field_access(r("enc_sc_cap"), "subspace_cap_user"),
+              )),
+            ]],
+            [[
+              code(function_call(
+                r("encode_namespace_sig"),
+                field_access(r("enc_sc_cap"), "subspace_cap_initial_authorisation"),
+              )),
+            ]],
+            [[
+              "for each pair ", code("(", def_value({id: "enc_subspace_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_subspace_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " the concatenation of:", lis(
+                [
+                  code(function_call(
+                    r("encode_user_pk"),
+                    r("enc_subspace_cap_del_pk"),
+                  )),
+                ],
+                [
+                  code(function_call(
+                    r("encode_user_sig"),
+                    r("enc_subspace_cap_del_sig"),
+                  )),
+                ],
+              ),
             ]],
           ),
         ),

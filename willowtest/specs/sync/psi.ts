@@ -267,8 +267,8 @@ export const psi: Expression = site_template(
       pseudocode(
         new Struct({
             id: "McSubspaceCapability",
-            name: "SubspaceCapability",
-            plural: "SubspaceCapabilities",
+            name: "McSubspaceCapability",
+            plural: "McSubspaceCapabilities",
             comment: ["A capability that certifies read access to arbitrary ", rs("SubspaceId"), " at some unspecified ", r("Path"), "."],
             fields: [
                 {

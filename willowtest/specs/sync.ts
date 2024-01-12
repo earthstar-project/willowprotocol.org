@@ -822,6 +822,7 @@ export const sync: Expression = site_template(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_group_member"}), " for ", r("PsiGroup"), ".",
                         ),
                         preview_scope(
+                            marginale(["When using the ", r("McSubspaceCapability"), " type, you can use ", r("encode_mc_subspace_capability"), ", but omitting the encoding of the ", r("subspace_cap_namespace"), "."]),
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_subspace_capability"}), " for ", rs("SubspaceCapability"), " of known ", r("subspace_granted_namespace"), ".",
                         ),
                         preview_scope(
