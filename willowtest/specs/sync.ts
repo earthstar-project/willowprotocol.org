@@ -863,14 +863,14 @@ export const sync: Expression = site_template(
                                 ),
                                 new BitfieldRow(
                                     1,
-                                    [code("0")],
-                                    ["unused"],
-                                ),
-                                new BitfieldRow(
-                                    1,
                                     [
                                         code("1"), " ", r("iff"), " ", field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentIsSecondary"),
                                     ]
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [code("0")],
+                                    ["unused"],
                                 ),
                             ),
                             [[
@@ -950,6 +950,41 @@ export const sync: Expression = site_template(
                             ]],
                             [[
                                 code(function_call(r("encode_sync_subspace_signature"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilitySignature"))),
+                            ]],
+                        ),
+                    ),
+
+                ]),
+
+                hsection("sync_encode_setup", "Setup", [
+                    pinformative(
+                        "The encoding of a ", r("SetupBindReadCapability"), " message ", def_value({id: "enc_setup_read", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("00")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [code("1"), " ", r("iff"), " ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), " ", rs("handle_bind"), " a ", r("fragment_secondary"), " ", r("fragment")],
+                                    [
+                                        "Encode ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), " with a ", r("SubspaceId"), "?",
+                                    ],
+                                ),
+                                two_bit_int(6, field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle")),
+                            ),
+                            [[
+                                field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"))), "-byte integer",
+                            ]],
+                            [[
+                                "work in progress"
                             ]],
                         ),
                     ),
