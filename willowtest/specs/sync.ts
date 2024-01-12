@@ -373,12 +373,6 @@ export const sync: Expression = site_template(
                                     comment: ["A ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("SetupBindAreaOfInterestAOI"), "."],
                                     rhs: r("U64"),
                                 },
-                                {
-                                    id: "SetupBindAreaOfInterestKnown",
-                                    name: "known_intersections",
-                                    comment: ["How many intersections with other ", rs("AreaOfInterest"), " the sender knows about already."],
-                                    rhs: r("U64"),
-                                },
                             ],
                         }),
                     ),
@@ -387,15 +381,9 @@ export const sync: Expression = site_template(
                         "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
                     ),
 
-                    aside_block([
-                        p("The ", r("SetupBindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("SetupBindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("AreaOfInterest"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("SetupBindAreaOfInterest"), " messages for overlapping ", rs("AreaOfInterest"), ". If both peers, upon receiving the other’s message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
-
-                        p("A simple workaround is to let ", r("alfie"), " be the only peer to initiate reconciliation. But this can introduce unnecessary delay when ", r("betty"), " sends a ", r("SetupBindAreaOfInterest"), " message for which she already knows there are intersections with ", rs("AreaOfInterest"), " that ", r("alfie"), " had previously ", r("handle_bind", "bound"), "."),
-
-                        p("In this situation, ", r("betty"), " sets the ", r("SetupBindAreaOfInterestKnown"), " field of her ", r("SetupBindAreaOfInterest"), " message to the number of reconciliation messages that she will send pertaining to her newly ", r("handle_bind", "bound"), " ", r("AreaOfInterest"), ". ", R("alfie"), " should not initiate reconciliation based on the received message until he has also received ", r("SetupBindAreaOfInterestKnown"), " many reconciliation messages pertaining to this ", r("AreaOfInterest"), " from ", r("betty"), "."),
-
-                        p(R("betty"), " should never initiate reconciliation based on messages she receives, and when she initiates reconciliation pertaining to ", rs("AreaOfInterest"), " she ", r("handle_bind", "binds"), " herself, she should meaningfully set the ", r("SetupBindAreaOfInterestKnown"), "field. ", R("alfie"), " should set the ", r("SetupBindAreaOfInterestKnown"), " field of all his ", r("SetupBindAreaOfInterest"), " messages to zero, and eagerly initiate reconciliation sessions as long as he respects ", r("betty"), "’s ", r("SetupBindAreaOfInterestKnown"), " fields."),
-                    ]),
+                    aside_block(
+                        pinformative("To avoid duplicate ", r("3drbsr"), " sessions for the same ", rs("Area"), ", only ", r("alfie"), " should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for ", r("alfie"), " to initiate reconciliation."),
+                    ),
                 
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
                     
@@ -981,7 +969,7 @@ export const sync: Expression = site_template(
                         [r("PaiRequestSubspaceCapability"), " 2"],
                         [r("PaiReplySubspaceCapability"), " 2"],
                         [r("SetupBindReadCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
-                        [r("SetupBindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
+                        [r("SetupBindAreaOfInterest"), " 2"],
                         [r("SetupBindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
                         [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
                         [r("ReconciliationAnnounceEntries"), " 2 + 2 + 2 + 1 + 1 + 1 (3dRange relative to previous range or contaniing Area)"],
