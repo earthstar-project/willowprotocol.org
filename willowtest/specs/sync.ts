@@ -383,10 +383,9 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative([
-                        marginale(["Development note: if we go for private 3d-range intersection, this message would become a ", code("SetupBindAreaOfInterestPublic"), " message, and we would add ", code("SetupBindAreaOfInterestPrivate"), " and ", code("AreaOfInterestReply"), " messages, completely analogous to the namespace PSI setup. Surprisingly little conceptual complexity involved."]),
+                    pinformative(
                         "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
-                    ]),
+                    ),
 
                     aside_block([
                         p("The ", r("SetupBindAreaOfInterestKnown"), " field serves to allow immediately following up on ", rs("SetupBindAreaOfInterest"), " with reconciliation messages concerning the ", r("handle_bind", "bound"), " ", r("AreaOfInterest"), " without the risk of duplicate reconciliation. To elaborate, imagine that both peers concurrently send ", rs("SetupBindAreaOfInterest"), " messages for overlapping ", rs("AreaOfInterest"), ". If both peers, upon receiving the other’s message, initiated reconciliation for the intersection, there would be two concurrent reconciliation sessions for the same data."),
