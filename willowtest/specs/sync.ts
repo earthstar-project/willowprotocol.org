@@ -8,6 +8,7 @@ import { site_template, pinformative, lis, pnormative, link, def_parameter_type,
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
+import { encodingdef } from "../encodingdef.ts";
 
 const apo = "’";
 
@@ -76,7 +77,7 @@ export const sync: Expression = site_template(
         hsection("sync_parameters", "Parameters", [
             pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS further requires parameters for ", link_name("access_control", "access control"), ", ", link_name("private_area_intersection", "private area intersection"), ", and ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
 
-            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have length ", def_parameter_value("challenge_length"), ", and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), "."),
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have a length of ", def_parameter_value("challenge_length"), " bytes, and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), " whose outputs have a length of ", def_parameter_value("challenge_hash_length"), " bytes."),
 
             pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
@@ -92,11 +93,11 @@ export const sync: Expression = site_template(
 
             pinformative("Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behaviour must abort the sync session. We indicate such situations by writing that something ", quotes("is an error"), ". Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfil some criteria, but a peer receives a message that does not fulfil these criteria, that is an error."),
 
-            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), " byte number ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness."),
+            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), "-byte integer ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness — they must both be unique across all protocol runs, and unpredictable."),
 
             pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "The ", r("peer_max_payload_size"), " limits when the other peer may include ", rs("Payload"), " directly when transmitting ", rs("Entry"), ": when an ", r("Entry"), "’s ", r("entry_payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", its ", r("Payload"), " may only be transmitted when explicitly requested."),
 
-            pinformative("The next ", r("challenge_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
+            pinformative("The next ", r("challenge_hash_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
             pinformative("After those initial transmissions, the protocol becomes a purely message-based protocol. There are several kinds of messages, which the peers create, encode as byte strings, and transmit mostly independently from each other."),
 
@@ -810,198 +811,64 @@ export const sync: Expression = site_template(
 
                 pinformative("Work in progress."),
 
+                pinformative("We now describe how to encode the various mesages of the WGPS."),
 
-                // We require an ", r("encoding_function"), " for ", r("sync_signature"), ", and an ", r("encoding_function"), " for ", r("ReadCapability"), ". The ", r("encoding_function"), " for ", r("ReadCapability"), " need not encode the ", r("granted_namespace"), ", it can be inferred from context.
+                hsection("sync_encoding_params", "Parameters", [
+                    pinformative("To be able to encode messages, we require certain properties from the ", link_name("sync_parameters", "protocol parameters"), ":"),
 
-                // Further, we require ", rs("encoding_function"), " for ", r("PsiGroup"), " and ", r("PsiScalar"), ".
+                    lis(
+                        ["add requirements here"],
+                    ),
+                ]),
 
-                // , and an ", r("encoding_function"), " for ", r("SubspaceCapability"), ". This ", r("encoding_function"), " need not encode the ", r("subspace_granted_namespace"), ", it can be inferred from context.", Rs("SubspaceCapability"), " must use the same signature scheme as the ", rs("ReadCapability"), "."
+                hsection("sync_encoding_messages", "Message Encodings", [
+                    pinformative("We can now define the encodings of all message kinds."),
+
+                    hsection("sync_encode_commitment", "Commitment Scheme", [
+                        pinformative(
+                            "The encoding of a ", r("CommitmentReveal"), " message is the concatenation of:",
+                            encodingdef([[
+                                "the byte ", code("0x00"),
+                            ]],
+                            [[
+                                "the ", r("CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
+                            ]]),    
+                        ),
+                    ]),
+                ]),
 
 
 
+                hsection("sync_notes", "Notes", [
+                    pinformative("Ignore these, they will disappear as we settle on the encodings."),
 
+                    pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
 
-                // marginale("The precise encoding details are still a work in progress that can only be resolved once we have integrated the planned changes to our core data model and have decided on private area intersection in the wgps."),
-                // pinformative("We now define how to encode messages as sequences of bytes. The least significant five bit of the first byte of each encoding sufficed to determine the message type."),
-
-                // hsection("encoding_reveal_commitment", code("CommitmentReveal"), [
-                //     pinformative("When encoding a ", r("CommitmentReveal"), " message, the five least significant bits of the first byte are ", code("00000"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("CommitmentRevealNonce"), "."),
-                // ]),
-
-                // hsection("encoding_bind_psi", code("PaiBindFragment"), [
-                //     pinformative("When encoding a ", r("PaiBindFragment"), " message, the five least significant bits of the first byte are ", code("00001"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("PaiBindFragmentGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                // ]),
-
-                // hsection("encoding_psi_reply", code("PaiReplyFragment"), [
-                //     pinformative("When encoding a ", r("PaiReplyFragment"), " message, the five least significant bits of the first byte are ", code("00010"), "."),
-
-                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("PaiReplyFragmentHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("PaiReplyFragmentHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
-
-                //     pinformative("This is followed by the ", r("PaiReplyFragmentGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                // ]),
-
-                // hsection("encoding_bind_namespace_public", code("BindNamespacePublic"), [
-                //     pinformative("When encoding a ", r("BindNamespacePublic"), " message, the five least significant bits of the first byte are ", code("00011"), ", the remaining three bits should be set to zero. The initial byte is followed by the ", r("BindNamespacePublicGroupMember"), ", encoded with the ", r("encoding_function"), " for ", r("PsiGroup"), "."),
-                // ]),
-
-                // hsection("encoding_bind_capability", code("SetupBindReadCapability"), [
-                //     pinformative("When encoding a ", r("SetupBindReadCapability"), " message, the five least significant bits of the first byte are ", code("00100"), "."),
-
-                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("SetupBindReadCapabilityHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("SetupBindReadCapabilityHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
-
-                //     pinformative("This is followed by the ", r("SetupBindReadCapabilitySignature"), ", encoded with the ", r("encoding_function"), " for ", r("PsiSignature"), "."),
-
-                //     pinformative("This is followed by the ", r("SetupBindReadCapabilityCapability"), ", encoded with the ", r("encoding_function"), " for ", r("ReadCapability"), " (which need not encode the ", r("granted_namespace"), ")."),
-                // ]),
-
-                // hsection("encoding_entry_push", code("DataSendEntry"), [
-                //     pinformative("When encoding a ", r("SetupBindReadCapability"), " message, the five least significant bits of the first byte are ", code("00101"), "."),
-
-                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("DataSendEntryAvailable"), " of zero or equal to the ", r("payload_length"), " of the ", r("DataSendEntryEntry"), " can be encoded efficiently, as can such an ", r("DataSendEntryOffset"), ". The ", r("DataSendEntryEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_payload_push", code("DataSendPayload"), [
-                //     pinformative("When encoding a ", r("DataSendPayload"), " message, the five least significant bits of the first byte are ", code("00110"), "."),
-
-                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("DataSendPayloadAmount"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("DataSendPayloadAmount"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
-
-                //     pinformative("This is followed by ", r("DataSendPayloadAmount"), " bytes of ", r("Payload"), "."),
-                // ]),
-
-                // hsection("encoding_bind_payload_request", code("DataBindPayloadRequest"), [
-                //     pinformative("When encoding a ", r("DataBindPayloadRequest"), " message, the five least significant bits of the first byte are ", code("00111"), "."),
-
-                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("DataBindPayloadRequestCapability"), " of zero can be encoded efficiently. The ", r("DataBindPayloadRequestEntry"), " itself can be either encoded relative to the ", r("currently_received_entry"), " of the receiver as an ", r("EntryRelativeEntry"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of two ", rs("AreaOfInterestHandle"), " as an ", r("EntryInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_payload_response", code("DataReplyPayload"), [
-                //     pinformative("When encoding a ", r("DataReplyPayload"), " message, the five least significant bits of the first byte are ", code("01000"), "."),
-
-                //     pinformative("Let ", $("1 \\leq b \\leq 8"), " such that the ", r("delta_handle"), " of ", r("DataReplyPayloadHandle"), " can be encoded as an unsigned ", $("b"), "-bit integer. Then the three most significant bits of the first encoding byte encode ", $("b"), " as a three bit integer. The first encoding byte is followed by the ", r("delta_handle"), " of ", r("DataReplyPayloadHandle"), ", encoded as an unsigned big-endian ", $("b"), "-bit integer."),
-                // ]),
-
-                // hsection("encoding_bind_aoi", code("SetupBindAreaOfInterest"), [
-                //     pinformative("When encoding a ", r("SetupBindAreaOfInterest"), " message, the five least significant bits of the first byte are ", code("01001"), "."),
-
-                //     pinformative("The remaining encoding employs a couple of optimisations: an ", r("SetupBindAreaOfInterestKnown"), " of zero can be encoded efficiently. The ", r("SetupBindAreaOfInterestAOI"), " itself is encoded relative to the containing ", r("granted_area"), " of the ", r("SetupBindAreaOfInterestCapability"), " as an ", r("AreaInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_range_fp", code("ReconciliationSendFingerprint"), [
-                //     pinformative("When encoding a ", r("ReconciliationSendFingerprint"), " message, the five least significant bits of the first byte are ", code("01010"), "."),
-
-                //     pinformative("The ", r("ReconciliationSendFingerprintRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("ReconciliationSendFingerprintSenderHandle"), " and the ", r("ReconciliationSendFingerprintReceiverHandle"), " as a ", r("RangeInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_range_entries", code("ReconciliationAnnounceEntries"), [
-                //     pinformative("When encoding a ", r("ReconciliationAnnounceEntries"), " message, the five least significant bits of the first byte are ", code("01011"), "."),
-
-                //     pinformative("The ", r("ReconciliationAnnounceEntriesRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("ReconciliationAnnounceEntriesSenderHandle"), " and the ", r("ReconciliationAnnounceEntriesReceiverHandle"), " as a ", r("RangeInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_range_confirmation", code("RangeConfirmation"), [
-                //     pinformative("When encoding a ", r("RangeConfirmation"), " message, the five least significant bits of the first byte are ", code("01100"), "."),
-
-                //     pinformative("The ", r("RangeConfirmationRange"), " can be either encoded relative to the precedingly transmitted ", r("3dRange"), " as a ", r("RangeRelativeRange"), ", or relative to the ", r("area_intersection"), " of the ", rs("area"), " of the ", r("RangeConfirmationSenderHandle"), " and the ", r("RangeConfirmationReceiverHandle"), " as a ", r("RangeInArea"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_eagerness", code("DataSetEagerness"), [
-                //     pinformative("When encoding a ", r("DataSetEagerness"), " message, the five least significant bits of the first byte are ", code("01101"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_guarantee", code("Guarantee"), [
-                //     pinformative("When encoding a ", r("ControlIssueGuarantee"), " message, the five least significant bits of the first byte are ", code("01110"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_absolve", code("Absolve"), [
-                //     pinformative("When encoding a ", r("ControlAbsolve"), " message, the five least significant bits of the first byte are ", code("01111"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_oops", code("Oops"), [
-                //     pinformative("When encoding a ", r("ControlPlead"), " message, the five least significant bits of the first byte are ", code("10000"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_started_dropping", code("ChannelStartedDropping"), [
-                //     pinformative("When encoding a ", r("ControlAnnounceDropping"), " message, the five least significant bits of the first byte are ", code("10001"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_apology", code("ChannelApology"), [
-                //     pinformative("When encoding a ", r("ControlApologise"), " message, the five least significant bits of the first byte are ", code("10010"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_handle_free", code("Free"), [
-                //     pinformative("When encoding a ", r("ControlFreeHandle"), " message, the five least significant bits of the first byte are ", code("10011"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_handle_confirm", code("Confirm"), [
-                //     pinformative("When encoding a ", r("SyncHandleConfirm"), " message, the five least significant bits of the first byte are ", code("10100"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_handle_started_dropping", code("HandleStartedDropping"), [
-                //     pinformative("When encoding a ", r("SyncHandleStartedDropping"), " message, the five least significant bits of the first byte are ", code("10101"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                // hsection("encoding_handle_apology", code("HandleApology"), [
-                //     pinformative("When encoding a ", r("SyncHandleApology"), " message, the five least significant bits of the first byte are ", code("10110"), "."),
-
-                //     pinformative("TODO define an encoding"),
-                // ]),
-
-                pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
-
-                ols(
-                    [r("CommitmentReveal"), " 0"],
-                    [r("PaiBindFragment"), " 1"],
-                    [r("PaiReplyFragment"), " 2"],
-                    [r("PaiRequestSubspaceCapability"), " 2"],
-                    [r("PaiReplySubspaceCapability"), " 2"],
-                    [r("SetupBindReadCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
-                    [r("SetupBindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
-                    [r("SetupBindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
-                    [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
-                    [r("ReconciliationAnnounceEntries"), " 2 + 2 + 2 + 1 + 1 + 1 (3dRange relative to previous range or contaniing Area)"],
-                    [r("ReconciliationSendEntry"), " 2 + 2 + 1 (entry in 3dRange or relative to previous entry)"],
-                    [r("DataSendEntry"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
-                    [r("DataSendPayload"), " 2"],
-                    [r("DataSetEagerness"), " 1 + 2 + 2"],
-                    [r("DataBindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
-                    [r("DataReplyPayload"), " 2"],
-                    [r("ControlIssueGuarantee"), " 2 + 3"],
-                    [r("ControlAbsolve"), " 2 + 3"],
-                    [r("ControlPlead"), " 2 + 3"],
-                    [r("ControlAnnounceDropping"), " 3"],
-                    [r("ControlApologise"), " 3"],
-                    [r("ControlFreeHandle"), " 2 + 1 + 3"],
-                ),
+                    ols(
+                        [r("CommitmentReveal"), " 0"],
+                        [r("PaiBindFragment"), " 1"],
+                        [r("PaiReplyFragment"), " 2"],
+                        [r("PaiRequestSubspaceCapability"), " 2"],
+                        [r("PaiReplySubspaceCapability"), " 2"],
+                        [r("SetupBindReadCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
+                        [r("SetupBindAreaOfInterest"), " 2 + 3 (known_intersections with special case zero)"],
+                        [r("SetupBindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
+                        [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
+                        [r("ReconciliationAnnounceEntries"), " 2 + 2 + 2 + 1 + 1 + 1 (3dRange relative to previous range or contaniing Area)"],
+                        [r("ReconciliationSendEntry"), " 2 + 2 + 1 (entry in 3dRange or relative to previous entry)"],
+                        [r("DataSendEntry"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
+                        [r("DataSendPayload"), " 2"],
+                        [r("DataSetEagerness"), " 1 + 2 + 2"],
+                        [r("DataBindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
+                        [r("DataReplyPayload"), " 2"],
+                        [r("ControlIssueGuarantee"), " 2 + 3"],
+                        [r("ControlAbsolve"), " 2 + 3"],
+                        [r("ControlPlead"), " 2 + 3"],
+                        [r("ControlAnnounceDropping"), " 3"],
+                        [r("ControlApologise"), " 3"],
+                        [r("ControlFreeHandle"), " 2 + 1 + 3"],
+                    ),
+                ]),
 
             ]),
         ]),
