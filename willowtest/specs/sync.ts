@@ -1,4 +1,4 @@
-import { R, Rs, def, def_fake, r, rs } from "../../defref.ts";
+import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { aside, code, em, img, p } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
@@ -6,9 +6,10 @@ import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
-import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array } from "../../pseudocode.ts";
+import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array, function_call, field_access } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
-import { encodingdef } from "../encodingdef.ts";
+import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
+import { two_bit_int } from "./encodings.ts";
 
 const apo = "’";
 
@@ -782,7 +783,7 @@ export const sync: Expression = site_template(
 
                         new Struct({
                             id: "ControlFreeHandle",
-                            name: "Free",
+                            name: "ControlFree",
                             comment: ["Ask the other peer to ", r("handle_free"), " a ", r("resource_handle"), "."],
                             fields: [
                                 {
@@ -817,26 +818,155 @@ export const sync: Expression = site_template(
                     pinformative("To be able to encode messages, we require certain properties from the ", link_name("sync_parameters", "protocol parameters"), ":"),
 
                     lis(
-                        ["add requirements here"],
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_group_member"}), " for ", r("PsiGroup"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_subspace_capability"}), " for ", rs("SubspaceCapability"), " of known ", r("subspace_granted_namespace"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
+                        ),
                     ),
+
+                    pinformative("We can now define the encodings for all messages."),
                 ]),
 
-                hsection("sync_encoding_messages", "Message Encodings", [
-                    pinformative("We can now define the encodings of all message kinds."),
+                hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
+                    pinformative(
+                        "The encoding of a ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("00")],
+                                    ["unused"],
+                                ),
+                            ),
+                            [[
+                                field_access(r("enc_commitment_reveal"), "CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
+                            ]],
+                        ),
+                    ),
+                    
+                    pinformative(
+                        "The encoding of a ", r("PaiBindFragment"), " message ", def_value({id: "enc_pai_bind_fragment", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [code("0")],
+                                    ["unused"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentIsSecondary"),
+                                    ]
+                                ),
+                            ),
+                            [[
+                                code(function_call(r("encode_group_member"), field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentGroupMember"))),
+                            ]],
+                        ),
+                    ),
 
-                    hsection("sync_encode_commitment", "Commitment Scheme", [
-                        pinformative(
-                            "The encoding of a ", r("CommitmentReveal"), " message is the concatenation of:",
-                            encodingdef([[
-                                "the byte ", code("0x00"),
+                    pinformative(
+                        "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("010")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle")),
+                            ),
+                            [[
+                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"))), "-byte integer",
                             ]],
                             [[
-                                "the ", r("CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
-                            ]]),    
+                                code(function_call(r("encode_group_member"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentGroupMember"))),
+                            ]],
                         ),
-                    ]),
-                ]),
+                    ),
 
+                    pinformative(
+                        "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle")),
+                            ),
+                            [[
+                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"))), "-byte integer",
+                            ]],
+                        ),
+                    ),
+
+                    pinformative(
+                        "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle")),
+                            ),
+                            [[
+                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
+                            ]],
+                            [[
+                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))),
+                            ]],
+                            [[
+                                code(function_call(r("encode_sync_subspace_signature"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilitySignature"))),
+                            ]],
+                        ),
+                    ),
+
+                ]),
 
 
                 hsection("sync_notes", "Notes", [
