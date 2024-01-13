@@ -23,7 +23,7 @@ import {
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { Def, def_generic, def_generic$, r, set_def } from "./defref.ts";
+import { Def, def_generic, def_generic$, def_truly_generic, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -300,12 +300,13 @@ function render_field(field: Field): Expression {
 
   const macro = new_macro(
     (_args, ctx) => {
-      const state = new_name(field.id, "def", ctx);
-      if (state === null) {
-        return "";
-      } else {
-        set_def(state, { id: field.id, clazz: "member", singular: field_name });
-      }
+      const member_name = def_truly_generic(
+        false,
+        { id: field.id, clazz: "member", singular: field_name },
+        false,
+        false,
+        true,
+      );
 
       let field_marginale: Expression = "";
       if (field.marginale) {
@@ -316,19 +317,6 @@ function render_field(field: Field): Expression {
       if (field.comment) {
         comment = render_doc_comment(field.comment);
       }
-
-      const attributes: Attributes = {
-        id: field.id,
-      };
-      attributes.class = "member";
-
-      const member_name = dfn(
-        link_name(
-          field.id,
-          attributes,
-          field_name,
-        ),
-      );
 
       const field_line = render_line(
         member_name,
@@ -362,25 +350,12 @@ function render_struct(struct: Struct): Expression {
     (_args, ctx) => {
       pseudocode_state(ctx).fields = my_fields;
 
-      const state = new_name(struct.id, "def", ctx);
-      if (state === null) {
-        return "";
-      } else {
-        set_def(state, { id: struct.id, clazz: "type", singular: struct_name, plural: struct.plural });
-      }
-
-      const attributes: Attributes = {
-        id: struct.id,
-        "data-preview": `/previews/${struct.id}.html`,
-        class: "type",
-      };
-
-      const type_name = dfn(
-        link_name(
-          struct.id,
-          attributes,
-          struct_name,
-        ),
+      const type_name = def_truly_generic(
+        false,
+        { id: struct.id, clazz: "type", singular: struct_name, plural: struct.plural },
+        false,
+        false,
+        true,
       );
 
       let comment: Expression = "";
@@ -435,34 +410,22 @@ function render_simple_enum_variant(variant: SimpleEnumVariant): Expression {
 
   const macro = new_macro(
     (_args, ctx) => {
-      const state = new_name(variant.id, "def", ctx);
-      if (state === null) {
-        return "";
-      } else {
-        set_def(state, { id: variant.id, clazz: "symbol", singular: variant_name });
-      }
+      const symbol_name = def_truly_generic(
+        false,
+        { id: variant.id, clazz: "symbol", singular: variant_name },
+        false,
+        false,
+        true,
+      );
 
       let comment: Expression = "";
       if (variant.comment) {
         comment = render_doc_comment(variant.comment);
       }
 
-      const attributes: Attributes = {
-        id: variant.id,
-      };
-      attributes.class = "symbol";
-
-      const member_name = dfn(
-        link_name(
-          variant.id,
-          attributes,
-          variant_name,
-        ),
-      );
-
       return [
         comment,
-        render_line(member_name),
+        render_line(symbol_name),
       ];
     },
     (expanded, ctx) => {
@@ -482,25 +445,12 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
 
   const macro = new_macro(
     (_args, ctx) => {
-      const state = new_name(simple_enum.id, "def", ctx);
-      if (state === null) {
-        return "";
-      } else {
-        set_def(state, { id: simple_enum.id, clazz: "type", singular: enum_name });
-      }
-
-      const attributes: Attributes = {
-        id: simple_enum.id,
-        "data-preview": `/previews/${simple_enum.id}.html`,
-        class: "type",
-      };
-
-      const type_name = dfn(
-        link_name(
-          simple_enum.id,
-          attributes,
-          enum_name,
-        ),
+      const type_name = def_truly_generic(
+        false,
+        { id: simple_enum.id, clazz: "type", singular: enum_name },
+        false,
+        false,
+        true,
       );
 
       let comment: Expression = "";

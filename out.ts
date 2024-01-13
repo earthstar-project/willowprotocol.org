@@ -23,12 +23,12 @@ const statekey = Symbol("Out");
 
 const location_key = Symbol("CreationLocation");
 
-interface OutState {
+export interface OutState {
   out_files: OutFile; // a tree of path fragments and the associated file state
   current_path: string[]; // stack of path fragments that make up the current path
 }
 
-function out_state(ctx: Context): OutState {
+export function out_state(ctx: Context): OutState {
   const state = ctx.state.get(statekey);
 
   if (state) {

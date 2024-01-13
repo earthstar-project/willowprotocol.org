@@ -7,18 +7,119 @@ import {
   Invocation,
   new_macro,
 } from "./tsgen.ts";
-import { new_name, PerNameState, try_resolve_name } from "./names.ts";
+import { new_name, PerNameState, resolve_name, try_resolve_name } from "./names.ts";
 import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
-import { build_actual_link_url, get_root_directory, link_name } from "./linkname.ts";
+import {
+  build_actual_link_url,
+  get_root_directory,
+  link_name,
+} from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
-import { out_file_absolute, write_file_absolute } from "./out.ts";
+import { out_file_absolute, out_state, write_file_absolute } from "./out.ts";
 import { createHash } from "npm:sha256-uint8array";
+
+const fileskey = Symbol("FilesWithPreviews");
+
+interface FilesWithPreviewsState {
+  // path fragments of all output files that contain previews
+  files: Set<string[]>;
+}
+
+function files_with_previews_state(ctx: Context): FilesWithPreviewsState {
+  const state = ctx.state.get(fileskey);
+
+  if (state) {
+    return <FilesWithPreviewsState> state;
+  } else {
+    ctx.state.set(
+      fileskey,
+      <FilesWithPreviewsState> {
+        files: new Set(),
+      },
+    );
+    return files_with_previews_state(ctx);
+  }
+}
+
+export function previewable_link(
+  is_def: boolean,
+  name: PerNameState,
+  is_tex: boolean,
+  surpress_preview: boolean,
+  display_text: Expression,
+): Expression {
+  const macro = new_macro(
+    (args, ctx) => {
+      // get some metadata for rendering
+      const the_def = get_def(name);
+      const id = the_def.id;
+      const clazz = the_def.clazz;
+      // const preview_data = `ßä§${id}üÖö`;
+      const preview_data = `/previews/${id}.html`;
+
+      // Register the current output file as containing previewable links.
+      const current_path = out_state(ctx).current_path;
+      files_with_previews_state(ctx).files.add(current_path);
+
+      if (is_tex) {
+        const link_url = build_actual_link_url(id, name, ctx);
+        const link_tex =
+          `\\href{${link_url}}{${
+            <string>display_text // all calls of previewable_link with is_tex = true must set display_text to a string
+          }}`;
+        const data_tex = surpress_preview ? link_tex : `\\htmlData{preview=${preview_data}}{${link_tex}}`;
+        const id_tex = is_def ? `\\htmlId{${id}}{${data_tex}}` : data_tex;
+        const classy_tex = `\\htmlClass{normal_text${
+          clazz ? ` ${clazz}` : ""
+        }}{${id_tex}}`;
+
+        return [
+          html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+          html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+          html5_dependency_js("/named_assets/tooltips.js"),
+          html5_dependency_js("/named_assets/previews.js"),
+          classy_tex,
+        ];
+      } else {
+        const attributes: Attributes = { id };
+
+        if (!surpress_preview) {
+          attributes["data-preview"] = preview_data;
+        }
+
+        if (clazz && !is_def) {
+          attributes.class = `ref ${clazz}`;
+        } else if (!is_def) {
+          attributes.class = "ref";
+        } else if (clazz) {
+          attributes.class = clazz;
+        }
+
+        const the_link = link_name(
+          id,
+          attributes,
+          args[0],
+        );
+        const the_final_thingy = is_def ? dfn(the_link) : the_link;
+
+        return [
+          html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+          html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+          html5_dependency_js("/named_assets/tooltips.js"),
+          html5_dependency_js("/named_assets/previews.js"),
+          the_final_thingy,
+        ];
+      }
+    },
+  );
+
+  return new Invocation(macro, [display_text]);
+}
 
 const previewkey = Symbol("Preview");
 
 interface PreviewState {
   ids: Set<string> | null;
-  currently_defining: boolean;
 }
 
 function preview_state(ctx: Context): PreviewState {
@@ -29,13 +130,12 @@ function preview_state(ctx: Context): PreviewState {
   } else {
     ctx.state.set(previewkey, {
       ids: null,
-      currently_defining: false,
     });
     return preview_state(ctx);
   }
 }
 
-export function add_preview_id(id: string, ctx: Context): boolean {
+export function add_preview_id_to_preview_scope(id: string, ctx: Context): boolean {
   const ids = preview_state(ctx).ids;
 
   if (ids) {
@@ -133,9 +233,32 @@ export function set_def(name_state: PerNameState, def: Def) {
   name_state.set(def_key, def);
 }
 
-export function def_generic(
+export function create_manual_preview(id: string, preview?: Expression): Expression {
+  const macro = new_macro(
+    (args, ctx) => {
+      const out_path = [
+        ...get_root_directory(ctx),
+        "previews",
+        `${id}.html`,
+      ];
+
+      // Register the current output file as containing previewable links.
+      files_with_previews_state(ctx).files.add(out_path);
+
+      // And actually create the preview file.
+      return out_file_absolute(out_path, args[0]);
+    },
+  );
+
+  return preview ? new Invocation(macro, [preview]) : "";
+}
+
+export function def_truly_generic(
+  is_tex: boolean,
   info: string | Def,
   is_fake: boolean,
+  add_to_preview_scope: boolean,
+  surpress_preview: boolean,
   text?: Expression,
   preview?: Expression,
 ): Expression {
@@ -143,69 +266,46 @@ export function def_generic(
 
   const macro = new_macro(
     (args, ctx) => {
-      if (!preview_state(ctx).currently_defining) {
-        const state = new_name(info_.id, "def", ctx);
-        if (state === null) {
-          return "";
-        } else {
-          if (!is_fake) {
-            state?.set(def_key, info_);
-          }
-        }
+      const name = is_fake ? try_resolve_name(info_.id, "def", ctx) : new_name(info_.id, "def", ctx);
+      if (!name) {
+        return "";
+      } else if (!is_fake) {
+        name.set(def_key, info_);
       }
 
-      const attributes: Attributes = {
-        id: info_.id,
-        "data-preview": `/previews/${info_.id}.html`,
-      };
-      if (info_.clazz) {
-        attributes.class = info_.clazz;
-      }
+      const link = previewable_link(
+        true,
+        name,
+        is_tex,
+        surpress_preview,
+        text ? args[0] : (is_tex ? get_math(info_) : get_singular(info_)),
+      );
 
-      let manual_preview: Expression = "";
-      if (!preview_state(ctx).currently_defining && !is_fake) {
-        if (preview) {
-          manual_preview = out_file_absolute([
-            ...get_root_directory(ctx),
-            "previews",
-            `${info_.id}.html`,
-          ], preview);
-        } else {
-          add_preview_id(info_.id, ctx);
-        }
+      if (add_to_preview_scope && !is_fake && !preview) {
+        add_preview_id_to_preview_scope(info_.id, ctx);
       }
 
       return [
-        manual_preview,
-        dfn(
-          link_name(
-            info_.id,
-            attributes,
-            text ? args[0] : get_singular(info_),
-          ),
-        ),
+        create_manual_preview(info_.id, preview),
+        link,
       ];
     },
-    (expanded, ctx) => {
-      if (!is_fake) {
-        // Create etag
-        const hash = createHash().update(expanded).digest("hex");
-
-        write_file_absolute(
-          [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
-          hash,
-          ctx,
-        );
-      }
-
-      return expanded;
-    },
-    (ctx) => preview_state(ctx).currently_defining = true,
-    (ctx) => preview_state(ctx).currently_defining = false,
-    2,
+    undefined,
+    undefined,
+    undefined,
+    3,
   );
 
   return new Invocation(macro, [text ? text : "never used"]);
+}
+
+export function def_generic(
+  info: string | Def,
+  is_fake: boolean,
+  text?: Expression,
+  preview?: Expression,
+): Expression {
+  return def_truly_generic(false, info, is_fake, true, false, text, preview);
 }
 
 export function def_generic$(
@@ -213,72 +313,7 @@ export function def_generic$(
   is_fake: boolean,
   preview?: Expression,
 ): Expression {
-  const info_: Def = (typeof info === "string") ? { id: info } : info;
-
-  const macro = new_macro(
-    (args, ctx) => {
-      if (!preview_state(ctx).currently_defining) {
-        const state = new_name(info_.id, "def", ctx);
-        if (state === null) {
-          return "";
-        } else {
-          if (!is_fake) {
-            state?.set(def_key, info_);
-          }
-        }
-      }
-      
-      let manual_preview: Expression = "";
-      if (!preview_state(ctx).currently_defining && !is_fake) {
-        if (preview) {
-          manual_preview = out_file_absolute([
-            ...get_root_directory(ctx),
-            "previews",
-            `${info_.id}.html`,
-          ], preview);
-        } else {
-          add_preview_id(info_.id, ctx);
-        }
-      }
-
-      const name = try_resolve_name(info_.id, "def", ctx)!;
-
-      const link_url = build_actual_link_url(info_.id, name, ctx);
-      const preview_url = `/previews/${info_.id}.html`;
-
-      const the_def = get_def(name);
-      const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
-      const the_tex = `\\htmlClass{${the_def.clazz ? `normal_text ${the_def.clazz}` : "normal_text"}}{${inner}}`;
-
-      return [
-        manual_preview,
-        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
-        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
-        html5_dependency_js("/named_assets/tooltips.js"),
-        html5_dependency_js("/named_assets/previews.js"),
-        the_tex,
-      ];
-    },
-    (expanded, ctx) => {
-      if (!is_fake) {
-        // Create etag
-        const hash = createHash().update(expanded).digest("hex");
-
-        write_file_absolute(
-          [...get_root_directory(ctx), "previews", `${info_.id}.etag`],
-          hash,
-          ctx,
-        );
-      }
-
-      return expanded;
-    },
-    (ctx) => preview_state(ctx).currently_defining = true,
-    (ctx) => preview_state(ctx).currently_defining = false,
-    2,
-  );
-
-  return new Invocation(macro, ["never used"]);
+  return def_truly_generic(true, info, is_fake, true, false, undefined, preview);
 }
 
 export function def(
@@ -333,7 +368,8 @@ export function Rs(
   return ref_invocation(get_Plural, id, text);
 }
 
-function ref_invocation(
+function ref_invocation_generic(
+  is_tex: boolean,
   noun_form: (d: Def) => string,
   id: string,
   text?: Expression,
@@ -341,38 +377,25 @@ function ref_invocation(
   const macro = new_macro(
     (args, ctx) => {
       const name = try_resolve_name(id, "def", ctx);
-      let the_link: Expression = "";
-      const attributes = {
-        class: "ref",
-        "data-preview": `/previews/${id}.html`,
-      };
       if (name) {
-        const the_def = get_def(name);
-        if (the_def.clazz) {
-          attributes.class = `${attributes.class} ${the_def.clazz}`;
-        }
-        the_link = link_name(
-          id,
-          attributes,
-          text ? args[0] : noun_form(the_def),
-        );
+        return [
+          html5_dependency_js("/named_assets/floating-ui.core.min.js"),
+          html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
+          html5_dependency_js("/named_assets/tooltips.js"),
+          html5_dependency_js("/named_assets/previews.js"),
+          previewable_link(
+            false,
+            name,
+            is_tex,
+            false,
+            text ? args[0] : noun_form(get_def(name)),
+          ),
+        ];
       } else if (ctx.must_make_progress) {
-        the_link = link_name(
-          id,
-          attributes,
-          text ? args[0] : id,
-        );
+        return "UndefinedReference";
       } else {
         return null;
       }
-
-      return [
-        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
-        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
-        html5_dependency_js("/named_assets/tooltips.js"),
-        html5_dependency_js("/named_assets/previews.js"),
-        the_link,
-      ];
     },
     undefined,
     undefined,
@@ -383,41 +406,18 @@ function ref_invocation(
   return new Invocation(macro, [text ? text : "never used"]);
 }
 
+function ref_invocation(
+  noun_form: (d: Def) => string,
+  id: string,
+  text?: Expression,
+): Expression {
+  return ref_invocation_generic(false, noun_form, id, text);
+}
+
 export function r$(
   id: string,
 ): Expression {
-  const macro = new_macro(
-    (_args, ctx) => {
-      const name = try_resolve_name(id, "def", ctx);
-      const preview_url = `/previews/${id}.html`;
-      let the_tex: Expression = "";
-      if (name) {
-        const link_url = build_actual_link_url(id, name, ctx);
-        
-        const the_def = get_def(name);
-        const inner = `\\htmlData{preview=${preview_url}}{\\href{${link_url}}{${get_math(the_def)}}}`;
-        if (the_def.clazz) {
-          the_tex = `\\htmlClass{${the_def.clazz ? `normal_text ${the_def.clazz}` : "normal_text"}}{${inner}}`;
-        } else {
-          the_tex = inner;
-        }
-      } else if (ctx.must_make_progress) {
-        the_tex = id;
-      } else {
-        return null;
-      }
-
-      return [
-        html5_dependency_js("/named_assets/floating-ui.core.min.js"),
-        html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
-        html5_dependency_js("/named_assets/tooltips.js"),
-        html5_dependency_js("/named_assets/previews.js"),
-        the_tex,
-      ];
-    },
-  );
-
-  return new Invocation(macro, ["never used"]);
+  return ref_invocation_generic(true, get_math, id);
 }
 
 export function get_singular(d: Def): string {
