@@ -493,7 +493,7 @@ evaluate([
     out_directory("previews"),
     out_file(
       "index.html",
-      site_template(
+      create_etags(site_template(
         {
           title: "Willow",
           name: "willow",
@@ -581,7 +581,7 @@ evaluate([
             "Authors can write from multiple devices concurrently. Yay.",
           ),
         ],
-      ),
+      )),
     ),
     out_file("styles.css", [
       layout_marginalia(layout_opts),
