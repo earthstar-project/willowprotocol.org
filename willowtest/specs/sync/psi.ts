@@ -143,7 +143,7 @@ export const psi: Expression = site_template(
         $([r$("psi_ialpha"), " = ", r$("psi_ibeta")]),
         " if and only if ",
         $dot([
-          r$("psi_alpha"), "^{", r$("psi_alpha"), " \\cdot ", r$("psi_sbeta"), "}",
+          r$("psi_dalpha"), "^{", r$("psi_salpha"), " \\cdot ", r$("psi_sbeta"), "}",
           "=",
           r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
         ]),

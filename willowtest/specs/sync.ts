@@ -13,6 +13,14 @@ import { two_bit_int } from "./encodings.ts";
 
 const apo = "’";
 
+function bitfieldrow_unused(n: number): BitfieldRow {
+    return new BitfieldRow(
+        n,
+        [code("0".repeat(n))],
+        ["unused"],
+    );
+}
+
 export const sync: Expression = site_template(
     {
         title: "Willow General Purpose Sync Protocol",
@@ -815,6 +823,13 @@ export const sync: Expression = site_template(
                         preview_scope(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
                         ),
+                        preview_scope(
+                            marginale(["When using the ", r("Capability"), " type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known ", r("granted_namespace"), " and whose ", r("granted_area"), " is ", r("area_include_area", "included"), " in some known ", r("Area"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
+                        ),
                     ),
 
                     pinformative("We can now define the encodings for all messages."),
@@ -835,11 +850,7 @@ export const sync: Expression = site_template(
                                     [code("000")],
                                     ["message kind"],
                                 ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("00")],
-                                    ["unused"],
-                                ),
+                                bitfieldrow_unused(2),
                             ),
                             [[
                                 field_access(r("enc_commitment_reveal"), "CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
@@ -867,11 +878,7 @@ export const sync: Expression = site_template(
                                         code("1"), " ", r("iff"), " ", field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentIsSecondary"),
                                     ]
                                 ),
-                                new BitfieldRow(
-                                    1,
-                                    [code("0")],
-                                    ["unused"],
-                                ),
+                                bitfieldrow_unused(1),
                             ),
                             [[
                                 code(function_call(r("encode_group_member"), field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentGroupMember"))),
@@ -946,7 +953,7 @@ export const sync: Expression = site_template(
                                 field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
                             ]],
                             [[
-                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))),
+                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
                             ]],
                             [[
                                 code(function_call(r("encode_sync_subspace_signature"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilitySignature"))),
@@ -958,7 +965,23 @@ export const sync: Expression = site_template(
 
                 hsection("sync_encode_setup", "Setup", [
                     pinformative(
-                        "The encoding of a ", r("SetupBindReadCapability"), " message ", def_value({id: "enc_setup_read", singular: "m"}), " is the concatenation of:",
+                        "Let ", def_value({id: "enc_setup_read", singular: "m"}), " be a ", r("SetupBindReadCapability"), " message, let ", def_value({id: "enc_setup_read_granted_area", singular: "granted_area"}), " be the ", r("granted_area"), " of ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), ", let ", def_value({id: "enc_setup_read_frag", singular: "frag"}), " be the ", r("fragment"), " corresponding to ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", and let ", def_value({id: "enc_setup_read_pre", singular: "pre"}), " be the ", r("Path"), " of ", r("enc_setup_read_frag"), ".",
+                    ),
+
+                    pinformative("Define ", def_value({id: "enc_setup_read_outer", singular: "out"}), " as the ", r("Area"), " with", lis(
+                        [
+                            field_access(r("enc_setup_read_outer"), "AreaSubspace"), " is ", field_access(r("enc_setup_read_granted_area"), "AreaSubspace"), " if ", r("enc_setup_read_frag"), " is a ", r("fragment_primary"), " ", r("fragment"), ", and ", r("area_any"), ", otherwise,"
+                        ],
+                        [
+                            field_access(r("enc_setup_read_outer"), "AreaPath"), " is ", r("enc_setup_read_pre"), ", and"
+                        ],
+                        [
+                            field_access(r("enc_setup_read_outer"), "AreaTime"), " is an ", r("open_range", "open"), " ", r("TimeRange"), " of ", r("TimeRangeStart"), " zero."
+                        ],
+                    )),
+
+                    pinformative(                        
+                        "Then, the encoding of a ", r("enc_setup_read"), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
                                 new BitfieldRow(
@@ -971,20 +994,17 @@ export const sync: Expression = site_template(
                                     [code("00")],
                                     ["message kind"],
                                 ),
-                                new BitfieldRow(
-                                    1,
-                                    [code("1"), " ", r("iff"), " ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), " ", rs("handle_bind"), " a ", r("fragment_secondary"), " ", r("fragment")],
-                                    [
-                                        "Encode ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), " with a ", r("SubspaceId"), "?",
-                                    ],
-                                ),
+                                bitfieldrow_unused(1),
                                 two_bit_int(6, field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle")),
                             ),
                             [[
                                 field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"))), "-byte integer",
                             ]],
                             [[
-                                "work in progress"
+                                code(function_call(r("encode_read_capability"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of ", r("enc_setup_read_frag"), ", and the known ", r("area_include_area", "including"), " ", r("Area"), " is ", r("enc_setup_read_outer"),
+                            ]],
+                            [[
+                                code(function_call(r("encode_sync_signature"), field_access(r("enc_setup_read"), "SetupBindReadCapabilitySignature"))),
                             ]],
                         ),
                     ),

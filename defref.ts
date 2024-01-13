@@ -503,6 +503,9 @@ function ref_invocation_generic(
           ),
         ];
       } else if (ctx.must_make_progress) {
+        ctx.warn(`Did not create a preview for id ${style_def(id)} at ${
+          format_location(ctx.stack.peek()!)
+        }`);
         return "UndefinedReference";
       } else {
         return null;

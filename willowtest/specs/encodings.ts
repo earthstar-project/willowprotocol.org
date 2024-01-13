@@ -1081,6 +1081,121 @@ export const encodings: Expression = site_template({
         ),
       ]),
 
+      hsection("enc_mc_capability", code("encode_mc_capability"), [
+        pinformative(
+          "To encode a ", r("Capability"), " ", def_value({ id: "enc_mc_cap", singular: "c" }), " whose ", r("granted_area"), " is know to be ", r("area_include_area", "included"), " in ", sidenote("some", [
+            "If no smaller containing ", r("Area"), " is known from context, use the ", r("full_area"), "."
+          ]), " ", r("Area"), " ", def_value({ id: "enc_mc_outer", singular: "out" }), ", we define ",
+          code(function_call(def_fn({id: "encode_mc_capability", math: "encode\\_mc\\_capability"}), r("enc_mc_cap"))), " depending on whether ", field_access(r("enc_mc_cap"), "capability_inner"), " is a ", r("CommunalCapability"), " or an ", r("OwnedCapability"), ".",
+        ),
+
+        pinformative(
+          "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is a ", r("CommunalCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
+          encodingdef(
+            [[
+              div(
+                "byte ", code("0x00"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_access_mode"), " == ", r("access_read")), ","
+              ),
+              div(
+                "byte ", code("0x01"), " otherwise."
+              ),
+            ]],
+            [[
+              code(function_call(
+                r("encode_namespace_pk"),
+                field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_namespace"),
+              )),
+            ]],
+            [[
+              code(function_call(
+                r("encode_user_pk"),
+                field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_user"),
+              )),
+            ]],
+            [[
+              "for each triplet ", code("(", def_value({id: "enc_com_cap_del_area", singular: "area"}), ", ", def_value({id: "enc_com_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_com_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " the concatenation of:", lis(
+                [
+                  code(function_call(
+                    r("encode_area_in_area"),
+                    r("enc_com_cap_del_area"),
+                    r("enc_com_cap_del_prev_area"),
+                  )),
+                  ", where ", def_value({id: "enc_com_cap_del_prev_area", singular: "prev_area"}), " is the ", r("enc_com_cap_del_area"), " of the previous triplet, or ", r("enc_mc_outer"), " for the first triplet.",
+                ],
+                [
+                  code(function_call(
+                    r("encode_user_pk"),
+                    r("enc_com_cap_del_pk"),
+                  )),
+                ],
+                [
+                  code(function_call(
+                    r("encode_user_sig"),
+                    r("enc_com_cap_del_sig"),
+                  )),
+                ],
+              ),
+            ]],
+          ),
+        ),
+
+        pinformative(
+          "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is a ", r("OwnedCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
+          encodingdef(
+            [[
+              div(
+                "byte ", code("0x02"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_access_mode"), " == ", r("access_read")), ","
+              ),
+              div(
+                "byte ", code("0x03"), " otherwise."
+              ),
+            ]],
+            [[
+              code(function_call(
+                r("encode_namespace_pk"),
+                field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_namespace"),
+              )),
+            ]],
+            [[
+              code(function_call(
+                r("encode_user_pk"),
+                field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_user"),
+              )),
+            ]],
+            [[
+              code(function_call(
+                r("encode_namespace_sig"),
+                field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_initial_authorisation"),
+              )),
+            ]],
+            [[
+              "for each triplet ", code("(", def_value({id: "enc_own_cap_del_area", singular: "area"}), ", ", def_value({id: "enc_own_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_own_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " the concatenation of:", lis(
+                [
+                  code(function_call(
+                    r("encode_area_in_area"),
+                    r("enc_own_cap_del_area"),
+                    r("enc_own_cap_del_prev_area"),
+                  )),
+                  ", where ", def_value({id: "enc_own_cap_del_prev_area", singular: "prev_area"}), " is the ", r("enc_own_cap_del_area"), " of the previous triplet, or ", r("enc_mc_outer"), " for the first triplet.",
+                ],
+                [
+                  code(function_call(
+                    r("encode_user_pk"),
+                    r("enc_own_cap_del_pk"),
+                  )),
+                ],
+                [
+                  code(function_call(
+                    r("encode_user_sig"),
+                    r("enc_own_cap_del_sig"),
+                  )),
+                ],
+              ),
+            ]],
+          ),
+        ),
+      ]),
+
     ]),
   ]),
 ]);
