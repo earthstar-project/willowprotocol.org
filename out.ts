@@ -262,6 +262,7 @@ export function out_file(
 
 export function out_file_absolute(
   path_fragments: string[],
+  do_return_expanded: boolean,
   ...args: Expression[]
 ): Invocation {
   const the_path = join(...path_fragments);
@@ -283,7 +284,12 @@ export function out_file_absolute(
         ctx.error(err);
         ctx.halt();
       }
-      return "";
+
+      if (do_return_expanded) {
+        return fully_expanded;
+      } else {
+        return "";
+      }
     },
     // td
     (ctx) => {

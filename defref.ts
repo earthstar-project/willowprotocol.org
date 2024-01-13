@@ -1,4 +1,5 @@
 import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
+import { join } from "https://deno.land/std@0.198.0/path/mod.ts";
 import {
   Context,
   ExpandedMacro,
@@ -6,6 +7,7 @@ import {
   format_location,
   Invocation,
   new_macro,
+  style_file,
 } from "./tsgen.ts";
 import { new_name, PerNameState, resolve_name, try_resolve_name } from "./names.ts";
 import { Attributes, dfn, h1, h2, h3, h4, h5, h6 } from "./h.ts";
@@ -18,27 +20,119 @@ import { html5_dependency_js } from "./html5.ts";
 import { out_file_absolute, out_state, write_file_absolute } from "./out.ts";
 import { createHash } from "npm:sha256-uint8array";
 
-const fileskey = Symbol("FilesWithPreviews");
+const global_preview_state_key = Symbol("GlobalPreviews");
 
-interface FilesWithPreviewsState {
-  // path fragments of all output files that contain previews
-  files: Set<string[]>;
+interface GlobalPreviewState {
+  // paths of all output files that contain previews
+  files: Set<string>;
+  // all previews to create
+  previews: Map<string /* id */, string /* preview text */>,
 }
 
-function files_with_previews_state(ctx: Context): FilesWithPreviewsState {
-  const state = ctx.state.get(fileskey);
+function global_preview_state(ctx: Context): GlobalPreviewState {
+  const state = ctx.state.get(global_preview_state_key);
 
   if (state) {
-    return <FilesWithPreviewsState> state;
+    return <GlobalPreviewState> state;
   } else {
     ctx.state.set(
-      fileskey,
-      <FilesWithPreviewsState> {
+      global_preview_state_key,
+      <GlobalPreviewState> {
         files: new Set(),
+        previews: new Map(),
       },
     );
-    return files_with_previews_state(ctx);
+    return global_preview_state(ctx);
   }
+}
+
+function id_to_preview_data(id: string): string {
+  return `ßä§${id}üÖö`;
+}
+
+const preview_data_regex = /(data-preview=")(ßä§)([^"]*)(üÖö)(")/g;
+
+function replace_all_preview_data(source: string, ctx: Context): string {
+  return source.replaceAll(
+    preview_data_regex,
+    (
+      _match,
+      preamble,
+      _marker_prefix,
+      id,
+      _marker_postfix,
+      postamble
+    ) => {
+      const name = resolve_name(id, "def", ctx)!;
+      const hash = get_hash(name);
+      return `${preamble}/previews/${hash}.html${postamble}`;
+    }
+  );
+}
+
+function tsgenReadTextFile(path: string, ctx: Context): string | undefined {
+   try {
+    const content = Deno.readTextFileSync(path);
+    return content;
+  } catch (err) {
+    ctx.error(`Could not read file ${style_file(path)}`);
+    ctx.error(err);
+    ctx.halt();
+    return undefined;
+  }
+}
+
+function tsgenWriteTextFile(path: string, content: string, ctx: Context): boolean {
+  try {
+    Deno.writeTextFileSync(path, content);
+    return true;
+  } catch (err) {
+    ctx.error(`Could not write file ${style_file(path)}`);
+    ctx.error(err);
+    ctx.halt();
+    return false;
+  }
+}
+
+// All macros that use defref must be descendents of an invocation of this.
+// Postprocesses all preview-data to contain content-determined links,
+// and processes and renames the preview files to work with these links.
+export function enable_previews(...expressions: Expression[]): Invocation {const macro = new_macro(
+    undefined,
+    (expanded, ctx) => {
+      const preview_state = global_preview_state(ctx);
+
+      // Write all previews to the file system.
+      for (const [id, preview_content] of preview_state.previews) {
+        const name = resolve_name(id, "def", ctx)!;
+        const hash = get_hash(name);
+
+        const replaced_preview_content = replace_all_preview_data(preview_content, ctx);
+
+        if (!tsgenWriteTextFile(join(...preview_path(hash, ctx)), replaced_preview_content, ctx)) {
+          return "";
+        }
+      }      
+
+      // In all files containing defref invocations, replace the preview-data with a hash-based preview url
+      for (const path of preview_state.files) {
+        const content = tsgenReadTextFile(path, ctx);
+        if (!content) {
+          return "";
+        }
+
+        const replaced = replace_all_preview_data(content, ctx);
+
+        if (!tsgenWriteTextFile(path, replaced, ctx)) {
+          return "";
+        }
+      }
+
+      return expanded;
+    },
+  );
+
+  return new Invocation(macro, expressions);
 }
 
 export function previewable_link(
@@ -54,12 +148,12 @@ export function previewable_link(
       const the_def = get_def(name);
       const id = the_def.id;
       const clazz = the_def.clazz;
-      // const preview_data = `ßä§${id}üÖö`;
-      const preview_data = `/previews/${id}.html`;
+      const preview_data = id_to_preview_data(id);
 
       // Register the current output file as containing previewable links.
       const current_path = out_state(ctx).current_path;
-      files_with_previews_state(ctx).files.add(current_path);
+      global_preview_state(ctx).files.add(join(...current_path));
+      
 
       if (is_tex) {
         const link_url = build_actual_link_url(id, name, ctx);
@@ -73,6 +167,10 @@ export function previewable_link(
           clazz ? ` ${clazz}` : ""
         }}{${id_tex}}`;
 
+        const katexRegex = new RegExp(
+          `(class="enclosing normal_text[^"]*)("><span class="enclosing" data-preview="ßä§${id}üÖö">)`,
+        );
+
         return [
           html5_dependency_js("/named_assets/floating-ui.core.min.js"),
           html5_dependency_js("/named_assets/floating-ui.dom.min.js"),
@@ -81,7 +179,11 @@ export function previewable_link(
           classy_tex,
         ];
       } else {
-        const attributes: Attributes = { id };
+        const attributes: Attributes = {};
+
+        if (is_def) {
+          attributes.id = id;
+        }
 
         if (!surpress_preview) {
           attributes["data-preview"] = preview_data;
@@ -152,6 +254,18 @@ export function add_preview_id_to_preview_scope(id: string, ctx: Context): boole
   }
 }
 
+export function preview_path(basename: string, ctx: Context): string[] {
+  return [...get_root_directory(ctx), "previews", `${basename}.html`];
+}
+
+export function create_preview_from_string(id: string, content: string, ctx: Context) {
+  global_preview_state(ctx).previews.set(id, content);
+
+  const name = resolve_name(id, "def", ctx)!;
+  const hash = createHash().update(content).digest("hex");
+  set_hash(name, hash);
+}
+
 export function preview_scope(...expressions: Expression[]): Invocation {
   let previous_scope: Set<string> | null = null;
   const my_scope = new Set<string>();
@@ -173,7 +287,7 @@ export function preview_scope(...expressions: Expression[]): Invocation {
           );
 
           const katexRegex = new RegExp(
-            `(class="enclosing normal_text[^"]*)("><span class="enclosing" data-preview="\/previews\/${id}\.html">)`,
+            `(class="enclosing normal_text[^"]*)("><span class="enclosing" id="${id}"><span class="enclosing" data-preview="ßä§${id}üÖö">)`
           );
 
           const withDefinedHereClass = withDefinedHereClassAlmost.replace(
@@ -181,20 +295,7 @@ export function preview_scope(...expressions: Expression[]): Invocation {
             `$1 defined_here$2`,
           );
 
-          write_file_absolute(
-            [...get_root_directory(ctx), "previews", `${id}.html`],
-            withDefinedHereClass,
-            ctx,
-          );
-
-          // Create etag.
-          const hash = createHash().update(withDefinedHereClass).digest("hex");
-
-          write_file_absolute(
-            [...get_root_directory(ctx), "previews", `${id}.etag`],
-            hash,
-            ctx,
-          );
+          create_preview_from_string(id, withDefinedHereClass, ctx);
         }
       }
 
@@ -233,21 +334,29 @@ export function set_def(name_state: PerNameState, def: Def) {
   name_state.set(def_key, def);
 }
 
+// store a content-derived hash with each name
+export const hash_key = Symbol("PreviewHash");
+
+export function get_hash(name_state: PerNameState): string {
+  return name_state.get(hash_key)!;
+}
+
+export function set_hash(name_state: PerNameState, hash: string) {
+  name_state.set(hash_key, hash);
+}
+
 export function create_manual_preview(id: string, preview?: Expression): Expression {
   const macro = new_macro(
-    (args, ctx) => {
-      const out_path = [
-        ...get_root_directory(ctx),
-        "previews",
-        `${id}.html`,
-      ];
+    undefined,
+    (expanded, ctx) => {
+      global_preview_state(ctx).previews.set(id, expanded);
 
-      // Register the current output file as containing previewable links.
-      files_with_previews_state(ctx).files.add(out_path);
+      const name = resolve_name(id, "def", ctx)!;
+      const hash = createHash().update(expanded).digest("hex");
+      set_hash(name, hash);
 
-      // And actually create the preview file.
-      return out_file_absolute(out_path, args[0]);
-    },
+      return "";
+    }
   );
 
   return preview ? new Invocation(macro, [preview]) : "";
@@ -271,6 +380,8 @@ export function def_truly_generic(
         return "";
       } else if (!is_fake) {
         name.set(def_key, info_);
+
+        
       }
 
       const link = previewable_link(

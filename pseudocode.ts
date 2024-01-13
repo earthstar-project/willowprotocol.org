@@ -23,7 +23,7 @@ import {
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { Def, def_generic, def_generic$, def_truly_generic, r, set_def } from "./defref.ts";
+import { create_preview_from_string, Def, def_generic, def_generic$, def_truly_generic, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -376,15 +376,11 @@ function render_struct(struct: Struct): Expression {
       ];
     },
     (expanded, ctx) => {
-      write_file_absolute(
-        [...get_root_directory(ctx), "previews", `${struct.id}.html`],
-        `<code class="pseudocode">${expanded}</code>`,
-        ctx,
-      );
+      create_preview_from_string(struct.id, `<code class="pseudocode">${expanded}</code>`, ctx);
 
       for (const [field_id, rendered_field] of pseudocode_state(ctx).fields) {
-        write_file_absolute(
-          [...get_root_directory(ctx), "previews", `${field_id}.html`],
+        create_preview_from_string(
+          field_id,
           `<code class="pseudocode">${rendered_field}</code><div>Field of <a class="ref type" data-preview="/previews/${struct.id}.html" href="/specs/sync/index.html#${struct.id}">${struct_name}</a></div>`,
           ctx,
         );
@@ -471,17 +467,13 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
       ];
     },
     (expanded, ctx) => {
-      write_file_absolute(
-        [...get_root_directory(ctx), "previews", `${simple_enum.id}.html`],
-        `<code class="pseudocode">${expanded}</code>`,
-        ctx,
-      );
+      create_preview_from_string(simple_enum.id, `<code class="pseudocode">${expanded}</code>`, ctx);
 
       for (const [variant_id, rendered_variant] of pseudocode_state(ctx).variants) {
-        write_file_absolute(
-          [...get_root_directory(ctx), "previews", `${variant_id}.html`],
+        create_preview_from_string(
+          variant_id,
           `<code class="pseudocode">${rendered_variant}</code><div>Enum variant of <a class="ref type" data-preview="/previews/${simple_enum.id}.html" href="/specs/sync/index.html#${simple_enum.id}">${enum_name}</a></div>`,
-          ctx,
+          ctx
         );
       }
 
