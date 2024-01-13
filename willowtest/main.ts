@@ -35,7 +35,7 @@ import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
+import { Def, def_generic, def_generic$, enable_previews, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
@@ -485,7 +485,7 @@ export function bitfield_doc(
 
 const layout_opts = new LayoutOptions();
 
-evaluate([
+evaluate(enable_previews([
   set_root_url("https://willowprotocol.org/"),
   set_root_directory(["build"]),
   out_directory(
@@ -649,4 +649,4 @@ evaluate([
       language: "en-gb",
     },
   }]),
-]);
+]));
