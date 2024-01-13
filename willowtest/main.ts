@@ -35,7 +35,7 @@ import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
 import { hsection } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
+import { Def, def_generic, def_generic$, enable_previews, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
@@ -51,6 +51,9 @@ import { e2e } from "./specs/e2e.ts";
 import { more } from "./specs/more/more.ts";
 import { why_willow } from "./specs/more/why_willow.ts";
 import { threedstorage } from "./specs/more/3dstorage.ts";
+import { changes } from "./specs/more/changes.ts";
+import { build_rss_feeds } from "../rss.ts";
+import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 
 export function quotes(...contents: Expression[]) {
@@ -101,6 +104,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 ul(
                   li(a({ href: "/", class: "internal" }, "Home")),
                   li(link_name("specifications", "Specs")),
+                  li(link_name("changes", "News")),
                   li(link_name("more", "More")),
                   li(
                     a(
@@ -472,11 +476,6 @@ export function bitfield_doc(
       }
       return div(
         {class: "bitfields wide"},
-        // [
-        //   div("Bits"),
-        //   div("Definitions"),
-        //   div("Remarks"),
-        // ],
         the_rows,
       );
     },
@@ -486,7 +485,8 @@ export function bitfield_doc(
 
 const layout_opts = new LayoutOptions();
 
-evaluate([
+evaluate(enable_previews([
+  set_root_url("https://willowprotocol.org/"),
   set_root_directory(["build"]),
   out_directory(
     "build",
@@ -623,8 +623,30 @@ evaluate([
       out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("why", why_willow),
       out_index_directory("3dstorage", threedstorage),
+      out_index_directory("changes", changes),
       out_index_directory("projects_and_communities", projects_and_communities),
     ]),
     copy_statics("assets"),
   ),
-]);
+
+  build_rss_feeds([{
+    path: ["rss_changelog.xml"],
+    feed_info: {
+      title: "Willow Specification Changelog",
+      link: "https://willowprotocol.org/more/changes/index.html#spec_changes",
+      description: "Although we consider Willow’s specifications stable, unforeseen outcomes may force us to make amendments. Rather than making this a source of exciting surprises for implementors, we prefer to list those (hopefully few) changes here.",
+      atomSelf: "https://willowprotocol.org/rss_changelog.xml",
+      language: "en-gb",
+    },
+  },
+  {
+    path: ["rss_news.xml"],
+    feed_info: {
+      title: "Willow News and Updates",
+      link: "https://willowprotocol.org/more/changes/index.html#news_and_updates",
+      description: "Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful.",
+      atomSelf: "https://willowprotocol.org/rss_changelog.xml",
+      language: "en-gb",
+    },
+  }]),
+]));

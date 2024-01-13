@@ -56,9 +56,7 @@ export const psi: Expression = site_template(
 
     hsection("private_equality_testing", "Private Equality Testing", [
       pinformative(
-        "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of ", sidenote("inequality", [
-          "If Alfie and Betty simply exchanged hashes of their items, and Alfie later also performed a private equality test with Gemma, then Alfie would learn whether Betty and Gemma held the same item. Hence, exchanging hashes is not sufficiently private for our purposes.",
-        ]), ". Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
+        "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of inequality. Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
       ),
 
       marginale_inlineable(img(asset("psi/psi_paint.png"))),
@@ -75,10 +73,10 @@ export const psi: Expression = site_template(
           "Alfie and Betty each randomly select a secret colour ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
         )],
         [
-          "They each mix their data colour with their secret colour and send the result to the other person (", function_call("mix", r("data_A"), r("secret_A")), " and ", function_call("mix", r("data_B"), r("secret_B")), ").",
+          "They each mix their data colour with their secret colour and send the result to the other person (", code(function_call("mix", r("data_A"), r("secret_A"))), " and ", code(function_call("mix", r("data_B"), r("secret_B"))), ").",
         ],
         [
-          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A")), " and ", function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B")), ").",
+          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", code(function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A"))), " and ", code(function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B"))), ").",
         ],
       ),
 
@@ -137,7 +135,7 @@ export const psi: Expression = site_template(
           $dot("x^{n \\cdot m} = {(x^n)}^m"),
         ]),
         " and ", r("psi_Betty"), " answers with ",
-        $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}"]),
+        $dot([r$("psi_dalpha"), "^{", r$("psi_salpha"), " \\cdot ", r$("psi_sbeta"), "}"]),
       ),
 
       pinformative(
@@ -145,9 +143,9 @@ export const psi: Expression = site_template(
         $([r$("psi_ialpha"), " = ", r$("psi_ibeta")]),
         " if and only if ",
         $dot([
-          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
+          r$("psi_alpha"), "^{", r$("psi_alpha"), " \\cdot ", r$("psi_sbeta"), "}",
           "=",
-          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}",
+          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
         ]),
         marginale(["Because ", $dot("x^{n \\cdot m} = x^{m \\cdot n}")]),
       ),
@@ -269,8 +267,8 @@ export const psi: Expression = site_template(
       pseudocode(
         new Struct({
             id: "McSubspaceCapability",
-            name: "SubspaceCapability",
-            plural: "SubspaceCapabilities",
+            name: "McSubspaceCapability",
+            plural: "McSubspaceCapabilities",
             comment: ["A capability that certifies read access to arbitrary ", rs("SubspaceId"), " at some unspecified ", r("Path"), "."],
             fields: [
                 {
@@ -321,15 +319,15 @@ export const psi: Expression = site_template(
         [
           "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [function_call(r("encode_user_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation")), "."],
-            [function_call(r("encode_user_pk"), r("subspace_new_user")), "."],
+            [code(function_call(r("encode_user_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
           ),
         ],
         [
           preview_scope("Otherwise, let ", def_value({id: "subspace_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last pair of ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), "."), " Then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [function_call(r("encode_user_sig"), r("subspace_prev_signature")), "."],
-            [function_call(r("encode_user_pk"), r("subspace_new_user")), "."],
+            [code(function_call(r("encode_user_sig"), r("subspace_prev_signature"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
           ),
         ],
       ),

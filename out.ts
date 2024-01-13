@@ -23,12 +23,12 @@ const statekey = Symbol("Out");
 
 const location_key = Symbol("CreationLocation");
 
-interface OutState {
+export interface OutState {
   out_files: OutFile; // a tree of path fragments and the associated file state
   current_path: string[]; // stack of path fragments that make up the current path
 }
 
-function out_state(ctx: Context): OutState {
+export function out_state(ctx: Context): OutState {
   const state = ctx.state.get(statekey);
 
   if (state) {
@@ -262,6 +262,7 @@ export function out_file(
 
 export function out_file_absolute(
   path_fragments: string[],
+  do_return_expanded: boolean,
   ...args: Expression[]
 ): Invocation {
   const the_path = join(...path_fragments);
@@ -283,7 +284,12 @@ export function out_file_absolute(
         ctx.error(err);
         ctx.halt();
       }
-      return "";
+
+      if (do_return_expanded) {
+        return fully_expanded;
+      } else {
+        return "";
+      }
     },
     // td
     (ctx) => {

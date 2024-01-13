@@ -12,7 +12,7 @@ strong {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  margin: 1.25em 0 0.5em 0;
+  padding: 1.25em 0 0.5em 0;
 }
 
 p {
@@ -273,4 +273,12 @@ a.fn, .enclosing.fn a {
   background: rgba(255, 228, 0, 0.309);
   border-radius: 5px;
   padding: 0.2em;  
+}
+
+.rss_item_title {
+  font-weight: bold;
+}
+
+.rss_item_time {
+  color: var(--dark-green)
 }

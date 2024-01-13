@@ -79,9 +79,7 @@ export const meadowcap: Expression = site_template(
 
       pinformative("The next important feature of Meadowcap is that of ", em("restricting"), " capabilities. Suppose I maintain several code repositories inside my personal ", r("subspace"), ". I use different ", rs("Path"), " to organise the data pertaining to different repositories, say ", path("code", "seasonal-clock"), " and ", path("code", "earthstar"), ". If I wanted to give somebody write-access to the ", path("code", "seasonal-clock"), " repository, I should ", em("not"), " simply grant them write access to my complete ", r("subspace"), " — if I did, they could also write to ", path("code", "earthstar"), ". Or to ", path("blog", "embarrassing-facts"), " for that matter.", ),
 
-      // marginale(img(asset("meadowcap/capability_types.png"))),
-
-      pinformative("Hence, Meadowcap allows to ", em("restrict"), " capabilities, turning them into less powerful ones. Restrictions can limit access by ", r("entry_path"), ", by ", r("entry_timestamp"), ", and/or by ", r("entry_subspace_id"), "."),
+      pinformative("Hence, Meadowcap allows to ", em("restrict"), " capabilities, turning them into less powerful ones. Restrictions can limit access by ", r("entry_subspace_id"), ", by ", r("entry_path"), ", and/or by ", r("entry_timestamp"), "."),
 
       aside_block(
         pinformative("Another typical example of using restrictions is an ", r("owned_namespace"), ", whose owner — Owen — gives write capabilities for distinct ", rs("subspace"), " to distinct people. Alfie might get the ", r("subspace"), " of ", r("SubspaceId"), " ", code("alfies-things"), ", Betty would get ", code("bettys-things"), ", and so on. This results in a system similar to a ", r("communal_namespace"), ", except that Owen has control over who gets to participate, and can also remove or change anything written by Alfie or Betty. It is however still clear which ", rs("Entry"), " were created by Owen and which were not — Owen cannot impersonate anyone."),
@@ -124,7 +122,7 @@ export const meadowcap: Expression = site_template(
           ],
 
           [
-              marginale(["Users identities are ", rs("dss_pk"), " of the ", r("user_signature_scheme"), ". Further, ", r("SubspaceId"), " must be ", rs("dss_pk"), " of the ", r("user_signature_scheme"), " as well. In ", rs("communal_namespace"), ", all valid capabilities stem from knowing a particular ", r("dss_sk"), " of the ", r("user_signature_scheme"), "."]),
+              marginale(["Users identities are ", rs("dss_pk"), " of the ", r("user_signature_scheme"), ". Further, ", rs("SubspaceId"), " must be ", rs("dss_pk"), " of the ", r("user_signature_scheme"), " as well. In ", rs("communal_namespace"), ", all valid capabilities stem from knowing a particular ", r("dss_sk"), " of the ", r("user_signature_scheme"), "."]),
               "A ", r("signature_scheme"), " ", def_parameter_value("user_signature_scheme", "user_signature_scheme", ["A protocol parameter of Meadowcap, the ", r("signature_scheme"), " from which authority stems in ", rs("communal_namespace"), ", and which is used when delegating capabilities."]), " consisting of algorithms ", def_parameter_fn("user_generate_keys", "user_generate_keys", ["A protocol parameter of Meadowcap, the ", r("dss_generate_keys"), " function of the ", r("user_signature_scheme"), "."]), ", ", def_parameter_fn("user_sign", "user_sign", ["A protocol parameter of Meadowcap, the ", r("dss_sign"), " function of the ", r("user_signature_scheme"), "."]), ", and ", def_parameter_fn("user_verify", "user_verify", ["A protocol parameter of Meadowcap, the ", r("dss_verify"), " function of the ", r("user_signature_scheme"), "."]), ". The ", rs("dss_pk"), " have type ", def_parameter_type("UserPublicKey", "UserPublicKey", ["A protocol parameter of Meadowcap, the type of ", rs("dss_pk"), " of the ", r("user_signature_scheme"), "."]), ", and the ", rs("dss_signature"), " have type ", def_parameter_type("UserSignature", "UserSignature", ["A protocol parameter of Meadowcap, the type of ", rs("dss_signature"), " of the ", r("user_signature_scheme"), "."]), "."
           ],
           [
@@ -231,17 +229,17 @@ export const meadowcap: Expression = site_template(
             "If ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), " is empty, then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
             lis(
               ["the byte ", code("0x00"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_write"), "),"],
-              [function_call(r("encode_namespace_pk"), field_access(r("communal_prev_cap"), "communal_cap_namespace")), ","],
-              [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
-              [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
+              [code(function_call(r("encode_namespace_pk"), field_access(r("communal_prev_cap"), "communal_cap_namespace"))), ","],
+              [code(function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area"))), ","],
+              [code(function_call(r("encode_user_pk"), r("communal_new_user"))), "."],
             ),
           ],
           [
             preview_scope("Otherwise, let ", def_value({id: "communal_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), "."), " Then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
             lis(
-              [function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area")), ","],
-              [function_call(r("encode_user_sig"), r("communal_prev_signature")), "."],
-              [function_call(r("encode_user_pk"), r("communal_new_user")), "."],
+              [code(function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area"))), ","],
+              [code(function_call(r("encode_user_sig"), r("communal_prev_signature"))), "."],
+              [code(function_call(r("encode_user_pk"), r("communal_new_user"))), "."],
             ),
           ],
         ),
@@ -313,17 +311,17 @@ export const meadowcap: Expression = site_template(
           [
             "If ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), " is empty, then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
             lis(
-              [function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area")), ","],
-              [function_call(r("encode_user_sig"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorisation")), "."],
-              [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
+              [code(function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area"))), ","],
+              [code(function_call(r("encode_user_sig"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorisation"))), "."],
+              [code(function_call(r("encode_user_pk"), r("owned_new_user"))), "."],
             ),
           ],
           [
             preview_scope("Otherwise, let ", def_value({id: "owned_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."), " Then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
             lis(
-              [function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area")), ","],
-              [function_call(r("encode_user_sig"), r("owned_prev_signature")), "."],
-              [function_call(r("encode_user_pk"), r("owned_new_user")), "."],
+              [code(function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area"))), ","],
+              [code(function_call(r("encode_user_sig"), r("owned_prev_signature"))), "."],
+              [code(function_call(r("encode_user_pk"), r("owned_new_user"))), "."],
             ),
           ],
         ),
@@ -353,8 +351,8 @@ export const meadowcap: Expression = site_template(
         ),
 
         pinformative("A ", r("Capability"), " ", def_value({id: "cap_cap", singular: "cap"}), " is ", def({id: "cap_valid", singular: "valid"}), " if either ", lis(
-          [field_access(r("cap_cap"), "capability_inner"), " is a ", r("communal_cap_valid"), " ", r("CommunalCapability"), " and ", function_call(r("is_communal"), field_access(field_access(r("cap_cap"), "capability_inner"), "communal_cap_namespace")), " is ", code("true"), ", or"],
-          [field_access(r("cap_cap"), "capability_inner"), " is a ", r("owned_cap_valid"), " ", r("OwnedCapability"), " and ", function_call(r("is_communal"), field_access(field_access(r("cap_cap"), "capability_inner"), "owned_cap_namespace")), " is ", code("false"), "."],
+          [field_access(r("cap_cap"), "capability_inner"), " is a ", r("communal_cap_valid"), " ", r("CommunalCapability"), " and ", code(function_call(r("is_communal"), field_access(field_access(r("cap_cap"), "capability_inner"), "communal_cap_namespace"))), " is ", code("true"), ", or"],
+          [field_access(r("cap_cap"), "capability_inner"), " is a ", r("owned_cap_valid"), " ", r("OwnedCapability"), " and ", code(function_call(r("is_communal"), field_access(field_access(r("cap_cap"), "capability_inner"), "owned_cap_namespace"))), " is ", code("false"), "."],
         )),
   
         pinformative(def({id: "cap_mode", singular: "access mode"}, "Access mode"), ", ", def({id: "cap_receiver", singular: "receiver"}), ", ", def({id: "cap_granted_namespace", singular: "granted namespace"}), ", and ", def({id: "cap_granted_area", singular: "granted area"}), " of a ", r("Capability"), " ", def_value({id: "cap_cap2", singular: "cap"}), " are those of ", field_access(r("cap_cap2"), "capability_inner"), "."),
@@ -399,7 +397,7 @@ export const meadowcap: Expression = site_template(
         [r("mcia_cap"), " is ", r("cap_valid"), ","],
         ["the ", r("cap_mode"), " of ", r("mcia_cap"), " is ", r("access_write"), ","],
         ["the ", r("cap_granted_area"), " of ", r("mcia_cap"), " ", rs("area_include"), " ", r("mcia_entry"), ", and"],
-        [function_call(r("user_verify"), r("mcia_receiver"), r("mcia_cap"), function_call(r("encode_entry"), r("mcia_entry"))), " is ", code("true"), ", where ", def_value({id: "mcia_receiver", singular: "receiver"}), " is the ", r("cap_receiver"), " of ", r("mcia_cap"), "."],
+        [code(function_call(r("user_verify"), r("mcia_receiver"), r("mcia_cap"), function_call(r("encode_entry"), r("mcia_entry")))), " is ", code("true"), ", where ", def_value({id: "mcia_receiver", singular: "receiver"}), " is the ", r("cap_receiver"), " of ", r("mcia_cap"), "."],
       )),
 
       pinformative("For this definition to make sense, the protocol parameters of Meadowcap must be ", r("mc_compatible"), " with those of Willow. Further, there must be concrete choices for the ", rs("encoding_function"), " ", r("encode_namespace_id"), ", ", r("encode_subspace_id"), ", and ", r("encode_payload_digest"), " that determine the exact output of ", r("encode_entry"), "."),
