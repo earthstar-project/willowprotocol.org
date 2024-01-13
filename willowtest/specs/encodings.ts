@@ -1140,7 +1140,7 @@ export const encodings: Expression = site_template({
         ),
 
         pinformative(
-          "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is a ", r("OwnedCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
+          "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is an ", r("OwnedCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
           encodingdef(
             [[
               div(
