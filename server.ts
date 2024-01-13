@@ -38,9 +38,10 @@ Deno.serve(async (req) => {
   try {
     const extension = extname(url.pathname);
 
-    // All non-html assets have cache-busting filenames
-    // And long-lived cache policies.
-    if (extension && extension !== ".html") {
+    const longCacheDirs = ["/assets", "/previews"];
+
+    // Content-addressed items get a long-lived cache policy
+    if (longCacheDirs.includes(dirname(url.pathname))) {
       const filePath = join(
         ".",
         "willowtest",
@@ -57,7 +58,7 @@ Deno.serve(async (req) => {
       return new Response(file.readable, {
         headers: {
           "Content-Type": contentKind,
-          "Cache-Control": "public, max-age 31536000, s-maxage 31536000",
+          "Cache-Control": "s-max-age=31536000,max-age=31536000,public",
         },
       });
     }
@@ -94,15 +95,17 @@ Deno.serve(async (req) => {
       }
 
       try {
-        const htmlFile = await Deno.open(filePath);
+        const fileBytes = await Deno.readFile(filePath);
 
         console.log(200, url.pathname);
+        
+        const contentKind = extension === '' ? 'text/html' : contentType(extension) || "text/plain";
 
-        return new Response(htmlFile.readable, {
+        return new Response(fileBytes, {
           headers: {
-            "Content-Type": "text/html",
+            "Content-Type": contentKind,
             "ETag": etag,
-            "Cache-Control": "public, max-age 3600, s-maxage 3600",
+            "Cache-Control": "s-max-age=3600,max-age=3600,public",
           },
         });
       } catch {
@@ -115,12 +118,14 @@ Deno.serve(async (req) => {
     } catch {
       // No etag.
       try {
-        const htmlFile = await Deno.open(filePath);
+        const fileBytes = await Deno.readFile(filePath);
+        
+        const contentKind = extension === '' ? 'text/html' : contentType(extension) || "text/plain";
 
-        return new Response(htmlFile.readable, {
+        return new Response(fileBytes, {
           headers: {
-            "Content-Type": "text/html",
-            "Cache-Control": "public, max-age 3600, s-maxage 3600",
+            "Content-Type": contentKind,
+            "Cache-Control": "s-max-age=3600,max-age=3600,public",
           },
         });
       } catch {
