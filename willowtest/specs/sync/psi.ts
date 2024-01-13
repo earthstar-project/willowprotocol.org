@@ -135,7 +135,7 @@ export const psi: Expression = site_template(
           $dot("x^{n \\cdot m} = {(x^n)}^m"),
         ]),
         " and ", r("psi_Betty"), " answers with ",
-        $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}"]),
+        $dot([r$("psi_dalpha"), "^{", r$("psi_salpha"), " \\cdot ", r$("psi_sbeta"), "}"]),
       ),
 
       pinformative(
@@ -143,9 +143,9 @@ export const psi: Expression = site_template(
         $([r$("psi_ialpha"), " = ", r$("psi_ibeta")]),
         " if and only if ",
         $dot([
-          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
+          r$("psi_alpha"), "^{", r$("psi_alpha"), " \\cdot ", r$("psi_sbeta"), "}",
           "=",
-          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_sbeta"), "}",
+          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
         ]),
         marginale(["Because ", $dot("x^{n \\cdot m} = x^{m \\cdot n}")]),
       ),
