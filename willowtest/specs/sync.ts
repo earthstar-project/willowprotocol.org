@@ -981,7 +981,7 @@ export const sync: Expression = site_template(
                     )),
 
                     pinformative(                        
-                        "Then, the encoding of a ", r("enc_setup_read"), " is the concatenation of:",
+                        "Then, the encoding of ", r("enc_setup_read"), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
                                 new BitfieldRow(
@@ -1018,12 +1018,7 @@ export const sync: Expression = site_template(
                     pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
 
                     ols(
-                        [r("CommitmentReveal"), " 0"],
-                        [r("PaiBindFragment"), " 1"],
-                        [r("PaiReplyFragment"), " 2"],
-                        [r("PaiRequestSubspaceCapability"), " 2"],
-                        [r("PaiReplySubspaceCapability"), " 2"],
-                        [r("SetupBindReadCapability"), " 2 + 1 (whether the encoding of the ReadCapability includes a SubspaceId or if it can be inferred from the handle)"],
+                        [r("SetupBindReadCapability"), " 2"],
                         [r("SetupBindAreaOfInterest"), " 2"],
                         [r("SetupBindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
                         [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
