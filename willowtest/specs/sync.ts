@@ -830,6 +830,13 @@ export const sync: Expression = site_template(
                         preview_scope(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
                         ),
+                        preview_scope(
+                            marginale(["Used indirectly when encoding ", rs("Entry"), ", ", rs("Area"), ", and ", rs("3dRange"), "."]),
+                            "An ", r("encoding_function"), " for ", r("SubspaceId"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
+                        ),
                     ),
 
                     pinformative("We can now define the encodings for all messages."),
@@ -1009,6 +1016,79 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    pinformative(
+                        "The encoding of a ", r("SetupBindAreaOfInterest"), " message ", def_value({id: "enc_setup_aoi", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("01")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " == 0"), " and ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " == 0"),
+                                    ],
+                                    ["Encode ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " and ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), "?"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability")),
+                            ),
+                            [[
+                                field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"))), "-byte integer",
+                            ]],
+                            [[
+                                function_call(
+                                    r("encode_area_in_area"),
+                                    field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_area"),
+                                    r("enc_setup_aoi_outer"),
+                                ), ", where ", def_value({id: "enc_setup_aoi_outer", singular: "out"}), " is the ", r("granted_area"), " of the ", r("read_capability"), " to which ", field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), " is ", r("handle_bind", "bound"),
+                            ]],
+                        ),
+                        "If ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " != 0"), " or ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " != 0"), ", this is followed by the concatenation of:",
+
+                        encodingdef(
+                            new Bitfields(
+                                two_bit_int(0, field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count")),
+                                two_bit_int(2, field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size")),
+                                bitfieldrow_unused(4),
+                            ),
+                            [[
+                                field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"))), "-byte integer",
+                            ]],
+                            [[
+                                field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"))), "-byte integer",
+                            ]],
+                        ),
+                    ),
+
+                    pinformative(                        
+                        "The encoding of a ", r("SetupBindStaticToken"), " message ", def_value({id: "enc_setup_static", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("10")],
+                                    ["message kind"],
+                                ),
+                               bitfieldrow_unused(3),
+                            ),
+                            [[
+                                function_call(r("encode_static_token"), field_access(r("enc_setup_static"), "SetupBindStaticTokenToken")),
+                            ]],
+                        ),
+                    ),
+
                 ]),
 
 
@@ -1018,9 +1098,6 @@ export const sync: Expression = site_template(
                     pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
 
                     ols(
-                        [r("SetupBindReadCapability"), " 2"],
-                        [r("SetupBindAreaOfInterest"), " 2"],
-                        [r("SetupBindStaticToken"), " 3 (absolute, or relative to another StaticToken)"],
                         [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
                         [r("ReconciliationAnnounceEntries"), " 2 + 2 + 2 + 1 + 1 + 1 (3dRange relative to previous range or contaniing Area)"],
                         [r("ReconciliationSendEntry"), " 2 + 2 + 1 (entry in 3dRange or relative to previous entry)"],
