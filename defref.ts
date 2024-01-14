@@ -530,7 +530,6 @@ function ref_invocation_generic(
         ctx.warn(`Did not create a preview for id ${style_def(id)} at ${
           format_location(ctx.stack.peek()!)
         }`);
-        ctx.log_trace(ctx.stack);
         return "UndefinedReference";
       } else {
         return null;
