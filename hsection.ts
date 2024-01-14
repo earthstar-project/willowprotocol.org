@@ -244,14 +244,24 @@ export function render_structure(structure: SectionStructure, current_level: num
         toc_heading_attributes["data-hsection"] = structure.id;
         toc_heading_attributes["data-hlevel"] = `${current_level}`;
 
-        return div(
-          {class: "toc_section"},
-          is_toplevel ? "" : span(toc_heading_attributes, link_name(structure.id, rendered_title)),
-          ol(
-            {class: "toc_children"},
-            structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
-          ),
-        );
+        if (is_toplevel) {
+          return [
+            span(toc_heading_attributes, link_name(structure.id, "(Top)")),
+            ol(
+              {class: "toc_children"},
+              structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
+            ),
+          ];
+        } else {
+          return div(
+            {class: "toc_section"},
+            span(toc_heading_attributes, link_name(structure.id, rendered_title)),
+            ol(
+              {class: "toc_children"},
+              structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
+            ),
+          );
+        }
       }
     },
   );
