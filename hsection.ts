@@ -1,6 +1,6 @@
 import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
 import { new_name, resolve_name } from "./names.ts";
-import { a, Attributes, div, h1, h2, h3, h4, h5, h6, ol, span } from "./h.ts";
+import { a, Attributes, div, h1, h2, h3, h4, h5, h6, nav, ol, span } from "./h.ts";
 import { link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 
@@ -219,7 +219,10 @@ export function table_of_contents(max_depth: number): Expression {
 
       return [
         html5_dependency_js("/named_assets/active_toc.js"),
-        render_structure(structure, state.level, max_depth, true),
+        nav(
+          {class: "toc"},
+          render_structure(structure, state.level, max_depth, true),
+        ),
       ];
     },
   );
@@ -241,7 +244,7 @@ export function render_structure(structure: SectionStructure, current_level: num
         toc_heading_attributes["data-hsection"] = structure.id;
 
         return div(
-          {class: `toc_section${is_toplevel ? " toc" : ""}`},
+          {class: "toc_section"},
           span(toc_heading_attributes, link_name(structure.id, rendered_title)),
           ol(
             {class: "toc_children"},
