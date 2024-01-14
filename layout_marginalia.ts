@@ -236,6 +236,11 @@ body {
   nav.toc > ol {
     padding: 0; 
   }
+  
+  .toc code {
+    font-size: 0.9rem;
+    background: none;
+  }
 }
 `;
     },

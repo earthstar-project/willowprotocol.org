@@ -24,7 +24,7 @@ aside_block,
   import { asset } from "../../out.ts";
   import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
   import { Expression } from "../../tsgen.ts";
-  import { hsection } from "../../hsection.ts";
+  import { hsection, table_of_contents } from "../../hsection.ts";
   import { link_name } from "../../linkname.ts";
   import { function_call } from "../../pseudocode.ts";
   
@@ -32,6 +32,8 @@ aside_block,
     name: "e2e",
     title: "Encrypted Willow",
   }, [
+    table_of_contents(7),
+    
     pinformative("Willow has no built-in mechanisms for encrypting data. Still, it would be nice if peers (say, an always-on server in the cloud) could facilitate data exchange without being privy to the data they share. While it is straightforward to encrypt payloads, that still leaves the relays to learn about ", rs("Entry"), ", that is, all the metadata. In this document, we examine how we can protect this metadata."),
 
     pinformative("Unfortunately, we cannot simply encrypt all the fields of ", rs("Entry"), ", because peers need to access this data to determine which ", rs("Entry"), " overwrite which others. More precisely, peers need the ability to compute ", rs("store_join"), " of ", rs("store"), ". These well-defined concepts give us precise limits on which properties of which metadata we have to preserve, and which properties we can vigorously scramble."),

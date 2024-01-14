@@ -1,5 +1,5 @@
 import { blue, def_value, green, link, lis, orange, pinformative, purple, quotes, site_template, vermillion } from "../main.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { code, em, figcaption, figure, img, span } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
@@ -27,6 +27,8 @@ export const grouping_entries: Expression = site_template({
   pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to use precise terminology) in the three-dimensional willow space."),
 
   pinformative("In this document, we develop and define a vocabulary for grouping ", rs("Entry"), " based on their ", rs("entry_subspace_id"), ", ", rs("entry_path"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronisation protocol"), "."),
+  
+  table_of_contents(7),
 
   hsection("ranges", "Ranges", [
     pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one). A ", r("range"), " is ", def({id: "range_empty", singular: "empty"}), " if it ", rs("range_include"), " no values.")),

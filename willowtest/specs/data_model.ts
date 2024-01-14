@@ -1,6 +1,6 @@
 import { def, preview_scope, r, Rs, rs } from "../../defref.ts";
 import { code, em, figcaption, figure, img, p } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { $ } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";

@@ -30,7 +30,7 @@ import { def, preview_scope, r, r$, rs } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression, Invocation, new_macro } from "macro";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { Struct, def_type, field_access, function_call, hl_builtin, pseudocode } from "../../pseudocode.ts";
 import { $comma, $dot, $ } from "../../katex.ts";
 import { surpress_output } from "../../tsgen.ts";
@@ -108,6 +108,8 @@ export const encodings: Expression = site_template({
   pinformative(
     "Nevertheless, protocols that deal with persistent storage and network transmissions eventually have to serialise data. In this document, we give both some generic definitions around arbitrary encodings, and some specific encodings that recur throughout the Willow family of specifications.",
   ),
+  
+  table_of_contents(7),
 
   hsection("encodings_what", "Encodings, In Detail", [
     pinformative(
