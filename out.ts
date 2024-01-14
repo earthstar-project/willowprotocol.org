@@ -663,7 +663,7 @@ export function copy_statics(path_fragment: string): Invocation {
                 
                 Deno.writeFileSync(`${path}/${new_path}`, contents);
   
-                const state = new_name(id, "static", ctx);
+                const state = new_name(id, "static", ctx, true);
                 state?.set(static_hash_key, new_path);
               }
             }

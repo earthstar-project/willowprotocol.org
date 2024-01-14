@@ -65,11 +65,11 @@ export const sync: Expression = site_template(
                     "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
                 ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronise."),
 
-                pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("3drbsr"), ", a technique we ", link_name("3d_range_based_set_reconciliation", "explain in detail here"), "."),
+                pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("d3rbsr"), ", a technique we ", link_name("d3_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
             hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
-                pinformative("After performing ", r("3drbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
+                pinformative("After performing ", r("d3rbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
             ]),
 
             hsection("sync_payloads", "Payload transmissions", [
@@ -84,13 +84,13 @@ export const sync: Expression = site_template(
         ]),
         
         hsection("sync_parameters", "Parameters", [
-            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS further requires parameters for ", link_name("access_control", "access control"), ", ", link_name("private_area_intersection", "private area intersection"), ", and ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
+            pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS further requires parameters for ", link_name("access_control", "access control"), ", ", link_name("private_area_intersection", "private area intersection"), ", and ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
 
             pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have a length of ", def_parameter_value("challenge_length"), " bytes, and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), " whose outputs have a length of ", def_parameter_value("challenge_hash_length"), " bytes."),
 
             pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
-            pinformative(link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
+            pinformative(link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
 
             pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
                 "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type ", r("UserSignature"), ", which together yield a ", r("MeadowcapAuthorisationToken"), ".",
@@ -153,11 +153,11 @@ export const sync: Expression = site_template(
                     variants: [
                         {
                             id: "ReconciliationChannel",
-                            comment: [R("logical_channel"), " for performing ", r("3drbsr"), "."],
+                            comment: [R("logical_channel"), " for performing ", r("d3rbsr"), "."],
                         },
                         {
                             id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting ", rs("Entry"), " and ", rs("Payload"), " outside of ", r("3drbsr"), "."],
+                            comment: [R("logical_channel"), " for transmitting ", rs("Entry"), " and ", rs("Payload"), " outside of ", r("d3rbsr"), "."],
                         },
                         {
                             id: "IntersectionChannel",
@@ -390,7 +390,7 @@ export const sync: Expression = site_template(
                     ),
 
                     aside_block(
-                        pinformative("To avoid duplicate ", r("3drbsr"), " sessions for the same ", rs("Area"), ", only ", r("alfie"), " should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for ", r("alfie"), " to initiate reconciliation."),
+                        pinformative("To avoid duplicate ", r("d3rbsr"), " sessions for the same ", rs("Area"), ", only ", r("alfie"), " should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for ", r("alfie"), " to initiate reconciliation."),
                     ),
                 
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
@@ -416,18 +416,18 @@ export const sync: Expression = site_template(
                 ]),
 
                 hsection("sync_reconciliation", "Reconciliation", [
-                    pinformative("We use ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronize the data of the peers."),
+                    pinformative("We use ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronize the data of the peers."),
                     
                     pseudocode(
                         new Struct({
                             id: "ReconciliationSendFingerprint",
-                            comment: ["Send a ", r("Fingerprint"), " as part of ", r("3drbsr"), "."],
+                            comment: ["Send a ", r("Fingerprint"), " as part of ", r("d3rbsr"), "."],
                             fields: [
                                 {
                                     id: "ReconciliationSendFingerprintRange",
                                     name: "range",
-                                    comment: ["The ", r("3dRange"), " whose ", r("Fingerprint"), " is transmitted."],
-                                    rhs: r("3dRange"),
+                                    comment: ["The ", r("D3Range"), " whose ", r("Fingerprint"), " is transmitted."],
+                                    rhs: r("D3Range"),
                                 },
                                 {
                                     id: "ReconciliationSendFingerprintFingerprint",
@@ -451,20 +451,20 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("3drbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("d3rbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
                     
                     pseudocode(
                         new Struct({
                             id: "ReconciliationAnnounceEntries",
-                            comment: ["Prepare transmission of the ", rs("LengthyEntry"), " a peer has in a ", r("3dRange"), " as part of ", r("3drbsr"), "."],
+                            comment: ["Prepare transmission of the ", rs("LengthyEntry"), " a peer has in a ", r("D3Range"), " as part of ", r("d3rbsr"), "."],
                             fields: [
                                 {
                                     id: "ReconciliationAnnounceEntriesRange",
                                     name: "range",
-                                    comment: ["The ", r("3dRange"), " whose ", rs("LengthyEntry"), " to transmit."],
-                                    rhs: r("3dRange"),
+                                    comment: ["The ", r("D3Range"), " whose ", rs("LengthyEntry"), " to transmit."],
+                                    rhs: r("D3Range"),
                                 },
                                 {
                                     id: "ReconciliationAnnounceEntriesCount",
@@ -475,7 +475,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ReconciliationAnnounceEntriesFlag",
                                     name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("ReconciliationAnnounceEntries"), " message for the same ", r("3dRange"), " in return."],
+                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("ReconciliationAnnounceEntries"), " message for the same ", r("D3Range"), " in return."],
                                     rhs: r("Bool"),
                                 },
                                 {
@@ -500,22 +500,22 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers announce how many ", rs("Entry"), " they have in a ", r("3dRange"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("3dRange"), ". Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
+                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers announce how many ", rs("Entry"), " they have in a ", r("D3Range"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("D3Range"), ". Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
 
                     pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
-                        "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("3drbsr"), "."
+                        "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("d3rbsr"), "."
                     ]), "sorted from ", r("entry_newer", "oldest to newest"), ", if the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
                     pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " massage have been sent."),
 
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("3dRange"), " has concluded successfully."),
+                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                     
                     pseudocode(
                         new Struct({
                             id: "ReconciliationSendEntry",
-                            comment: ["Transmit a ", r("LengthyEntry"), " as part of ", r("3drbsr"), "."],
+                            comment: ["Transmit a ", r("LengthyEntry"), " as part of ", r("d3rbsr"), "."],
                             fields: [
                                 {
                                     id: "ReconciliationSendEntryEntry",
@@ -539,13 +539,13 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("3drbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " message has announced the containing ", r("3dRange"), ", and the number of messages must not exceed the announced number of ", rs("Entry"), ". The transmitted ", rs("Entry"), " must be ", r("3d_range_include", "included"), " in the announced ", r("3dRange"), "."),
+                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " message has announced the containing ", r("D3Range"), ", and the number of messages must not exceed the announced number of ", rs("Entry"), ". The transmitted ", rs("Entry"), " must be ", r("d3_range_include", "included"), " in the announced ", r("D3Range"), "."),
 
                     pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_data", "Data", [
-                    pinformative("Outside of ", link_name("3d_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push ", rs("Entry"), " and ", rs("Payload"), " to each other, and they can request specific ", rs("Payload"), "."),
+                    pinformative("Outside of ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push ", rs("Entry"), " and ", rs("Payload"), " to each other, and they can request specific ", rs("Payload"), "."),
                     
                     pseudocode(
                         new Struct({
@@ -580,7 +580,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("DataSendEntry"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("3drbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("DataSendPayload"), " messages)."),
+                    pinformative("The ", r("DataSendEntry"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("d3rbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("DataSendPayload"), " messages)."),
 
                     pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving an ", r("DataSendEntry"), " message whose ", r("DataSendEntryOffset"), " is strictly less than the ", r("DataSendEntryEntry"), apo, "s ", r("entry_payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), " and its ", r("currently_received_offset"), " to the received ", r("DataSendEntryOffset"), "."),
                 
@@ -831,7 +831,7 @@ export const sync: Expression = site_template(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
                         ),
                         preview_scope(
-                            marginale(["Used indirectly when encoding ", rs("Entry"), ", ", rs("Area"), ", and ", rs("3dRange"), "."]),
+                            marginale(["Used indirectly when encoding ", rs("Entry"), ", ", rs("Area"), ", and ", rs("D3Range"), "."]),
                             "An ", r("encoding_function"), " for ", r("SubspaceId"), ".",
                         ),
                         preview_scope(

@@ -454,7 +454,13 @@ export function r(
   id: string,
   text?: Expression,
 ): Expression {
-  return ref_invocation(get_singular, id, text);
+  const macro = new_macro(
+    (args, _ctx) => {
+      return ref_invocation(get_singular, id, args[0] ? args[0] : undefined);
+    },
+  );
+
+  return new Invocation(macro, text ? [text] : []);
 }
 
 /** Refer to a definition in its plural label. */
@@ -462,21 +468,39 @@ export function rs(
   id: string,
   text?: Expression,
 ): Expression {
-  return ref_invocation(get_plural, id, text);
+  const macro = new_macro(
+    (args, _ctx) => {
+      return ref_invocation(get_plural, id, args[0] ? args[0] : undefined);
+    },
+  );
+
+  return new Invocation(macro, text ? [text] : []);
 }
 
 export function R(
   id: string,
   text?: Expression,
 ): Expression {
-  return ref_invocation(get_Singular, id, text);
+  const macro = new_macro(
+    (args, _ctx) => {
+      return ref_invocation(get_Singular, id, args[0] ? args[0] : undefined);
+    },
+  );
+
+  return new Invocation(macro, text ? [text] : []);
 }
 
 export function Rs(
   id: string,
   text?: Expression,
 ): Expression {
-  return ref_invocation(get_Plural, id, text);
+  const macro = new_macro(
+    (args, _ctx) => {
+      return ref_invocation(get_Plural, id, args[0] ? args[0] : undefined);
+    },
+  );
+
+  return new Invocation(macro, text ? [text] : []);
 }
 
 function ref_invocation_generic(
@@ -506,6 +530,7 @@ function ref_invocation_generic(
         ctx.warn(`Did not create a preview for id ${style_def(id)} at ${
           format_location(ctx.stack.peek()!)
         }`);
+        ctx.log_trace(ctx.stack);
         return "UndefinedReference";
       } else {
         return null;
@@ -525,13 +550,25 @@ function ref_invocation(
   id: string,
   text?: Expression,
 ): Expression {
-  return ref_invocation_generic(false, noun_form, id, text);
+  const macro = new_macro(
+    (args, _ctx) => {
+      return ref_invocation_generic(false, noun_form, id, args[0] ? args[0] : undefined);
+    },
+  );
+
+  return new Invocation(macro, text ? [text] : []);
 }
 
 export function r$(
   id: string,
 ): Expression {
-  return ref_invocation_generic(true, get_math, id);
+  const macro = new_macro(
+    (_args, _ctx) => {
+      return ref_invocation_generic(true, get_math, id);
+    },
+  );
+
+  return new Invocation(macro, []);
 }
 
 export function get_singular(d: Def): string {
