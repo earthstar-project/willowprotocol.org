@@ -241,12 +241,10 @@ export function render_structure(structure: SectionStructure, current_level: num
         toc_heading_attributes["data-hsection"] = structure.id;
 
         return div(
-          {class: "toc_section"},
-          is_toplevel ? "" : [
-            span(toc_heading_attributes, link_name(structure.id, rendered_title)),
-          ],
+          {class: `toc_section${is_toplevel ? " toc" : ""}`},
+          span(toc_heading_attributes, link_name(structure.id, rendered_title)),
           ol(
-            {class: `toc_children${is_toplevel ? " toc" : ""}`},
+            {class: "toc_children"},
             structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
           ),
         );
