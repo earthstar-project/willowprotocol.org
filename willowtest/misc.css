@@ -163,6 +163,7 @@ figure {
 .toc {
   position: fixed;
   left: 0;
+  display: none;
 }
 
 .tocActive {
