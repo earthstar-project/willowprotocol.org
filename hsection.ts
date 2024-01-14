@@ -1,6 +1,6 @@
 import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
 import { new_name, resolve_name } from "./names.ts";
-import { a, Attributes, div, h1, h2, h3, h4, h5, h6, nav, ol, span } from "./h.ts";
+import { a, Attributes, div, h1, h2, h3, h4, h5, h6, li, nav, ol, span } from "./h.ts";
 import { link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 
@@ -221,7 +221,9 @@ export function table_of_contents(max_depth: number): Expression {
         html5_dependency_js("/named_assets/active_toc.js"),
         nav(
           {class: "toc"},
-          render_structure(structure, state.level, max_depth, true),
+          ol(
+            render_structure(structure, state.level, max_depth, true),
+          )
         ),
       ];
     },
@@ -246,20 +248,20 @@ export function render_structure(structure: SectionStructure, current_level: num
 
         if (is_toplevel) {
           return [
-            span(toc_heading_attributes, link_name(structure.id, "(Top)")),
-            ol(
-              {class: "toc_children"},
-              structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
-            ),
+            li({...toc_heading_attributes, class: 'toc_top'}, link_name(structure.id, "(Top)")),
+            structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
           ];
         } else {
           return div(
             {class: "toc_section"},
-            span(toc_heading_attributes, link_name(structure.id, rendered_title)),
-            ol(
-              {class: "toc_children"},
-              structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
-            ),
+            li(toc_heading_attributes, [
+              link_name(structure.id, rendered_title),
+              ol(
+                {class: "toc_children"},
+                structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
+              ),
+            ]),
+           
           );
         }
       }

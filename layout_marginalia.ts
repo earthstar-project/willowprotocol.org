@@ -17,6 +17,9 @@ export class LayoutOptions {
   max_width_main = 32;
   // maximum width for the marginalia
   max_width_marginalia = 18;
+  
+  // width of the toc
+  toc = 15;
 
   // width of main content and the marginalia together
   wide(): number {
@@ -28,6 +31,10 @@ export class LayoutOptions {
   // if the screen is less wide than this, the marginalia disappear
   wide_and_margins(): number {
     return this.wide() + this.padding_left + this.padding_right;
+  }
+  
+  wide_and_margins_and_toc(): number {
+    return this.wide() + this.padding_left + this.padding_right + this.toc
   }
 }
 
@@ -200,7 +207,37 @@ body {
     .preview {
         max-width: calc(${opts.max_width_main}rem + 1rem);
     }
-}`;
+}
+
+@media (min-width: ${opts.wide_and_margins() + (opts.toc * 2)}rem) {
+  .toc {
+    font-size: 1rem;
+    width: ${opts.toc}rem;
+    position: sticky;
+    top: 1.5em;
+    transform: translateX(-${opts.toc + opts.padding_left}em) translateY(2rem);
+    height: 0;
+    overflow: visible;
+  }
+  
+  .toc li {
+    list-style: none;
+    padding-left: 0.5em;
+  }
+  
+  .toc li.tocActive {
+    list-style-type: "☞";
+  }
+  
+  .toc_top {
+    display: block !important;
+  }
+  
+  nav.toc > ol {
+    padding: 0; 
+  }
+}
+`;
     },
   );
 

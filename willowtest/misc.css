@@ -160,12 +160,22 @@ figure {
   border-bottom: 1px solid var(--light-green);
 }
 
-.toc {
-  position: fixed;
-  left: 0;
+ol.toc_children {
+  padding-left: 1em;
+}
+
+.toc a {
+  text-decoration: none !important;
+}
+
+.toc li {
+  margin: 0.35em 0;
+}
+
+.toc_top {
   display: none;
 }
 
-.tocActive {
-  background-color: cornflowerblue;
+nav.toc > ol {
+  padding-left: 1.5em;
 }
