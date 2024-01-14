@@ -1,5 +1,5 @@
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { aside, code, em, img, p } from "../../h.ts";
+import { aside, code, em, hr, img, p } from "../../h.ts";
 import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
@@ -241,6 +241,8 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("PaiBindFragment"), " messages use the ", r("IntersectionChannel"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -269,6 +271,8 @@ export const sync: Expression = site_template(
                     ]),
 
                     pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -289,6 +293,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the ", r("subspace"), " in question."),
 
                     pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -366,6 +372,8 @@ export const sync: Expression = site_template(
                 
                     pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
 
+                    hr(),
+
                     pseudocode(
                         new Struct({
                             id: "SetupBindAreaOfInterest",
@@ -396,6 +404,8 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -456,6 +466,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("d3rbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -513,6 +525,8 @@ export const sync: Expression = site_template(
                     pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -587,6 +601,8 @@ export const sync: Expression = site_template(
                     pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving an ", r("DataSendEntry"), " message whose ", r("DataSendEntryOffset"), " is strictly less than the ", r("DataSendEntryEntry"), apo, "s ", r("entry_payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), " and its ", r("currently_received_offset"), " to the received ", r("DataSendEntryOffset"), "."),
                 
                     pinformative(R("DataSendEntry"), " messages use the ", r("DataChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -616,6 +632,8 @@ export const sync: Expression = site_template(
                     pinformative("A ", r("DataSendPayload"), " message may only be sent if the receiver has a well-defined ", r("currently_received_entry"), "."),
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -647,6 +665,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("DataSetEagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
                     pinformative(R("DataSetEagerness"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -681,6 +701,8 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -866,6 +888,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+
+                    hr(),
                     
                     pinformative(
                         "The encoding of a ", r("PaiBindFragment"), " message ", def_value({id: "enc_pai_bind_fragment", singular: "m"}), " is the concatenation of:",
@@ -895,6 +919,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -920,6 +946,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -941,6 +969,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+
+                    hr(),
 
                     pinformative(
                         "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
@@ -1018,6 +1048,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("SetupBindAreaOfInterest"), " message ", def_value({id: "enc_setup_aoi", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -1068,6 +1100,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+
+                    hr(),
 
                     pinformative(                        
                         "The encoding of a ", r("SetupBindStaticToken"), " message ", def_value({id: "enc_setup_static", singular: "m"}), " is the concatenation of:",

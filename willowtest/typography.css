@@ -282,3 +282,9 @@ a.fn, .enclosing.fn a {
 .rss_item_time {
   color: var(--dark-green)
 }
+
+hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--green), rgba(0, 0, 0, 0));
+}
