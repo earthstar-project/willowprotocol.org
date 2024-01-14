@@ -1093,11 +1093,23 @@ export const sync: Expression = site_template(
 
                 hsection("sync_encode_recon", "Reconciliation", [
                     pinformative(
-                        "Successive reconciliation messages often concern related ", rs("D3Range"), " and ", rs("Entry"), ". We exploit this for more efficient encodings, by allowing to specify ", rs("D3Range"), " and ", rs("Entry"), " in relation to the previously sent one. To allow for this optimization, peers need to track the following pieces of state:",
+                        "Successive reconciliation messages often concern related ", rs("D3Range"), " and ", rs("Entry"), ". We exploit this for more efficient encodings by allowing to specify ", rs("D3Range"), " and ", rs("Entry"), " in relation to the previously sent one. To allow for this optimization, peers need to track the following pieces of state:",
+
+                        lis(
+                            [
+                                "A ", r("D3Range"), " ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintRange"), "."
+                            ],
+                            [
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_sender", singular: "prev_sender_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintSenderHandle"), "."
+                            ],
+                            [
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), "."
+                            ],
+                        ),
                     ),
 
                     pinformative(
-                        "A ", r("D3Range"), " ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), " TODO."
+                        "Prior to receiving any ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message, ", r("sync_enc_prev_range"), ", ", r("sync_enc_prev_sender"), ", and ", r("sync_enc_prev_receiver"), " are undefined and must not be referenced."
                     ),
 
                 ]),
