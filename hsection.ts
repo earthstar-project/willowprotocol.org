@@ -239,13 +239,14 @@ export function render_structure(structure: SectionStructure, current_level: num
         return null;
       } else {
         const toc_heading_attributes: Attributes = {
-          class: `toc_heading toc${current_level}`
+          class: `toc_heading`
         };
         toc_heading_attributes["data-hsection"] = structure.id;
+        toc_heading_attributes["data-hlevel"] = `${current_level}`;
 
         return div(
           {class: "toc_section"},
-          span(toc_heading_attributes, link_name(structure.id, rendered_title)),
+          is_toplevel ? "" : span(toc_heading_attributes, link_name(structure.id, rendered_title)),
           ol(
             {class: "toc_children"},
             structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),

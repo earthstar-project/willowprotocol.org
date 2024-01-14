@@ -18,8 +18,6 @@ window.addEventListener("load", () => {
                     return header.getBoundingClientRect().top > 180;
                 });
 
-                console.log(activeIndex);
-
                 if (activeIndex == -1) {
                     activeIndex = headers.length - 1;
                 } else if(activeIndex > 0) {

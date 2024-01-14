@@ -1,6 +1,6 @@
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { aside, code, em, img, p } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
@@ -28,6 +28,8 @@ export const sync: Expression = site_template(
     },
     [
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
+
+        table_of_contents(7),
 
         hsection("sync_intro", "Introduction", [
             marginale_inlineable(

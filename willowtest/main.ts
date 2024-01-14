@@ -78,7 +78,6 @@ export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
-  do_not_render_toc?: boolean;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -98,7 +97,6 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
                 [
-                  meta.do_not_render_toc ? "" : table_of_contents(7),
                   args[0],
                 ],
               ),
