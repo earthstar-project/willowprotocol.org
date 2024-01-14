@@ -46,7 +46,16 @@ export function new_name(
   name: string,
   kind: string,
   ctx: Context,
+  is_unsafe_name?: boolean,
 ): PerNameState | null {
+  const safe_name_regex = /^[A-Za-z][A-Za-z0-9_]*$/;
+  if (!is_unsafe_name && !safe_name_regex.test(name)) {
+    ctx.error(`Invalid name ${style_name(name)} at ${format_location(ctx.stack.peek()!)}`);
+    ctx.error("    Names must match regex /^[A-Za-z][A-Za-z0-9_]*$/");
+    ctx.halt();
+    return null;
+  }
+
   const names = names_state(ctx).names;
 
   const existing_name = names.get(name);
