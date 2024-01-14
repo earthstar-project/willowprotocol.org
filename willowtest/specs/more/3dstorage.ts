@@ -16,7 +16,7 @@ export const threedstorage: Expression = site_template({
 name: "d3storage",
 title: "Three-Dimensional Data Storage",
 }, [
-    pinformative(em("Author’s note: this is one of the more esoteric documents on this site and presumes a cosy familiarity with the ", link_name('specifications', "Willow specifications"), " for any of it to be useful.")),
+    pinformative(em("Author’s note: this is one of the more esoteric documents on this site, and presumes a cosy familiarity with the ", link_name('specifications', "Willow specifications"), " for any of it to be useful.")),
     
     pinformative("Most implementations of Willow will centre around a (persistent) database of ", rs("Entry") , ". In this document, we give some context on building such a data store. We cannot possibly give a complete account, think of this document more as a tour guide to an extensive, partially unexplored rabbit hole."),
 
