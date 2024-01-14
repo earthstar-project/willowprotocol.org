@@ -33,7 +33,7 @@ import {
 import { read_file } from "../input.ts";
 import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
-import { hsection } from "../hsection.ts";
+import { hsection, table_of_contents } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
 import { Def, def_generic, def_generic$, enable_previews, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
@@ -78,6 +78,7 @@ export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
+  do_not_render_toc?: boolean;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -96,7 +97,10 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 meta.name,
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
-                args[0],
+                [
+                  meta.do_not_render_toc ? "" : table_of_contents(7),
+                  args[0],
+                ],
               ),
             ),
             footer(
@@ -498,6 +502,7 @@ evaluate(enable_previews([
           title: "Willow",
           name: "willow",
           heading: img("emblem.png"),
+          do_not_render_toc: true,
         },
         [
           pintroductory(
