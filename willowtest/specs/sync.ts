@@ -1091,6 +1091,17 @@ export const sync: Expression = site_template(
 
                 ]),
 
+                hsection("sync_encode_recon", "Reconciliation", [
+                    pinformative(
+                        "Successive reconciliation messages often concern related ", rs("D3Range"), " and ", rs("Entry"), ". We exploit this for more efficient encodings, by allowing to specify ", rs("D3Range"), " and ", rs("Entry"), " in relation to the previously sent one. To allow for this optimization, peers need to track the following pieces of state:",
+                    ),
+
+                    pinformative(
+                        "A ", r("D3Range"), " ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), " TODO."
+                    ),
+
+                ]),
+
 
                 hsection("sync_notes", "Notes", [
                     pinformative("Ignore these, they will disappear as we settle on the encodings."),
