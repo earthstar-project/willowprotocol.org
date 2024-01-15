@@ -1,6 +1,6 @@
 import { def, r, rs } from "../../../defref.ts";
 import { em, p, s } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
+import { hsection, table_of_contents } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
 import { Expression } from "../../../tsgen.ts";
@@ -13,6 +13,8 @@ export const timestamps_really: Expression = site_template(
     },
     [
         pinformative("Willow implements a key-value store (up to prefix-based overwrites), and a key-value store can map any one key to at most one value. Willow uses simple numeric ", rs("Timestamp"), " to resolve conflicting mappings. This design decision might trigger some healthy scepticism, so this text walks you through our reasoning for building them into the protocol."),
+        
+        table_of_contents(7),
 
         hsection("why_no_timestamps", "Healthy Scepticism", [
             pinformative("We start by laying out why unreflected usage of timestamps is a bad idea; both to give a solid foundation to our arguments in favour of using them regardless, and to give you a clear picture of which blind spots we might have (please reach out and tell us about them)."),

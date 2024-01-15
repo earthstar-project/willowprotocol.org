@@ -1,6 +1,6 @@
 import { def, preview_scope, r, rs, r$, R, def_fake } from "../../../defref.ts";
 import { code, div, em, img, p, table } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
+import { hsection, table_of_contents } from "../../../hsection.ts";
 import { $, $comma, $dot } from "../../../katex.ts";
 import {
   marginale,
@@ -35,6 +35,8 @@ export const psi: Expression = site_template(
   },
   [
     pinformative("In order to synchronise data, peers must inform each other about which data they are interested in. If done openly, this would let peers learn about details such as ", rs("NamespaceId"), ", ", rs("SubspaceId"), ", or ", rs("Path"), " that they have no business knowing about. In this document, we describe a technique that does not leak this information."),
+    
+    table_of_contents(7),
 
     hsection("pai_goals", "Setting and Goals", [
       pinformative("We consider the setting where two peers wish to synchronise some data that is subject to ", link_name("access_control", "read access control via capabilities"), ". More precisely, they want to specify pairs of ", rs("namespace"), " and ", rs("AreaOfInterest"), ", and then synchronise the ", rs("aoi_intersection"), "."),
