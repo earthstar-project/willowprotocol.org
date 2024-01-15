@@ -119,7 +119,7 @@ export const sync: Expression = site_template(
 
             pseudocode(
                 new SimpleEnum({
-                    id: "HandleKind",
+                    id: "HandleType",
                     comment: ["The different ", rs("resource_handle"), " employed by the ", r("WGPS"), "."],
                     variants: [
                         {
@@ -768,7 +768,7 @@ export const sync: Expression = site_template(
         
                         new Struct({
                             id: "ControlPlead",
-                            comment: ["Ask the other peer to send an ", r("ControlAbsolve"), " message such that the remaining buffer capacity will be ", r("ControlPleadTarget"), "."],
+                            comment: ["Ask the other peer to send an ", r("ControlAbsolve"), " message such that the receiver remaining ", rs("guarantee"), " will be ", r("ControlPleadTarget"), "."],
                             fields: [
                                 {
                                     id: "ControlPleadTarget",
@@ -824,9 +824,9 @@ export const sync: Expression = site_template(
                                     rhs: r("Bool"),
                                 },
                                 {
-                                    id: "ControlFreeHandleKind",
-                                    name: "handle_kind",
-                                    rhs: r("HandleKind"),
+                                    id: "ControlFreeHandleType",
+                                    name: "handle_type",
+                                    rhs: r("HandleType"),
                                 },
                             ],
                         }),
@@ -1825,7 +1825,7 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "To denote ", rs("HandleKind"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_kind"}), " maps ", lis(
+                        "To denote ", rs("HandleType"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_type"}), " maps ", lis(
                             [r("IntersectionHandle"), " to ", code("000"), ","],
                             [r("CapabilityHandle"), " to ", code("001"), ","],
                             [r("AreaOfInterestHandle"), " to ", code("010"), ","],
@@ -1853,7 +1853,7 @@ export const sync: Expression = site_template(
                                 two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
                                 new BitfieldRow(
                                     3,
-                                    [function_call(r("encode_handle_kind"), field_access(r("enc_ctrl_free"), "ControlFreeHandleKind"))],
+                                    [function_call(r("encode_handle_kind"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
                                 ),
                                 new BitfieldRow(
                                     1,
