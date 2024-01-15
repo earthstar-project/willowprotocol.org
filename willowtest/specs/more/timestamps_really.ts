@@ -8,7 +8,7 @@ import { link, pinformative, quotes, site_template } from "../../main.ts";
 
 export const timestamps_really: Expression = site_template(
     {
-        title: "Timestamps, really?",
+        title: "Timestamps, Really?",
         name: "timestamps_really",
     },
     [

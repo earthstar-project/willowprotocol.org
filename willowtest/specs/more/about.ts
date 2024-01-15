@@ -18,7 +18,7 @@ export function hacky_link(
 
 export const about: Expression = site_template(
 		{
-				title: "About us",
+				title: "About Us",
 				name: "about",
 		},
 		[
