@@ -213,8 +213,8 @@ body {
   .toc {
     font-size: 1rem;
     width: ${opts.toc}rem;
-    position: sticky;
-    top: 1.5em;
+    position: fixed;
+    top: 4em;
     transform: translateX(-${opts.toc + opts.padding_left}em) translateY(2rem);
     height: 0;
     overflow: visible;
@@ -223,6 +223,8 @@ body {
   .toc li {
     list-style: none;
     padding-left: 0.5em;
+    line-height: 1;
+    margin: 0.6em 0 !important;
   }
   
   .toc li.tocActive {
