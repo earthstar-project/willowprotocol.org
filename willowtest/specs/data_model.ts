@@ -100,7 +100,7 @@ export const data_model: Expression = site_template(
         ],
         [
           marginale([
-            "Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
+            "Since this function provides the only way in which Willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
           ]),
           "A function ", def_parameter_fn("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
         ],
