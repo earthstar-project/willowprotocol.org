@@ -55,15 +55,15 @@ export const sync: Expression = site_template(
         hsection("sync_concepts", "Concepts", [
             pinformative("Data synchronisation for Willow needs to solve a number of sub-problems, which we summarise in this section."),
 
-            hsection("sync_access", "Access Control", [
+            hsection("sync_access", {no_toc: true}, "Access Control", [
                 pinformative("Peers only transfer data to peers that can prove that they are allowed to access that data. We describe how peers authenticate their requests ", link_name("access_control", "here"), "."),
             ]),
 
-            hsection("sync_pai", "Private Area Intersection", [
+            hsection("sync_pai", {no_toc: true}, "Private Area Intersection", [
                 pinformative("The WGPS lets two peers determine which ", rs("namespace"), " and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronize. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
             ]),
 
-            hsection("sync_partial", "Partial Synchronisation", [
+            hsection("sync_partial", {no_toc: true}, "Partial Synchronisation", [
                 pinformative("To synchronise data, peers specify any number of ", rs("AreaOfInterest"), marginale([
                     "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
                 ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronise."),
@@ -71,17 +71,17 @@ export const sync: Expression = site_template(
                 pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("d3rbsr"), ", a technique we ", link_name("d3_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
-            hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
+            hsection("sync_post_sync_forwarding", {no_toc: true}, "Post-Reconciliation Forwarding", [
                 pinformative("After performing ", r("d3rbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
             ]),
 
-            hsection("sync_payloads", "Payload Transmission", [
+            hsection("sync_payloads", {no_toc: true}, "Payload Transmission", [
                 pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately transmit the corresponding ", r("Payload"), " as well. Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("AreaOfInterest"), " can be quadratic in the number of ", rs("AreaOfInterest"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " for each ", r("aoi_intersection"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
                 pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), " (that they are allowed to access)."),
             ]),
 
-            hsection("sync_resources", "Resource Limits", [
+            hsection("sync_resources", {no_toc: true}, "Resource Limits", [
                 pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overloads the other. We use a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " that we describe ", link_name("resource_control", "here"), "."),
             ]),
         ]),
