@@ -70,9 +70,23 @@ export function two_bit_int(start_bit: number, value_to_encode: Expression, unle
       ),
     ],
     [
-      "2-bit integer ", code("n"), " such that ", code("2^n"), " gives ", code(function_call(r("compact_width"), value_to_encode)),
+      unless ? "ignored, or " : "", "2-bit integer ", code("n"), " such that ", code("2^n"), " gives ", code(function_call(r("compact_width"), value_to_encode)),
     ],
   );
+}
+
+export function two_bit_int_def(start_bit: number, value_to_encode: Expression, unless?: Expression): Expression {
+  return [
+      unless ? [
+        div(code("00"), " if ", unless, ", otherwise:"),
+      ] : "",
+      div(
+        `Bit ${start_bit} is `, code("1"), " ", r("iff"), " ", code(function_call(r("compact_width"), value_to_encode)), " is ", code("4"), " or ", code("8"), ".",
+      ),
+      div(
+        `Bit ${start_bit + 1} is `, code("1"), " ", r("iff"), " ", code(function_call(r("compact_width"), value_to_encode)), " is ", code("2"), " or ", code("8"), ".",
+      ),
+    ];
 }
 
 export function encode_two_bit_int(
