@@ -414,9 +414,9 @@ export const encodings: Expression = site_template({
       hsection("enc_path_relative", code("encode_path_relative"), [
         pinformative(
           "To encode a ", r("Path"), " ",
-          def_value({ id: "relative_path_primary", singular: "primary" }),
-          " relative to another ", r("Path"), " ",
-          def_value({ id: "relative_path_reference", singular: "reference" }),
+          def_value({ id: "relative_path_primary", singular: "p" }),
+          " relative to a reference ", r("Path"), " ",
+          def_value({ id: "relative_path_reference", singular: "ref" }),
           ", we define ",
           code(function_call(
             def_fn({id: "encode_path_relative", math: "encode\\_path\\_relative"}),
@@ -439,7 +439,7 @@ export const encodings: Expression = site_template({
       ]),
 
       hsection("enc_etry_relative_entry", code("encode_entry_relative_entry"), [
-        pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "primary" }), " relative to another ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "reference" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
+        pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
         code(function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as the concatenation of:",
 
           encodingdef(
@@ -530,7 +530,7 @@ export const encodings: Expression = site_template({
       hsection("enc_entry_in_namespace_area", code("encode_entry_in_namespace_area"), [
         pinformative(
           preview_scope(
-            "To encode an ", r("Entry"), " ", def_value({ id: "eia_inner", singular: "inner" }), " that is ", r("area_include", "included"), " in some ", r("Area"), " ", def_value({ id: "eia_outer", singular: "outer" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eia_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eia_time", singular: "time_diff" }), " as the minimum of ",
+            "To encode an ", r("Entry"), " ", def_value({ id: "eia_inner", singular: "e" }), " that is ", r("area_include", "included"), " in an outer ", r("Area"), " ", def_value({ id: "eia_outer", singular: "out" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eia_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eia_time", singular: "time_diff" }), " as the minimum of ",
             code(
               field_access(r("eia_inner"), "entry_timestamp"),
               " - ",
@@ -617,7 +617,7 @@ export const encodings: Expression = site_template({
       hsection("enc_entry_in_namespace_3drange", code("encode_entry_in_namespace_3drange"), [
         pinformative(
           preview_scope(
-            "To encode an ", r("Entry"), " ", def_value({ id: "eir_inner", singular: "inner" }), " that is ", r("d3_range_include", "included"), " in some ", r("D3Range"), " ", def_value({ id: "eir_outer", singular: "outer" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eir_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eir_time", singular: "time_diff" }), " as the minimum absolute value of ",
+            "To encode an ", r("Entry"), " ", def_value({ id: "eir_inner", singular: "e" }), " that is ", r("d3_range_include", "included"), " in a ", r("D3Range"), " ", def_value({ id: "eir_outer", singular: "out" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eir_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eir_time", singular: "time_diff" }), " as the minimum absolute value of ",
             code(
               field_access(r("eir_inner"), "entry_timestamp"),
               " - ",
@@ -657,11 +657,11 @@ export const encodings: Expression = site_template({
                   1,
                   [
                     code("1"), " ", r("iff"), " ",
-                    code(r("eir_time"), " == ", function_call("abs", code(
+                    code(r("eir_time"), " == ", function_call("abs", [
                       field_access(r("eir_inner"), "entry_timestamp"),
                       " - ",
                       field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart"),
-                    ))),
+                  ])),
                   ],
                   [
                     "Combine ", r("eir_time"), " with ",
@@ -674,8 +674,8 @@ export const encodings: Expression = site_template({
                 new BitfieldRow(
                   1,
                   [
-                    code("1"), " ", r("iff"), "  bit two is ", code("1"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart")), ", or ",
-                    " bit two is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " <= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd")), ".",
+                    code("1"), " ", r("iff"), "  bit 2 is ", code("1"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart")), ", or ",
+                    " bit 2 is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " <= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd")), ".",
                   ],
                   [
                     "Add or subtract ", r("eir_time"), "?",
@@ -724,7 +724,7 @@ export const encodings: Expression = site_template({
       hsection("enc_area_in_area", code("encode_area_in_area"), [
         pinformative(
           preview_scope(
-            "To encode an ", r("Area"), " ", def_value({ id: "area_in_area_inner", singular: "inner" }), " that is ", r("area_include_area", "included"), " in another ", r("Area"), " ", def_value({ id: "area_in_area_outer", singular: "outer" }), ", we first define ", def_value({ id: "aia_start", singular: "start_diff" }), " as the minimum of ",
+            "To encode an ", r("Area"), " ", def_value({ id: "area_in_area_inner", singular: "a" }), " that is ", r("area_include_area", "included"), " in an outer ", r("Area"), " ", def_value({ id: "area_in_area_outer", singular: "out" }), ", we first define ", def_value({ id: "aia_start", singular: "start_diff" }), " as the minimum of ",
             code(
               field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeStart"),
               " - ",
@@ -834,7 +834,7 @@ export const encodings: Expression = site_template({
       hsection("enc_3d_range_relative_3d_range", code("encode_3drange_relative_3drange"), [
         pinformative(
           preview_scope(
-            "To encode a ", r("D3Range"), " ", def_value({ id: "threed3d_primary", singular: "primary" }), " relative to another ", r("D3Range"), " ", def_value({ id: "threedr3d_reference", singular: "reference" }), ", we first define ", lis(
+            "To encode a ", r("D3Range"), " ", def_value({ id: "threed3d_primary", singular: "r" }), " relative to a reference ", r("D3Range"), " ", def_value({ id: "threedr3d_reference", singular: "ref" }), ", we first define ", lis(
               [def_value({ id: "threedr3d_s2s", singular: "start_to_start" }), " as the absolute value of ", code(
                 field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"),
                 " - ",
@@ -953,8 +953,8 @@ export const encodings: Expression = site_template({
               new BitfieldRow(
                 1,
                 [
-                  code("1"), " ", r("iff"), " bit eight is ", code("1"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeStart")), ", or ",
-                  " bit eight is ", code("0"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeEnd")), ".",
+                  code("1"), " ", r("iff"), " bit 8 is ", code("1"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeStart")), ", or ",
+                  " bit 8 is ", code("0"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeEnd")), ".",
                 ],
                 [
                   "Add or subtract ", r("threedr3d_start_diff"), "?",
@@ -983,8 +983,8 @@ export const encodings: Expression = site_template({
                     code("0"), " if ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " == ", r("range_open")), ", otherwise "
                   ),
                   div(
-                    code("1"), " ", r("iff"), " bit twelve is ", code("1"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeStart")), ", or ",
-                    " bit twelve is ", code("0"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeEnd")), ".",
+                    code("1"), " ", r("iff"), " bit 12 is ", code("1"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeStart")), ", or ",
+                    " bit 12 is ", code("0"), " and ", code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " >= ", field_access(field_access(r("threedr3d_reference"), "D3RangeTime"), "TimeRangeEnd")), ".",
                   ),
                 ],
                 [

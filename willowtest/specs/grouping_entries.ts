@@ -117,17 +117,17 @@ export const grouping_entries: Expression = site_template({
         fields: [
           {
             id: "D3RangeSubspace",
-            name: "subspace_range",
+            name: "subspaces",
             rhs: r("SubspaceRange"),
           },
           {
             id: "D3RangePath",
-            name: "path_range",
+            name: "paths",
             rhs: r("PathRange"),
           },
           {
             id: "D3RangeTime",
-            name: "time_range",
+            name: "times",
             rhs: r("TimeRange"),
           },
         ],
@@ -160,19 +160,19 @@ export const grouping_entries: Expression = site_template({
         fields: [
           {
             id: "AreaSubspace",
-            name: "included_subspace_id",
+            name: "subspace_id",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_subspace_id"), " must be equal to the ", r("AreaSubspace"), ", unless it is ", r("area_any"), "."],
             rhs: pseudo_choices(r("SubspaceId"), r("area_any")),
           },
           {
             id: "AreaPath",
-            name: "path_prefix",
+            name: "path",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_path"), " must be ", r("path_prefix", "prefixed"), " by the ", r("AreaPath"), "."],
             rhs: r("Path"),
           },
           {
             id: "AreaTime",
-            name: "time_range",
+            name: "times",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be ", r("range_include", "included"), " in the ", r("AreaTime"), "."],
             rhs: r("TimeRange"),
           },
