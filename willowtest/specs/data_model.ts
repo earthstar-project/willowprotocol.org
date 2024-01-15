@@ -101,7 +101,7 @@ export const data_model: Expression = site_template(
         ],
         [
           marginale([
-            "Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
+            "Since this function provides the only way in which Willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
           ]),
           "A function ", def_parameter_fn("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
         ],
@@ -186,12 +186,12 @@ export const data_model: Expression = site_template(
       pinformative("We can now formally define which ", rs("Entry"), " overwrite each other and which can coexist. ", preview_scope(
         "An ", r("Entry"), " ", def_value({id: "new_e1", singular: "e1"}), " is ", def({id: "entry_newer", singular: "newer"}), " than another ", r("Entry"), " ", def_value({id: "new_e2", singular: "e2"}), " if ", lis(
           [
-            code(field_access(r("new_e2"), "entry_timestamp"), " < ", field_access(r("store_new"), "entry_timestamp")), ", or",
+            code(field_access(r("new_e2"), "entry_timestamp"), " < ", field_access(r("new_e1"), "entry_timestamp")), ", or",
           ],
           [
-            code(field_access(r("new_e2"), "entry_timestamp"), " == ", field_access(r("store_new"), "entry_timestamp")), " and ", code(field_access(r("new_e2"), "entry_payload_digest"), " < ", marginale([
+            code(field_access(r("new_e2"), "entry_timestamp"), " == ", field_access(r("new_e1"), "entry_timestamp")), " and ", code(field_access(r("new_e2"), "entry_payload_digest"), " < ", marginale([
                 "We require ", r("PayloadDigest"), " to be ", link("totally ordered", "https://en.wikipedia.org/wiki/Total_order"), " because of this comparison.",
-              ]), field_access(r("store_new"), "entry_payload_digest")), ", or",
+              ]), field_access(r("new_e1"), "entry_payload_digest")), ", or",
           ],
           [
             code(field_access(r("new_e2"), "entry_timestamp"), " == ", field_access(r("new_e1"), "entry_timestamp")), " and ", code(field_access(r("new_e2"), "entry_payload_digest"), " == ", field_access(r("new_e1"), "entry_payload_digest")), " and ", code(field_access(r("new_e2"), "entry_payload_length"), " < ", field_access(r("new_e1"), "entry_payload_length")), ".",
@@ -264,7 +264,7 @@ export const data_model: Expression = site_template(
 
       pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
 
-      pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("3dstorage", "here"), "."),
+      pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
     ]),
 
     img("/emblem.png"),
