@@ -46,7 +46,7 @@ function global_preview_state(ctx: Context): GlobalPreviewState {
   }
 }
 
-function id_to_preview_data(id: string): string {
+export function id_to_preview_data(id: string): string {
   return `ßä§${id}üÖö`;
 }
 
@@ -166,10 +166,6 @@ export function previewable_link(
         const classy_tex = `\\htmlClass{normal_text${
           clazz ? ` ${clazz}` : ""
         }}{${id_tex}}`;
-
-        const katexRegex = new RegExp(
-          `(class="enclosing normal_text[^"]*)("><span class="enclosing" data-preview="ßä§${id}üÖö">)`,
-        );
 
         return [
           html5_dependency_js("/named_assets/floating-ui.core.min.js"),
