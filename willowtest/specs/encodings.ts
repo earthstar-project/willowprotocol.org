@@ -92,7 +92,7 @@ export function inclusion_flag_remark(
 export const encodings: Expression = site_template({
   name: "encodings",
   title: "On Encodings",
-  status: "candidate",
+  status: "proposal",
 }, [
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
