@@ -1853,7 +1853,7 @@ export const sync: Expression = site_template(
                                 two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
                                 new BitfieldRow(
                                     3,
-                                    [function_call(r("encode_handle_kind"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
+                                    [function_call(r("encode_handle_type"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
                                 ),
                                 new BitfieldRow(
                                     1,
