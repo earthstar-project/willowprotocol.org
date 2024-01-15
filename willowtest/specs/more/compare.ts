@@ -45,21 +45,15 @@ export const willow_compared: Expression = site_template(
             pinformative(
                 "Data replication is more efficient and significantly more simple than for Willow: for each log, peers simply exchange the number of entries they have in that log, and whoever sent a greater number then transmits all entries the other peer is missing."
             ),
-    
+
             pinformative(
-                "Log-based systems can address an individual datum either by a combination of the log identifier and a sequence number, or content-addressed by hash. As data never gets removed from a log, content-addressing retains advantages such as immunity to link rot and self-verifiability. Referencing data by a log identifier and a sequence number is closer to the explicit naming of Willow: knowing a name does not yield any information about the data it is bound to. Compared to Willow, this naming scheme is restrictive and non-semantic, however.",
+                "A hash chain of data cryptographically authenticates that authors never ", sidenote("produce", [
+                    "Or, more precisely, it ensures that such misbehavior can be detected efficiently and arbitrarily long after the fact."
+                ]), " differing extensions of the same log. In itself, this can be a ", link("laudable feature", "https://en.wikipedia.org/wiki/Certificate_Transparency"), ", but it precludes the option of concurrent writes from multiple devices. With ", r("d3rbsr"), ", Willow can achieve efficient data synchronisation without the need to restrict updates to a linear sequence. We do not need to enforce linearity to keep sync complexity manageable, so we opt for effortless multi-writer support instead.",
             ),
     
             pinformative(
-                "The hash chain of data securely authenticates the ", link("happened-before relation", "https://en.wikipedia.org/wiki/Happened-before"), " of entries from the same log, which allows for ", link("certain use-cases", "https://dl.acm.org/doi/pdf/10.1145/3565383.3566113"), " that Willow cannot support. Enforcing a total order on all entries in the same log also leads to the greatest weakness of these systems, however: any two concurrent writes to the same log — say, from different devices — invalidate the log. Hence, log-based systems are inherently restricted to single-writer systems. Emulating multi-writer systems inside a log-based system by grouping and bundling entries from several logs incurs a significant conceptual overhead, one that Willow can sidestep completely.",
-            ),
-    
-            pinformative(
-                "The need to verify the hash chain also makes it difficult to edit or delete (meta-) data. This makes for good archival systems, but can also pose risks to users. Furthermore, data storage may be cheap (as of writing, at least), but designing systems for unbounded growth tends to backfire sooner or later."
-            ),
-    
-            pinformative(
-                "We believe that systems which do not need an authenticated happened-before relation benefit from Willow’s support for concurrent writes, overwriting of data, and more expressive naming scheme. Archival qualities and content-addressing can be brought into a name-based system such as Willow by referencing a dedicated content-addressed store. The benefits from the log-powered hybrid approach between content-addressed storage and naming scheme feel insufficient to us."
+                "The need to verify the hash chain also makes it difficult to edit or delete (meta-) data. This can be a boon for some use-cases, but also quite dangerous when employed carelessly. Furthermore, data storage may be ", sidenote("cheap", ["As of writing, that is."]), ", but designing systems for unbounded growth tends to backfire sooner or later. Willow deliberately avoids any cryptographic proofs of completeness, allowing for traceless data removal when the need arises."
             ),
         ]),
     
@@ -73,33 +67,37 @@ export const willow_compared: Expression = site_template(
                     link("https://arxiv.org/pdf/2306.13941.pdf", "https://arxiv.org/pdf/2306.13941.pdf"),
                 ]), " in the concept.",
             ),
-    
+
             pinformative(
-                "If the number of concurrent entries in a tangle is explicitly bounded, tangle syc can leverage log-style replication. Replication algorithms that take into account the partial order of the tangle do degrade, however, when there can be a large number of concurrent entries. In these cases, tangle sync can do no better than the set reconciliation algorithms we suggest for Willow. Blindly syncing based on backlinks in face of a wide tangle is less efficient than a proper set reconciliation protocol. We consider range-based set reconciliation to be sufficiently efficient to justify using it even when we do not expect a high degree of concurrent writes.",
+                "If the maximum number of concurrent writes to a tangle is not bounded, then tangle sync can be no more efficient than the set reconciliation algorithms we suggest for Willow. With their cryptographically authenticated happened-before relation, tangles inherit the content-addressing and immutability of logs, whereas Willow embraces semantic naming and mutability. None is inherently superior, different projects have different needs across this spectrum.",
             ),
     
             pinformative(
-                "While logs come with a natural way of naming entries via log identifier and sequence number, tangles lose this quality. The set of all entries in a tangle remains meaningful, but giving a specific name of a future entry is not possible anymore. Willow supports multi-writer while retaining the ability to name data before it even exists."
-            ),
-    
-            pinformative(
-                "When requiring a cryptographically verified but possibly non-total happened-before relation and immutability of all data, tangle sync projects are a better choice than Willow. Otherwise, we prefer the benefits around mutability and expressive naming that Willow provides."
+                "Finally, it ", sidenote("bears", ["Sorry, everyone!"]), " saying that ", link("p2panda", "https://p2panda.org/"), " is pretty cool 🐼."
             ),
         ]),
     
         hsection("compare_nostr", "Nostr", [
             pinformative(
-                link("Nostr", "https://nostr.com/"), " appears superficially to be quite similar to Willow. Willow peers store and exchange sets of ", rs("Entry"), ", Nostr peers store and exchange sets of ", em("events"), ". Every ", r("Entry"), " has a ", r("entry_timestamp"), ", every event has a ", code("created_at"), " time. Every ", r("Entry"), " belongs to a single ", r("subspace"), ", every event belongs to a single ", code("pubkey"), ". Willow organises ", rs("Entry"), " by their ", rs("entry_path"), ", Nostr organises events by their ", code("tags"), "."
+                link("Nostr", "https://nostr.com/"), " appears to be quite similar to Willow at a cursory glance. Willow peers store and exchange sets of ", rs("Entry"), ", Nostr peers store and exchange sets of ", em("events"), ". Every ", r("Entry"), " has a ", r("entry_timestamp"), ", every event has a ", code("created_at"), " time. Every ", r("Entry"), " belongs to a single ", r("subspace"), ", every event belongs to a single ", code("pubkey"), ". Willow organises ", rs("Entry"), " by their ", rs("entry_path"), ", Nostr organises events by their ", code("tags"), "."
             ),
     
             pinformative(
                 "While ", rs("subspace"), " are more of a straightforward generalisation of public keys rather than a conceptual difference, the difference between paths and tags is significant. Paths allow ", rs("Entry"), " to overwrite each other, whereas tags do not. Nostr has no comparable concepts for mutability and deletion. This difference is a symptom of a significant conceptual difference between the protocols: Willow provides naming for data, Nostr does not. In Nostr, events are content-addressed — despite the superficial similarities, Nostr is ultimately closer to Scuttlebutt than to Willow.",
             ),
+
+            pinformative(
+                "Willow has more generalist ambitions than Nostr, we focus on providing a general-purpose syncing primitive with precisely specified semantics and properties such as ", link("eventual consistency", "https://en.wikipedia.org/wiki/Eventual_consistency"), ". Nostr takes a much more laissez-faire approach, making it significantly easier to implement, but arguably also more difficult to ", em("solidly"), " build upon.",
+            ),
+
+            pinformative(
+                "Furthermore, the Willow design takes great care to ensure that all necessary operations on Willow data are efficiently supported by appropriate data structures, whereas Nostr appears more happy to quickly get things working on smaller scales. To give an example, various ", r("Path"), " handling tasks can be tackled via ", link("radix trees", "https://en.wikipedia.org/wiki/Radix_tree"), ", whereas the exponential state space of arbitrary combinations of tags is much harder to tame. Similarly, Nostr was not designed with an efficient set reconciliation protocol in mind", marginale(["Although there is ", link("work", "https://github.com/hoytech/negentropy"), " to integrate a proper set reconciliation protocol."]), ", despite ultimately being a protocol for exchanging sets of events.",
+            ),
         ]),
     
         hsection("compare_es", "Earthstar", [
             pinformative(
-                link("Earthstar", "https://earthstar-project.org/"), " is the project with the greatest overlap to Willow. This is no coincidence: Willow evolved out of a redesign of Earthstar, and was picked up by the core maintainer of Earthstar. Earthstar protocol version 6 will, in fact, build upon Willow."
+                "If ", link("Earthstar", "https://earthstar-project.org/"), " feels very similar to Willow, then that is no coincidence. Willow started out as a reimagining of Earthstar, future Earthstar versions will build upon Willow, and the ", r("gwil", "core maintainer"), " of Earthstar is one of the two Willow authors."
             ),
         ]),
     
