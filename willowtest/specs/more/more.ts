@@ -18,7 +18,8 @@ export const more: Expression = site_template(
         link_name("timestamps_really", "Timestamps, really?"),
         link_name("d3storage", "Three-Dimensional Data Storage"),
         link_name("projects_and_communities", "Active projects and communities"),
-        link_name("changes", "News and necessary changes")
+        link_name("changes", "News and necessary changes"),
+        link_name("about", "About us"),
       ),
     ),
   ],

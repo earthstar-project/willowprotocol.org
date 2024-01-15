@@ -55,6 +55,7 @@ import { changes } from "./specs/more/changes.ts";
 import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
+import { about } from "./specs/more/about.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -108,12 +109,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                   li(link_name("specifications", "Specs")),
                   li(link_name("changes", "News")),
                   li(link_name("more", "More")),
-                  li(
-                    a(
-                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden", class: "internal" },
-                      "Contact us",
-                    ),
-                  ),
+                  li(link_name("about", "About us")),
                 ),
                 div(
                   marginale_inlineable(
@@ -626,6 +622,7 @@ evaluate(enable_previews([
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("changes", changes),
       out_index_directory("projects-and-communities", projects_and_communities),
+      out_index_directory("about-us", about),
     ]),
     copy_statics("assets"),
   ),
