@@ -7,7 +7,7 @@ import { marginale, sidenote } from "../../../marginalia.ts";
 
 export const willow_compared: Expression = site_template(
     {
-            title: "Comparison To Other Protocols",
+            title: "Comparison to Other Protocols",
             name: "willow_compared",
     },
     [
