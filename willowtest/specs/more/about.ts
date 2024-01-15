@@ -31,7 +31,7 @@ export const about: Expression = site_template(
 				hsection("aljoscha_section", "Aljoscha Meyer", [
 					pinformative(
 						marginale_inlineable(img(asset("about/aljoscha.png"))),
-						span({style: "font-style: italic;"}, "I’m ", def("Aljoscha"), ", a computer scientist and fledgling researcher based in Berlin, Germany. As an avid shaver of yaks, who even tackles protocol website creation by first writing a custom macro processor from scratch, I am grateful that ", r("gwil"), " decided to team up on Willow. Turns out we actually got something done this way that we are quite proud of. Now, how do I turn any of this into a paper to justify the immense time sink? Intrinsic motivation cannot possibly go that far, right?")),
+						span({style: "font-style: italic;"}, "I’m ", def("Aljoscha"), ", a computer scientist and fledgling researcher based in Berlin, Germany. As an avid shaver of yaks who even tackles protocol website creation by first writing a custom macro processor from scratch, I am grateful that ", r("gwil"), " decided to team up on Willow. Turns out we actually got something done this way that we are quite proud of. Now, how do I turn any of this into a paper to justify the immense time sink? Intrinsic motivation cannot possibly go that far, right?")),
 
 						lis(
 							link("Website", "https://aljoscha-meyer.de/"),
