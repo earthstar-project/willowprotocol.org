@@ -610,16 +610,14 @@ evaluate(enable_previews([
       out_index_directory("grouping_entries", grouping_entries),
       out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
-      out_directory("sync", [
-        out_file("index.html", create_etags(sync)),
-        out_index_directory("psi", psi),
-        out_index_directory("resource-control", resource_control),
-        out_index_directory(
-          "product-based-set-reconciliation",
-          range3d_based_set_reconciliation,
-        ),
-        out_index_directory("access-control", access_control),
-      ]),
+      out_index_directory("sync", sync),
+      out_index_directory("pai", psi),
+      out_index_directory("resource-control", resource_control),
+      out_index_directory(
+        "3d-range-based-set-reconciliation",
+        range3d_based_set_reconciliation,
+      ),
+      out_index_directory("access-control", access_control),
     ]),
     out_directory("more", [
       out_file("index.html", more),
@@ -627,7 +625,7 @@ evaluate(enable_previews([
       out_index_directory("why", why_willow),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("changes", changes),
-      out_index_directory("projects_and_communities", projects_and_communities),
+      out_index_directory("projects-and-communities", projects_and_communities),
     ]),
     copy_statics("assets"),
   ),
