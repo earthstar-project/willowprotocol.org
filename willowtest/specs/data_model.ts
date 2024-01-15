@@ -33,6 +33,8 @@ export const data_model: Expression = site_template(
   [
     pinformative("In this document, we define the core data model of Willow."),
 
+    table_of_contents(7),
+
     pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
 
     pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
