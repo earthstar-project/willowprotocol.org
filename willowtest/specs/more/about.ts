@@ -1,7 +1,7 @@
 import { Expression, Invocation, new_macro } from "macro";
 import { link, lis, pinformative, site_template } from "../../main.ts";
-import { em, img } from "../../../h.ts";
-import { def } from "../../../defref.ts";
+import { em, img, span } from "../../../h.ts";
+import { def, r } from "../../../defref.ts";
 import { marginale_inlineable } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
 import { hsection } from "../../../hsection.ts";
@@ -30,14 +30,19 @@ export const about: Expression = site_template(
 				
 				hsection("aljoscha_section", "Aljoscha Meyer", [
 					pinformative(
-						marginale_inlineable(img(asset("about/aljoscha.png")))
-					)
+						marginale_inlineable(img(asset("about/aljoscha.png"))),
+						span({style: "font-style: italic;"}, "I’m ", def("Aljoscha"), ", a computer scientist and fledgling researcher based in Berlin, Germany. As an avid shaver of yaks, who even tackles protocol website creation by first writing a custom macro processor from scratch, I am grateful that ", r("gwil"), " decided to team up on Willow. Turns out we actually got something done this way that we are quite proud of. Now, how do I turn any of this into a paper to justify the immense time sink? Intrinsic motivation cannot possibly go that far, right?")),
+
+						lis(
+							link("Website", "https://aljoscha-meyer.de/"),
+							link("Email", "mailto:mail@aljoscha-meyer.de"),
+						)
 				]),
 				
 				hsection("gwil_section", "Sam “gwil” Gwilym", [
 					pinformative(
 					marginale_inlineable(img(asset("about/gwil.png"))),
-					em("I'm ", def({ id: "gwil", singular: "gwil"}, "gwil",), ". I’m a programmer, illustrator, and dad living in the Hague, the Netherlands. I’m the core maintainer of the Earthstar project, and seized upon Aljoscha’s initial designs for Willow as soon as he made the mistake of sharing them. We’ve really pushed each other to do our best work with this project, and making all the wobbly drawings for the site has been the highlight of my computer science career. Now that the protocol is nearly final, I guess I have to implement it, too? Hmmm… anyone need any drawings done?")),
+					span({style: "font-style: italic;"}, "I’m ", def({ id: "gwil", singular: "gwil"}, "gwil",), ". I’m a programmer, illustrator, and dad living in the Hague, the Netherlands. I’m the core maintainer of the Earthstar project, and seized upon ", r("Aljoscha"), "’s initial designs for Willow as soon as he made the mistake of sharing them. We’ve really pushed each other to do our best work with this project, and making all the wobbly drawings for the site has been the highlight of my computer science career. Now that the protocol is nearly final, I guess I have to implement it, too? Hmmm… anyone need any drawings done?")),
 					
 					
 					
