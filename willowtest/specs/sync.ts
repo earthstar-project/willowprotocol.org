@@ -824,8 +824,8 @@ export const sync: Expression = site_template(
                                     rhs: r("Bool"),
                                 },
                                 {
-                                    id: "ControlFreeHandleType",
-                                    name: "handle_type",
+                                    id: "ControlFreeHandleKind",
+                                    name: "handle_kind",
                                     rhs: r("HandleKind"),
                                 },
                             ],
@@ -835,10 +835,7 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
-
-                pinformative("Work in progress."),
-
-                pinformative("We now describe how to encode the various mesages of the WGPS."),
+                pinformative("We now describe how to encode the various mesages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
 
                 hsection("sync_encoding_params", "Parameters", [
                     pinformative("To be able to encode messages, we require certain properties from the ", link_name("sync_parameters", "protocol parameters"), ":"),
@@ -1653,7 +1650,7 @@ export const sync: Expression = site_template(
 
                     hr(),
 
-                    pinformative(                        
+                    pinformative(
                         "The encoding of a ", r("DataReplyPayload"), " message ", def_value({id: "enc_data_rep_pay", singular: "m"}), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
@@ -1677,17 +1674,201 @@ export const sync: Expression = site_template(
 
                 ]),
 
-                hsection("sync_notes", "Notes", [
-                    pinformative("Ignore these, they will disappear as we settle on the encodings."),
-
-                    ols(
-                        [r("ControlIssueGuarantee"), " 2 + 3"],
-                        [r("ControlAbsolve"), " 2 + 3"],
-                        [r("ControlPlead"), " 2 + 3"],
-                        [r("ControlAnnounceDropping"), " 3"],
-                        [r("ControlApologise"), " 3"],
-                        [r("ControlFreeHandle"), " 2 + 1 + 3"],
+                hsection("sync_encode_control", "Control", [
+                    pinformative(
+                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. ", def_fn({id: "encode_channel"}), " maps ", lis(
+                            [r("ReconciliationChannel"), " to ", code("000"), ","],
+                            [r("DataChannel"), " to ", code("001"), ","],
+                            [r("IntersectionChannel"), " to ", code("010"), ","],
+                            [r("CapabilityChannel"), " to ", code("011"), ","],
+                            [r("AreaOfInterestChannel"), " to ", code("100"), ","],
+                            [r("PayloadRequestChannel"), " to ", code("101"), ", and"],
+                            [r("StaticTokenChannel"), " to ", code("110"), "."],
+                        ),
                     ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlIssueGuarantee"), " message ", def_value({id: "enc_ctrl_issue", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlAbsolve"), " message ", def_value({id: "enc_ctrl_absolve", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_absolve"), "ControlAbsolveChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlPlead"), " message ", def_value({id: "enc_ctrl_plead", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("010")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_plead"), "ControlPleadChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlAnnounceDropping"), " message ", def_value({id: "enc_ctrl_announce", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("10")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_announce"), "ControlAnnounceDroppingChannel"))]
+                                ),
+                            ),
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlApologise"), " message ", def_value({id: "enc_ctrl_apo", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("11")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_apo"), "ControlApologiseChannel"))]
+                                ),
+                            ),
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "To denote ", rs("HandleKind"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_kind"}), " maps ", lis(
+                            [r("IntersectionHandle"), " to ", code("000"), ","],
+                            [r("CapabilityHandle"), " to ", code("001"), ","],
+                            [r("AreaOfInterestHandle"), " to ", code("010"), ","],
+                            [r("PayloadRequestHandle"), " to ", code("011"), ","],
+                            [r("StaticTokenHandle"), " to ", code("100"), ","],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlFreeHandle"), " message ", def_value({id: "enc_ctrl_free", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_handle_kind"), field_access(r("enc_ctrl_free"), "ControlFreeHandleKind"))],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_ctrl_free"), "ControlFreeHandleMine"), " == true"),
+                                    ],
+                                ),
+                                bitfieldrow_unused(4),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                            ]],
+                        ),
+                    ),
+
                 ]),
 
             ]),
