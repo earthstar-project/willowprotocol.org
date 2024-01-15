@@ -1519,19 +1519,168 @@ export const sync: Expression = site_template(
                             ],
                         ),
                     ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataSendPayload"), " message ", def_value({id: "enc_data_send_payload", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_send_payload"), "DataSendPayloadAmount")),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_send_payload"), "DataSendPayloadAmount")),
+                            ]],
+                            [[
+                                field_access(r("enc_data_send_payload"), "DataSendPayloadBytes"),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataSetEagerness"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("010")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetEagerness"), " == true"),
+                                    ],
+                                ),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
+                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                                bitfieldrow_unused(4),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
+                            ]],
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataBindPayloadRequest"), " message ", def_value({id: "enc_data_req_pay", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_req_pay"), "DataBindPayloadRequestCapability")),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        "1", " ", r("iff"), code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " != 0"), ",",
+                                    ],
+                                    [
+                                        inclusion_flag_remark(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset")),
+                                    ]
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), [
+                                    code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " == 0")
+                                ]),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                    ],
+                                ),
+                                two_bit_int(12, r("sync_enc_data_sender"), [
+                                    field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                                two_bit_int(14, r("sync_enc_data_receiver"), [
+                                    field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestCapability")),
+                            ]],
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset")), ", or the empty string, if ", code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " == 0"),
+                            ]],
+                            [
+                                [
+                                    "either ", code(function_call(
+                                        r("encode_entry_relative_entry"),
+                                        field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"),
+                                        r("currently_received_entry"),
+                                        )), ", or ", code(function_call(
+                                            r("encode_entry_in_namespace_area"),
+                                            field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"),
+                                            r("sync_enc_data_outer"),
+                                            function_call(r("handle_to_namespace_id"), r("sync_enc_data_receiver")),
+                                        )),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataReplyPayload"), " message ", def_value({id: "enc_data_rep_pay", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_rep_pay"), "DataReplyPayloadHandle")),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_rep_pay"), "DataReplyPayloadHandle")),
+                            ]],
+                        ),
+                    ),
+
                 ]),
 
                 hsection("sync_notes", "Notes", [
                     pinformative("Ignore these, they will disappear as we settle on the encodings."),
 
-                    pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
-
                     ols(
-                        [r("DataSendEntry"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
-                        [r("DataSendPayload"), " 2"],
-                        [r("DataSetEagerness"), " 1 + 2 + 2"],
-                        [r("DataBindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
-                        [r("DataReplyPayload"), " 2"],
                         [r("ControlIssueGuarantee"), " 2 + 3"],
                         [r("ControlAbsolve"), " 2 + 3"],
                         [r("ControlPlead"), " 2 + 3"],
