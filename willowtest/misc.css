@@ -169,3 +169,7 @@ figure {
 .tocActive {
   background-color: cornflowerblue;
 }
+
+.clearright {
+  clear: right;
+}

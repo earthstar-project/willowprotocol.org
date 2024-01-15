@@ -75,6 +75,23 @@ export function two_bit_int(start_bit: number, value_to_encode: Expression, unle
   );
 }
 
+export function encode_two_bit_int(
+  int_exp: Expression,
+  exception?: Expression,
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [
+        args[0], ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), args[0])), "-byte integer",
+        args.length === 2
+          ? [", or the empty string, if ", args[1]]
+          : "",
+      ];
+    },
+  );
+  return new Invocation(macro, exception ? [int_exp, exception] : [int_exp]);
+}
+
 export function zero_bits(number_of_bits: number): BitfieldRow {
   return new BitfieldRow(
     number_of_bits,
@@ -490,12 +507,12 @@ export const encodings: Expression = site_template({
             ],
             [
               [
-                r("erele_time_difference"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("erele_time_difference"))), "-byte integer",
+                encode_two_bit_int(r("erele_time_difference")),
               ],
             ],
             [
               [
-                field_access(r("entry_rel_entry_primary"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length"))), "-byte integer",
+                encode_two_bit_int(field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
               ],
             ],
             [
@@ -581,10 +598,10 @@ export const encodings: Expression = site_template({
                 )),
               ]],
               [[
-                r("eia_time"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("eia_time"))), "-byte integer",
+                encode_two_bit_int(r("eia_time")),
               ]],
               [[
-                field_access(r("eia_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("eia_inner"), "entry_payload_length"))), "-byte integer",
+                encode_two_bit_int(field_access(r("eia_inner"), "entry_payload_length")),
               ]],
               [[
                 code(function_call(
@@ -688,10 +705,10 @@ export const encodings: Expression = site_template({
                 )),
               ]],
               [[
-                r("eir_time"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("eir_time"))), "-byte integer",
+                encode_two_bit_int(r("eir_time")),
               ]],
               [[
-                field_access(r("eir_inner"), "entry_payload_length"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("eir_inner"), "entry_payload_length"))), "-byte integer",
+                encode_two_bit_int(field_access(r("eir_inner"), "entry_payload_length")),
               ]],
               [[
                 code(function_call(
@@ -805,11 +822,10 @@ export const encodings: Expression = site_template({
               )),
             ]],
             [[
-              r("aia_start"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_start"))), "-byte integer",
+              encode_two_bit_int(r("aia_start")),
             ]],
             [[
-              r("aia_end"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("aia_end"))), "-byte integer, or the empty string, if ",
-              code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")),
+              encode_two_bit_int(r("aia_end"), code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open"))),
             ]],
           ),
         ),
@@ -1021,11 +1037,10 @@ export const encodings: Expression = site_template({
               ),
             ]],
             [[
-              r("threedr3d_start_diff"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("threedr3d_start_diff"))), "-byte integer",
+              encode_two_bit_int(r("threedr3d_start_diff")),
             ]],
             [[
-              r("threedr3d_end_diff"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), r("threedr3d_end_diff"))), "-byte integer, or the empty string, if ",
-              code(field_access(field_access(r("threedr3d_end_diff"), "D3RangeTime"), "TimeRangeEnd"), " == ", r("range_open")),
+              encode_two_bit_int(r("threedr3d_end_diff"), code(field_access(field_access(r("threedr3d_end_diff"), "D3RangeTime"), "TimeRangeEnd"), " == ", r("range_open"))),
             ]],
           ),
         ),
