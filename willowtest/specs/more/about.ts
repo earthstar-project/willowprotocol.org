@@ -1,4 +1,4 @@
-import { Expression } from "macro";
+import { Expression, Invocation, new_macro } from "macro";
 import { link, lis, pinformative, site_template } from "../../main.ts";
 import { em, img } from "../../../h.ts";
 import { def } from "../../../defref.ts";
@@ -6,13 +6,23 @@ import { marginale_inlineable } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
 import { hsection } from "../../../hsection.ts";
 
+export function hacky_link(
+	display: Expression,
+	href: Expression,
+): Invocation {
+	const macro = new_macro(
+		(args, _ctx) => [`<a class="internal" href="`, args[0], `">`, args[1], `</a>`],
+	);
+	return new Invocation(macro, [href, display]);
+}
+
 export const about: Expression = site_template(
 		{
 				title: "About us",
 				name: "about",
 		},
 		[
-				pinformative("Willow started as a ", link("minimalistic reimaigining", asset("about/soilsun.md")), " of ", link("Earthstar", "https://earthstar-project.org"), ". Over time, we did a ", em("lot"), " more reimagining, and a lot less minimalism."),
+				pinformative("Willow started as a ", hacky_link("minimalistic reimaigining", asset("about/soilsun.md")), " of ", link("Earthstar", "https://earthstar-project.org"), ". Over time, we did a ", em("lot"), " more reimagining, and a lot less minimalism."),
 				
 				pinformative("The path / author / timestamp model at the heart of Willow was designed by our dear departed friend Cinnamon, without whom there would be no Willow. We miss you."),
 				
