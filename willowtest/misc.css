@@ -159,3 +159,17 @@ figure {
   border-top: 1px solid var(--light-green);
   border-bottom: 1px solid var(--light-green);
 }
+
+.toc {
+  position: fixed;
+  left: 0;
+  display: none;
+}
+
+.tocActive {
+  background-color: cornflowerblue;
+}
+
+.clearright {
+  clear: right;
+}

@@ -33,9 +33,9 @@ import {
 import { read_file } from "../input.ts";
 import { marginale_inlineable } from "../marginalia.ts";
 import { layout_marginalia, LayoutOptions } from "../layout_marginalia.ts";
-import { hsection } from "../hsection.ts";
+import { hsection, table_of_contents } from "../hsection.ts";
 import { link_name, set_root_directory } from "../linkname.ts";
-import { Def, def_generic, def_generic$, preview_scope } from "../defref.ts";
+import { Def, def_generic, def_generic$, enable_previews, preview_scope } from "../defref.ts";
 import { data_model } from "./specs/data_model.ts";
 import { meadowcap } from "./specs/meadowcap.ts";
 import { sync } from "./specs/sync.ts";
@@ -96,7 +96,9 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 meta.name,
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
-                args[0],
+                [
+                  args[0],
+                ],
               ),
             ),
             footer(
@@ -485,7 +487,7 @@ export function bitfield_doc(
 
 const layout_opts = new LayoutOptions();
 
-evaluate([
+evaluate(enable_previews([
   set_root_url("https://willowprotocol.org/"),
   set_root_directory(["build"]),
   out_directory(
@@ -493,11 +495,12 @@ evaluate([
     out_directory("previews"),
     out_file(
       "index.html",
-      site_template(
+      create_etags(site_template(
         {
           title: "Willow",
           name: "willow",
           heading: img("emblem.png"),
+          do_not_render_toc: true,
         },
         [
           pintroductory(
@@ -581,7 +584,7 @@ evaluate([
             "Authors can write from multiple devices concurrently. Yay.",
           ),
         ],
-      ),
+      )),
     ),
     out_file("styles.css", [
       layout_marginalia(layout_opts),
@@ -649,4 +652,4 @@ evaluate([
       language: "en-gb",
     },
   }]),
-]);
+]));

@@ -103,7 +103,7 @@ export const grouping_entries: Expression = site_template({
     marginale_inlineable(
       [
         img(asset("grouping_entries/3d_range.png")),
-        figcaption("A ", orange(r("3dRange")), " composed of a ", purple( r("SubspaceRange")), ", ", blue(r("PathRange")), ", and ", green(r("TimeRange")), ".")
+        figcaption("A ", orange(r("D3Range")), " composed of a ", purple( r("SubspaceRange")), ", ", blue(r("PathRange")), ", and ", green(r("TimeRange")), ".")
       ]
     ),
 
@@ -111,21 +111,22 @@ export const grouping_entries: Expression = site_template({
 
     pseudocode(
       new Struct({
-        id: "3dRange",
-        comment: ["A three-dimensional range that ", rs("3d_range_include"), " every ", r("Entry"), " ", r("range_include", "included"), " in all three of its ", rs("range"), "."],
+        id: "D3Range",
+        name: "3dRange",
+        comment: ["A three-dimensional range that ", rs("d3_range_include"), " every ", r("Entry"), " ", r("range_include", "included"), " in all three of its ", rs("range"), "."],
         fields: [
           {
-            id: "3dRangeSubspace",
+            id: "D3RangeSubspace",
             name: "subspaces",
             rhs: r("SubspaceRange"),
           },
           {
-            id: "3dRangePath",
+            id: "D3RangePath",
             name: "paths",
             rhs: r("PathRange"),
           },
           {
-            id: "3dRangeTime",
+            id: "D3RangeTime",
             name: "times",
             rhs: r("TimeRange"),
           },
@@ -133,20 +134,20 @@ export const grouping_entries: Expression = site_template({
       }),
     ),
 
-    pinformative("A ", r("3dRange"), " ", def({id: "3d_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " whose ", r("entry_subspace_id"), ", ", r("entry_path"), ", and ", r("entry_timestamp"), " are all ", r("range_include", "included"), " their respective ", r("range"), "."),
+    pinformative("A ", r("D3Range"), " ", def({id: "d3_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " whose ", r("entry_subspace_id"), ", ", r("entry_path"), ", and ", r("entry_timestamp"), " are all ", r("range_include", "included"), " their respective ", r("range"), "."),
   ]),
 
   hsection("areas", "Areas", [
-    pinformative(Rs("3dRange"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("3dRange"), " are close to useless when dealing with encrypted data."),
+    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
 
-    pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("3dRange"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
+    pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("D3Range"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
-    marginale(["Every ", r("Area"), " can be expressed as a ", r("3dRange"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some boxes do not correspond to any ", r("Area"), "."]),
+    marginale(["Every ", r("Area"), " can be expressed as a ", r("D3Range"), ", but not the other way around. ", Rs("Area"), " always denote boxes in Willow space, but some boxes do not correspond to any ", r("Area"), "."]),
     
     marginale(
       [
         img(asset("grouping_entries/area.png")),
-        figcaption("This diagram attempts to show the key difference between a ", r('3dRange'), ' and an ', r('Area'), ', namely that its dimensions are ', em('derived'), ' from its ', span({class: "purple"}, r('AreaSubspace')), ' and its ', span({class: "blue"}, r('AreaPath')), '.') 
+        figcaption("This diagram attempts to show the key difference between a ", r("D3Range"), ' and an ', r("Area"), ', namely that its dimensions are ', em('derived'), ' from its ', span({class: "purple"}, r('AreaSubspace')), ' and its ', span({class: "blue"}, r('AreaPath')), '.') 
       ]
     ),
 

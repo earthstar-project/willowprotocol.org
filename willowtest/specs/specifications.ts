@@ -28,7 +28,7 @@ export const specifications: Expression = site_template(
         link_name("e2e", "Encrypting Entries"),
         link_name("access_control", "Access Control"),
         link_name("private_area_intersection", "Private Area Intersection"),
-        link_name("3d_range_based_set_reconciliation", "3d Range-Based Set Reconciliation"),
+        link_name("d3_range_based_set_reconciliation", "3d Range-Based Set Reconciliation"),
         link_name("resource_control", "Multiplexing and Flow Control"),
       ),
     ),

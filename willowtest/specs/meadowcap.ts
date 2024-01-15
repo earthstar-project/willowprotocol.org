@@ -301,7 +301,7 @@ export const meadowcap: Expression = site_template(
   
         pinformative(R("owned_cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("An ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("Area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("owned_cap_delegations"), "."),
 
-        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x00"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x02"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x03"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
 
         pinformative("For an ", rs("OwnedCapability"), " ", def_value({id: "owned_cap_defvalid", singular: "cap"}), " with more than zero ", r("owned_cap_delegations"), ", let ", code("(", def_value({id: "owned_new_area", singular: "new_area"}), ", ", def_value({id: "owned_new_user", singular: "new_user"}), ", ", def_value({id: "owned_new_signature", singular: "new_signature"}), ")"), "be the final triplet of ", field_access(r("owned_cap_defvalid"), "owned_cap_delegations"), ", and let ", def_value({id: "owned_prev_cap", singular: "prev_cap"}), " be the ", r("OwnedCapability"), " obtained by removing the last triplet from ", field_access(r("owned_cap_defvalid"), "owned_cap_delegations"), ". Denote the  ", r("owned_cap_receiver"), " of ", r("owned_prev_cap"), " as ", def_value({id: "owned_prev_receiver", singular: "prev_receiver"}), ", and the ", r("owned_cap_granted_area"), " of ", r("owned_prev_cap"), " as ", def_value({id: "owned_prev_area", singular: "prev_area"}), "."),
   
@@ -338,7 +338,8 @@ export const meadowcap: Expression = site_template(
         pseudocode(
           new Struct({
               id: "Capability",
-              plural: "Capabilities",
+              name: "McCapability",
+              plural: "McCapabilities",
               comment: ["A Meadowcap capability."],
               fields: [
                   {

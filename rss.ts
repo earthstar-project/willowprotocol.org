@@ -157,7 +157,7 @@ export function build_rss_feeds(feeds: RssFeedConfig[]): Expression {
             }
 
             rendered_feeds.push(
-                out_file_absolute(["build", ...feed.path], feed_to_xml(feed.feed_info, items)),
+                out_file_absolute(["build", ...feed.path], false, feed_to_xml(feed.feed_info, items)),
             );
         }
 
