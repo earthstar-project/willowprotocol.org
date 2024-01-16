@@ -29,8 +29,9 @@ export const data_model: Expression = site_template(
   {
     title: "Willow Data Model",
     name: "data_model",
+    status: "final",
   },
-  [
+  [    
     pinformative("In this document, we define the core data model of Willow."),
 
     table_of_contents(7),

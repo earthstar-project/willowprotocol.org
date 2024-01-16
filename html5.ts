@@ -50,6 +50,7 @@ export function html5_dependency_js(path: Expression): Expression {
 export function html5(
   header: Expression,
   body: Expression,
+  bodyClass: string,
 ): Expression {
   let previous_scope: Set<string> | null = null;
   const my_scope = new Set<string>();
@@ -84,6 +85,7 @@ export function html5(
             ),
           ),
           body_(
+            { class: bodyClass },
             notify(
               (_) => is_body_done = true,
               args[1],

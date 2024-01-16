@@ -32,37 +32,35 @@
     --color-comment-fn: #685209;
 }
 
-.orange {
+.orange, .orange a {
     color: var(--wong-orange)
 }
 
-.sky-blue {
+.sky-blue, .sky-blue a {
     color: var(--wong-blue)
 }
 
-.green {
+.green, .green a {
     color: var(--wong-green)
 }
 
-.yellow {
+.yellow, .yellow a {
     color: var(--wong-yellow)
 }
 
-.blue {
+.blue, .blue a {
     color: var(--wong-blue)
 }
 
-.vermillion {
+.vermillion, .vermillion a {
     color: var(--wong-vermillion)
 }
 
-.purple {
+.purple, .purple a {
     color: var(--wong-purple)
 }
 
 body {
     color: var(--nearly-black);
     background: var(--nearly-white);
-    background-image: url('named_assets/draft-bg.png');
-    background-size: 240px;
 }
