@@ -56,6 +56,7 @@ import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 import { willow_compared } from "./specs/more/compare.ts";
+import { about } from "./specs/more/about.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -79,7 +80,6 @@ export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
-  do_not_render_toc?: boolean;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -99,7 +99,6 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
                 [
-                  meta.do_not_render_toc ? "" : table_of_contents(7),
                   args[0],
                 ],
               ),
@@ -111,12 +110,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                   li(link_name("specifications", "Specs")),
                   li(link_name("changes", "News")),
                   li(link_name("more", "More")),
-                  li(
-                    a(
-                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden", class: "internal" },
-                      "Contact us",
-                    ),
-                  ),
+                  li(link_name("about", "About us")),
                 ),
                 div(
                   marginale_inlineable(
@@ -613,16 +607,14 @@ evaluate(enable_previews([
       out_index_directory("grouping_entries", grouping_entries),
       out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
-      out_directory("sync", [
-        out_file("index.html", create_etags(sync)),
-        out_index_directory("psi", psi),
-        out_index_directory("resource-control", resource_control),
-        out_index_directory(
-          "product-based-set-reconciliation",
-          range3d_based_set_reconciliation,
-        ),
-        out_index_directory("access-control", access_control),
-      ]),
+      out_index_directory("sync", sync),
+      out_index_directory("pai", psi),
+      out_index_directory("resource-control", resource_control),
+      out_index_directory(
+        "3d-range-based-set-reconciliation",
+        range3d_based_set_reconciliation,
+      ),
+      out_index_directory("access-control", access_control),
     ]),
     out_directory("more", [
       out_file("index.html", more),
@@ -631,7 +623,8 @@ evaluate(enable_previews([
       out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("changes", changes),
-      out_index_directory("projects_and_communities", projects_and_communities),
+      out_index_directory("projects-and-communities", projects_and_communities),
+      out_index_directory("about-us", about),
     ]),
     copy_statics("assets"),
   ),

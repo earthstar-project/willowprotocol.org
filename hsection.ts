@@ -1,6 +1,6 @@
 import { Context, Expression, Invocation, new_macro } from "./tsgen.ts";
 import { new_name, resolve_name } from "./names.ts";
-import { a, Attributes, div, h1, h2, h3, h4, h5, h6, nav, ol, span } from "./h.ts";
+import { a, Attributes, div, h1, h2, h3, h4, h5, h6, li, nav, ol, span } from "./h.ts";
 import { link_name } from "./linkname.ts";
 import { html5_dependency_js } from "./html5.ts";
 
@@ -54,13 +54,24 @@ function hsection_state(ctx: Context): HSectionState {
 // Add the rendered heading to the name state of each section's id
 const rendered_title_key = Symbol("RenderedTitle");
 
+// A short version of a heading's title, for usage in tables of contents
+const short_title_key = Symbol("ShortTitle");
+
 export interface HSectionOptions {
-  wide: boolean;
+  wide?: boolean; // Set to true to have heading extend into the right margin
+  short_title?: string; // Alternate title to use in tocs
+  no_toc?: boolean; // Set to true to have this section not show up in tocs
 }
 
 const default_options = {
   wide: false,
+  short_title: undefined,
+  no_toc: false,
 };
+
+function is_options(x: Record<string | number | symbol, any>): boolean {
+  return x["wide"] != undefined || x["short_title"] != undefined || x["no_toc"] != undefined;
+}
 
 export function hsection(
   id: string,
@@ -81,11 +92,11 @@ export function hsection(
 ): Expression {
   if (other.length === 0) {
     return hsection(id, default_options, []);
-  } else if (other.length === 1 && other[0].wide !== undefined) {
+  } else if (other.length === 1 && is_options(other[0])) {
     return hsection_(id, other[0], [], []);
-  } else if (other.length === 1 && other[0].wide === undefined) {
+  } else if (other.length === 1 && !is_options(other[0])) {
     return hsection_(id, default_options, [], []);
-  } else if (other[0].wide === undefined) {
+  } else if (!is_options(other[0])) {
     const [title, ...contents] = other;
     return hsection_(id, default_options, title, ...contents);
   } else if (other.length === 2) {
@@ -141,8 +152,7 @@ export function hsection_(
           header_attributes.class = "wide";
         }
         return [
-          header_macro(header_attributes, a({ href: `#${id}` }, render_title_and_register_it(id, title))),
-          // header_macro(header_attributes, title),
+          header_macro(header_attributes, a({ href: `#${id}` }, render_title_and_register_it(id, options, title))),
           ...contents,
         ];
       }
@@ -153,35 +163,39 @@ export function hsection_(
       const state = hsection_state(ctx);
 
       state.level += 1;
-      
-      if (first) {
-        let structure = state.structure;
-        for (let level = 0; level + 1 < state.finger.length; level++) {
-          structure = structure.children[state.finger[level]];
+
+      if (!options.no_toc) {
+        if (first) {
+          let structure = state.structure;
+          for (let level = 0; level + 1 < state.finger.length; level++) {
+            structure = structure.children[state.finger[level]];
+          }
+  
+          structure.children.push(new_section_structure(id, state.level));
+          structure.child_id_to_index.set(id, structure.children.length - 1);
+          
+          state.finger.push(0);
         }
-
-        structure.children.push(new_section_structure(id, state.level));
-        structure.child_id_to_index.set(id, structure.children.length - 1);
-        
-        state.finger.push(0);
+  
+        state.current_breadcrumbs.push(id);
       }
-
-      state.current_breadcrumbs.push(id);
     },
     // bu
     (ctx) => {
       const state = hsection_state(ctx);
 
       state.level -= 1;
-      
-      if (first) {
-        state.finger.pop();
-        state.finger[state.finger.length - 1] = state.finger[state.finger.length - 1] + 1;
 
-        first = false;
+      if (!options.no_toc) {
+        if (first) {
+          state.finger.pop();
+          state.finger[state.finger.length - 1] = state.finger[state.finger.length - 1] + 1;
+  
+          first = false;
+        }
+  
+        state.current_breadcrumbs.pop();
       }
-
-      state.current_breadcrumbs.pop();
     },
     2,
   );
@@ -189,11 +203,14 @@ export function hsection_(
   return new Invocation(macro, [title, ...contents]);
 }
 
-export function render_title_and_register_it(id: string, title: Expression): Expression {
+export function render_title_and_register_it(id: string, options: HSectionOptions, title: Expression): Expression {
   const macro = new_macro(
     undefined,
     (expanded, ctx) => {
-      resolve_name(id, "hsection", ctx)!.set(rendered_title_key, expanded);
+      // console.log(expanded); // uncomment to log all headings, e.g., to inspet for consistent `Capitalization of Titles`
+      const name = resolve_name(id, "hsection", ctx)!;
+      name.set(rendered_title_key, expanded);
+      name.set(short_title_key, options.short_title);
       return expanded;
     }
   );
@@ -221,7 +238,9 @@ export function table_of_contents(max_depth: number): Expression {
         html5_dependency_js("/named_assets/active_toc.js"),
         nav(
           {class: "toc"},
-          render_structure(structure, state.level, max_depth, true),
+          ol(
+            render_structure(structure, state.level, max_depth, true),
+          )
         ),
       ];
     },
@@ -233,24 +252,37 @@ export function table_of_contents(max_depth: number): Expression {
 export function render_structure(structure: SectionStructure, current_level: number, max_depth: number, is_toplevel: boolean): Expression {
   const macro = new_macro(
     (_args, ctx) => {
-      const rendered_title = resolve_name(structure.id, "hsection", ctx)!.get(rendered_title_key);
+      const name = resolve_name(structure.id, "hsection", ctx)!;
+      const rendered_title = name.get(rendered_title_key);
+      const short_title = name.get(short_title_key);
 
       if (rendered_title === undefined) {
         return null;
       } else {
         const toc_heading_attributes: Attributes = {
-          class: `toc_heading toc${current_level}`
+          class: `toc_heading`
         };
         toc_heading_attributes["data-hsection"] = structure.id;
+        toc_heading_attributes["data-hlevel"] = `${current_level}`;
 
-        return div(
-          {class: "toc_section"},
-          span(toc_heading_attributes, link_name(structure.id, rendered_title)),
-          ol(
-            {class: "toc_children"},
+        if (is_toplevel) {
+          return [
+            li({...toc_heading_attributes, class: 'toc_top'}, link_name(structure.id, "(Top)")),
             structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
-          ),
-        );
+          ];
+        } else {
+          return div(
+            {class: "toc_section"},
+            li(toc_heading_attributes, [
+              link_name(structure.id, short_title ? short_title : rendered_title),
+              ol(
+                {class: "toc_children"},
+                structure.children.map(child => render_structure(child, current_level + 1, max_depth, false)),
+              ),
+            ]),
+           
+          );
+        }
       }
     },
   );

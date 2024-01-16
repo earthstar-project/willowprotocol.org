@@ -1,6 +1,6 @@
 import { R, def, def_fake, r, rs } from "../../../defref.ts";
 import { br, code, em, figcaption, figure, img, span } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
+import { hsection, table_of_contents } from "../../../hsection.ts";
 import { $, $comma } from "../../../katex.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
@@ -26,6 +26,8 @@ export const resource_control: Expression = site_template(
     name: "resource_control",
   },
   [
+    table_of_contents(7),
+    
     pinformative(
       "Many communication protocols operate by sending individual messages or requests over a single, fifo communication channel. If processing a message takes a long time, it makes little sense to wait for the message to be fully processed before accessing the next message from the communication channel. Instead, one usually moves the message elsewhere in memory, freeing up the communication channel and allowing to pop the next message almost immediately. The actual, slow message processing can then be done by another thread or via non-blocking IO.",
     ),

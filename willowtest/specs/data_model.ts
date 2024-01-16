@@ -1,6 +1,6 @@
 import { def, preview_scope, r, Rs, rs } from "../../defref.ts";
 import { code, em, figcaption, figure, img, p } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { $ } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
@@ -32,6 +32,8 @@ export const data_model: Expression = site_template(
   },
   [
     pinformative("In this document, we define the core data model of Willow."),
+
+    table_of_contents(7),
 
     pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
 
@@ -100,7 +102,7 @@ export const data_model: Expression = site_template(
         ],
         [
           marginale([
-            "Since this function provides the only way in which willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
+            "Since this function provides the only way in which Willow tracks payloads, you probably want to use a ", link("secure hash function", "https://en.wikipedia.org/wiki/Secure_hash_function"), ".",
           ]),
           "A function ", def_parameter_fn("hash_payload", "hash_payload", ["A protocol parameter of Willow, a function for computing ", rs("PayloadDigest"), " from ", rs("Payload"), ".", ]), " that maps bytestrings (of length at most ", $("2^{64} - 1", ")"), " into ", r("PayloadDigest"), ".",
         ],

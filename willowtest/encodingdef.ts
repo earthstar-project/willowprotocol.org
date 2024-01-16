@@ -79,7 +79,7 @@ export function encodingdef(
       }
 
       return table(
-        { class: hasRemarks ? "encodingdef withremarks" : "encodingdef withoutremarks" },
+        { class: hasRemarks ? "encodingdef withremarks clearright" : "encodingdef withoutremarks" },
         the_rows,
       );
     },

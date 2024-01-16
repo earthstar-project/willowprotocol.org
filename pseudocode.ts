@@ -23,7 +23,7 @@ import {
 } from "./h.ts";
 import { get_root_directory, link_name } from "./linkname.ts";
 import { asset, out_file_absolute, write_file_absolute } from "./out.ts";
-import { create_preview_from_string, Def, def_generic, def_generic$, def_truly_generic, r, set_def } from "./defref.ts";
+import { create_preview_from_string, Def, def_generic, def_generic$, def_truly_generic, id_to_preview_data, r, set_def } from "./defref.ts";
 import { marginale } from "./marginalia.ts";
 
 const pseudocodekey = Symbol("Pseudocode");
@@ -381,7 +381,7 @@ function render_struct(struct: Struct): Expression {
       for (const [field_id, rendered_field] of pseudocode_state(ctx).fields) {
         create_preview_from_string(
           field_id,
-          `<code class="pseudocode">${rendered_field}</code><div>Field of <a class="ref type" data-preview="/previews/${struct.id}.html" href="/specs/sync/index.html#${struct.id}">${struct_name}</a></div>`,
+          `<code class="pseudocode">${rendered_field}</code><div>Field of <a class="ref type" data-preview="${id_to_preview_data(struct.id)}" href="/specs/sync/index.html#${struct.id}">${struct_name}</a></div>`,
           ctx,
         );
       }
@@ -472,7 +472,7 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
       for (const [variant_id, rendered_variant] of pseudocode_state(ctx).variants) {
         create_preview_from_string(
           variant_id,
-          `<code class="pseudocode">${rendered_variant}</code><div>Enum variant of <a class="ref type" data-preview="/previews/${simple_enum.id}.html" href="/specs/sync/index.html#${simple_enum.id}">${enum_name}</a></div>`,
+          `<code class="pseudocode">${rendered_variant}</code><div>Enum variant of <a class="ref type" data-preview="${id_to_preview_data(simple_enum.id)}" href="/specs/sync/index.html#${simple_enum.id}">${enum_name}</a></div>`,
           ctx
         );
       }

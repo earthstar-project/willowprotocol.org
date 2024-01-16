@@ -1,5 +1,6 @@
-import { blue, def_value, green, link, lis, orange, pinformative, purple, quotes, site_template, vermillion } from "../main.ts";
-import { hsection } from "../../hsection.ts";
+
+import { blue, def_fn, def_value, green, link, lis, orange, pinformative, purple, quotes, site_template, vermillion } from "../main.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { code, em, figcaption, figure, img, span } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
@@ -7,7 +8,7 @@ import { Expression, surpress_output } from "macro";
 import { Rs, def, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
 import { $comma, $dot } from "../../katex.ts";
-import { Struct, def_symbol, field_access, pseudo_choices, pseudocode } from "../../pseudocode.ts";
+import { Struct, def_symbol, field_access, function_call, pseudo_choices, pseudocode } from "../../pseudocode.ts";
 
 const apo = "’";
 
@@ -24,9 +25,29 @@ export const grouping_entries: Expression = site_template({
   
   pinformative("Willow lets authors place ", rs("Entry"), " in ", rs("namespace"), ", and within each ", r("namespace"), ", ", rs("Entry"), " are arranged according to three orthogonal dimensions: ", r("entry_subspace_id"), ", ", r("entry_path"), ", and ", r("entry_timestamp"), ". This suggests a powerful way of thinking about Willow: a ", r("namespace"), " is a collection of points (", rs("Entry"), ") in a three-dimensional space. Or more accurately, a ", r("namespace"), " is a ", em("mapping"), " from points in this three-dimensional space to hashes and sizes of ", rs("Payload"), "."),
 
-  pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to use precise terminology) in the three-dimensional willow space."),
+  pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to use precise terminology) in the three-dimensional Willow space."),
 
   pinformative("In this document, we develop and define a vocabulary for grouping ", rs("Entry"), " based on their ", rs("entry_subspace_id"), ", ", rs("entry_path"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronisation protocol"), "."),
+  
+  table_of_contents(7),
+
+  surpress_output(
+    pinformative(
+      "We define ", code(function_call(
+        def_fn({id: "default_entry"}),
+        def_value({id: "default_entry_ns", singular: "default_namespace"}),
+        def_value({id: "default_entry_ss", singular: "default_subspace"}),
+        def_value({id: "default_entry_digest", singular: "default_payload_digest"}),
+      )), " to denote the ", r("Entry"), " with the following members:", lis(
+        [code(r("entry_namespace_id"), " = ", r("default_entry_ns")), ","],
+        [code(r("entry_subspace_id"), " = ", r("default_entry_ss")), ","],
+        [r("entry_path"), " is the empty ", r("Path"), ","],
+        [code(r("entry_timestamp"), " = 0"), ","],
+        [code(r("entry_payload_length"), " = 0"), ", and"],
+        [code(r("entry_payload_digest"), " = ", r("default_entry_digest")), "."],
+      ),
+    ),
+  ),
 
   hsection("ranges", "Ranges", [
     pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one). A ", r("range"), " is ", def({id: "range_empty", singular: "empty"}), " if it ", rs("range_include"), " no values.")),
@@ -117,17 +138,17 @@ export const grouping_entries: Expression = site_template({
         fields: [
           {
             id: "D3RangeSubspace",
-            name: "subspace_range",
+            name: "subspaces",
             rhs: r("SubspaceRange"),
           },
           {
             id: "D3RangePath",
-            name: "path_range",
+            name: "paths",
             rhs: r("PathRange"),
           },
           {
             id: "D3RangeTime",
-            name: "time_range",
+            name: "times",
             rhs: r("TimeRange"),
           },
         ],
@@ -135,10 +156,21 @@ export const grouping_entries: Expression = site_template({
     ),
 
     pinformative("A ", r("D3Range"), " ", def({id: "d3_range_include", singular: "include"}, "includes"), " every ", r("Entry"), " whose ", r("entry_subspace_id"), ", ", r("entry_path"), ", and ", r("entry_timestamp"), " are all ", r("range_include", "included"), " their respective ", r("range"), "."),
+
+    pinformative(
+      "We define ", code(function_call(
+        def_fn({id: "default_3d_range"}),
+        def_value({id: "default_3d_ss", singular: "default_subspace"}),
+      )), " to denote the ", r("D3Range"), " with the following members:", lis(
+        [r("D3RangeSubspace"), " is the ", r("open_range", "open"), " ", r("SubspaceRange"), " with ", r("SubspaceRangeStart"), " ", r("default_3d_ss"), ","],
+        [r("D3RangePath"), " is the ", r("open_range", "open"), " ", r("PathRange"), " whose ", r("PathRangeStart"), " is the empty ", r("Path"), ", and"],
+        [r("D3RangeTime"), " is the ", r("open_range", "open"), " ", r("TimeRange"), " with ", r("TimeRangeStart"), " zero."],
+      ),
+    ),
   ]),
 
   hsection("areas", "Areas", [
-    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
+    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in Willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
 
     pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("D3Range"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
@@ -160,19 +192,19 @@ export const grouping_entries: Expression = site_template({
         fields: [
           {
             id: "AreaSubspace",
-            name: "included_subspace_id",
+            name: "subspace_id",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_subspace_id"), " must be equal to the ", r("AreaSubspace"), ", unless it is ", r("area_any"), "."],
             rhs: pseudo_choices(r("SubspaceId"), r("area_any")),
           },
           {
             id: "AreaPath",
-            name: "path_prefix",
+            name: "path",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_path"), " must be ", r("path_prefix", "prefixed"), " by the ", r("AreaPath"), "."],
             rhs: r("Path"),
           },
           {
             id: "AreaTime",
-            name: "time_range",
+            name: "times",
             comment: ["To be ", r("area_include", "included"), " in this ", r("Area"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be ", r("range_include", "included"), " in the ", r("AreaTime"), "."],
             rhs: r("TimeRange"),
           },

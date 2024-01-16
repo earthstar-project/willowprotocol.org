@@ -6,7 +6,7 @@ import { link_name } from "../../../linkname.ts";
 
 export const projects_and_communities: Expression = site_template(
 		{
-				title: "Active projects and communities",
+				title: "Active Projects and Communities",
 				name: "projects_and_communities",
 		},
 		[
@@ -15,7 +15,7 @@ export const projects_and_communities: Expression = site_template(
 				pinformative("There are several funded, open source implementations of Willow being worked on."),
 				pinformative("If you would like to implement Willow in your favourite language, we’ll gladly answer any questions you may have! Please see the ", link_name("community_and_contact", "community and contact"), " section below for some ways of getting in touch."),
 				
-				hsection("earthstar_project_implementations", "Earthstar project", [
+				hsection("earthstar_project_implementations", "Earthstar Project", [
 					pinformative("Willow is brought to you by the Earthstar Project. We are working on implementations of Willow in both TypeScript and Rust."),
 					pinformative("We are close to being finished with the TypeScript implementations of Meadowcap and Willow. These implementations have been funded by ", link("NGI Assure", "https://nlnet.nl/assure/"), "."),
 					lis(
@@ -38,7 +38,7 @@ export const projects_and_communities: Expression = site_template(
 					)
 				])
 			]),
-			hsection("community_and_contact", "Community and contact", [
+			hsection("community_and_contact", "Community and Contact", [
 				lis(
 					link("Email us",  "mailto:mail@aljoscha-meyer.de,sam@gwil.garden"),
 					link("Earthstar Project Open Collective", "https://opencollective.com/earthstar"),

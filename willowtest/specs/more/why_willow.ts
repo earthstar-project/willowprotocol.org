@@ -8,7 +8,7 @@ import { link_name } from "../../../linkname.ts";
 
 export const why_willow: Expression = site_template(
 		{
-				title: "Why did we make Willow?",
+				title: "Why Did We Make Willow?",
 				name: "why_willow",
 		},
 		[

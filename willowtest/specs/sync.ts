@@ -1,15 +1,16 @@
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { aside, code, em, img, p } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { aside, code, div, em, hr, img, p } from "../../h.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
 import { Expression } from "../../tsgen.ts";
-import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn } from "../main.ts";
+import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn, def_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array, function_call, field_access } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
-import { two_bit_int } from "./encodings.ts";
+import { encode_two_bit_int, inclusion_flag_remark, two_bit_int, two_bit_int_def } from "./encodings.ts";
+import { CHAR_9 } from "https://deno.land/std@0.198.0/path/_constants.ts";
 
 const apo = "’";
 
@@ -28,6 +29,8 @@ export const sync: Expression = site_template(
     },
     [
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
+
+        table_of_contents(7),
 
         hsection("sync_intro", "Introduction", [
             marginale_inlineable(
@@ -52,15 +55,15 @@ export const sync: Expression = site_template(
         hsection("sync_concepts", "Concepts", [
             pinformative("Data synchronisation for Willow needs to solve a number of sub-problems, which we summarise in this section."),
 
-            hsection("sync_access", "Access Control", [
+            hsection("sync_access", {no_toc: true}, "Access Control", [
                 pinformative("Peers only transfer data to peers that can prove that they are allowed to access that data. We describe how peers authenticate their requests ", link_name("access_control", "here"), "."),
             ]),
 
-            hsection("sync_pai", "Private Area Intersection", [
-                pinformative("The WGPS lets two peers determine which ", rs("namespace"), " and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronize. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
+            hsection("sync_pai", {no_toc: true}, "Private Area Intersection", [
+                pinformative("The WGPS lets two peers determine which ", rs("namespace"), " and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronise. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
             ]),
 
-            hsection("sync_partial", "Partial Synchronisation", [
+            hsection("sync_partial", {no_toc: true}, "Partial Synchronisation", [
                 pinformative("To synchronise data, peers specify any number of ", rs("AreaOfInterest"), marginale([
                     "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
                 ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronise."),
@@ -68,18 +71,18 @@ export const sync: Expression = site_template(
                 pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("d3rbsr"), ", a technique we ", link_name("d3_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
-            hsection("sync_post_sync_forwarding", "Post-Reconciliation Forwarding", [
+            hsection("sync_post_sync_forwarding", {no_toc: true}, "Post-Reconciliation Forwarding", [
                 pinformative("After performing ", r("d3rbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
             ]),
 
-            hsection("sync_payloads", "Payload transmissions", [
+            hsection("sync_payloads", {no_toc: true}, "Payload Transmission", [
                 pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately transmit the corresponding ", r("Payload"), " as well. Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("AreaOfInterest"), " can be quadratic in the number of ", rs("AreaOfInterest"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " for each ", r("aoi_intersection"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
                 pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), " (that they are allowed to access)."),
             ]),
 
-            hsection("sync_resources", "Resource Limits", [
-                pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overloads the other. We use a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " that we describe ", link_name("resource_control", "here"), "."),
+            hsection("sync_resources", {no_toc: true}, "Resource Limits", [
+                pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overload the other. We use a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " that we describe ", link_name("resource_control", "here"), "."),
             ]),
         ]),
         
@@ -88,13 +91,15 @@ export const sync: Expression = site_template(
 
             pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have a length of ", def_parameter_value("challenge_length"), " bytes, and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), " whose outputs have a length of ", def_parameter_value("challenge_hash_length"), " bytes."),
 
-            pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic groups suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
+            pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic group suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
             pinformative(link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of ", rs("LengthyEntry"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from ", rs("LengthyEntry"), " into ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of singleton ", r("LengthyEntry"), " sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("Fingerprint"), " for computing the ", rs("Fingerprint"), " of larger ", r("LengthyEntry"), " sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("Fingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("Fingerprint"), " of the empty set."),
 
             pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
                 "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type ", r("UserSignature"), ", which together yield a ", r("MeadowcapAuthorisationToken"), ".",
             ]), " (which differs between any two ", rs("Entry"), "). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
+
+            pinformative("Finally, we require a ", r("NamespaceId"), " ", def_parameter_value({id: "sync_default_namespace_id", singular: "default_namespace_id"}), ", a ", r("SubspaceId"), " ", def_parameter_value({id: "sync_default_subspace_id", singular: "default_subspace_id"}), ", and a ", r("PayloadDigest"), " ", def_parameter_value({id: "sync_default_payload_digest", singular: "default_payload_digest"}), "."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -114,7 +119,7 @@ export const sync: Expression = site_template(
 
             pseudocode(
                 new SimpleEnum({
-                    id: "HandleKind",
+                    id: "HandleType",
                     comment: ["The different ", rs("resource_handle"), " employed by the ", r("WGPS"), "."],
                     variants: [
                         {
@@ -239,6 +244,8 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("PaiBindFragment"), " messages use the ", r("IntersectionChannel"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -267,6 +274,8 @@ export const sync: Expression = site_template(
                     ]),
 
                     pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -287,6 +296,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the ", r("subspace"), " in question."),
 
                     pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
+
+                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -364,6 +375,8 @@ export const sync: Expression = site_template(
                 
                     pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
 
+                    hr(),
+
                     pseudocode(
                         new Struct({
                             id: "SetupBindAreaOfInterest",
@@ -394,6 +407,12 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
+
+                    pinformative(
+                        "Let ", def_value({id: "handle2ns_handle", singular: "handle"}), " be an ", r("AreaOfInterestHandle"), ". We then define ", code(function_call(def_fn({id: "handle_to_namespace_id"}), r("handle2ns_handle"))), " to denote the ", r("granted_namespace"), " of the ", r("ReadCapability"), " whose ", r("CapabilityHandle"), " is the ", r("SetupBindAreaOfInterestCapability"), " of the ", r("SetupBindAreaOfInterest"), " that ", r("handle_bind", "bound"), " ", r("handle2ns_handle"), ".", 
+                    ),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -416,7 +435,7 @@ export const sync: Expression = site_template(
                 ]),
 
                 hsection("sync_reconciliation", "Reconciliation", [
-                    pinformative("We use ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronize the data of the peers."),
+                    pinformative("We use ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronise the data of the peers."),
                     
                     pseudocode(
                         new Struct({
@@ -454,6 +473,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("d3rbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -506,11 +527,13 @@ export const sync: Expression = site_template(
                         "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("d3rbsr"), "."
                     ]), "sorted from ", r("entry_newer", "oldest to newest"), ", if the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " massage have been sent."),
+                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent."),
 
                     pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -582,9 +605,13 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("DataSendEntry"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("d3rbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("DataSendPayload"), " messages)."),
 
-                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving an ", r("DataSendEntry"), " message whose ", r("DataSendEntryOffset"), " is strictly less than the ", r("DataSendEntryEntry"), apo, "s ", r("entry_payload_length"), ", a peers sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), " and its ", r("currently_received_offset"), " to the received ", r("DataSendEntryOffset"), "."),
+                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving an ", r("DataSendEntry"), " message whose ", r("DataSendEntryOffset"), " is strictly less than the ", r("DataSendEntryEntry"), "’s ", r("entry_payload_length"), ", a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), " and its ", r("currently_received_offset"), " to the received ", r("DataSendEntryOffset"), "."),
+
+                    pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), ", and ", r("currently_received_offset"), " is zero."),
                 
                     pinformative(R("DataSendEntry"), " messages use the ", r("DataChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -610,10 +637,10 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("DataSendPayload"), " messages let peers transmit ", rs("Payload"), "."),
 
                     pinformative("A ", r("DataSendPayload"), " message may only be sent if its ", r("DataSendPayloadAmount"), " of ", r("DataSendPayloadBytes"), " plus the receiver", apo, "s ", r("currently_received_offset"), " is less than or equal to the ", r("entry_payload_length"), " of the receiver", apo, "s ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("DataSendPayloadAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("DataReplyPayload"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
-
-                    pinformative("A ", r("DataSendPayload"), " message may only be sent if the receiver has a well-defined ", r("currently_received_entry"), "."),
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -645,6 +672,8 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("DataSetEagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
                     pinformative(R("DataSetEagerness"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -679,6 +708,8 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
+
+                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -697,7 +728,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested ", r("Payload"), ". More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is ", r("handle_bind", "bound"), "."),
                 ]),
-                hsection("sync_control", "Resource control", [
+                hsection("sync_control", "Resource Control", [
                     pinformative("Finally, we maintain ", rs("logical_channel"), " and ", r("handle_free"), " ", rs("resource_handle"), ", as explained in the ", link_name("resources_message_types", "resource control document"), "."),
 
                     pseudocode(
@@ -737,7 +768,7 @@ export const sync: Expression = site_template(
         
                         new Struct({
                             id: "ControlPlead",
-                            comment: ["Ask the other peer to send an ", r("ControlAbsolve"), " message such that the remaining buffer capacity will be ", r("ControlPleadTarget"), "."],
+                            comment: ["Ask the other peer to send an ", r("ControlAbsolve"), " message such that the receiver remaining ", rs("guarantee"), " will be ", r("ControlPleadTarget"), "."],
                             fields: [
                                 {
                                     id: "ControlPleadTarget",
@@ -795,7 +826,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ControlFreeHandleType",
                                     name: "handle_type",
-                                    rhs: r("HandleKind"),
+                                    rhs: r("HandleType"),
                                 },
                             ],
                         }),
@@ -804,10 +835,7 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
-
-                pinformative("Work in progress."),
-
-                pinformative("We now describe how to encode the various mesages of the WGPS."),
+                pinformative("We now describe how to encode the various messages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
 
                 hsection("sync_encoding_params", "Parameters", [
                     pinformative("To be able to encode messages, we require certain properties from the ", link_name("sync_parameters", "protocol parameters"), ":"),
@@ -835,7 +863,17 @@ export const sync: Expression = site_template(
                             "An ", r("encoding_function"), " for ", r("SubspaceId"), ".",
                         ),
                         preview_scope(
+                            marginale(["The total order makes ", rs("D3Range"), " meaningful, the least element and successors ensure that every ", r("Area"), " can be expressed as an equivalent ", r("D3Range"), "."]),
+                            "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on ", r("SubspaceId"), " with least element ", r("sync_default_subspace_id"), ", in which for every ", r("SubspaceId"), " ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other ", r("SubspaceId"), " is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
+                        ),
+                        preview_scope(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_dynamic_token"}), " for ", r("DynamicToken"), ".",
+                        ),
+                        preview_scope(
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_fingerprint"}), " for ", r("Fingerprint"), ".",
                         ),
                     ),
 
@@ -864,6 +902,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+
+                    hr(),
                     
                     pinformative(
                         "The encoding of a ", r("PaiBindFragment"), " message ", def_value({id: "enc_pai_bind_fragment", singular: "m"}), " is the concatenation of:",
@@ -893,6 +933,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -918,6 +960,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -939,6 +983,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+
+                    hr(),
 
                     pinformative(
                         "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
@@ -1016,6 +1062,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(
                         "The encoding of a ", r("SetupBindAreaOfInterest"), " message ", def_value({id: "enc_setup_aoi", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -1033,9 +1081,11 @@ export const sync: Expression = site_template(
                                 new BitfieldRow(
                                     1,
                                     [
-                                        code("1"), " ", r("iff"), " ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " == 0"), " and ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " == 0"),
+                                        code("1"), " ", r("iff"), " ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " != 0"), " or ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " != 0"),
                                     ],
-                                    ["Encode ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " and ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), "?"],
+                                    [
+                                        inclusion_flag_remark([field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " and ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size")]),
+                                    ],
                                 ),
                                 two_bit_int(6, field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability")),
                             ),
@@ -1067,6 +1117,8 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
+                    hr(),
+
                     pinformative(                        
                         "The encoding of a ", r("SetupBindStaticToken"), " message ", def_value({id: "enc_setup_static", singular: "m"}), " is the concatenation of:",
                         encodingdef(
@@ -1097,45 +1149,726 @@ export const sync: Expression = site_template(
 
                         lis(
                             [
-                                "A ", r("D3Range"), " ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintRange"), "."
+                                "A ", r("D3Range"), " ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintRange"), ". The initial value is ", code(function_call(r("default_3d_range"), r("sync_default_subspace_id"))), "."
                             ],
                             [
-                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_sender", singular: "prev_sender_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintSenderHandle"), "."
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_sender", singular: "prev_sender_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintSenderHandle"), ". The initial value is ", code("0"), "."
                             ],
                             [
-                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), "."
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), ". The initial value is ", code("0"), "."
+                            ],
+                            [
+                                "An ", r("Entry"), " ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the ", r("lengthy_entry_entry"), " of the message’s ", r("ReconciliationSendEntryEntry"), ". The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
+                            ],
+                            [
+                                "A ", r("StaticTokenHandle"), " ", def_value({id: "sync_enc_prev_token", singular: "prev_token"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the message’s ", r("ReconciliationSendEntryStaticTokenHandle"), ". The initial value is ", code("0"), "."
                             ],
                         ),
                     ),
 
                     pinformative(
-                        "Prior to receiving any ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message, ", r("sync_enc_prev_range"), ", ", r("sync_enc_prev_sender"), ", and ", r("sync_enc_prev_receiver"), " are undefined and must not be referenced."
+                        "Prior to receiving any corresponding message, ", r("sync_enc_prev_range"), ", ", r("sync_enc_prev_sender"), ", ", r("sync_enc_prev_receiver"), ", ", r("sync_enc_prev_entry"), ", and ", r("sync_enc_prev_token"), " are undefined and must not be referenced."
+                    ),
+
+                    pinformative(
+                        "Given two ", rs("AreaOfInterestHandle"), " ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the ", r("D3Range"), " that ", rs("d3_range_include"), " the same ", rs("Entry"), " as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the ", rs("AreaOfInterest"), " to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are ", r("handle_bind", "bound"), "."
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("ReconciliationSendFingerprint"), " message ", def_value({id: "enc_recon_fp", singular: "m"}), " starts with a bitfield:",
+                    ),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                3,
+                                [code("010")],
+                                ["message category"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [code("0")],
+                                ["message kind"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintFingerprint"), " == ", r("fingerprint_neutral")),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintRange"), " will be encoded relative to ", r("sync_enc_prev_range"),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), " == ", r("sync_enc_prev_sender")),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
+                                ],
+                            ),
+                        ),
+                    ),
+                    
+                    pinformative("If either bit 6 or 7 of this initial bitfield are ", code("0"), ", this is followed by the following bitflag:"),
+
+                    encodingdef(
+                        new Bitfields(
+                            two_bit_int(0, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), [
+                                code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), " == ", r("sync_enc_prev_sender")),
+                            ]),
+                            two_bit_int(2, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), [
+                                code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
+                            ]),
+                            bitfieldrow_unused(4),
+                        ),
+                    ),
+
+                    pinformative("This is followed by the concatenation of:"),
+
+                    encodingdef(
+                        [[
+                            encode_two_bit_int(
+                                field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"),
+                                [code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), " == ", r("sync_enc_prev_sender"))],
+                            ),
+                        ]],
+                        [[
+                            encode_two_bit_int(
+                                field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"),
+                                [code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), " == ", r("sync_enc_prev_receiver"))],
+                            ),
+                        ]],
+                        [[
+                            code(function_call(r("encode_fingerprint"), field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintFingerprint"))), ", or the empty string, if ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintFingerprint"), " == ", r("fingerprint_neutral")),
+                        ]],
+                        [
+                            [
+                                "either ", code(function_call(r("encode_3drange_relative_3drange"), field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintRange"), r("sync_enc_prev_range"))), ", or ", code(function_call(r("encode_3drange_relative_3drange"), field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintRange"), function_call(r("aoi_handles_to_3drange"), field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle")))),
+                            ],
+                            [
+                                "Must match bit 5 of the first bitfield."
+                            ],
+                        ],
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("ReconciliationAnnounceEntries"), " message ", def_value({id: "enc_recon_announce", singular: "m"}), " is the concatenation of:",
+                    ),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                3,
+                                [code("010")],
+                                ["message category"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [code("1")],
+                                ["message kind"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesFlag"), " == ", code("true")),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesRange"), " will be encoded relative to ", r("sync_enc_prev_range"),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), " == ", r("sync_enc_prev_sender")),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
+                                ],
+                            ),
+                            two_bit_int(0, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), [
+                                code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), " == ", r("sync_enc_prev_sender")),
+                            ]),
+                            two_bit_int(2, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), [
+                                code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
+                            ]),
+                            two_bit_int(4, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCount")),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesWillSort"), " == ", code("true")),
+                                ],
+                            ),
+                            bitfieldrow_unused(1),
+                        ),
+                        [[
+                            encode_two_bit_int(
+                                field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"),
+                                [code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), " == ", r("sync_enc_prev_sender"))],
+                            ),
+                        ]],
+                        [[
+                            encode_two_bit_int(
+                                field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"),
+                                [code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver"))],
+                            ),
+                        ]],
+                        [[
+                            encode_two_bit_int(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCount")),
+                        ]],
+                        [
+                            [
+                                "either ", code(function_call(r("encode_3drange_relative_3drange"), field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesRange"), r("sync_enc_prev_range"))), ", or ", code(function_call(r("encode_3drange_relative_3drange"), field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesRange"), function_call(r("aoi_handles_to_3drange"), field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle")))),
+                            ],
+                            [
+                                "Must match bit 5 of the bitfield."
+                            ],
+                        ],
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The WGPS mandates a strict cadence of ", rs("ReconciliationAnnounceEntries"), " messages followed by ", rs("ReconciliationSendEntry"), " messages, there are no points in time where it would be valid to send both. Hence, their encodings need not be distinguishable."
+                    ),
+
+                    pinformative(
+                        "When it is possible to receive a ", r("ReconciliationSendEntry"), " message, denote the preceeding ", r("ReconciliationAnnounceEntries"), " message by ", def_value({id: "sync_enc_rec_announced", singular: "announced"}), ".",
+                    ),
+
+                    pinformative(                        
+                        "The encoding of a ", r("ReconciliationSendEntry"), " message ", def_value({id: "enc_recon_entry", singular: "m"}), " starts with a bitfield:",
+                    ),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                3,
+                                [code("010")],
+                                ["message category"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [code("1")],
+                                ["message kind"],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"), " == ", code("sync_enc_prev_token")),
+                                ],
+                            ),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", field_access(r("enc_recon_entry"), "ReconciliationSendEntryEntry"), " will be encoded relative to ", r("sync_enc_prev_entry"),
+                                ],
+                            ),
+                            two_bit_int(6, field_access(field_access(r("enc_recon_entry"), "ReconciliationSendEntryEntry"), "lengthy_entry_available")),
+                        ),
+                    ),
+
+                    pinformative(
+                        "If bit 4 of this initial bitfield is ", code("0"), ", this is followed by the following byte:", lis(
+                            [
+                                "If ", code(field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"), " < 63"), ", then ", field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"), " encoded as a single byte,"
+                            ],
+                            [
+                                "else, if ", code(function_call(r("compact_width"), field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle")), " == 1"), ", then the byte ", code("0x3f"), ","
+                            ],
+                            [
+                                "else, if ", code(function_call(r("compact_width"), field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle")), " == 2"), ", then the byte ", code("0x7f"), ","
+                            ],
+                            [
+                                "else, if ", code(function_call(r("compact_width"), field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle")), " == 4"), ", then the byte ", code("0xbf"), ","
+                            ],
+                            [
+                                "else, the byte ", code("0xff"), ","
+                            ],
+                        ),
+                    ),
+
+                    pinformative("If bit 4 of the initial bitfield is ", code("0"), " and ", code(field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"), " >= 63"), ", this is followed by ", field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_recon_entry"), "ReconciliationSendEntryStaticTokenHandle"))), "-byte integer."),
+
+                    pinformative("This is followed by the concatenation of:"),
+
+                    encodingdef(
+                        [[
+                            encode_two_bit_int(field_access(field_access(r("enc_recon_entry"), "ReconciliationSendEntryEntry"), "lengthy_entry_available")),
+                        ]],
+                        [[
+                            code(function_call(r("encode_dynamic_token"), field_access(r("enc_recon_entry"), "ReconciliationSendEntryDynamicToken"))),
+                        ]],
+                        [
+                            [
+                                "either ", code(function_call(
+                                    r("encode_entry_relative_entry"),
+                                    field_access(field_access(r("enc_recon_entry"), "ReconciliationSendEntryEntry"), "lengthy_entry_entry"),
+                                    r("sync_enc_prev_entry"),
+                                    )), ", or ", code(function_call(
+                                        r("encode_entry_in_namespace_3drange"),
+                                        field_access(field_access(r("enc_recon_entry"), "ReconciliationSendEntryEntry"), "lengthy_entry_entry"),
+                                        field_access(r("sync_enc_rec_announced"), "ReconciliationAnnounceEntriesRange"),
+                                        function_call(r("handle_to_namespace_id"), field_access(r("sync_enc_rec_announced"), "ReconciliationAnnounceEntriesReceiverHandle")),
+                                    )),
+                            ],
+                            [
+                                "Must match bit 5 of the initial bitfield."
+                            ],
+                        ],
+                    ),
+                ]),
+
+                hsection("sync_encode_data", "Data", [
+                    pinformative(
+                        "When encoding ", rs("Entry"), " for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the ", r("Entry"), " can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an ", r("Area"), ". Such an ", r("Area"), " ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the ", rs("Area"), " ", r("handle_bind", "bound"), " by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " ", r("handle_bind", "bound"), " by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " ", r("handle_bind", "bound"), " by the receiver of the encoded message.",
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataSendEntry"), " message ", def_value({id: "enc_data_entry", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_entry"), "DataSendEntryStatic")),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        "1", " ", r("iff"), code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " != 0"), ", and ", code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " != ", field_access(field_access(r("enc_data_entry"), "DataSendEntryEntry"), "entry_payload_length")),
+                                    ],
+                                    [
+                                        inclusion_flag_remark(field_access(r("enc_data_entry"), "DataSendEntryOffset")),
+                                    ]
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [
+                                        div(code("00"), ", if ", code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " == 0"), ", else"),
+                                        div(code("01"), ", if ", code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " == ", field_access(field_access(r("enc_data_entry"), "DataSendEntryEntry"), "entry_payload_length")), ", else"),
+                                        div(two_bit_int_def(9, field_access(r("enc_data_entry"), "DataSendEntryOffset"))),
+                                    ]
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", field_access(r("enc_data_entry"), "DataSendEntryEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                    ],
+                                ),
+                                two_bit_int(12, r("sync_enc_data_sender"), [
+                                    field_access(r("enc_data_entry"), "DataSendEntryEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                                two_bit_int(14, r("sync_enc_data_receiver"), [
+                                    field_access(r("enc_data_entry"), "DataSendEntryEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_entry"), "DataSendEntryStatic")),
+                            ]],
+                            [[
+                                code(function_call(r("encode_dynamic_token"), field_access(r("enc_data_entry"), "DataSendEntryDynamic"))),
+                            ]],
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_entry"), "DataSendEntryOffset")), ", or the empty string, if ", code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " == 0"), " or ", code(field_access(r("enc_data_entry"), "DataSendEntryOffset"), " == ", field_access(field_access(r("enc_data_entry"), "DataSendEntryEntry"), "entry_payload_length")),
+                            ]],
+                            [
+                                [
+                                    "either ", code(function_call(
+                                        r("encode_entry_relative_entry"),
+                                        field_access(r("enc_data_entry"), "DataSendEntryEntry"),
+                                        r("currently_received_entry"),
+                                        )), ", or ", code(function_call(
+                                            r("encode_entry_in_namespace_area"),
+                                            field_access(r("enc_data_entry"), "DataSendEntryEntry"),
+                                            r("sync_enc_data_outer"),
+                                            function_call(r("handle_to_namespace_id"), r("sync_enc_data_receiver")),
+                                        )),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataSendPayload"), " message ", def_value({id: "enc_data_send_payload", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_send_payload"), "DataSendPayloadAmount")),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_send_payload"), "DataSendPayloadAmount")),
+                            ]],
+                            [[
+                                field_access(r("enc_data_send_payload"), "DataSendPayloadBytes"),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataSetEagerness"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("010")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetEagerness"), " == true"),
+                                    ],
+                                ),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
+                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                                bitfieldrow_unused(4),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
+                            ]],
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("DataBindPayloadRequest"), " message ", def_value({id: "enc_data_req_pay", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_req_pay"), "DataBindPayloadRequestCapability")),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        "1", " ", r("iff"), code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " != 0"), ",",
+                                    ],
+                                    [
+                                        inclusion_flag_remark(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset")),
+                                    ]
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), [
+                                    code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " == 0")
+                                ]),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                    ],
+                                ),
+                                two_bit_int(12, r("sync_enc_data_sender"), [
+                                    field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                                two_bit_int(14, r("sync_enc_data_receiver"), [
+                                    field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"), " will be encoded relative to ", r("currently_received_entry"),
+                                ]),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestCapability")),
+                            ]],
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset")), ", or the empty string, if ", code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " == 0"),
+                            ]],
+                            [
+                                [
+                                    "either ", code(function_call(
+                                        r("encode_entry_relative_entry"),
+                                        field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"),
+                                        r("currently_received_entry"),
+                                        )), ", or ", code(function_call(
+                                            r("encode_entry_in_namespace_area"),
+                                            field_access(r("enc_data_req_pay"), "DataBindPayloadRequestEntry"),
+                                            r("sync_enc_data_outer"),
+                                            function_call(r("handle_to_namespace_id"), r("sync_enc_data_receiver")),
+                                        )),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("DataReplyPayload"), " message ", def_value({id: "enc_data_rep_pay", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_data_rep_pay"), "DataReplyPayloadHandle")),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_data_rep_pay"), "DataReplyPayloadHandle")),
+                            ]],
+                        ),
                     ),
 
                 ]),
 
-
-                hsection("sync_notes", "Notes", [
-                    pinformative("Ignore these, they will disappear as we settle on the encodings."),
-
-                    pinformative("Entry 5: entry encoded relative to two AreadOfInterestHandles, or relative to the ", r("currently_received_entry"), " of the receiver, or absolutely"),
-
-                    ols(
-                        [r("ReconciliationSendFingerprint"), " 2 + 2 + 1 + 1 (3dRange relative to previous range or contaniing Area), (special case empty fingerprint)"],
-                        [r("ReconciliationAnnounceEntries"), " 2 + 2 + 2 + 1 + 1 + 1 (3dRange relative to previous range or contaniing Area)"],
-                        [r("ReconciliationSendEntry"), " 2 + 2 + 1 (entry in 3dRange or relative to previous entry)"],
-                        [r("DataSendEntry"), " 2 + 3 + 5 (offset-width with special cases for zero and the payload length), (Entry)"],
-                        [r("DataSendPayload"), " 2"],
-                        [r("DataSetEagerness"), " 1 + 2 + 2"],
-                        [r("DataBindPayloadRequest"), " 2 + 3 + 5 (offset with special case for zero), (Entry)"],
-                        [r("DataReplyPayload"), " 2"],
-                        [r("ControlIssueGuarantee"), " 2 + 3"],
-                        [r("ControlAbsolve"), " 2 + 3"],
-                        [r("ControlPlead"), " 2 + 3"],
-                        [r("ControlAnnounceDropping"), " 3"],
-                        [r("ControlApologise"), " 3"],
-                        [r("ControlFreeHandle"), " 2 + 1 + 3"],
+                hsection("sync_encode_control", "Control", [
+                    pinformative(
+                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. ", def_fn({id: "encode_channel"}), " maps ", lis(
+                            [r("ReconciliationChannel"), " to ", code("000"), ","],
+                            [r("DataChannel"), " to ", code("001"), ","],
+                            [r("IntersectionChannel"), " to ", code("010"), ","],
+                            [r("CapabilityChannel"), " to ", code("011"), ","],
+                            [r("AreaOfInterestChannel"), " to ", code("100"), ","],
+                            [r("PayloadRequestChannel"), " to ", code("101"), ", and"],
+                            [r("StaticTokenChannel"), " to ", code("110"), "."],
+                        ),
                     ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlIssueGuarantee"), " message ", def_value({id: "enc_ctrl_issue", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("000")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlAbsolve"), " message ", def_value({id: "enc_ctrl_absolve", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("001")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_absolve"), "ControlAbsolveChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlPlead"), " message ", def_value({id: "enc_ctrl_plead", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("010")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_plead"), "ControlPleadChannel"))]
+                                ),
+                                bitfieldrow_unused(5),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlAnnounceDropping"), " message ", def_value({id: "enc_ctrl_announce", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("10")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_announce"), "ControlAnnounceDroppingChannel"))]
+                                ),
+                            ),
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlApologise"), " message ", def_value({id: "enc_ctrl_apo", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    2,
+                                    [code("11")],
+                                    ["message kind"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_apo"), "ControlApologiseChannel"))]
+                                ),
+                            ),
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "To denote ", rs("HandleType"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_type"}), " maps ", lis(
+                            [r("IntersectionHandle"), " to ", code("000"), ","],
+                            [r("CapabilityHandle"), " to ", code("001"), ","],
+                            [r("AreaOfInterestHandle"), " to ", code("010"), ","],
+                            [r("PayloadRequestHandle"), " to ", code("011"), ","],
+                            [r("StaticTokenHandle"), " to ", code("100"), ","],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlFreeHandle"), " message ", def_value({id: "enc_ctrl_free", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    3,
+                                    [code("011")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_handle_type"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
+                                ),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_ctrl_free"), "ControlFreeHandleMine"), " == true"),
+                                    ],
+                                ),
+                                bitfieldrow_unused(4),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                            ]],
+                        ),
+                    ),
+
                 ]),
 
             ]),
