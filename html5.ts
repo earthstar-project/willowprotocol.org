@@ -51,6 +51,9 @@ export function html5(
   header: Expression,
   body: Expression,
 ): Expression {
+  let previous_scope: Set<string> | null = null;
+  const my_scope = new Set<string>();
+
   const macro = new_macro(
     (args, _) => {
       let is_head_done = false;
@@ -88,6 +91,15 @@ export function html5(
           ),
         ),
       ];
+    },
+    undefined,
+    (ctx) => {
+      const state = html5_state(ctx);
+      previous_scope = state.html5_dependencies;
+      state.html5_dependencies = my_scope;
+    },
+    (ctx) => {
+      html5_state(ctx).html5_dependencies = <Set<string>> previous_scope;
     },
   );
 
