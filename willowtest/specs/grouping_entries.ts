@@ -170,7 +170,7 @@ export const grouping_entries: Expression = site_template({
   ]),
 
   hsection("areas", "Areas", [
-    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
+    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in Willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
 
     pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("D3Range"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 
