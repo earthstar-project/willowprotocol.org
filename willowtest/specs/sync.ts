@@ -30,6 +30,7 @@ export const sync: Expression = site_template(
         title: "Willow General Purpose Sync Protocol",
         name: "sync",
         status: "proposal",
+        status_date: "17.01.2024",
     },
     [        
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),

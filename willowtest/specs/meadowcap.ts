@@ -25,6 +25,7 @@ export const meadowcap: Expression = site_template(
     title: "Meadowcap",
     name: "meadowcap",
     status: "candidate",
+    status_date: "17.01.2024",
   },
   [
     pinformative(

@@ -81,6 +81,7 @@ export interface Document {
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
   status?: SpecStatus;
+  status_date?: string;
 }
 
 export function site_template(meta: Document, body: Expression): Invocation {
@@ -99,7 +100,12 @@ export function site_template(meta: Document, body: Expression): Invocation {
                 meta.name,
                 { wide: true },
                 meta.heading ? meta.heading : meta.title,
-                meta.status ? pinformative(specStatus(meta.status)) : "",
+                meta.status
+                  ? pinformative(
+                    specStatus(meta.status),
+                    meta.status_date ? [" (as of ", meta.status_date, ")"] : "",
+                  )
+                  : "",
                 args[0],
               ),
             ),

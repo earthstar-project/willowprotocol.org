@@ -127,6 +127,7 @@ export const encodings: Expression = site_template({
   name: "encodings",
   title: "On Encodings",
   status: "proposal",
+  status_date: "17.01.2024",
 }, [
   em("Those encodings referenced from the ", link_name("meadowcap", "Meadowcap specification"), " have status ", sky_blue(r("status_candidate")), "."),
 
