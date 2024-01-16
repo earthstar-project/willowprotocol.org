@@ -61,8 +61,8 @@ export const resource_control: Expression = site_template(
       ),
 
       figure(
-        img(asset("resource_control/logical_channels.png")),
-        figcaption("Messages being moved from a shared fifo input channel to the buffers of their respective ", rs('logical_channel'), ".")
+        img(asset("resource_control/logical_channels.png"), "A sequence of boxes in four different colours on the left, the result of splitting them up by colour on the right."),
+        figcaption("Messages being moved from a shared fifo input channel to the buffers of their respective ", rs('logical_channel'), ". The yellow message is a ", r("control_message"), " that does not get buffered at all.")
       ),
 
       pinformative(
@@ -86,7 +86,7 @@ export const resource_control: Expression = site_template(
       ),
       
       figure(
-        img(asset("resource_control/rc_simplest_case.png")),
+        img(asset("resource_control/rc_simplest_case.png"), `The first of several diagrams depicting the state kept by a server and a client. States are arranged in two rows — one for the server, and one for the client — with time progressing from left to right. Initially, the server has a buffer with six remaining slots. The server has already given guarantees for four of these slots, two guarantees remain unissued. The client has a budget of four remaining guarantees to work with. After sending a three-byte message, the remaining guarantees of the client decrease to one. The server buffers the received message, its number of issuable guarantees is unaffected.`),
         marginale(["This diagram shows the statekeeping for only a single ", r("logical_channel"), ". The full session state consists of an independent copy for every different ", r("logical_channel"), " a protocol defines."]),
         figcaption("Statekeeping for ", r("resources_server"), " and ", r("resources_client"), " when the ", r("resources_client"), " sends a message. The ", r("resources_server"), " tracks for how many unoccupied buffer slots it has not yet issued ", rs("guarantee"), ", the ", r("resources_client"), " tracks how many ", rs("guarantee"), " it has available. Sending a message reduces the guarantees available to the client."),
       ),
@@ -94,21 +94,21 @@ export const resource_control: Expression = site_template(
       pinformative("When the ", r("resources_server"), " increases a buffer’s capacity, it gives that many ", rs("guarantee"), " (measured in bytes) for the corresponding ", r("logical_channel"), " to the ", r("resources_client"), ". When establishing the connection, the ", r("resources_client"), " has no ", rs("guarantee"), ", and the ", r("resources_server"), " typically starts by sending ", rs("guarantee"), " equal to its initial buffer capacities. Conceptually, the ", r("resources_server"), " begins its operation by increasing its buffer capacities from zero to their actual starting amounts."),
       
       figure(
-        img(asset("resource_control/increasing_buffer_capacity.png")),
+        img(asset("resource_control/increasing_buffer_capacity.png"), `A server-client diagram. Initially, the server has zero issuable guarantees, and a buffer of size zero. The client starts with zero remaining guarantees. In the next step, the server increases its buffer size to five, leaving it with five unissued guarantees. Then, it issues those five guarantees. In the resulting state, the server has zero issuable guarantees left, whereas the available guarantees of the client increase to five.`),
         figcaption("The ", r("resources_server"), " increases its buffer capacity and then issues as many ", rs("guarantee"), "."),
       ),
 
       pinformative("The second way of giving ", rs("guarantee"), " occurs when the ", r("resources_server"), " has processed a buffered message and thus frees up buffer space. It then communicates the amount of buffer space that was freed up, and for which ", r("logical_channel"), ". The ", r("resources_server"), " need not communicate this immediately, it is free to send only the occasional update that aggregates ", rs("guarantee"), " that stem from processing several messages from the same ", r("logical_channel"), "."),
       
       figure(
-        img(asset("resource_control/processing_messages.png")),
+        img(asset("resource_control/processing_messages.png"), `A server-client diagram. The server starts out with a buffer containing two empty slots, a message of size two, a message of size one, and a final message of size two. It has zero issuable guarantees, so the client has two remaining guarantees that correspond to the two unused buffer slots. The server processes its rightmost buffered message, leaving it with two more messages, and four empty buffer slots. For the two new open slots, no guarantees have been given yet, so the server’s issuable guarantees increase to two. Next, the server processes another message, increasing the issuable guarantees to three, and leaving only a single, two-byte message in its buffer. Finally, the server sends three guarantees to the client: the issuable guarantees go do to zero, but the client’s available guarantees go up from two to five.`),
         figcaption("The ", r("resources_server"), " processes a ", vermillion("message"), ", it later processes another ", blue("message"), ", and then decides to issue ", rs("guarantee"), " for the freed buffer slots."),
       ),
 
       pinformative("When the ", r("resources_server"), " wishes to reduce the capacity of some buffer, it simply processes messages from that buffer without informing the ", r("resources_client"), ". This decreases the overall amount of ", rs("guarantee"), " in the system by the correct amount."),
       
       figure(
-        img(asset("resource_control/reducing_capacity.png")),
+        img(asset("resource_control/reducing_capacity.png"), `A server-client diagram. The server starts out with a buffer containing two empty slots, and two messages of two bytes each. It has zero issuable guarantees, putting the client at two remaining guarantees. The server then processes a message and decreases its total buffer size by the message’s size. All other state remains unchanged.`),
         figcaption("Processing a message without issuing ", rs("guarantee"), " for it allows the ", r("resources_server"), " to shrink its buffer."),
       ),
 
@@ -123,12 +123,12 @@ export const resource_control: Expression = site_template(
       ),
 
       figure(
-        img(asset("resource_control/good_shrinking.png")),
+        img(asset("resource_control/good_shrinking.png"), `A server-client diagram. The server starts with seven empty buffer slots and zero issuable guarantees; the client starts with seven remaining guarantees. In the first step, the server asks for absolution down to a number of three remaining guarantees. When the client receives the request, it answers by absolving four guarantees and reduces its remaining guarantees by four down to three. The server receives the absolution and then shrinks its buffer by four slots down to three.`),
         figcaption("Buffer downscaling without any concurrency issues: the ", r("resources_server"), " asks for ", r("absolution"), ", the ", r("resources_client"), " grants it."),
       ),
       
       figure(
-        img(asset("resource_control/complex_shrinking.png")),
+        img(asset("resource_control/complex_shrinking.png"), `A server-client diagram. The server starts with nine buffer slots, two of which are occupied by a message. Its issuable guarantees are zero, the client starts with seven remaining guarantees. In the first step, the server asks for absolution down to four remaining guarantees, and concurrently, the clients sends a message of size one. Hence, the client’s remaining guarantees are six when the server’s request for absolution arrives. The server receives the one-byte message and buffers it. The client then absolves two guarantees, reducing its remaining guarantees to four. The server receives the absolution and can shrink its buffer by two slots, leaving it with a total buffer capacity of seven (three slots occupied by the two buffered messages, and four unused slots).`),
         figcaption("Concurrent to the ", r("resources_server"), " asking for ", r("absolution"), ", the ", r("resources_client"), " sends a message. The protocol is designed so that nothing goes wrong."),
       ),
 
@@ -137,7 +137,7 @@ export const resource_control: Expression = site_template(
       ),
       
       figure(
-        img(asset("resource_control/optimistic_sending.png")),
+        img(asset("resource_control/optimistic_sending.png"), `A server-client diagram. The server starts with a buffer containing one empty slot, a message of size two, and a message of size four. Its issuable guarantees are one, the client starts with zero remaining guarantees. In the first step, the server processes the four-byte message, leaving it with five empty buffer slots, and as many issuable guarantees; the client state remains unchanged. Next, the clients optimistically send a three-byte message, leaving its remaining guarantees at negative three. The server receives and buffers the message, its issuable guarantees remain unchanged at five, despite now having only two free buffer slots. Finally, the server issues five guarantees, leaving it with zero issuable guarantees. The client’s remaining guarantees increase by five to positive two.`),
         figcaption("The ", r("resources_client"), " optimistically sends a message, pushing its available ", rs("guarantee"), " below zero. The ", r("resources_server"), " has buffer space available; it simply buffers the message without taking any special action."),
       ),
 
@@ -159,7 +159,7 @@ export const resource_control: Expression = site_template(
       
       figure(
         {class: 'wide'},
-        img(asset("resource_control/optimistic_sending_gone_awry.png")),
+        img(asset("resource_control/optimistic_sending_gone_awry.png"), `An extra-wide server-client diagram. The server starts with a buffer containing one empty slot and one message of size six. The issuable guarantees are zero, the client’s remaining guarantees are one. Unlike the previous diagrams, the server has a small emoji to indicate whether it is dropping messages; initially, the emoji is happy. In the first step, the client optimistically sends a message of three bytes, putting it at negative two remaining guarantees. The server cannot buffer the message, so it drops the message. Its state remains unchanged, except for the emoji that turns angry. Next, the client sends a message of size one, putting it at negative three remaining guarantees. The server drops the message, its state remains completely unchanged. In the next step, the server sends a message to notify the client of the dropping. The emoji turns slightly less angry, otherwise the server state remains unchanged. Upon receiving the notification, the client sets its remaining guarantees to one. Finally, it sends an apology. Receiving the apology changes the server’s emoji to the initial, happy expression.`),
         figcaption("When the ", r("resources_server"), " receives an optimistic ", vermillion("message"), " it cannot buffer, it drops it and all further messages, even any ", purple("message"), " for which it has sufficient buffer capacity. Only after receiving an ", r("apology"), " does it switch state and become able to accept further messages. The ", r("resources_client"), ", when notified of message dropping, increments its counter of remaining ", rs("guarantee"), " by the number of message bytes that got dropped."),
       ),
       
@@ -169,11 +169,11 @@ export const resource_control: Expression = site_template(
 
       figure(
         {class: 'wide'},
-        img(asset("resource_control/optimistic_sending_gone_really_awry.png")),
+        img(asset("resource_control/optimistic_sending_gone_really_awry.png"), `An extra-wide server-client diagram. The server starts with a happy expression, and a buffer containing four empty slots and one message of size three. The issuable guarantees are three, the client’s remaining guarantees are one. In this diagram, the client also maintains a buffer. Initially this buffer consists of six unused slots. In the first step, the client optimistically sends a message of two bytes, putting it at negative one remaining guarantees. The client remembers that only one byte of the message was optimistic. The server buffers the message, staying happy and remaining with three unissued guarantees. Its buffer now contains two free slots, a message of size two, and a message of size three. Next, the client sends a message of size three, placing a copy in its buffer, and putting it at negative four guarantees. The server has to drop this message, turning angry but otherwise keeping its state. Then, the server issues a single guarantee, putting its issuable guarantees at two. When the client receives this guarantee, it not only increases its remaining guarantees to negative three, but it also removes the two-byte message from its buffer, leaving the buffer with three unused slots and the three-byte message. Next, the server sends a notification that it dropped messages. The client empties its buffer of the three-byte message, and increases its remaining guarantees by that amount back to zero. It then replies with an apology, turning the server happy again. In this final state, the happy server has two issuable guarantees and a buffer containing two unused slots, the client’s message of size two, and the size-three message that occupied the buffer from the very beginning. The client ends the interaction with an e,pty buffer and zero remaining guarantees.`),
         figcaption(
           "Before the ", r("resources_server"), " announces that it is dropping messages, it issues ", rs("guarantee"), " for the optimistic messages bytes it did manage to buffer. The ", r("resources_client"), " maintains a queue of its optimistically transmitted messages, and tracks how many of their bytes it knows to have been processed. When the ", r("resources_client"), " receives ", rs("guarantee"), " for all bytes of a message, it can be ", purple("dequeued"), ".",
           br(),
-          "In this example, the ", r("resources_client"), " empties its queue, whereas a realistic implementation would probably keep the queue to (transparently) retransmit all dropped messages before sending new ones. Note further that the ", r("resources_server"), " has to issue a ", r("guarantee"), " before sending the dropping notification, but it would also have been allowed to issue further ", rs("guarantee"), " — a realistic ", r("resources_server"), " would have issued all three issuable ", rs("guarantee"), "."
+          "In this example, the ", r("resources_client"), " empties its queue, whereas a realistic implementation would probably keep the queue to (transparently) retransmit all dropped messages before sending new ones. Note further that the ", r("resources_server"), " has to issue ", em("one"), " ", r("guarantee"), " before sending the dropping notification, but it would also have been allowed to issue ", em("more"), " ", rs("guarantee"), " — a realistic ", r("resources_server"), " would have issued all three issuable ", rs("guarantee"), "."
         ),
       ),
     ]),
