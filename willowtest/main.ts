@@ -148,7 +148,7 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
                   marginale_inlineable(
                     a(
                       { href: "https://nlnet.nl", class: "funder" },
-                      img(asset("nlnet.svg")),
+                      img(asset("nlnet.svg"), "The logo of the NLnet foundation."),
                     ),
                   ),
                   pinformative(
@@ -159,7 +159,7 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
                   marginale_inlineable(
                     a(
                       { href: "https://iroh.computer", class: "sponsor" },
-                      img(asset("iroh.svg")),
+                      img(asset("iroh.svg"), "The logo of Iroh."),
                     ),
                   ),
                   pinformative(
@@ -528,7 +528,7 @@ evaluate(enable_previews([
         {
           title: "Willow",
           name: "willow",
-          heading: img("emblem.png"),
+          heading: img("emblem.png", "A stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
           do_not_render_toc: true,
         },
         [
@@ -544,21 +544,21 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/local-first.png")),
+              img(asset("landing/local-first.png"), "A personified computer smiles and shrugs while a series of comical connectivity issues threaten its ethernet cable: a mouse nibbles through the cable, an axe chops it up, and an anvil falls toward it at high velocity."),
             ),
             "Data storage which never goes offline. You get always-available storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
           ),
           
           pinformative(
             marginale_inlineable(
-              img(asset("landing/privacy.png")),
+              img(asset("landing/privacy.png"), "A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall interrupts the troll’s line of sight. The trool is deeply unhappy about this circumstance."),
             ),
             "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. And if they get that far, they still have to be able to decrypt synced data to make any sense of it."
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/prefix-pruning.png")),
+              img(asset("landing/prefix-pruning.png"), "Three stylized paper files hang off a tree branch. The branch is being cut off near its base by a pair of hedge clippers, in a way that all files will be pruned of the tree."),
             ),
             "Total erasure of data. Distributed systems use tombstones to communicate deletes, but even these leave metadata behind. Prefix pruning deletes many entries and all of their metadata in their entirety, leaving a single tombstone in their place.",
           ),
@@ -566,49 +566,49 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/capabilities.png")),
+              img(asset("landing/capabilities.png"), `Two stylized admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`),
             ),
             "Fine grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/partial-sync.png")),
+              img(asset("landing/partial-sync.png"), "A cake with a single slice being removed. The selected slice has a strawberry on top. Hmm, strawberry cake..."),
             ),
             "Partial sync. Have a lot of data, but don't want to sync the whole thing to a particular device? Choose which data to replicate by what, when, or who.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/destructive-edits.png")),
+              img(asset("landing/destructive-edits.png"), "A pencil overwriting a sequence of bits (zeros and ones), leaving no trace of the overwritten bits."),
             ),
             "Destructive edits. When you update a value, the old values and associated metadata are overwritten.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/forget-data.png")),
+              img(asset("landing/forget-data.png"), "A cartoon foot cartoonishly kicking a cartoon file out of a cartoon door."),
             ),
             "Locally delete data you don’t want to store, even if it was authored by someone else.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/ants.png")),
+              img(asset("landing/ants.png"), "Five ants carry zeros and ones off to the right. The numbers are about as large as the hard-working insects."),
             ),
             "Peers can communicate resource budgets, so devices with very limited memory can sync too.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/parametrised.png")),
+              img(asset("landing/parametrised.png"), `The pronoun "I", followed by a heart, followed by two crossed-out names of hash functions ("MD5" and "SHA256), followed by the hash function of choice: "BLAKE3".`),
             ),
             "You choose the transport and cryptographic primitives suited to your use-case.",
           ),
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/concurrent.png")),
+              img(asset("landing/concurrent.png"), "A tiny, happy little smiley face holding a laptop in one hand and a phone in the other hand. Yay."),
             ),
             "Authors can write from multiple devices concurrently. Yay.",
           ),

@@ -75,15 +75,15 @@ export function hr(attributes: Attributes = {}): Expression {
     return new Invocation(mac_void("hr", attributes), []);
 }
 
-export function img(src: Expression, attributes: Attributes = {}): Expression {
+export function img(src: Expression, alt: Expression, attributes: Attributes = {}): Expression {
     const macro = new_macro(
         (args, _ctx) => {
             return [
-                `<img src="`, args[0], `"`, render_attributes(attributes), ">",
+                `<img src="`, args[0], `" alt="`, args[1], `"`, render_attributes(attributes), ">",
             ];
         },
     );
-    return new Invocation(macro, [src]);
+    return new Invocation(macro, [src, alt]);
 }
 
 export function input(attributes: Attributes = {}): Expression {
