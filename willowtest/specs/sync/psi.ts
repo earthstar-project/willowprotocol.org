@@ -264,7 +264,7 @@ export const psi: Expression = site_template(
     ]),
 
     hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
-      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, ", rs("read_capability"), " for all ", rs("subspace"), " of a ", r("namespace"), "can only exist in ", rs("owned_namespace"), "."),
+      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, ", rs("read_capability"), " for all ", rs("subspace"), " of a ", r("namespace"), " can only exist in ", rs("owned_namespace"), "."),
 
       pseudocode(
         new Struct({
