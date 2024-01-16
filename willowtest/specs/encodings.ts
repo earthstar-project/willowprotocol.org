@@ -8,6 +8,7 @@ def_fn,
   pinformative,
   quotes,
   site_template,
+  sky_blue,
 } from "../main.ts";
 import {
   Attributes,
@@ -127,6 +128,8 @@ export const encodings: Expression = site_template({
   title: "On Encodings",
   status: "proposal",
 }, [
+  em("Those encodings referenced from the ", link_name("meadowcap", "Meadowcap specification"), " have status ", sky_blue(r("status_candidate")), "."),
+
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
     sidenote("We", ["Let’s be honest: ", em("Aljoscha")]),
