@@ -153,8 +153,12 @@ body {
     max-width: calc(var(--max-width-slightlywide) + 8px);
 }
 
-.preview_content>* {
-    margin: 0;
+.preview_content > *:first-child {
+    margin-top: 0;
+}
+
+.preview_content > *:last-child {
+  margin-bottom: 0;
 }
 
 @media (max-width: ${opts.wide_and_margins()}rem) {
