@@ -58,7 +58,6 @@ import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 import { about } from "./specs/more/about.ts";
-import { soilsun } from "./specs/more/soilsun.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -656,7 +655,6 @@ evaluate(enable_previews([
       out_index_directory("changes", changes),
       out_index_directory("projects-and-communities", projects_and_communities),
       out_index_directory("about-us", about),
-      out_index_directory("soilsun", soilsun),
     ]),
     copy_statics("assets"),
   ),
