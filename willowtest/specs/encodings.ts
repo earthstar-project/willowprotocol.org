@@ -41,6 +41,7 @@ const apo = "’";
 
 export function small_img(
   src: Expression,
+  alt: Expression,
   attributes: Attributes = {},
 ): Expression {
   const macro = new_macro(
@@ -49,7 +50,7 @@ export function small_img(
         ? `height: 32px;${attributes.style}`
         : "height: 32px";
 
-      return img(args[0], { ...attributes, style: mergedStyle });
+      return img(args[0], alt, { ...attributes, style: mergedStyle });
     },
   );
   return new Invocation(macro, [src]);
@@ -182,23 +183,23 @@ export const encodings: Expression = site_template({
             ),
             tbody(
               tr(
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/checkmark.png"))),
+                td(small_img(asset("encoding/checkmark.png"), "An affirmative checkmark.")),
               ),
             ),
             tbody(
               tr(
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
                 td(code(quotes("turtle"), " | ", quotes("tortoise"))),
-                td(small_img(asset("encoding/cross.png"))),
+                td(small_img(asset("encoding/cross.png"), "A rejective cross.")),
               ),
             ),
             tbody(
               tr(
-                td(small_img(asset("encoding/turtle.png"))),
-                td(small_img(asset("encoding/questionmark.png"))),
-                td(small_img(asset("encoding/cross.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
+                td(small_img(asset("encoding/questionmark.png"), "An undecided questionmark.")),
+                td(small_img(asset("encoding/cross.png"), "A rejective cross.")),
               ),
             ),
           ),
@@ -220,26 +221,26 @@ export const encodings: Expression = site_template({
             tbody(
               tr(
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
                 td(
                   { rowspan: "2" },
-                  small_img(asset("encoding/checkmark.png")),
+                  small_img(asset("encoding/checkmark.png"), "An affirmative checkmark."),
                 ),
               ),
               tr(
                 td(code(quotes("tortoise"))),
-                td(small_img(asset("encoding/questionmark.png"))),
+                td(small_img(asset("encoding/questionmark.png"), "An undecided questionmark.")),
               ),
             ),
             tbody(
               tr(
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/turtle.png"))),
-                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
+                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"), "A rejective cross.")),
               ),
               tr(
                 td(code(quotes("tortoise"))),
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
               ),
             ),
           ),
@@ -264,37 +265,37 @@ export const encodings: Expression = site_template({
             tbody(
               tr(
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
                 td(
                   { rowspan: "2" },
-                  small_img(asset("encoding/checkmark.png")),
+                  small_img(asset("encoding/checkmark.png"), "An affirmative checkmark."),
                 ),
               ),
               tr(
                 td(code(quotes("turtleneck"))),
-                td(small_img(asset("encoding/turtle.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
               ),
             ),
             tbody(
               tr(
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/turtle.png"))),
-                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
+                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"), "A rejective cross.")),
               ),
               tr(
                 td(code(quotes("turtleneck"))),
-                td(small_img(asset("encoding/questionmark.png"))),
+                td(small_img(asset("encoding/questionmark.png"), "An undecided questionmark.")),
               ),
             ),
             tbody(
               tr(
                 td(code(quotes("turtle"))),
-                td(small_img(asset("encoding/turtle.png"))),
-                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"))),
+                td(small_img(asset("encoding/turtle.png"), "A turtle.")),
+                td({ rowspan: "2" }, small_img(asset("encoding/cross.png"), "A rejective cross.")),
               ),
               tr(
                 td(code(quotes("turtleneck"))),
-                td(small_img(asset("encoding/turtleneck.png"))),
+                td(small_img(asset("encoding/turtleneck.png"), "A cosy turtleneck sweater. Not the neck of a turtle."),),
               ),
             ),
           ),
