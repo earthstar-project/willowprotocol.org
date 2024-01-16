@@ -173,3 +173,13 @@ figure {
 .clearright {
   clear: right;
 }
+
+.proposal {
+  background-image: url('/named_assets/proposal-bg.png');
+  background-size: 240px;
+}
+
+.bg {
+  background-image: url('/named_assets/bg.png');
+  background-size: 240px;
+}
