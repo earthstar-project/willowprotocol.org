@@ -73,7 +73,7 @@ export const willow_compared: Expression = site_template(
             ),
     
             pinformative(
-                "Finally, it ", sidenote("bears", ["Sorry, everyone!"]), " saying that ", link("p2panda", "https://p2panda.org/"), " is pretty cool 🐼."
+                "Finally, it bears saying that ", link("p2panda", "https://p2panda.org/"), " is pretty cool 🐼."
             ),
         ]),
     
