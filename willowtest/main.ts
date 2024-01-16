@@ -93,7 +93,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
         ],
         [
           div(
-            { class: "container_main" },
+            { class: meta.status && meta.status === 'proposal' ? 'container_main proposal' : "container_main" },
             main(
               hsection(
                 meta.name,
