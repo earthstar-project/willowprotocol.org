@@ -181,12 +181,14 @@ function item_spacing(): Expression {
 function render_line(...exps: Expression[]): Expression {
   const macro = new_macro(
     (args, ctx) => {
-      return div(
-        { class: "loc" },
-        div({
-          style: `margin-left: ${2 * pseudocode_state(ctx).indentation}rem;`,
-        }, ...args),
-      );
+      const indentation = pseudocode_state(ctx).indentation;
+      let content: Expression = [...args];
+
+      for (let i = 0; i < indentation; i++) {
+        content = div({class: "locindent"}, content);
+      }
+
+      return div({class: "loc"}, content);
     },
   );
 
@@ -372,7 +374,8 @@ function render_struct(struct: Struct): Expression {
           type_name,
         ),
         indent(
-          struct.fields.map(render_field),
+          div({class: "composite_type_def"}, struct.fields.map(render_field)),
+          // struct.fields.map(render_field),
         ),
       ];
     },
