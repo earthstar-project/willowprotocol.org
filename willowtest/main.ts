@@ -528,7 +528,7 @@ evaluate(enable_previews([
         {
           title: "Willow",
           name: "willow",
-          heading: img("emblem.png", "A stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
+          heading: img("emblem.png", "A willow emblem: a stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
           do_not_render_toc: true,
         },
         [
