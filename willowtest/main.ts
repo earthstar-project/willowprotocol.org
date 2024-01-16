@@ -508,7 +508,6 @@ evaluate(enable_previews([
           title: "Willow",
           name: "willow",
           heading: img("emblem.png"),
-          do_not_render_toc: true,
         },
         [
           pintroductory(
