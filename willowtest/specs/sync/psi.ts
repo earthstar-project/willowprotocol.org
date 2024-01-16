@@ -159,7 +159,7 @@ export const psi: Expression = site_template(
       ),
 
       pinformative(
-        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", def_value("data_A_0"), ", ", def_value("data_A_1"), ", ... and ", def_value("data_B_0"), ", ", def_value("data_B_1"), ", ...` respectively.",
+        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", code(def_value("data_A_0"), ", ", def_value("data_A_1"), ", ..."), " and ", code(def_value("data_B_0"), ", ", def_value("data_B_1"), ", ..."), " respectively.",
       ),
 
       pinformative(
