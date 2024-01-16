@@ -39,23 +39,23 @@ export const data_model: Expression = site_template(
 
     pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
 
-    figure(img(asset("data_model/paths.png"), `A (one-dimensional) list of the two paths ("blog/idea/1" and "blog/idea/2"), with a stylize file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`)),
+    figure(img(asset("data_model/paths.png"), `A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylized file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`)),
 
     pinformative("A little later you overwrite the existing entry at path ", path("blog", "idea", "2"), " with ", code("I've made a mistake"), ". Willow tracks the timestamp of each assignment, and the new entry overwrites the old one."),
 
-    figure(img(asset("data_model/timestamps.png"), "The same visualization of paths before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.")),
+    figure(img(asset("data_model/timestamps.png"), "The same visualization of paths as before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.")),
 
     pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", def({id: "prefix_pruning", singular: "prefix pruning"}), "."),
 
     figure(
-      img(asset("data_model/prefix_pruning.png"), `The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylized file whistling in a conspicuous way.`),
+      img(asset("data_model/prefix_pruning.png"), `The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylized file whistling in a totally inconspicuous way.`),
       figcaption("The entries ", em("prefixed"), " by ", path('blog', 'idea'), " are deleted by a newer entry at that prefix.")
     ),
 
     pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
 
     figure(
-      img(asset("data_model/subspaces.png"), `Stylized files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves at the viewer, good vibes all around.`),
+      img(asset("data_model/subspaces.png"), `Stylized files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves to the viewer, good vibes all around.`),
       figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
     ),
 

@@ -89,7 +89,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
     
     figure(
-      img(asset("3d_rbsr/drilling_down.png"), `A contiguous range gets recursively split into subranges. Some of them are coloured blue to indicate matching fingerprints; these are not split further. The total picture is that of a thinning tree growing toward the bottem, showing the few areas that require actual data exchange.`),
+      img(asset("3d_rbsr/drilling_down.png"), `A contiguous range is recursively split into subranges. Some subranges are coloured blue to indicate matching fingerprints; these are not split further. The total picture is that of a thinning tree growing downwards, ending in the few areas that require actual data exchange.`),
       figcaption("Split apart ", vermillion("non-equal ranges"), " to hone in on the locations of any differences, while disregarding ", blue("equal ranges"), ".")
     ),
 

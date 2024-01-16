@@ -544,14 +544,14 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/local-first.png"), "A personified computer smiles and shrugs while a series of comical connectivity issues threaten its ethernet cable: a mouse nibbles through the cable, an axe chops it up, and an anvil falls toward it at high velocity."),
+              img(asset("landing/local-first.png"), "An anthropomorphic computer smiles and shrugs while a series of comical connectivity issues threaten its ethernet cable: a mouse nibbles through the cable, an axe chops it up, and an anvil falls toward it at high velocity."),
             ),
             "Data storage which never goes offline. You get always-available storage for arbitrary data (e.g. text, media). You can have as many of these stores as you want, keyed to different namespaces. When stores from different devices belong to the same namespace, they deterministically sync with each other.",
           ),
           
           pinformative(
             marginale_inlineable(
-              img(asset("landing/privacy.png"), "A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall interrupts the troll’s line of sight. The trool is deeply unhappy about this circumstance."),
+              img(asset("landing/privacy.png"), "A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall blocks the troll’s line of sight. The trool is deeply unhappy about this circumstance."),
             ),
             "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. And if they get that far, they still have to be able to decrypt synced data to make any sense of it."
           ),
@@ -608,7 +608,7 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/concurrent.png"), "A tiny, happy little smiley face holding a laptop in one hand and a phone in the other hand. Yay."),
+              img(asset("landing/concurrent.png"), "A happy little smiley face holding a laptop in one hand and a phone in the other hand. Yay."),
             ),
             "Authors can write from multiple devices concurrently. Yay.",
           ),

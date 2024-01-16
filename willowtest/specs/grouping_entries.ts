@@ -18,7 +18,7 @@ export const grouping_entries: Expression = site_template({
 }, [
   marginale_inlineable(
     [
-      img(asset("grouping_entries/axes.png"), `An abstract, three-dimensional coordinate system. The axis are labelled "subspace", "path", and "timestamp".`),
+      img(asset("grouping_entries/axes.png"), `An abstract, three-dimensional coordinate system. The axes are labelled "subspace", "path", and "timestamp".`),
       figcaption("The three dimensions of a ", r("namespace"), ".")
     ]
   ),
@@ -53,7 +53,7 @@ export const grouping_entries: Expression = site_template({
     pinformative("Ranges are simple, one-dimensional ways of grouping ", rs("Entry"), ", they can express groupings such as ", quotes("last week", apo, "s ", rs("Entry"),), ". ", preview_scope("A ", def("range"), " is either a ", r("closed_range"), " or an ", r("open_range"), ". A ", def({id: "closed_range", singular: "closed range"}), " consists of a ", def({id: "start_value", singular: "start value"}), " and an ", def({id: "end_value", singular: "end value"}), ", an ", def({id: "open_range", singular: "open range"}), " consists only of a ", r("start_value"), ". A ", r("range"), " ", def({id: "range_include", singular: "include"}, "includes"), " all values greater than or equal to its ", r("start_value"), " and strictly less than its ", r("end_value"), " (if it is has one). A ", r("range"), " is ", def({id: "range_empty", singular: "empty"}), " if it ", rs("range_include"), " no values.")),
     
     figure(
-      img(asset("grouping_entries/ranges.png"), "A visualisation of both a closed range and an open range as contiguous segments on a line of numbers."),
+      img(asset("grouping_entries/ranges.png"), "A visualisation of both a closed range and an open range as contiguous segments of a line of numbers."),
       figcaption("A ", vermillion(r('closed_range')), " and an ", green(r('open_range')), ".")
     ),
 
@@ -181,7 +181,7 @@ export const grouping_entries: Expression = site_template({
     
     marginale(
       [
-        img(asset("grouping_entries/area.png"), `Like the diagram for 3dRanges, a coordinate system with a highlighted box. The time dimension of the box is given from a time range, but the path and subspace width are derived from a single path ("blog") and a single subspace ("Alfie") respectively.`),
+        img(asset("grouping_entries/area.png"), `Like the diagram for 3dRanges, a coordinate system with a highlighted box. The time dimension of the box is given as a time range, but the path and subspace dimensions are specified from a single path ("blog") and a single subspace ("Alfie") respectively.`),
         figcaption("This diagram attempts to show the key difference between a ", r("D3Range"), ' and an ', r("Area"), ', namely that its dimensions are ', em('derived'), ' from its ', span({class: "purple"}, r('AreaSubspace')), ' and its ', span({class: "blue"}, r('AreaPath')), '.') 
       ]
     ),

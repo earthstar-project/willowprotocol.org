@@ -34,7 +34,7 @@ export const sync: Expression = site_template(
 
         hsection("sync_intro", "Introduction", [
             marginale_inlineable(
-              img(asset("sync/syncing.png"), "A purely ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualizations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.")  
+              img(asset("sync/syncing.png"), "An ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualizations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.")  
             ),
             
             pinformative("The WGPS aims to be appropriate for a variety of networking settings, particularly those of peer-to-peer systems where the replicating parties might not necessarily trust each other. Quite a bit of engineering went into the WGPS to satisfy the following requirements:"),
