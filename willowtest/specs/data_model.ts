@@ -270,6 +270,6 @@ export const data_model: Expression = site_template(
       pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
     ]),
 
-    img("/emblem.png", "A willow emblem: a stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
+    img("/emblem.png", "A Willow emblem: a stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
   ],
 );
