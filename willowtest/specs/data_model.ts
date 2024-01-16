@@ -1,6 +1,6 @@
 import { def, preview_scope, r, Rs, rs } from "../../defref.ts";
 import { code, em, figcaption, figure, img, p } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { $ } from "../../katex.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
@@ -34,6 +34,8 @@ export const data_model: Expression = site_template(
   [    
     pinformative("In this document, we define the core data model of Willow."),
 
+    table_of_contents(7),
+
     pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
 
     pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
@@ -44,7 +46,7 @@ export const data_model: Expression = site_template(
 
     figure(img(asset("data_model/timestamps.png"))),
 
-    pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", em("prefix pruning"), "."),
+    pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", def({id: "prefix_pruning", singular: "prefix pruning"}), "."),
 
     figure(
       img(asset("data_model/prefix_pruning.png")),
@@ -207,7 +209,9 @@ export const data_model: Expression = site_template(
                   code(field_access(r("store_old"), "entry_subspace_id"), " == ", field_access(r("store_new"), "entry_subspace_id")), ", and",
                 ],
                 [
-                  field_access(r("store_new"), "entry_path"), " is a ", r("path_prefix"), " of ", field_access(r("store_old"), "entry_path"), ", and",                  
+                  field_access(r("store_new"), "entry_path"), " is a ", r("path_prefix"), marginale([
+                    "This is where we formally define ", r("prefix_pruning"), "."
+                  ]), " of ", field_access(r("store_old"), "entry_path"), ", and",                  
                 ],
                 [
                   r("store_new"), " is ", r("entry_newer"), " than ", r("store_old"), "."

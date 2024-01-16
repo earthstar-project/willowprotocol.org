@@ -118,6 +118,7 @@ export interface Field {
   id: string;
   comment?: Expression;
   name?: string;
+  plural?: string;
   marginale?: Expression;
   rhs: Expression;
 }
@@ -302,7 +303,7 @@ function render_field(field: Field): Expression {
     (_args, ctx) => {
       const member_name = def_truly_generic(
         false,
-        { id: field.id, clazz: "member", singular: field_name },
+        { id: field.id, clazz: "member", singular: field_name, plural: field.plural },
         false,
         false,
         true,

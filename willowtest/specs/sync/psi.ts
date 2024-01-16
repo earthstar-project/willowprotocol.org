@@ -1,6 +1,6 @@
 import { def, preview_scope, r, rs, r$, R, def_fake } from "../../../defref.ts";
 import { code, div, em, img, p, table } from "../../../h.ts";
-import { hsection } from "../../../hsection.ts";
+import { hsection, table_of_contents } from "../../../hsection.ts";
 import { $, $comma, $dot } from "../../../katex.ts";
 import {
   marginale,
@@ -35,6 +35,8 @@ export const psi: Expression = site_template(
   },
   [
     pinformative("In order to synchronise data, peers must inform each other about which data they are interested in. If done openly, this would let peers learn about details such as ", rs("NamespaceId"), ", ", rs("SubspaceId"), ", or ", rs("Path"), " that they have no business knowing about. In this document, we describe a technique that does not leak this information."),
+    
+    table_of_contents(7),
 
     hsection("pai_goals", "Setting and Goals", [
       pinformative("We consider the setting where two peers wish to synchronise some data that is subject to ", link_name("access_control", "read access control via capabilities"), ". More precisely, they want to specify pairs of ", rs("namespace"), " and ", rs("AreaOfInterest"), ", and then synchronise the ", rs("aoi_intersection"), "."),
@@ -157,7 +159,7 @@ export const psi: Expression = site_template(
       ),
 
       pinformative(
-        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", def_value("data_A_0"), ", ", def_value("data_A_1"), ", ... and ", def_value("data_B_0"), ", ", def_value("data_B_1"), ", ...` respectively.",
+        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", code(def_value("data_A_0"), ", ", def_value("data_A_1"), ", ..."), " and ", code(def_value("data_B_0"), ", ", def_value("data_B_1"), ", ..."), " respectively.",
       ),
 
       pinformative(
@@ -262,7 +264,7 @@ export const psi: Expression = site_template(
     ]),
 
     hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
-      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, ", rs("read_capability"), " for all ", rs("subspace"), " of a ", r("namespace"), "can only exist in ", rs("owned_namespace"), "."),
+      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, ", rs("read_capability"), " for all ", rs("subspace"), " of a ", r("namespace"), " can only exist in ", rs("owned_namespace"), "."),
 
       pseudocode(
         new Struct({
@@ -311,7 +313,7 @@ export const psi: Expression = site_template(
 
       pinformative("A ", r("McSubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
 
-      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), "be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
+      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), " be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
 
       pinformative("Then ", r("subspace_cap_defvalid"), " is ", r("subspace_cap_valid"), " if ", r("subspace_prev_cap"), " is ", r("subspace_cap_valid"), ", and ", r("subspace_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("subspace_prev_receiver"), " over the bytestring ", def_value({id: "subspace_handover", singular: "handover"}), ", which is defined as follows:"),
 

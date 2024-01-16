@@ -12,7 +12,8 @@ strong {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  padding: 1.25em 0 0.5em 0;
+  padding-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 p {

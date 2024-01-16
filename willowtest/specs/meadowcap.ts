@@ -1,6 +1,6 @@
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { code, em, figure, img } from "../../h.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale } from "../../marginalia.ts";
 import { asset } from "../../out.ts";
@@ -33,6 +33,8 @@ export const meadowcap: Expression = site_template(
       link_name("data_model", "Willow data model"),
       ".",
     ),
+    
+    table_of_contents(7),
 
     hsection("meadowcap_overview", "Overview", [
       pinformative("When interacting with a peer in Willow, there are two fundamental operations: ", em("writing"), " data — asking your peer to add ", rs("Entry"), " to their ", rs("store"), " — and ", em("reading"), " data — asking your peer to send ", rs("Entry")," to you. Both operations should be restricted; Willow would be close to useless if everyone in the world could (over-)write data everywhere, and it would be rather scary if everyone could request to read any piece of data."),

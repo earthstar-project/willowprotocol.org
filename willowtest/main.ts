@@ -9,6 +9,7 @@ import {
   img,
   li,
   main,
+  meta,
   nav,
   ol,
   p,
@@ -21,6 +22,7 @@ import {
   title,
   tr,
   ul,
+  link as linktag,
 } from "../h.ts";
 import {
   asset,
@@ -57,6 +59,8 @@ import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
 import { spec_statuses } from "./specs/more/statuses.ts";
 import { SpecStatus, specStatus } from "../spec_status.ts";
+import { willow_compared } from "./specs/more/compare.ts";
+import { about } from "./specs/more/about.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -84,25 +88,55 @@ export interface Document {
   status_date?: string;
 }
 
-export function site_template(meta: Document, body: Expression): Invocation {
+export function site_template(metadata: Document, bodyexp: Expression): Invocation {
   const macro = new_macro(
     (args, _ctx) => {
       return html5(
         [
+          meta({
+            name: "viewport",
+            content: "width=device-width, initial-scale=1.0",
+          }),
+          linktag({
+            rel: "alternate",
+            type: "application/rss+xml",
+            href: "/rss_news.xml",
+            title: "Willow News and Updates"
+          }),
+          linktag({
+            rel: "alternate",
+            type: "application/rss+xml",
+            href: "/rss_news.xml",
+            title: "Willow Specification Changelog"
+          }),
+          linktag({
+            rel: "icon",
+            href: "/named_assets/favicon.svg",
+            type: "image/svg+xml"
+          }),
+          linktag({
+            rel: "icon",
+            href: "/named_assets/favicon.png",
+            type: "image/png"
+          }),
+          linktag({
+            rel: "apple-touch-icon",
+            href: "/named_assets/apple-touch-icon.png"
+          }),
           html5_dependency_css("/styles.css"),
-          title(`Willow Specifications - ${meta.title}`),
+          title(`Willow Specifications - ${metadata.title}`),
         ],
         [
           div(
             main(
               hsection(
-                meta.name,
+                metadata.name,
                 { wide: true },
-                meta.heading ? meta.heading : meta.title,
-                meta.status
+                metadata.heading ? metadata.heading : metadata.title,
+                metadata.status
                   ? pinformative(
-                    specStatus(meta.status),
-                    meta.status_date ? [" (as of ", meta.status_date, ")"] : "",
+                    specStatus(metadata.status),
+                    metadata.status_date ? [" (as of ", metadata.status_date, ")"] : "",
                   )
                   : "",
                 args[0],
@@ -115,12 +149,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
                   li(link_name("specifications", "Specs")),
                   li(link_name("changes", "News")),
                   li(link_name("more", "More")),
-                  li(
-                    a(
-                      { href: "mailto:mail@aljoscha-meyer.de,sam@gwil.garden", class: "internal" },
-                      "Contact us",
-                    ),
-                  ),
+                  li(link_name("about", "About us")),
                 ),
                 div(
                   marginale_inlineable(
@@ -148,12 +177,12 @@ export function site_template(meta: Document, body: Expression): Invocation {
             ),
           ),
         ],
-      meta.status && meta.status === 'proposal' ? 'container_main proposal' : "container_main bg",
+      metadata.status && metadata.status === 'proposal' ? 'container_main proposal' : "container_main bg",
       );
     },
   );
 
-  return new Invocation(macro, [body]);
+  return new Invocation(macro, [bodyexp]);
 }
 
 export function def_parameter_type(
@@ -628,12 +657,14 @@ evaluate(enable_previews([
     ]),
     out_directory("more", [
       out_file("index.html", more),
-      out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("why", why_willow),
+      out_index_directory("compare", willow_compared),
+      out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("projects_and_communities", projects_and_communities),
       out_index_directory("spec_statuses", spec_statuses),
       out_index_directory("changes", changes),
+      out_index_directory("about-us", about),
     ]),
     copy_statics("assets"),
   ),

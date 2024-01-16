@@ -15,10 +15,12 @@ export const more: Expression = site_template(
     nav(
       lis(
         link_name("why_willow", "Why did we make Willow?"),
+        link_name("willow_compared", "Comparison to Other Protocols"),
         link_name("timestamps_really", "Timestamps, really?"),
         link_name("d3storage", "Three-Dimensional Data Storage"),
-        link_name("projects_and_communities", "Active projects and communities"),
-        link_name("changes", "News and necessary changes")
+        link_name("projects_and_communities", "Active Projects and Communities"),
+        link_name("changes", "News and Necessary Changes"),
+        link_name("about", "About Us"),
       ),
     ),
   ],

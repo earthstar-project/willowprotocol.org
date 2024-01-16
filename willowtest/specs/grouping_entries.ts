@@ -1,5 +1,6 @@
+
 import { blue, def_fn, def_value, green, link, lis, orange, pinformative, purple, quotes, site_template, vermillion } from "../main.ts";
-import { hsection } from "../../hsection.ts";
+import { hsection, table_of_contents } from "../../hsection.ts";
 import { code, em, figcaption, figure, img, span } from "../../h.ts";
 import { asset } from "../../out.ts";
 import { marginale, marginale_inlineable } from "../../marginalia.ts";
@@ -27,6 +28,8 @@ export const grouping_entries: Expression = site_template({
   pinformative("This viewpoint enables us to meaningfully group ", rs("Entry"), " together. An application might want to access all chess games that a certain author played in the past week. This kind of query corresponds to a box (a ", link("rectangular cuboid", "https://en.wikipedia.org/wiki/Rectangular_cuboid"), " to use precise terminology) in the three-dimensional Willow space."),
 
   pinformative("In this document, we develop and define a vocabulary for grouping ", rs("Entry"), " based on their ", rs("entry_subspace_id"), ", ", rs("entry_path"), ", and ", rs("entry_timestamp"), ". These definitions are not necessary for defining and understanding the core data model, but we make heavy use of them in our ", link_name("meadowcap", "recommended capability system"), " and our ", link_name("sync", "recommended synchronisation protocol"), "."),
+  
+  table_of_contents(7),
 
   surpress_output(
     pinformative(
@@ -136,16 +139,19 @@ export const grouping_entries: Expression = site_template({
           {
             id: "D3RangeSubspace",
             name: "subspaces",
+            plural: "subspaces",
             rhs: r("SubspaceRange"),
           },
           {
             id: "D3RangePath",
             name: "paths",
+            plural: "paths",
             rhs: r("PathRange"),
           },
           {
             id: "D3RangeTime",
             name: "times",
+            plural: "times",
             rhs: r("TimeRange"),
           },
         ],
@@ -167,7 +173,7 @@ export const grouping_entries: Expression = site_template({
   ]),
 
   hsection("areas", "Areas", [
-    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
+    pinformative(Rs("D3Range"), " are a natural way of grouping ", rs("Entry"), ", but they have certain drawbacks around encrypted data in Willow: when encrypting ", rs("Path"), ", for example, the lexicographic ordering of the encrypted ", rs("Path"), " is inconsistent with the ordering of the unencrypted ", rs("Path"), ". Similarly, ", rs("SubspaceRange"), " do not preserve their meaning under encryption either. Hence, user-specified ", rs("D3Range"), " are close to useless when dealing with encrypted data."),
 
     pinformative("Fortunately, there do exist encryption techniques that preserve some weaker properties than arbitrary orderings.", marginale(["See ", link_name("e2e", "here"), " for information on encrypting Willow."]), " Without going into the cryptographic details, we now define an alternative to ", rs("D3Range"), " that can be used even when encrypting ", rs("Path"), " and ", rs("SubspaceId"), "."),
 

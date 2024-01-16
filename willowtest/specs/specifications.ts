@@ -14,7 +14,7 @@ export const specifications: Expression = site_template(
     pinformative("Willow is a family of specifications:"),
 
     lis(
-      [link_name("data_model", "Data model"), ": The fundamental data model, a system for giving structured names to bytestrings."],
+      [link_name("data_model", "Data Model"), ": The fundamental data model, a system for giving structured names to bytestrings."],
       [link_name("meadowcap", "Meadowcap"), ": A capability system for controlling access to Willow data."],
       [link_name("sync", "Synchronisation"), ": A network protocol for efficiently and privately synchronising Willow data."],
     ),
