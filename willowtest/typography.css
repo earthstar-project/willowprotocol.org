@@ -207,7 +207,6 @@ a.ref, .enclosing a {
 
 a.ref:hover, dfn > a:hover, .enclosing a:hover {
   background: rgba(255, 228, 0, 0.199);
-  padding: 0.2em 0;
   text-decoration-color: var(--nearly-black);
   border-radius: 5px;
 }
