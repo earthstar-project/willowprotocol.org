@@ -9,6 +9,7 @@ import {
   img,
   li,
   main,
+  meta,
   nav,
   ol,
   p,
@@ -21,6 +22,7 @@ import {
   title,
   tr,
   ul,
+  link as linktag,
 } from "../h.ts";
 import {
   asset,
@@ -82,22 +84,52 @@ export interface Document {
   heading?: Expression;
 }
 
-export function site_template(meta: Document, body: Expression): Invocation {
+export function site_template(metadata: Document, bodyexp: Expression): Invocation {
   const macro = new_macro(
     (args, _ctx) => {
       return html5(
         [
+          meta({
+            name: "viewport",
+            content: "width=device-width, initial-scale=1.0",
+          }),
+          linktag({
+            rel: "alternate",
+            type: "application/rss+xml",
+            href: "/rss_news.xml",
+            title: "Willow News and Updates"
+          }),
+          linktag({
+            rel: "alternate",
+            type: "application/rss+xml",
+            href: "/rss_news.xml",
+            title: "Willow Specification Changelog"
+          }),
+          linktag({
+            rel: "icon",
+            href: "/named_assets/favicon.svg",
+            type: "image/svg+xml"
+          }),
+          linktag({
+            rel: "icon",
+            href: "/named_assets/favicon.png",
+            type: "image/png"
+          }),
+          linktag({
+            rel: "apple-touch-icon",
+            href: "/named_assets/apple-touch-icon.png"
+          }),
           html5_dependency_css("/styles.css"),
-          title(`Willow Specifications - ${meta.title}`),
+          title(`Willow Specifications - ${metadata.title}`),
         ],
         [
           div(
             { class: "container_main" },
             main(
               hsection(
-                meta.name,
+                metadata.name,
                 { wide: true },
-                meta.heading ? meta.heading : meta.title,
+                metadata.heading ? metadata.heading : metadata.title,
                 [
                   args[0],
                 ],
@@ -142,7 +174,7 @@ export function site_template(meta: Document, body: Expression): Invocation {
     },
   );
 
-  return new Invocation(macro, [body]);
+  return new Invocation(macro, [bodyexp]);
 }
 
 export function def_parameter_type(

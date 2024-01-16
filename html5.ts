@@ -61,36 +61,6 @@ export function html5(
         html(
           head(
             meta({ charset: "utf-8" }),
-            meta({
-              name: "viewport",
-              content: "width=device-width, initial-scale=1.0",
-            }),
-            link({
-              rel: "alternate",
-              type: "application/rss+xml",
-              href: "/rss_news.xml",
-              title: "Willow News and Updates"
-            }),
-            link({
-              rel: "alternate",
-              type: "application/rss+xml",
-              href: "/rss_news.xml",
-              title: "Willow Specification Changelog"
-            }),
-            link({
-              rel: "icon",
-              href: "/named_assets/favicon.svg",
-              type: "image/svg+xml"
-            }),
-            link({
-              rel: "icon",
-              href: "/named_assets/favicon.png",
-              type: "image/png"
-            }),
-            link({
-              rel: "apple-touch-icon",
-              href: "/named_assets/apple-touch-icon.png"
-            }),
             notify(
               (_) => is_head_done = true,
               args[0],
