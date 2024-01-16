@@ -207,6 +207,10 @@ body {
     .preview {
         max-width: calc(${opts.max_width_main}rem + 1rem);
     }
+
+    .preview .aside {
+      display: none;
+  }
 }
 
 @media (min-width: ${opts.wide_and_margins() + (opts.toc * 2)}rem) {
