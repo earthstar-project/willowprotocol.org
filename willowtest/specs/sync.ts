@@ -479,6 +479,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "ReconciliationAnnounceEntries",
+                            plural: "ReconciliationAnnounceEntries",
                             comment: ["Prepare transmission of the ", rs("LengthyEntry"), " a peer has in a ", r("D3Range"), " as part of ", r("d3rbsr"), "."],
                             fields: [
                                 {
@@ -538,6 +539,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "ReconciliationSendEntry",
+                            plural: "ReconciliationSendEntries",
                             comment: ["Transmit a ", r("LengthyEntry"), " as part of ", r("d3rbsr"), "."],
                             fields: [
                                 {
@@ -1346,7 +1348,7 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The WGPS mandates a strict cadence of ", rs("ReconciliationAnnounceEntries"), " messages followed by ", rs("ReconciliationSendEntry"), " messages, there are no points in time where it would be valid to send both. Hence, their encodings need not be distinguishable."
+                        "The WGPS mandates a strict cadence of ", r("ReconciliationAnnounceEntries"), " messages followed by ", r("ReconciliationSendEntry"), " messages, there are no points in time where it would be valid to send both. Hence, their encodings need not be distinguishable."
                     ),
 
                     pinformative(
