@@ -1,6 +1,6 @@
 import { Expression, Invocation, new_macro } from "macro";
 import { link, lis, pinformative, site_template } from "../../main.ts";
-import { em, img, span } from "../../../h.ts";
+import { a, em, img, span } from "../../../h.ts";
 import { def, r } from "../../../defref.ts";
 import { marginale_inlineable } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
@@ -48,7 +48,11 @@ export const about: Expression = site_template(
 					
 					lis(
 						link("Blog", "https://gwil.garden"),
-						link("Mastodon", "https://post.lurk.org/@gwil"),
+						a({
+							href: "https://post.lurk.org",
+							rel: "me",
+							class: 'external'
+						}, "Mastodon"),
 						link("Email", "mailto:sam@gwil.garden"),
 					)
 				]),
