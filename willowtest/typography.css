@@ -12,7 +12,8 @@ strong {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  padding: 1.25em 0 0.5em 0;
+  padding-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 p {
@@ -281,4 +282,10 @@ a.fn, .enclosing.fn a {
 
 .rss_item_time {
   color: var(--dark-green)
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0), var(--green), rgba(0, 0, 0, 0));
 }
