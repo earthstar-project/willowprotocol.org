@@ -17,7 +17,7 @@ export const spec_statuses: Expression = site_template(
 				),
 
 				preview_scope(
-					p(sky_blue(def({id: 'status_candidate', singular: "Candidate"}, 'Candidate')), " means we have a complete design which we are confident will work, but we want to further validate it."),
+					p(sky_blue(def({id: 'status_candidate', singular: "Candidate"}, 'Candidate')), " means we have a complete design and first implementation experience, but we want to practically validate it some more before commiting to never changing it."),
 					
 					p("We may still change details as issues arise. In principle, we might even do fundamental changes, but we are optimistic this will not be necessary. We encourage implementation efforts and would love to hear about any stumbling blocks you encounter."),
 				),
