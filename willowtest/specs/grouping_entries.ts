@@ -139,16 +139,19 @@ export const grouping_entries: Expression = site_template({
           {
             id: "D3RangeSubspace",
             name: "subspaces",
+            plural: "subspaces",
             rhs: r("SubspaceRange"),
           },
           {
             id: "D3RangePath",
             name: "paths",
+            plural: "paths",
             rhs: r("PathRange"),
           },
           {
             id: "D3RangeTime",
             name: "times",
+            plural: "times",
             rhs: r("TimeRange"),
           },
         ],

@@ -149,7 +149,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     pinformative("To initiate reconciliation of a ", r("D3Range"), ", a peer sends its ", r("D3RangeFingerprint"), ". Upon receiving a ", r("D3RangeFingerprint"), ", a peer computes the ", r("d3rbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same range."),
 
-    pinformative("If does not match, the peer either sends a number of ", rs("D3RangeFingerprint"), " whose ", rs("D3Range"), " cover the ", r("D3Range"), " for which it received the mismatching ", r("d3rbsr_fp"), ". Or it replies with its ", r("D3RangeEntrySet"), " for that ", r("D3Range"), ", with the ", r("D3RangeEntrySetWantResponse"), " flag set to ", code("true"), "."),
+    pinformative("If it does not match, the peer either sends a number of ", rs("D3RangeFingerprint"), " whose ", rs("D3Range"), " cover the ", r("D3Range"), " for which it received the mismatching ", r("d3rbsr_fp"), ". Or it replies with its ", r("D3RangeEntrySet"), " for that ", r("D3Range"), ", with the ", r("D3RangeEntrySetWantResponse"), " flag set to ", code("true"), "."),
 
     pinformative("To any such ", r("D3RangeEntrySet"), ", a peer replies with its own ", r("D3RangeEntrySet"), ", setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ", and omitting all ", rs("LengthyEntry"), " it had just received in the other peer’s ", r("D3RangeEntrySet"), "."),
 
