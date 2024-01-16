@@ -269,6 +269,8 @@ export const data_model: Expression = site_template(
       pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
 
       pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
+
+      pinformative("How can I contribute to Willow and support it? So glad you asked — we have prepared a collection of pointers ", link_name("projects_and_communities", "here"), "."),
     ]),
 
     img("/emblem.png"),

@@ -545,7 +545,7 @@ evaluate(enable_previews([
           nav(
             lis(
               link_name("why_willow", "Why did we make Willow?"),
-              link_name("specifications", "The specifications"),
+              link_name("specifications", "Main specification"),
             ),
           ),
 
