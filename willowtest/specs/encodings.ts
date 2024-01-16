@@ -131,7 +131,7 @@ export const encodings: Expression = site_template({
 
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
-    sidenote("We", ["Let’s be honest: ", em("Aljoscha")]),
+    sidenote("We", ["Let’s be honest: ", r("Aljoscha")]),
     " strongly believe that specifications should concern themselves with purely logical data types as long as possible, treating encodings as a minor and ultimately interchangeable detail. When specifications define concepts in terms of their encodings, results usually end up miserably underspecified (see ", link("JSON", "https://en.wikipedia.org/wiki/JSON#Interoperability"), ") or full of incidental complexity (see ", link("XML", "https://en.wikipedia.org/wiki/XML"), ").",
   ),
 
