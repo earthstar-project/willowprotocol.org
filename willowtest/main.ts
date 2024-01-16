@@ -57,6 +57,7 @@ import { changes } from "./specs/more/changes.ts";
 import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
+import { willow_compared } from "./specs/more/compare.ts";
 import { about } from "./specs/more/about.ts";
 
 export function quotes(...contents: Expression[]) {
@@ -649,8 +650,9 @@ evaluate(enable_previews([
     ]),
     out_directory("more", [
       out_file("index.html", more),
-      out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("why", why_willow),
+      out_index_directory("compare", willow_compared),
+      out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("3dstorage", threedstorage),
       out_index_directory("changes", changes),
       out_index_directory("projects-and-communities", projects_and_communities),
