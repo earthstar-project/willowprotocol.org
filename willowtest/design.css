@@ -15,8 +15,8 @@
     --wong-vermillion: rgb(213, 94, 0);
     --wong-purple: rgb(204, 121, 167);
 
-    --color-comment: #6a737d;
-    --color-punctuation: #4f5459;
+    --color-comment: #484f57;
+    --color-punctuation: #484f57;
     --color-keyword: #d73a49;
 
     --color-type: #6f42c1;
@@ -25,11 +25,11 @@
     --color-symbol: #005cc5;
     --color-fn: #735c0f;
 
-    --color-comment-type: #736195;
-    --color-comment-value: #577599;
-    --color-comment-member: #527d5c;
-    --color-comment-symbol: #6b89aa;
-    --color-comment-fn: #685209;
+    --color-comment-type: #4f397a;
+    --color-comment-value: #3a5b83;
+    --color-comment-member: #356a41;
+    --color-comment-symbol: #446993;
+    --color-comment-fn: #544000;
 }
 
 .orange, .orange a {
