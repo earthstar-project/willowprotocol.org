@@ -97,6 +97,14 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
             name: "viewport",
             content: "width=device-width, initial-scale=1.0",
           }),
+          meta({
+            name: "description",
+            content: "A protocol for peer-to-peer data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."
+          }),
+          meta({
+            name: 'language',
+            content: 'en-GB'
+          }),
           linktag({
             rel: "alternate",
             type: "application/rss+xml",
