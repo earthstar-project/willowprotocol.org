@@ -96,6 +96,8 @@ code.pseudocode {
   margin: 1em 0;
   display: block;
   border-radius: 0;
+  border-radius: 5px;
+  padding: 0.6em 0.5em ;
 }
 
 .pseudocode p {
@@ -115,6 +117,10 @@ code.pseudocode {
   margin: 0;
 }
 
+.parent_type {
+  margin-top: 0.5em;
+}
+
 .pseudocode dfn {
   font-style: normal;
 }
@@ -130,8 +136,8 @@ code.pseudocode {
 .hl_doccom {
   color: var(--color-comment);
   display: inline-block;
-  border-left: solid #00000020 2px;
-  padding-left: 1rem;
+  border-left: dotted #0000004c 2px;
+  padding-left: calc(2ch - 2px);
   text-decoration: inherit;
 }
 

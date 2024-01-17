@@ -249,8 +249,6 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("PaiBindFragment"), " messages use the ", r("IntersectionChannel"), "."),
-
-                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -279,8 +277,6 @@ export const sync: Expression = site_template(
                     ]),
 
                     pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
-
-                    hr(),
                 
                     pseudocode(
                         new Struct({
@@ -302,8 +298,6 @@ export const sync: Expression = site_template(
 
                     pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
 
-                    hr(),
-                
                     pseudocode(
                         new Struct({
                             id: "PaiReplySubspaceCapability",
@@ -380,8 +374,6 @@ export const sync: Expression = site_template(
                 
                     pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
 
-                    hr(),
-
                     pseudocode(
                         new Struct({
                             id: "SetupBindAreaOfInterest",
@@ -416,8 +408,6 @@ export const sync: Expression = site_template(
                     pinformative(
                         "Let ", def_value({id: "handle2ns_handle", singular: "handle"}), " be an ", r("AreaOfInterestHandle"), ". We then define ", code(function_call(def_fn({id: "handle_to_namespace_id"}), r("handle2ns_handle"))), " to denote the ", r("granted_namespace"), " of the ", r("ReadCapability"), " whose ", r("CapabilityHandle"), " is the ", r("SetupBindAreaOfInterestCapability"), " of the ", r("SetupBindAreaOfInterest"), " that ", r("handle_bind", "bound"), " ", r("handle2ns_handle"), ".", 
                     ),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -478,8 +468,6 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("d3rbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
 
                     pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -538,8 +526,6 @@ export const sync: Expression = site_template(
                     pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -617,8 +603,6 @@ export const sync: Expression = site_template(
                     pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), ", and ", r("currently_received_offset"), " is zero."),
                 
                     pinformative(R("DataSendEntry"), " messages use the ", r("DataChannel"), "."),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -647,8 +631,6 @@ export const sync: Expression = site_template(
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
 
-                    hr(),
-                    
                     pseudocode(
                         new Struct({
                             id: "DataSetEagerness",
@@ -679,8 +661,6 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("DataSetEagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
                     pinformative(R("DataSetEagerness"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
@@ -715,8 +695,6 @@ export const sync: Expression = site_template(
                     ]),
                 
                     pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
-
-                    hr(),
                     
                     pseudocode(
                         new Struct({
