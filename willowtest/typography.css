@@ -18,11 +18,7 @@ h1, h2, h3, h4, h5, h6 {
 
 p {
     line-height: 1.45;
-    margin-top: 1em;
-}
-
-p+ul, p+ol {
-  margin-top: 1em;
+    margin: 1em 0;
 }
 
 .aside {
@@ -97,7 +93,7 @@ p.introductory  {
 code.pseudocode {
   color: var(--nearly-nearly-black);
   line-height: 1.5em;
-  margin-top: 1em;
+  margin: 1em 0;
   display: block;
   border-radius: 0;
   border-radius: 5px;
