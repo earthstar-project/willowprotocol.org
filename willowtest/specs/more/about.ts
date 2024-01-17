@@ -30,7 +30,7 @@ export const about: Expression = site_template(
 				
 				hsection("aljoscha_section", "Aljoscha Meyer", [
 					pinformative(
-						marginale_inlineable(img(asset("about/aljoscha.png"), `A webcam-angle drawing of Aljoscha in his room, as seen by gwil in their many video chats. Lovely purple curtains and a piano in the background (the sheet music is Bach, but you cannot tell from the drawing), big glasses and a big smile on his face.`)),
+						marginale_inlineable(img(asset("about/aljoscha.png"))),
 						span({style: "font-style: italic;"}, "I’m ", def("Aljoscha"), ", a computer scientist and fledgling researcher based in Berlin, Germany. As an avid shaver of yaks who even tackles protocol website creation by first writing a custom macro processor from scratch, I am grateful that ", r("gwil"), " decided to team up on Willow. Turns out we actually got something done this way that we are quite proud of. Now, how do I turn any of this into a paper to justify the immense time sink? Intrinsic motivation cannot possibly go that far, right?")),
 
 						lis(
@@ -41,7 +41,7 @@ export const about: Expression = site_template(
 				
 				hsection("gwil_section", "Sam “gwil” Gwilym", [
 					pinformative(
-					marginale_inlineable(img(asset("about/gwil.png"), `A webcam-angle drawing of gwil in his studio, as seen by Aljoscha in their many video chats. Thankfully still drawn by gwil, however. Sunlight fills the room, the walls are full of drawings. Gwil grins as he often does, and gives a thumbs-up.`)),
+					marginale_inlineable(img(asset("about/gwil.png"))),
 					span({style: "font-style: italic;"}, "I’m ", def({ id: "gwil", singular: "gwil"}, "gwil",), ". I’m a programmer, illustrator, and dad living in the Hague, the Netherlands. I’m the core maintainer of the Earthstar project, and seized upon ", r("Aljoscha"), "’s initial designs for Willow as soon as he made the mistake of sharing them. We’ve really pushed each other to do our best work with this project, and making all the wobbly drawings for the site has been the highlight of my computer science career. Now that the protocol is nearly final, I guess I have to implement it, too? Hmmm… anyone need any drawings done?")),
 					
 					
@@ -49,7 +49,7 @@ export const about: Expression = site_template(
 					lis(
 						link("Blog", "https://gwil.garden"),
 						a({
-							href: "https://post.lurk.org",
+							href: "https://post.lurk.org/@gwil",
 							rel: "me",
 							class: 'external'
 						}, "Mastodon"),
