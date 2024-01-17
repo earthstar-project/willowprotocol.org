@@ -119,6 +119,10 @@ code.pseudocode {
   margin: 0;
 }
 
+.parent_type {
+  margin-top: 0.5em;
+}
+
 .pseudocode dfn {
   font-style: normal;
 }
