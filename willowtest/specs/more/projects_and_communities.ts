@@ -45,6 +45,9 @@ export const projects_and_communities: Expression = site_template(
 					link("Earthstar Project Discord", "https://discord.gg/6NtYzQC2G4"),
 					link("gwil on Mastodon", "https://post.lurk.org/@gwil"),
 				)
+			]),
+			hsection("this_website", "This site", [
+				pinformative("This website is also an active project. The repository for it can be found ", link("here", "https://github.com/earthstar-project/willowprotocol.org"), ". We appreciate all feedback from typos, to stumbling blocks, or any errant American English spellings you find.")
 			])
 		],
 );
