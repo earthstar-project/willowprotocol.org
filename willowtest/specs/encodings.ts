@@ -1,13 +1,12 @@
 import {
-bitfield_doc,
 def_fn,
-  def_parameter_fn,
   def_value,
   link,
   lis,
   pinformative,
   quotes,
   site_template,
+  sky_blue,
 } from "../main.ts";
 import {
   Attributes,
@@ -17,27 +16,23 @@ import {
   figcaption,
   figure,
   img,
-  li,
   table,
   tbody,
   td,
   th,
   thead,
   tr,
-  ul,
 } from "../../h.ts";
 import { def, preview_scope, r, r$, rs } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression, Invocation, new_macro } from "macro";
 import { hsection, table_of_contents } from "../../hsection.ts";
-import { Struct, def_type, field_access, function_call, hl_builtin, pseudocode } from "../../pseudocode.ts";
+import { def_type, field_access, function_call } from "../../pseudocode.ts";
 import { $comma, $dot, $ } from "../../katex.ts";
 import { surpress_output } from "../../tsgen.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
 import { link_name } from "../../linkname.ts";
-
-const apo = "’";
 
 export function small_img(
   src: Expression,
@@ -130,10 +125,14 @@ export function inclusion_flag_remark(
 export const encodings: Expression = site_template({
   name: "encodings",
   title: "On Encodings",
+  status: "proposal",
+  status_date: "17.01.2024",
 }, [
+  em("Those encodings referenced from the ", link_name("meadowcap", "Meadowcap specification"), " have status ", sky_blue(r("status_candidate")), "."),
+
   pinformative(
     "A perhaps curious feature of the Willow data model is that its specifications rarely talk about encodings. ",
-    sidenote("We", ["Let’s be honest: ", em("Aljoscha")]),
+    sidenote("We", ["Let’s be honest: ", r("Aljoscha")]),
     " strongly believe that specifications should concern themselves with purely logical data types as long as possible, treating encodings as a minor and ultimately interchangeable detail. When specifications define concepts in terms of their encodings, results usually end up miserably underspecified (see ", link("JSON", "https://en.wikipedia.org/wiki/JSON#Interoperability"), ") or full of incidental complexity (see ", link("XML", "https://en.wikipedia.org/wiki/XML"), ").",
   ),
 

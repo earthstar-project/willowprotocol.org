@@ -57,6 +57,8 @@ import { changes } from "./specs/more/changes.ts";
 import { build_rss_feeds } from "../rss.ts";
 import { set_root_url } from "../root_url.ts";
 import { projects_and_communities } from "./specs/more/projects_and_communities.ts";
+import { spec_statuses } from "./specs/more/statuses.ts";
+import { SpecStatus, specStatus } from "../spec_status.ts";
 import { willow_compared } from "./specs/more/compare.ts";
 import { about } from "./specs/more/about.ts";
 
@@ -82,6 +84,8 @@ export interface Document {
   title: string;
   name: string; // globally unique name for the `name` macros
   heading?: Expression;
+  status?: SpecStatus;
+  status_date?: string;
 }
 
 export function site_template(metadata: Document, bodyexp: Expression): Invocation {
@@ -124,15 +128,18 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
         ],
         [
           div(
-            { class: "container_main" },
             main(
               hsection(
                 metadata.name,
                 { wide: true },
                 metadata.heading ? metadata.heading : metadata.title,
-                [
-                  args[0],
-                ],
+                metadata.status
+                  ? pinformative(
+                    specStatus(metadata.status),
+                    metadata.status_date ? [" (as of ", metadata.status_date, ")"] : "",
+                  )
+                  : "",
+                args[0],
               ),
             ),
             footer(
@@ -170,6 +177,7 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
             ),
           ),
         ],
+      metadata.status && metadata.status === 'proposal' ? 'container_main proposal' : "container_main bg",
       );
     },
   );
@@ -529,7 +537,6 @@ evaluate(enable_previews([
           title: "Willow",
           name: "willow",
           heading: img("emblem.png", "A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
-          do_not_render_toc: true,
         },
         [
           pintroductory(
@@ -636,7 +643,7 @@ evaluate(enable_previews([
       out_file("index.html", specifications),
       out_index_directory("data-model", data_model),
       out_index_directory("encodings", encodings),
-      out_index_directory("grouping_entries", grouping_entries),
+      out_index_directory("grouping-entries", grouping_entries),
       out_index_directory("e2e", e2e),
       out_index_directory("meadowcap", meadowcap),
       out_index_directory("sync", sync),
@@ -654,8 +661,9 @@ evaluate(enable_previews([
       out_index_directory("compare", willow_compared),
       out_index_directory("timestamps-really", timestamps_really),
       out_index_directory("3dstorage", threedstorage),
-      out_index_directory("changes", changes),
       out_index_directory("projects-and-communities", projects_and_communities),
+      out_index_directory("spec-statuses", spec_statuses),
+      out_index_directory("changes", changes),
       out_index_directory("about-us", about),
     ]),
     copy_statics("assets"),

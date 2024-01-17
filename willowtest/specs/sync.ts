@@ -1,3 +1,5 @@
+
+
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
 import { aside, code, div, em, hr, img, p } from "../../h.ts";
 import { hsection, table_of_contents } from "../../hsection.ts";
@@ -7,6 +9,7 @@ import { Expression } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn, def_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
 import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array, function_call, field_access } from "../../pseudocode.ts";
+
 import { asset } from "../../out.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
 import { encode_two_bit_int, inclusion_flag_remark, two_bit_int, two_bit_int_def } from "./encodings.ts";
@@ -26,8 +29,10 @@ export const sync: Expression = site_template(
     {
         title: "Willow General Purpose Sync Protocol",
         name: "sync",
+        status: "proposal",
+        status_date: "17.01.2024",
     },
-    [
+    [        
         pinformative("The ", link_name("data_model", "Willow data model"), " specifies how to arrange data, but it does not prescribe how peers should synchronise data. In this document, we specify one possible way for performing synchronisation: the ", def("WGPS", "Willow General Purpose Sync (WGPS) protocol"), ". This document assumes familiarity with the ", link_name("data_model", "Willow data model"), "."),
 
         table_of_contents(7),

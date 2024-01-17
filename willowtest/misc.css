@@ -180,6 +180,16 @@ ol.toc_children {
   clear: right;
 }
 
+.proposal {
+  background-image: url('/named_assets/proposal-bg.png');
+  background-size: 240px;
+}
+
+.bg {
+  background-image: url('/named_assets/bg.png');
+  background-size: 480px;
+}
+
 nav.toc > ol {
   padding-left: 1.5em;
 }
