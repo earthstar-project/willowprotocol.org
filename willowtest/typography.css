@@ -96,6 +96,10 @@ code.pseudocode {
   margin: 1em 0;
   display: block;
   border-radius: 0;
+  background: rgba(0, 0, 0, 0.02);
+  border-top: 1px solid var(--dark-green);
+  padding: 0.4em;
+  border-bottom: 1px solid var(--dark-green);
 }
 
 .pseudocode p {
@@ -130,8 +134,8 @@ code.pseudocode {
 .hl_doccom {
   color: var(--color-comment);
   display: inline-block;
-  border-left: solid #00000020 2px;
-  padding-left: 1rem;
+  border-left: var(--dark-green) dotted 2px;
+  padding-left: calc(0.5rem - 1px);
   text-decoration: inherit;
 }
 
