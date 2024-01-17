@@ -2,6 +2,35 @@ import { Expression, Macro, Invocation, new_macro, is_expression } from "./tsgen
 
 export type Attributes = Record<PropertyKey, Expression>;
 
+function escape_html(raw: string): string {
+    return raw.replaceAll(/&|<|>|"|'/g, match => {
+        if (match === `&`) {
+            return `&amp;`;
+        } else if (match === `<`) {
+            return `&lt;`;
+        } else 
+        if (match === `>`) {
+            return `&gt;`;
+        } else 
+        if (match === `"`) {
+            return `&quot;`;
+        } else 
+        if (match === `'`) {
+            return `&#39;`;
+        } else {
+            throw new Error("unreachable");
+        }
+    });
+}
+
+export function html_escape(exp: Expression): Expression {
+    const macro = new_macro(
+        undefined,
+        (expanded, _ctx) => escape_html(expanded),
+      );
+      return new Invocation(macro, [exp]);
+}
+
 function mac(tag_name: string, attributes: Attributes): Macro {
     return new_macro(
         (args, _state) => {
@@ -30,7 +59,7 @@ function render_attributes(attributes: Attributes): Expression {
     const fragments: Expression[][] = [];
 
     for (const name in attributes) {
-        const value = attributes[name];
+        const value = html_escape(attributes[name]);
         if (value === "") {
             fragments.push([name]);
         } else {
@@ -75,15 +104,15 @@ export function hr(attributes: Attributes = {}): Expression {
     return new Invocation(mac_void("hr", attributes), []);
 }
 
-export function img(src: Expression, attributes: Attributes = {}): Expression {
+export function img(src: Expression, alt: Expression, attributes: Attributes = {}): Expression {
     const macro = new_macro(
         (args, _ctx) => {
             return [
-                `<img src="`, args[0], `"`, render_attributes(attributes), ">",
+                `<img src="`, html_escape(args[0]), `" alt="`, html_escape(args[1]), `"`, render_attributes(attributes), ">",
             ];
         },
     );
-    return new Invocation(macro, [src]);
+    return new Invocation(macro, [src, alt]);
 }
 
 export function input(attributes: Attributes = {}): Expression {

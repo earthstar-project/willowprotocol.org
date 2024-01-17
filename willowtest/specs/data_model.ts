@@ -40,30 +40,30 @@ export const data_model: Expression = site_template(
 
     pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
 
-    figure(img(asset("data_model/paths.png"))),
+    figure(img(asset("data_model/paths.png"), `A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`)),
 
     pinformative("A little later you overwrite the existing entry at path ", path("blog", "idea", "2"), " with ", code("I've made a mistake"), ". Willow tracks the timestamp of each assignment, and the new entry overwrites the old one."),
 
-    figure(img(asset("data_model/timestamps.png"))),
+    figure(img(asset("data_model/timestamps.png"), "The same visualization of paths as before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.")),
 
     pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", def({id: "prefix_pruning", singular: "prefix pruning"}), "."),
 
     figure(
-      img(asset("data_model/prefix_pruning.png")),
+      img(asset("data_model/prefix_pruning.png"), `The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylised file whistling in a totally inconspicuous way.`),
       figcaption("The entries ", em("prefixed"), " by ", path('blog', 'idea'), " are deleted by a newer entry at that prefix.")
     ),
 
     pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
 
     figure(
-      img(asset("data_model/subspaces.png")),
+      img(asset("data_model/subspaces.png"), `Stylised files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves to the viewer, good vibes all around.`),
       figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
     ),
 
     pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorisation from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
 
     figure(
-      img(asset("data_model/namespaces.png")),
+      img(asset("data_model/namespaces.png"), `Three simplified three-dimensional visualisations of namespaces, each shaded in a different color. One is labeled "family", one "wiki", and one "project".`),
       figcaption("Three completely independent namespaces.")
     ),
 
@@ -271,6 +271,6 @@ export const data_model: Expression = site_template(
       pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
     ]),
 
-    img("/emblem.png"),
+    img("/emblem.png", "A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
   ],
 );

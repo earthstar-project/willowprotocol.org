@@ -42,13 +42,13 @@ export const meadowcap: Expression = site_template(
       pinformative("A capability system helps enforce boundaries on who gets to read and write which data. A ", em("capability"), " is an unforgeable token that bestows read or write access for some data to a particular person, issued by the owner of that data. When Alfie asks Betty for some entries owned by Gemma, then Betty will only answer when presented with a valid capability proving that Gemma gave read access to Alfie. Similarly, Betty will not integrate data created by Alfie in a ", r("subspace"), " owned by Gemma, unless the data is accompanied by a capability proving that Gemma gave write access to Alfie."),
 
       figure(
-        img(asset("meadowcap/capability_attempts.png")),
+        img(asset("meadowcap/capability_attempts.png"), `A two-column comic. The left column first shows Alfie handing a neat slip of paper to Betty. The second panel shows Betty inspecting the paper with a magnifying glass. The magnified text clearly reads "signed: Gemma". In the final panel, a happy Betty hands a box over to a happy Alfie. The right column depicts a less fruitful interaction. A cartoonish troll approaches Betty with a crumpled paper sheet. When Betty inspects it in the second panel, it reads "i AM StiNKY GEMA", clearly not Gemma’s real signature. In the final panel, Betty tells the troll off, not handing over anything.`),
       ),
 
       pinformative("What makes somebody ", quotes("the owner"), " of ", quotes("some data"), "? Meadowcap offers two different models, which we call ", rs("owned_namespace"), " and ", rs("communal_namespace"), "."),
 
       marginale([
-        img(asset("meadowcap/communal_namespace.png")),
+        img(asset("meadowcap/communal_namespace.png"), `A front view of a stylised house. The house has three separate entries, each with a differently-coloured keyhole. Above each entry is a window in a matching color, each with some happy denizens sticking their heads out. The outer windows contain a single person each, the middle window is shared by two people.`),
         "A ", r("communal_namespace"), ". Metaphorically, everyone has their own private space in the same building.",
       ]),
 
@@ -61,7 +61,7 @@ export const meadowcap: Expression = site_template(
       ),
 
       marginale([
-        img(asset("meadowcap/owned_namespace.png")),
+        img(asset("meadowcap/owned_namespace.png"), "A similar front view of a house, with windows showing the inhabitants. Unlike the preceding drawing, this house only a single door, with an orange keyhole. The three windows each show a combination of orange and an individual color per window. In front of the window stands the owner, dutifully (and cheerfully) maintaining the lawn with a broom."),
         "An ", r("owned_namespace"), ". Metaphorically, a single owner manages others’ access to their building.",
       ]),
 
@@ -170,7 +170,10 @@ export const meadowcap: Expression = site_template(
         def_symbol({id: "access_write", singular: "write"}, "write", ["A value to signify that a capability grants the ability to ", em("write"), " ", rs("Entry"), "."]),
       ),
 
-      pinformative(marginale(img(asset("meadowcap/capability_semantics.png"))), "Intuitively, a capability should be some piece of data that answers four questions: To whom does it grant access? Does it grant read or write access? For which ", rs("Entry"), " does it grant access? And finally, is it valid or a forgery?"),
+      pinformative(
+        marginale(img(asset("meadowcap/capability_semantics.png"), `A neat piece of paper, styled like an admission ticket, with a heading saying "This Capability Grants...". The heading is followed by four sections. The first section states the receiver as "Alfie", the second section states the granting of "read access", the third section gives a time range of "all messages from last week", and, finally, a large stamp mark simply says "valid".`)),
+        "Intuitively, a capability should be some piece of data that answers four questions: To whom does it grant access? Does it grant read or write access? For which ", rs("Entry"), " does it grant access? And finally, is it valid or a forgery?",
+      ),
 
       pinformative("We define three types that provide these semantics: one for implementing ", rs("communal_namespace"), ", one for implementing ", rs("owned_namespace"), ", and one for combining both."),
 
@@ -416,6 +419,6 @@ export const meadowcap: Expression = site_template(
       ]),
     ]),
 
-    img(asset("meadowcap/meadowcap.png")),
+    img(asset("meadowcap/meadowcap.png"), `A Meadowcap emblem: A stylised drawing of two meadowcaps (a type of mushroom), next to a hand-lettered cursive of the word "Meadowcap".`),
   ],
 );

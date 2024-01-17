@@ -61,7 +61,7 @@ export const psi: Expression = site_template(
         "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of inequality. Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
       ),
 
-      marginale_inlineable(img(asset("psi/psi_paint.png"))),
+      marginale_inlineable(img(asset("psi/psi_paint.png"), `A comic visualising private equality testing with one column for each peer. The peers start with two buckets of colour each, a data colour (same for both) and a secret colour (unique for each) per peer. Each peer mixes their two colours, yielding a completely new, unique colour per peer. The peers exchange these new colours, and then each mix their secret colour into what they received. This yields the same colour for both peers! They verify so by exchanging the resulting colours, and then happily toast with their buckets of equally coloured content.`)),
 
       pinformative(
         "Imagine the items were ", em("colours"), ". Assume colours can easily be mixed with other colours, but unmixing a given colour into its components is impossible. The following procedure then solves the problem:",
