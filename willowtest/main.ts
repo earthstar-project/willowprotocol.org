@@ -528,7 +528,7 @@ evaluate(enable_previews([
         {
           title: "Willow",
           name: "willow",
-          heading: img("emblem.png", "A Willow emblem: a stylized drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
+          heading: img("emblem.png", "A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\"."),
           do_not_render_toc: true,
         },
         [
@@ -558,7 +558,7 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/prefix-pruning.png"), "Three stylized paper files hang off a tree branch. The branch is being cut off near its base by a pair of hedge clippers, in a way that all files will be pruned of the tree."),
+              img(asset("landing/prefix-pruning.png"), "Three stylised paper files hang off a tree branch. The branch is being cut off near its base by a pair of hedge clippers, in a way that all files will be pruned of the tree."),
             ),
             "Total erasure of data. Distributed systems use tombstones to communicate deletes, but even these leave metadata behind. Prefix pruning deletes many entries and all of their metadata in their entirety, leaving a single tombstone in their place.",
           ),
@@ -566,7 +566,7 @@ evaluate(enable_previews([
 
           pinformative(
             marginale_inlineable(
-              img(asset("landing/capabilities.png"), `Two stylized admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`),
+              img(asset("landing/capabilities.png"), `Two stylised admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`),
             ),
             "Fine grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
           ),

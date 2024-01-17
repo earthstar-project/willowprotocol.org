@@ -46,7 +46,7 @@ export const meadowcap: Expression = site_template(
       pinformative("What makes somebody ", quotes("the owner"), " of ", quotes("some data"), "? Meadowcap offers two different models, which we call ", rs("owned_namespace"), " and ", rs("communal_namespace"), "."),
 
       marginale([
-        img(asset("meadowcap/communal_namespace.png"), `A front view of a stylized house. The house has three separate entries, each with a differently-coloured keyhole. Above each entry is a window in a matching color, each with some happy denizens sticking their heads out. The outer windows contain a single person each, the middle window is shared by two people.`),
+        img(asset("meadowcap/communal_namespace.png"), `A front view of a stylised house. The house has three separate entries, each with a differently-coloured keyhole. Above each entry is a window in a matching color, each with some happy denizens sticking their heads out. The outer windows contain a single person each, the middle window is shared by two people.`),
         "A ", r("communal_namespace"), ". Metaphorically, everyone has their own private space in the same building.",
       ]),
 
@@ -417,6 +417,6 @@ export const meadowcap: Expression = site_template(
       ]),
     ]),
 
-    img(asset("meadowcap/meadowcap.png"), `A Meadowcap emblem: A stylized drawing of two meadowcaps (a type of mushroom), next to a hand-lettered cursive of the word "Meadowcap".`),
+    img(asset("meadowcap/meadowcap.png"), `A Meadowcap emblem: A stylised drawing of two meadowcaps (a type of mushroom), next to a hand-lettered cursive of the word "Meadowcap".`),
   ],
 );
