@@ -375,7 +375,6 @@ function render_struct(struct: Struct): Expression {
         ),
         indent(
           div({class: "composite_type_def"}, struct.fields.map(render_field)),
-          // struct.fields.map(render_field),
         ),
       ];
     },
@@ -466,7 +465,7 @@ function render_simple_enum(simple_enum: SimpleEnum): Expression {
           type_name,
         ),
         indent(
-          simple_enum.variants.map(render_simple_enum_variant),
+          div({class: "composite_type_def"}, simple_enum.variants.map(render_simple_enum_variant)),
         ),
       ];
     },
