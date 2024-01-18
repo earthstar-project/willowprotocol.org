@@ -401,11 +401,11 @@ export const meadowcap: Expression = site_template(
           }),
         ),
 
-      pinformative("The function ", def_value("meadowcap_is_authorised_write"), " maps an ", r("Entry"), " and a ", r("MeadowcapAuthorisationToken"), " to a ", r("Bool"), ". It maps ", def_value({id: "mcia_entry", singular: "entry"}), " and ", def_value({id: "mcia_cap", singular: "cap"}), " to ", code("true"), " if and only if", lis(
-        [r("mcia_cap"), " is ", r("cap_valid"), ","],
-        ["the ", r("cap_mode"), " of ", r("mcia_cap"), " is ", r("access_write"), ","],
-        ["the ", r("cap_granted_area"), " of ", r("mcia_cap"), " ", rs("area_include"), " ", r("mcia_entry"), ", and"],
-        [code(function_call(r("user_verify"), r("mcia_receiver"), r("mcia_cap"), function_call(r("encode_entry"), r("mcia_entry")))), " is ", code("true"), ", where ", def_value({id: "mcia_receiver", singular: "receiver"}), " is the ", r("cap_receiver"), " of ", r("mcia_cap"), "."],
+      pinformative("The function ", def_value("meadowcap_is_authorised_write"), " maps an ", r("Entry"), " and a ", r("MeadowcapAuthorisationToken"), " to a ", r("Bool"), ". It maps ", def_value({id: "mcia_entry", singular: "entry"}), " and ", def_value({id: "mcia_tok", singular: "mat"}), " to ", code("true"), " if and only if", lis(
+        [field_access(r("mcia_tok"), "mcat_cap"), " is ", r("cap_valid"), ","],
+        ["the ", r("cap_mode"), " of ", field_access(r("mcia_tok"), "mcat_cap"), " is ", r("access_write"), ","],
+        ["the ", r("cap_granted_area"), " of ", field_access(r("mcia_tok"), "mcat_cap"), " ", rs("area_include"), " ", r("mcia_entry"), ", and"],
+        [code(function_call(r("user_verify"), r("mcia_receiver"), field_access(r("mcia_tok"), "mcat_sig"), function_call(r("encode_entry"), r("mcia_entry")))), " is ", code("true"), ", where ", def_value({id: "mcia_receiver", singular: "receiver"}), " is the ", r("cap_receiver"), " of ", field_access(r("mcia_tok"), "mcat_cap"), "."],
       )),
 
       pinformative("For this definition to make sense, the protocol parameters of Meadowcap must be ", r("mc_compatible"), " with those of Willow. Further, there must be concrete choices for the ", rs("encoding_function"), " ", r("encode_namespace_id"), ", ", r("encode_subspace_id"), ", and ", r("encode_payload_digest"), " that determine the exact output of ", r("encode_entry"), "."),
