@@ -415,7 +415,7 @@ export const meadowcap: Expression = site_template(
       hsection("mc_reading_entries", "Reading Entries", [
         pinformative("Whereas write access control is baked into the Willow data model, read access control resides in the replication layer. To manage read access via capabilities, all peers must cooperate in sending ", rs("Entry"), " only to peers who have presented a valid read capability for the ", r("Entry"), "."),
 
-        pinformative("We describe the details in a capability-system-agnostic way ", link_name("access_control", "here"), ". To use Meadowcap for this approach, simply choose the type of ", r("cap_valid"), " ", rs("Capability"), " with ", r("cap_mode"), " ", r("access_write"), " as the ", rs("read_capability"), "."),
+        pinformative("We describe the details in a capability-system-agnostic way ", link_name("access_control", "here"), ". To use Meadowcap for this approach, simply choose the type of ", r("cap_valid"), " ", rs("Capability"), " with ", r("cap_mode"), " ", r("access_read"), " as the ", rs("read_capability"), "."),
       ]),
     ]),
 
