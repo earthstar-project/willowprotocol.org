@@ -1,8 +1,17 @@
 import { Expression } from "macro";
 import { link, lis, pinformative, site_template } from "../../main.ts";
-import { create_changelog_item, create_news_item } from "../../../rss.ts";
+import { RssFeedItemMeta, create_rss_item } from "../../../rss.ts";
 import { hsection } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
+
+export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
+	return create_rss_item("Willow News and Updates", item, description);
+  }
+  
+  
+  export function create_changelog_item(item: RssFeedItemMeta, description: Expression): Expression {
+	return create_rss_item("Willow Specification Changelog", item, description);
+  }
 
 export const changes: Expression = site_template({
 	name: "changes",

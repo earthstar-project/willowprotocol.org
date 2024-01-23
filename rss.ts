@@ -45,15 +45,6 @@ export interface RssFeedItemMeta {
     format?: Intl.DateTimeFormat,
 }
 
-export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
-  return create_rss_item("Willow News and Updates", item, description);
-}
-
-
-export function create_changelog_item(item: RssFeedItemMeta, description: Expression): Expression {
-  return create_rss_item("Willow Specification Changelog", item, description);
-}
-
 export function create_rss_item(feedTitle: string, item: RssFeedItemMeta, description: Expression): Expression {
     const macro = new_macro(
       undefined,
