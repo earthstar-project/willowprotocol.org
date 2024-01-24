@@ -22,7 +22,7 @@ export const about: Expression = site_template(
 				name: "about",
 		},
 		[
-				pinformative("Willow started as a ", hacky_link("minimalistic reimaigining", asset("about/soilsun.md")), " of ", link("Earthstar", "https://earthstar-project.org"), ". Over time, we did a ", em("lot"), " more reimagining, and a lot less minimalism."),
+				pinformative("Willow started as a ", hacky_link("minimalistic reimagining", asset("about/soilsun.md")), " of ", link("Earthstar", "https://earthstar-project.org"), ". Over time, we did a ", em("lot"), " more reimagining, and a lot less minimalism."),
 				
 				pinformative("The path / author / timestamp model at the heart of Willow was designed by our dear departed friend Cinnamon, without whom there would be no Willow. We miss you."),
 				
