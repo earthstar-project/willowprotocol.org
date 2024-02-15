@@ -295,10 +295,10 @@ export const grouping_entries: Expression = site_template({
         r("aoi_area"), " is the ", r("area_intersection"), " of ", field_access(r("aoi_inter_a1"), "aoi_area"), " and ", field_access(r("aoi_inter_a2"), "aoi_area"), ", whose ",
       ],
       [
-        r("aoi_count"), " is zero if any of ", field_access(r("aoi_inter_a1"), "aoi_count"), " or ", field_access(r("aoi_inter_a2"), "aoi_count"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_count"), " and ", field_access(r("aoi_inter_a2"), "aoi_count"), " otherwise, and whose ",
+        r("aoi_count"), " is ", field_access(r("aoi_inter_a1"), "aoi_count"), " if ", field_access(r("aoi_inter_a2"), "aoi_count"), " is zero, ", field_access(r("aoi_inter_a2"), "aoi_count"), " if ", field_access(r("aoi_inter_a1"), "aoi_count"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_count"), " and ", field_access(r("aoi_inter_a2"), "aoi_count"), " otherwise, and whose ",
       ],
       [
-        r("aoi_size"), " is zero if any of ", field_access(r("aoi_inter_a1"), "aoi_size"), " or ", field_access(r("aoi_inter_a2"), "aoi_size"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_size"), " and ", field_access(r("aoi_inter_a2"), "aoi_size"), " otherwise.",
+        r("aoi_size"), " is ", field_access(r("aoi_inter_a1"), "aoi_size"), " if ", field_access(r("aoi_inter_a2"), "aoi_size"), " is zero, ", field_access(r("aoi_inter_a2"), "aoi_size"), " if ", field_access(r("aoi_inter_a1"), "aoi_size"), " is zero, or the minimum of ", field_access(r("aoi_inter_a1"), "aoi_size"), " and ", field_access(r("aoi_inter_a2"), "aoi_size"), " otherwise.",
       ],
     )),
 
