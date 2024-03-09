@@ -232,7 +232,7 @@ export const grouping_entries: Expression = site_template({
     pinformative("If two ", rs("Area"), " overlap, the overlap is again an ", r("Area"), ". ", preview_scope(
       "Let ", def_value({id: "area_inter_a1", singular: "a1"}), " and ", def_value({id: "area_inter_a2", singular: "a2"}), " be ", rs("Area"), ". If there exists at least one ", r("Entry"), " ", r("area_include", "included"), " in both ", r("area_inter_a1"), ", and ", r("area_inter_a2"), ", then we define the ", def({id: "area_intersection", singular: "intersection"}, "(nonempty) intersection"), " of ", r("area_inter_a1"), ", and ", r("area_inter_a2"), " as the ", r("Area"), " whose", lis(
         [
-          r("AreaSubspace"), " is ", r("area_any"), ", if ", field_access(r("area_inter_a2"), "AreaSubspace"), " is ", r("area_any"), ", or ", field_access(r("area_inter_a1"), "AreaSubspace"), ", otherwise, whose"
+          r("AreaSubspace"), " is ", field_access(r("area_inter_a1"), "AreaSubspace"), ", if ", field_access(r("area_inter_a1"), "AreaSubspace"), " is not ", r("area_any"), ", or ", field_access(r("area_inter_a2"), "AreaSubspace"), ", otherwise, whose"
         ],
         [
           r("AreaPath"), " is the longer of ", field_access(r("area_inter_a1"), "AreaPath"), " and ", marginale([
