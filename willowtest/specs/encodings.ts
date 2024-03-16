@@ -1124,14 +1124,39 @@ export const encodings: Expression = site_template({
       pinformative(
         "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is a ", r("CommunalCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
         encodingdef(
-          [[
-            div(
-              "byte ", code("0x00"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_access_mode"), " == ", r("access_read")), ","
+          new Bitfields(
+            new BitfieldRow(
+              2,
+              [
+                div(
+                  code("00"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_access_mode"), " == ", r("access_read")), ","
+                ),
+                div(
+                  code("01"), " otherwise."
+                ),
+              ],
             ),
-            div(
-              "byte ", code("0x01"), " otherwise."
+            new BitfieldRow(
+              6,
+              [
+                div(
+                  code("111111"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " is greater or equal to 2^32,"
+                ),
+                div(
+                  code("111110"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " is greater or equal to 2^16,"
+                ),
+                div(
+                  code("111101"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " is greater or equal to 256,"
+                ),
+                div(
+                  code("111100"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " is greater or equal to 60, or"
+                ),
+                div(
+                  "the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " otherwise."
+                ),
+              ],
             ),
-          ]],
+          ),
           [[
             code(function_call(
               r("encode_namespace_pk"),
@@ -1143,6 +1168,9 @@ export const encodings: Expression = site_template({
               r("encode_user_pk"),
               field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_user"),
             )),
+          ]],
+          [[
+            encode_two_bit_int(["the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations")], ["the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " is less than or equal to 59"]),
           ]],
           [[
             "for each triplet ", code("(", def_value({id: "enc_com_cap_del_area", singular: "area"}), ", ", def_value({id: "enc_com_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_com_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "communal_cap_delegations"), " the concatenation of:", lis(
@@ -1174,14 +1202,39 @@ export const encodings: Expression = site_template({
       pinformative(
         "If ", field_access(r("enc_mc_cap"), "capability_inner"), " is an ", r("OwnedCapability"), ", then ", code(function_call(r("encode_mc_capability"), r("enc_mc_cap"))), " is the concatenation of:",
         encodingdef(
-          [[
-            div(
-              "byte ", code("0x02"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_access_mode"), " == ", r("access_read")), ","
+          new Bitfields(
+            new BitfieldRow(
+              2,
+              [
+                div(
+                  code("10"), ", if ", code(field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_access_mode"), " == ", r("access_read")), ","
+                ),
+                div(
+                  code("11"), " otherwise."
+                ),
+              ],
             ),
-            div(
-              "byte ", code("0x03"), " otherwise."
+            new BitfieldRow(
+              6,
+              [
+                div(
+                  code("111111"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " is greater or equal to 2^32,"
+                ),
+                div(
+                  code("111110"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " is greater or equal to 2^16,"
+                ),
+                div(
+                  code("111101"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " is greater or equal to 256,"
+                ),
+                div(
+                  code("111100"), " if the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " is greater or equal to 60, or"
+                ),
+                div(
+                  "the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " otherwise."
+                ),
+              ],
             ),
-          ]],
+          ),
           [[
             code(function_call(
               r("encode_namespace_pk"),
@@ -1199,6 +1252,9 @@ export const encodings: Expression = site_template({
               r("encode_namespace_sig"),
               field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_initial_authorisation"),
             )),
+          ]],
+          [[
+            encode_two_bit_int(["the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations")], ["the length of ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " is less than or equal to 59"]),
           ]],
           [[
             "for each triplet ", code("(", def_value({id: "enc_own_cap_del_area", singular: "area"}), ", ", def_value({id: "enc_own_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_own_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(field_access(r("enc_mc_cap"), "capability_inner"), "owned_cap_delegations"), " the concatenation of:", lis(
