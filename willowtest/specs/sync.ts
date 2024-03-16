@@ -193,6 +193,10 @@ export const sync: Expression = site_template(
                 }),
             ),
 
+            pinformative(
+                "These ", rs("logical_channel"), " are not fully logically independent: messages on some channels refer to ", rs("resource_handle"), " ", r("handle_bind", "bound"), " on other channels. Whenever a message references a handle from another channel, but that handle has not yet been bound, processing of that message must be halted until all buffered messages in the channel for that kind of handle have been processed, or until the handle has been bound, whichever comes first.",
+            ),
+
             hsection("sync_messages", "Messages", [
                 pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
 
