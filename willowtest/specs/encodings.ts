@@ -915,7 +915,7 @@ export const encodings: Expression = site_template({
                   code(field_access(field_access(r("threed3d_primary"), "D3RangeSubspace"), "SubspaceRangeEnd"), " == ", field_access(field_access(r("threedr3d_reference"), "D3RangeSubspace"), "SubspaceRangeEnd")), ",",
                 ),
                 div(
-                  code("10"), " otherwise.",
+                  code("11"), " otherwise.",
                 ),
               ],
               [
