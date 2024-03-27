@@ -17,6 +17,7 @@ export const specifications: Expression = site_template(
       [link_name("data_model", "Data Model"), ": The fundamental data model, a system for giving structured names to bytestrings."],
       [link_name("meadowcap", "Meadowcap"), ": A capability system for controlling access to Willow data."],
       [link_name("sync", "Synchronisation"), ": A network protocol for efficiently and privately synchronising Willow data."],
+      [link_name("sideloading", "Sideloading"), ": A protocol for securely delivering Willow data by whatever means possible."]
     ),
 
     pinformative("These main specifications rely on several common concepts:"),
