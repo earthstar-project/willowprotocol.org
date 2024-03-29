@@ -655,7 +655,7 @@ export const encodings: Expression = site_template({
                 1,
                 [
                   code("1"), " ", r("iff"), " ",
-                  code(field_access(r("eir_inner"), "entry_subspace_id"), " == ", field_access(field_access(r("eir_outer"), "D3RangeSubspace"), "SubspaceRangeStart")),
+                  code(field_access(r("eir_inner"), "entry_subspace_id"), " != ", field_access(field_access(r("eir_outer"), "D3RangeSubspace"), "SubspaceRangeStart")),
                 ],
                 [
                   inclusion_flag_remark(field_access(r("eir_inner"), "entry_subspace_id")),
