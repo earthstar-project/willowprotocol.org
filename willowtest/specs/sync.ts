@@ -1156,10 +1156,6 @@ export const sync: Expression = site_template(
                     ),
 
                     pinformative(
-                        "Prior to receiving any corresponding message, ", r("sync_enc_prev_range"), ", ", r("sync_enc_prev_sender"), ", ", r("sync_enc_prev_receiver"), ", ", r("sync_enc_prev_entry"), ", and ", r("sync_enc_prev_token"), " are undefined and must not be referenced."
-                    ),
-
-                    pinformative(
                         "Given two ", rs("AreaOfInterestHandle"), " ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the ", r("D3Range"), " that ", rs("d3_range_include"), " the same ", rs("Entry"), " as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the ", rs("AreaOfInterest"), " to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are ", r("handle_bind", "bound"), "."
                     ),
 
