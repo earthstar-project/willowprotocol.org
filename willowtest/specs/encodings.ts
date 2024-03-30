@@ -692,7 +692,7 @@ export const encodings: Expression = site_template({
                 1,
                 [
                   code("1"), " ", r("iff"), "  bit 2 is ", code("1"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart")), ", or ",
-                  " bit 2 is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " <= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd")), ".",
+                  " bit 2 is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd")), ".",
                 ],
                 [
                   "Add or subtract ", r("eir_time"), "?",
