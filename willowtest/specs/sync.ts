@@ -582,13 +582,13 @@ export const sync: Expression = site_template(
                                     id: "DataSendEntryStatic",
                                     name: "static_token_handle",
                                     comment: ["A ", r("StaticTokenHandle"), " ", r("handle_bind", "bound"), " to the ", r("StaticToken"), " of the ", r("Entry"), " to transmit."],
-                                    rhs: r("Entry"),
+                                    rhs: r("U64"),
                                 },
                                 {
                                     id: "DataSendEntryDynamic",
                                     name: "dynamic_token",
                                     comment: ["The ", r("DynamicToken"), " of the ", r("Entry"), " to transmit."],
-                                    rhs: r("Entry"),
+                                    rhs: r("DynamicToken"),
                                 },
                                 {
                                     id: "DataSendEntryOffset",
