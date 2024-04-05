@@ -1484,6 +1484,22 @@ export const sync: Expression = site_template(
                             ]],
                             [
                                 [
+                                    "the empty string if encoding relative to ", r("currently_received_entry"), otherwise ", encode_two_bit_int(r("sync_enc_data_sender")),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                            [
+                                [
+                                    "the empty string if encoding relative to ", r("currently_received_entry"), otherwise ", encode_two_bit_int(r("sync_enc_data_receiver")),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                            [
+                                [
                                     "either ", code(function_call(
                                         r("encode_entry_relative_entry"),
                                         field_access(r("enc_data_entry"), "DataSendEntryEntry"),
@@ -1613,6 +1629,22 @@ export const sync: Expression = site_template(
                             [[
                                 encode_two_bit_int(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset")), ", or the empty string, if ", code(field_access(r("enc_data_req_pay"), "DataBindPayloadRequestOffset"), " == 0"),
                             ]],
+                            [
+                                [
+                                    "the empty string if encoding relative to ", r("currently_received_entry"), otherwise ", encode_two_bit_int(r("sync_enc_data_sender")),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
+                            [
+                                [
+                                    "the empty string if encoding relative to ", r("currently_received_entry"), otherwise ", encode_two_bit_int(r("sync_enc_data_receiver")),
+                                ],
+                                [
+                                    "Must match bit 11 of the initial bitfield."
+                                ],
+                            ],
                             [
                                 [
                                     "either ", code(function_call(
