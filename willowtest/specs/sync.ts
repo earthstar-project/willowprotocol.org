@@ -1492,7 +1492,7 @@ export const sync: Expression = site_template(
                             ]],
                             [
                                 [
-                                    "the empty string if encoding relative to ", r("currently_received_entry"), otherwise ", encode_two_bit_int(r("sync_enc_data_sender")),
+                                    "the empty string if encoding relative to ", r("currently_received_entry"), "otherwise ", encode_two_bit_int(r("sync_enc_data_sender")),
                                 ],
                                 [
                                     "Must match bit 11 of the initial bitfield."
