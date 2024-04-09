@@ -637,34 +637,42 @@ export const sync: Expression = site_template(
 
                     pseudocode(
                         new Struct({
-                            id: "DataSetEagerness",
-                            comment: ["Express a preference whether the other peer should eagerly forward ", rs("Payload"), " in the intersection of two ", rs("AreaOfInterest"), "."],
+                            id: "DataSetMetadata",
+                            comment: ["Express preferences for ", r("Payload"), " transfer in the intersection of two ", rs("AreaOfInterest"), "."],
                             fields: [
                                 {
-                                    id: "DataSetEagernessEagerness",
-                                    name: "is_eager",
-                                    comment: ["Whether ", rs("Payload"), " should be pushed."],
-                                    rhs: r("Bool"),
-                                },
-                                {
-                                    id: "DataSetEagernessSenderHandle",
+                                    id: "DataSetMetadataSenderHandle",
                                     name: "sender_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message."],
                                     rhs: r("U64"),
                                 },
                                 {
-                                    id: "DataSetEagernessReceiverHandle",
+                                    id: "DataSetMetadataReceiverHandle",
                                     name: "receiver_handle",
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message."],
                                     rhs: r("U64"),
+                                },
+                                {
+                                    id: "DataSetMetadataEagerness",
+                                    name: "is_eager",
+                                    comment: ["Whether the other peer should eagerly forward ", rs("Payload"), " in this intersection."],
+                                    rhs: r("Bool"),
+                                },
+                                {
+                                    id: "DataSetMetadataTrusting",
+                                    name: "is_trusting",
+                                    comment: ["Whether the other peer should optimistically transmit payloads ", rs("Payload"), " in this intersection before verifying their hash, or whether they should only transmit payload data for which they know that it is indeed the correct data."],
+                                    rhs: r("Bool"),
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("DataSetEagerness"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
+                    pinformative("The ", r("DataSetMetadata"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
-                    pinformative(R("DataSetEagerness"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+                    pinformative(R("DataSetMetadata"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
+
+                    pinformative("The ", r("DataSetMetadata"), " messages further let peers express a preference whether they'd like the other peer to verify all ", rs("Payload"), " before forwarding them (this should be the default behavior), or whether the peer is allowed to optimistically send ", rs("Payload"), " before completely verifying them."),
                     
                     pseudocode(
                         new Struct({
@@ -1548,7 +1556,7 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(                        
-                        "The encoding of a ", r("DataSetEagerness"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
+                        "The encoding of a ", r("DataSetMetadata"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
                                 new BitfieldRow(
@@ -1564,19 +1572,24 @@ export const sync: Expression = site_template(
                                 new BitfieldRow(
                                     1,
                                     [
-                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetEagerness"), " == true"),
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
                                     ],
                                 ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
-                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                                new BitfieldRow(
+                                    1,
+                                    [
+                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataTrusting"), " == true"),
+                                    ],
+                                ),
+                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
+                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
                                 bitfieldrow_unused(4),
                             ),
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessSenderHandle")),
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
                             ]],
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetEagernessReceiverHandle")),
+                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
                             ]],
                         ),
                     ),
