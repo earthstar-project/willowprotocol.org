@@ -16,10 +16,11 @@ import {
 import { hsection } from "../../../hsection.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
-import { def_type, pseudo_array, pseudocode, Struct } from "../../../pseudocode.ts";
+import { def_type, function_call, pseudo_array, pseudocode, Struct } from "../../../pseudocode.ts";
 import { Expression } from "../../../tsgen.ts";
 import {
 blue,
+def_fn,
 def_parameter_fn,
   def_parameter_value,
   link,
@@ -156,11 +157,13 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     pinformative("When a peer receives a ", r("D3RangeFingerprint"), " that matches the ", r("d3rbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same ", r("D3Range"), ", the peer should reply with an empty ", r("D3RangeEntrySet"), " for that ", r("D3Range"), ", setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ". This notifies the sender of the ", r("D3RangeFingerprint"), " that reconciliation has successfully concluded for the ", r("D3Range"), "."),
 
     hsection("d3rbsr_parameters", "Fingerprinting", [
-      pinformative(R("d3rbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("d3rbsr_fp"), ". To quickly compute ", rs("d3rbsr_fp"), ", it helps if the ", r("d3rbsr_fp"), " for a ", r("D3Range"), " can be assembled from precomputed ", rs("d3rbsr_fp"), " of other, smaller ", r("D3Range"), ". For this reason, we define the fingerprinting function in terms of some building blocks:"),
+      pinformative(R("d3rbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("d3rbsr_fp"), ". To quickly compute ", rs("d3rbsr_fp"), ", it helps if the ", r("d3rbsr_fp"), " for a ", r("D3Range"), " can be assembled from precomputed ", rs("d3rbsr_fp"), " of other, smaller ", rs("D3Range"), ". For this reason, we define the fingerprinting function in terms of some building blocks: ", rs("LengthyEntry"), " are mapped into a set ", def_type({id: "d3rbsr_prefp", singular: "PreFingerprint"}), " with a function that satisfies certain algebraic properties that allow for incremental computation, and ", rs("d3rbsr_prefp"), " are then converted", marginale(["The split into ", rs("d3rbsr_prefp"), " and ", rs("d3rbsr_fp"), " allows for compression: the ", rs("d3rbsr_prefp"), " might be efficient to compute but rather large, so you would not want to exchange them over the network. Converting a ", r("d3rbsr_prefp"), " into a ", r("d3rbsr_fp"), " can be as simple as hashing it with a typical, secure hash function, thus preserving collision resistance but yielding smaller final fingerprints."]), " into the final ", r("d3rbsr_fp"), "."),
 
-      pinformative("First, we require a function ", def_parameter_fn({id: "d3rbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("d3rbsr_fp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("d3rbsr_fp"), "."),
+      pinformative("First, we require a function ", def_parameter_fn({id: "d3rbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("d3rbsr_prefp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("d3rbsr_fp"), "."),
 
-      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearise three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "d3rbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("d3rbsr_fp"), " to a single new ", r("d3rbsr_fp"), ". The ", r("d3rbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "d3rbsr_neutral", singular: "fingerprint_neutral"}), "."),
+      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearise three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "d3rbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("d3rbsr_prefp"), " to a single new ", r("d3rbsr_prefp"), ". The ", r("d3rbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "d3rbsr_neutral", singular: "fingerprint_neutral"}), "."),
+
+      pinformative("Third, we require a function ", def_parameter_fn({id: "d3rbsr_fp_finalise", singular: "fingerprint_finalise"}), " that maps each ", r("d3rbsr_prefp"), " into the corresponding ", r("d3rbsr_fp"), "."),
 
       marginale_inlineable(
         figure(
@@ -210,13 +213,13 @@ export const range3d_based_set_reconciliation: Expression = site_template(
         ),
       ),
 
-      pinformative("Given these building blocks, we define the function ", def({id: "ddrbsr_fingerprint", singular: "fingerprint"}), " from sets of ", rs("LengthyEntry"), " to ", r("d3rbsr_fp"), ":", lis(
-        ["applying ", r("ddrbsr_fingerprint"), " to the empty set yields ", r("d3rbsr_neutral"), ","],
-        ["applying ", r("ddrbsr_fingerprint"), " to a set containing exactly one ", r("LengthyEntry"), " yields the same result as applying ", r("d3rbsr_fp_singleton"), " to that ", r("LengthyEntry"), ", and"],
-        ["applying ", r("ddrbsr_fingerprint"), " to any other set of ", rs("LengthyEntry"), " yields the result of applying ", r("d3rbsr_fp_singleton"), " to all members of the set individually and then combining the resulting ", rs("d3rbsr_fp"), " with ", r("d3rbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity)."],
+      pinformative("Given these building blocks, we define the function ", def_fn({id: "ddrbsr_fingerprint", singular: "fingerprint"}), " from sets of ", rs("LengthyEntry"), " to ", r("d3rbsr_fp"), ":", lis(
+        ["applying ", r("ddrbsr_fingerprint"), " to the empty set yields ", function_call(r("d3rbsr_fp_finalise"), r("d3rbsr_neutral")), ","],
+        ["applying ", r("ddrbsr_fingerprint"), " to a set containing exactly one ", r("LengthyEntry"), " yields the same result as applying ", r("d3rbsr_fp_singleton"), " to that ", r("LengthyEntry"), " and then applying ", r("d3rbsr_fp_finalise"), ", and"],
+        ["applying ", r("ddrbsr_fingerprint"), " to any other set of ", rs("LengthyEntry"), " yields the result of applying ", r("d3rbsr_fp_singleton"), " to all members of the set individually, then combining the resulting ", rs("d3rbsr_fp"), " with ", r("d3rbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity), and then applying ", r("d3rbsr_fp_finalise"), "."],
       )),
 
-      pinformative("For ", r("d3rbsr"), " to work correctly, ", r("ddrbsr_fingerprint"), " must map distinct sets of ", rs("LengthyEntry"), " to distinct ", rs("d3rbsr_fp"), " with high probability, even when facing maliciously crafted input sets. The ", link("range-based set reconciliation paper", "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " surveys suitable, cryptographically secure hash functions in section 5B. All but the Cayley hashes use commutative ", r("d3rbsr_fp_combine"), " functions, and are thus suitable for ", r("d3rbsr"), "."),
+      pinformative("For ", r("d3rbsr"), " to work correctly, ", r("ddrbsr_fingerprint"), " must map distinct sets of ", rs("LengthyEntry"), " to distinct ", rs("d3rbsr_fp"), " with high probability, even when facing maliciously crafted input sets. The ", link("range-based set reconciliation paper", "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " surveys suitable, cryptographically secure hash functions in section 5B. All but the Cayley hashes use commutative ", r("d3rbsr_fp_combine"), " functions, and are thus suitable for ", r("d3rbsr"), ". Further, ", r("d3rbsr_fp_finalise"), " must not map distinct inpus to equal outpts; suitable choices are the identity function (if no compression is needed) or traditional, secure hash functions."),
     ]),
   ],
 );
