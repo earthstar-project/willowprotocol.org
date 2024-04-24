@@ -265,7 +265,7 @@ export const grouping_entries: Expression = site_template({
           {
             id: "aoi_count",
             name: "max_count",
-            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be among the ", r("aoi_count"), " greatest ", rs("Timestamp"), ", unless ", r("aoi_count"), " is zero."],
+            comment: ["To be ", r("aoi_include", "included"), " in this ", r("AreaOfInterest"), ", an ", r("Entry"), "’s ", r("entry_timestamp"), " must be among the ", r("aoi_count"), " ", r("entry_newer", "newest"), " ", rs("Entry"), ", unless ", r("aoi_count"), " is zero."],
             rhs: r("U64"),
           },
           {
