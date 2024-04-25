@@ -664,12 +664,6 @@ export const sync: Expression = site_template(
                                     comment: ["Whether the other peer should eagerly forward ", rs("Payload"), " in this intersection."],
                                     rhs: r("Bool"),
                                 },
-                                {
-                                    id: "DataSetMetadataTrusting",
-                                    name: "is_trusting",
-                                    comment: ["Whether the other peer should optimistically transmit payloads ", rs("Payload"), " in this intersection before verifying their hash, or whether they should only transmit payload data for which they know that it is indeed the correct data."],
-                                    rhs: r("Bool"),
-                                },
                             ],
                         }),
                     ),
@@ -677,8 +671,6 @@ export const sync: Expression = site_template(
                     pinformative("The ", r("DataSetMetadata"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
                     pinformative(R("DataSetMetadata"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
-
-                    pinformative("The ", r("DataSetMetadata"), " messages further let peers express a preference whether they'd like the other peer to verify all ", rs("Payload"), " before forwarding them (this should be the default behavior), or whether the peer is allowed to optimistically send ", rs("Payload"), " before completely verifying them."),
                     
                     pseudocode(
                         new Struct({
@@ -1581,12 +1573,7 @@ export const sync: Expression = site_template(
                                         code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
                                     ],
                                 ),
-                                new BitfieldRow(
-                                    1,
-                                    [
-                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataTrusting"), " == true"),
-                                    ],
-                                ),
+                                bitfieldrow_unused(1),
                                 two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
                                 two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
                                 bitfieldrow_unused(4),
