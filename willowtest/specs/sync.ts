@@ -86,6 +86,10 @@ export const sync: Expression = site_template(
                 pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), " (that they are allowed to access)."),
             ]),
 
+            hsection("sync_payloads_transform", {no_toc: true}, "Payload Transformation", [
+                pinformative("Peers are not restricted to exchanging ", rs("Payload"), " verbatim, they may transform the payloads first. This can enable, for example, streaming verification or just-in-time compression."),
+            ]),
+
             hsection("sync_resources", {no_toc: true}, "Resource Limits", [
                 pinformative("Multiplexing and management of shared state require peers to inform each other of their resource limits, lest one peer overload the other. We use a protocol-agnostic solution based on ", rs("logical_channel"), " and ", rs("resource_handle"), " that we describe ", link_name("resource_control", "here"), "."),
             ]),
@@ -103,6 +107,8 @@ export const sync: Expression = site_template(
             pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
                 "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type ", r("UserSignature"), ", which together yield a ", r("MeadowcapAuthorisationToken"), ".",
             ]), " (which differs between any two ", rs("Entry"), "). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
+
+            pinformative(link_name("sync_payloads_transform", "Payload transformation"), " requires a (not necessarily deterministic) algorithm ", def_parameter_fn("transform_payload"), " that converts a ", r("Payload"), " into another bytestring."),
 
             pinformative("Finally, we require a ", r("NamespaceId"), " ", def_parameter_value({id: "sync_default_namespace_id", singular: "default_namespace_id"}), ", a ", r("SubspaceId"), " ", def_parameter_value({id: "sync_default_subspace_id", singular: "default_subspace_id"}), ", and a ", r("PayloadDigest"), " ", def_parameter_value({id: "sync_default_payload_digest", singular: "default_payload_digest"}), "."),
         ]),
@@ -602,9 +608,9 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("DataSendEntry"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("d3rbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("DataSendPayload"), " messages)."),
 
-                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains two pieces of state: an ", r("Entry"), " ", def_value("currently_received_entry"), ", and a ", r("U64"), " ", def_value("currently_received_offset"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving an ", r("DataSendEntry"), " message whose ", r("DataSendEntryOffset"), " is strictly less than the ", r("DataSendEntryEntry"), "’s ", r("entry_payload_length"), ", a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), " and its ", r("currently_received_offset"), " to the received ", r("DataSendEntryOffset"), "."),
+                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains a piece of state: an ", r("Entry"), " ", def_value("currently_received_entry"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving a ", r("DataSendEntry"), " message, a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), "."),
 
-                    pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), ", and ", r("currently_received_offset"), " is zero."),
+                    pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."),
                 
                     pinformative(R("DataSendEntry"), " messages use the ", r("DataChannel"), "."),
                     
@@ -622,16 +628,16 @@ export const sync: Expression = site_template(
                                 {
                                     id: "DataSendPayloadBytes",
                                     name: "bytes",
-                                    comment: [r("DataSendPayloadAmount"), " many bytes, to be added to the ", r("Payload"), " of the receiver", apo, "s ", r("currently_received_entry"), " at offset ", r("currently_received_offset"), "."],
+                                    comment: [r("DataSendPayloadAmount"), " many bytes, a substring of the bytes obtained by applying ", r("transform_payload"), " to the ", r("Payload"), " to be transmitted."],
                                     rhs: ["[", hl_builtin("u8"), "]"],
                                 },
                             ],
                         }),
                     ),
                 
-                    pinformative("The ", r("DataSendPayload"), " messages let peers transmit ", rs("Payload"), "."),
+                    pinformative("The ", r("DataSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " ", rs("Payload"), "."),
 
-                    pinformative("A ", r("DataSendPayload"), " message may only be sent if its ", r("DataSendPayloadAmount"), " of ", r("DataSendPayloadBytes"), " plus the receiver", apo, "s ", r("currently_received_offset"), " is less than or equal to the ", r("entry_payload_length"), " of the receiver", apo, "s ", r("currently_received_entry"), ". The receiver then increases its ", r("currently_received_offset"), " by ", r("DataSendPayloadAmount"), ". If the ", r("currently_received_entry"), " was set via a ", r("DataReplyPayload"), " message, the receiver also increases the offset to which the ", r("PayloadRequestHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("Each ", r("DataSendPayload"), " transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " to be transmitted. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
 
@@ -723,7 +729,7 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested ", r("Payload"), ". More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " and ", r("currently_received_offset"), " values to those to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested ", r("Payload"), ". More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " value to that to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is ", r("handle_bind", "bound"), "."),
                 ]),
                 hsection("sync_control", "Resource Control", [
                     pinformative("Finally, we maintain ", rs("logical_channel"), " and ", r("handle_free"), " ", rs("resource_handle"), ", as explained in the ", link_name("resources_message_types", "resource control document"), "."),
