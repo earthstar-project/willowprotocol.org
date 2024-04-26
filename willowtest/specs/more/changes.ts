@@ -27,7 +27,7 @@ export const changes: Expression = site_template({
 			pinformative(link("RSS feed available here", "/rss_changelog.xml"), "."),
 			lis(
 				create_changelog_item(
-					{ name: "prefingerprints_and_payload_transformations", title: "Sync Protocol Tweaks", pubDate: new Date(2024, 3, 25, 0)},
+					{ name: "prefingerprints_and_payload_transformations", title: "Sync Protocol Tweaks", pubDate: new Date(2024, 3, 26, 0)},
 					[
 						pinformative("We are progressing with implementing the Willow General Purpose Sync Protocol (WGPS), and have discovered some tweaks that make the protocol more powerful."),
 
