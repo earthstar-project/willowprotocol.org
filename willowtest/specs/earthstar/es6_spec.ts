@@ -36,7 +36,7 @@ export const es6_spec: Expression = site_template(
 						),
 
 						pinformative(
-							"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def("cinn_shortname"), ". A ", r("correspond", "corresponding"), " ", r("dss_pk"), " is a pair of a ", r("correspond", "corresponding"), " ed25519 public key and the same ", r("cinn_shortname"), ".", 
+							"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def("cinn_shortname"), ". A ", r("correspond", "corresponding"), " ", r("dss_pk"), " is a pair of a ", r("correspond", "corresponding"), " ed25519 public key (called the ", def({id: "cinn_pk_pk", singular: "underlying public key"}), ") and the same ", r("cinn_shortname"), ".", 
 						),
 
 						pinformative(
@@ -55,7 +55,7 @@ export const es6_spec: Expression = site_template(
 
 						pinformative("An ", def({id: "es6_identity", singular: "identity identifier"}), " is a ", r("cinn25519"), "<4, 4> public key."),
 
-						pinformative("A ", def({id: "es6_namespace", singular: "namespace identifier"}), " is a ", r("cinn25519"), "<1, 10> public key."),
+						pinformative("A ", def({id: "es6_namespace", singular: "namespace identifier"}), " is a ", r("cinn25519"), "<1, 15> public key."),
 					]),
 				]),
 
@@ -90,7 +90,37 @@ export const es6_spec: Expression = site_template(
 				]),
 
 				hsection("es6_meadowcap", "Meadowcap", [
+					pinformative(
+						"The ", r("namespace_signature_scheme"), " is ", r("cinn25519"), "<1, 15>."
+					),
 
+					pinformative(
+						"The ", r("encode_namespace_pk"), " function maps a ", r("es6_namespace"), " to the concatenation of its ", r("cinn_shortname"), " (encoded as ascii), the byte ", code("0x00"), ", and the ", r("cinn_pk_pk"), "."
+					),
+
+					pinformative(
+						"The ", r("encode_namespace_sig"), " function maps a ", r("namespace_signature_scheme"), " signature (which is just an ed25519 signature, which is just a sequence of bytes) to itself."
+					),
+
+					pinformative(
+						"The ", r("user_signature_scheme"), " is ", r("cinn25519"), "<4, 4>."
+					),
+
+					pinformative(
+						"The ", r("encode_user_pk"), " function maps an ", r("es6_identity"), " to the concatenation of its ", r("cinn_shortname"), " (encoded as ascii), and the ", r("cinn_pk_pk"), "."
+					),
+
+					pinformative(
+						"The ", r("encode_user_sig"), " function maps a ", r("user_signature_scheme"), " signature (which is just an ed25519 signature, which is just a sequence of bytes) to itself."
+					),
+
+					pinformative(
+						"The choices for the Meadowcap ", r("mc_max_component_length"), ", ", r("mc_max_component_count"), ", and ", r("mc_max_path_length"), " are the same as those for the data model ", r("max_component_length"), ", ", r("max_component_count"), ", and ", r("max_path_length"), "."
+					),
+
+					pinformative(
+						"These choices of parameters make the Meadowcap instantiation ", r("mc_compatible"), " with the data model instantiation."
+					),
 				]),
 		],
 );
