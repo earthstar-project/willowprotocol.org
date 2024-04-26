@@ -61,6 +61,7 @@ import { spec_statuses } from "./specs/more/statuses.ts";
 import { SpecStatus, specStatus } from "../spec_status.ts";
 import { willow_compared } from "./specs/more/compare.ts";
 import { about } from "./specs/more/about.ts";
+import { es6_spec } from "./specs/earthstar/es6_spec.ts";
 
 export function quotes(...contents: Expression[]) {
   const macro = new_macro(
@@ -674,6 +675,10 @@ evaluate(enable_previews([
       out_index_directory("spec-statuses", spec_statuses),
       out_index_directory("changes", changes),
       out_index_directory("about-us", about),
+    ]),
+    out_directory("earthstar", [
+      // out_file("index.html", more),
+      out_index_directory("spec", es6_spec),
     ]),
     copy_statics("assets"),
   ),
