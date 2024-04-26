@@ -10,7 +10,7 @@ import { def_parameter_value, def_value, lis } from "../../main.ts";
 
 export const es6_spec: Expression = site_template(
 		{
-				title: "Earthstar 6 Specification",
+				title: "Earthstar Specification",
 				name: "es6_spec",
 		},
 		[
@@ -28,7 +28,7 @@ export const es6_spec: Expression = site_template(
 
 					hsection("es6_cinn25519", "Cinn25519", [
 						pinformative(
-							"Earthstar 6 uses a non-standard signature scheme that augments each public key with a human-readable string to aid in identifying keys. These schemes are parameterised by a minimum and maximum length of the string."
+							"Earthstar uses a non-standard signature scheme that augments each public key with a human-readable string to aid in identifying keys. These schemes are parameterised by a minimum and maximum length of the string."
 						),
 
 						pinformative(
@@ -51,7 +51,7 @@ export const es6_spec: Expression = site_template(
 					]),
 
 					hsection("es6_ids", "Identifiers", [
-						pinformative("Various concepts in Earthstar 6 use ", r("cinn25519"), " as identifiers."),
+						pinformative("Various concepts in Earthstar use ", r("cinn25519"), " as identifiers."),
 
 						pinformative("An ", def({id: "es6_identity", singular: "identity identifier"}), " is a ", r("cinn25519"), "<4, 4> public key."),
 
@@ -61,7 +61,7 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_datamodel", "Data Model", [
 					pinformative(
-						"The Earthstar 6 data model is ", link_name("data_model", "that of Willow"), ", with the following choices of protocol parameters."
+						"The Earthstar data model is ", link_name("data_model", "that of Willow"), ", with the following choices of protocol parameters."
 					),
 
 					pinformative(
