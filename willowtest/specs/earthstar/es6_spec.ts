@@ -229,7 +229,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -237,7 +237,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -249,11 +249,11 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is aready a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is already a sequence of bytes) to itself."
 					),
 				]),
 				
