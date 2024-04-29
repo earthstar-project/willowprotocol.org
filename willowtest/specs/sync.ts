@@ -637,7 +637,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("DataSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " ", rs("Payload"), "."),
 
-                    pinformative("Each ", r("DataSendPayload"), " transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " to be transmitted. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
+                    pinformative("Each ", r("DataSendPayload"), " transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the ", r("currently_received_entry"), " of the receiver. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
 
@@ -722,6 +722,8 @@ export const sync: Expression = site_template(
                     ),
                 
                     pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested ", r("Payload"), ". More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " value to that to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is ", r("handle_bind", "bound"), "."),
+
+                    pinformative(R("DataReplyPayload"), " messages use the ", r("DataChannel"), "."),
                 ]),
                 hsection("sync_control", "Resource Control", [
                     pinformative("Finally, we maintain ", rs("logical_channel"), " and ", r("handle_free"), " ", rs("resource_handle"), ", as explained in the ", link_name("resources_message_types", "resource control document"), "."),
