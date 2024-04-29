@@ -37,7 +37,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def("cinn_shortname"), ". A ", r("correspond", "corresponding"), " ", r("dss_pk"), " is a pair of a ", r("correspond", "corresponding"), " ed25519 public key (called the ", def({id: "cinn_pk_pk", singular: "underlying public key"}), ") and the same ", r("cinn_shortname"), ".", 
+						"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def({id: "cinn_shortname", singular: "shortname"}), ". A ", r("correspond", "corresponding"), " ", r("dss_pk"), " is a pair of a ", r("correspond", "corresponding"), " ed25519 public key (called the ", def({id: "cinn_pk_pk", singular: "underlying public key"}), ") and the same ", r("cinn_shortname"), ".", 
 					),
 
 					pinformative(
@@ -49,6 +49,12 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative("Accordingly, you ", r("dss_verify"), " a signature by calling the ed25519 verification function for the same concatenation."),
+
+					pinformative("We define ", def_fn("encode_cinn_pk"), " as the function that maps a ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> public key to the concatenation of ", lis(
+						["The ", r("cinn_shortname"), ", encoded as ascii,"],
+						["If ", code(r("cinn_min"), " <= ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
+						["the ", r("cinn_pk_pk"), " (which is a sequence of bytes)."],
+					)),
 				]),
 
 				hsection("es6_ids", "Identifiers", [
@@ -96,7 +102,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("encode_namespace_pk"), " function maps a ", r("es6_namespace"), " to the concatenation of its ", r("cinn_shortname"), " (encoded as ascii), the byte ", code("0x00"), ", and the ", r("cinn_pk_pk"), "."
+					"The ", r("encode_namespace_pk"), " function is ", r("encode_cinn_pk"), "."
 				),
 
 				pinformative(
@@ -108,7 +114,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("encode_user_pk"), " function maps an ", r("es6_identity"), " to the concatenation of its ", r("cinn_shortname"), " (encoded as ascii), and the ", r("cinn_pk_pk"), "."
+					"The ", r("encode_user_pk"), " function is ", r("encode_cinn_pk"), "."
 				),
 
 				pinformative(
@@ -156,11 +162,11 @@ export const es6_spec: Expression = site_template(
 
 					pinformative("We define the ", def_fn({id: "encode_fragment", singular: "encode_fragment"}), " function as follows:", lis(
 						["Encode a ", r("fragment"), " ", code("(", def_value({id: "es6_fragment2_namespace", singular: "namespace"}), ", ", def_value({id: "es6_fragment2_prefix", singular: "pre"}), ")"), " as the concatenation of", lis(
-							[function_call(r("encode_namespace_pk"), r("es6_fragment2_namespace")), " as defined in the parameterisation of Meadowcap, and"],
+							[function_call(r("encode_cinn_pk"), r("es6_fragment2_namespace")), ", and"],
 							[function_call(r("encode_path"), r("es6_fragment2_prefix")), "."],
 						)],
 						["Encode a ", r("fragment"), " ", code("(", def_value({id: "es6_fragment3_namespace", singular: "namespace"}), ", ", def_value({id: "es6_fragment3_subspace_id", singular: "subspace_id"}), ", ", def_value({id: "es6_fragment3_prefix", singular: "pre"}), ")"), " as the concatenation of", lis(
-							[function_call(r("encode_namespace_pk"), r("es6_fragment3_namespace")), " as defined in the parameterisation of Meadowcap,"],
+							[function_call(r("encode_cinn_pk"), r("es6_fragment3_namespace")), ","],
 							[function_call(r("encode_user_pk"), r("es6_fragment3_subspace_id")), " as defined in the parameterisation of Meadowcap, and"],
 							[function_call(r("encode_path"), r("es6_fragment3_prefix")), "."],
 						)],
@@ -169,6 +175,91 @@ export const es6_spec: Expression = site_template(
 					pinformative(
 						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for out instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
 					),
+				]),
+
+				hsection("es6_wgps_reconciliation", "3d Range-Based Set Reconciliation", [
+					pinformative(
+						"The type ", r("Fingerprint"), " is TODO, the type ", r("PreFingerprint"), " is TODO, and the ", r("fingerprint_finalise"), " function is TODO.",
+					),
+
+					pinformative(
+						"The ", r("fingerprint_singleton"), " is TODO."
+					),
+
+					pinformative(
+						"The ", r("fingerprint_combine"), " function is TODO.",
+					),
+
+					pinformative(
+						"The ", r("fingerprint_neutral"), " value is TODO.",
+					),
+				]),
+
+				hsection("es6_wgps_other", "Other Parameters", [
+					pinformative(
+						"The decomposition of ", rs("AuthorisationToken"), " into ", r("StaticToken"), " and ", r("DynamicToken"), " is as recommended for Meadowcap in the WGPS: ", r("StaticToken"), " is the type ", r("Capability"), ", and ", r("DynamicToken"), " is the type of ", r("user_signature_scheme"), " signatures."
+					),
+
+					pinformative(
+						"The ", r("transform_payload"), " algorithm is TODO."
+					),
+
+					pinformative(
+						"The ", r("sync_default_namespace_id"), " is the ", r("es6_namespace"), " whose ", r("cinn_shortname"), " is ", code("a"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
+					),
+
+					pinformative(
+						"The ", r("sync_default_subspace_id"), " is the ", r("es6_identity"), " whose ", r("cinn_shortname"), " is ", code("a000"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
+					),
+
+					pinformative(
+						"The ", r("sync_default_payload_digest"), " is the sequence of 256 zero bits.",
+					),
+
+					hsection("es6_wgps_encoding", "Encoding Parameters", [
+						pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
+
+						pinformative(
+							"The ", r("encode_group_member"), " function maps each ", r("PsiGroup"), " member (i.e., each ed25519 public key, which is already a sequence of bytes) to iself."
+						),
+
+						pinformative(
+							"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the ", r("subspace_cap_namespace"), "."
+						),
+
+						pinformative(
+							"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						),
+
+						pinformative(
+							"The ", r("encode_read_capability"), " function is ", r("encode_mc_capability"), ", except you omit encoding the ", r("communal_cap_namespace"), "."
+						),
+
+						pinformative(
+							"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						),
+
+						pinformative(
+							"The total order on ", r("SubspaceId"), " (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
+						),
+
+						pinformative(
+							"The ", r("encode_static_token"), " function is ", r("encode_mc_capability"), ", encoding relative to the ", r("full_area"), "."
+						),
+
+						pinformative(
+							"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+						),
+
+						pinformative(
+							"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is aready a sequence of bytes) to itself."
+						),
+
+
+
+
+					]),
+
 				]),
 				
 			]),
