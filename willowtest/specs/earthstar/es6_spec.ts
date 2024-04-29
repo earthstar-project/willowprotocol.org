@@ -215,51 +215,46 @@ export const es6_spec: Expression = site_template(
 					pinformative(
 						"The ", r("sync_default_payload_digest"), " is the sequence of 256 zero bits.",
 					),
+				]),
 
-					hsection("es6_wgps_encoding", "Encoding Parameters", [
-						pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
+				hsection("es6_wgps_encoding", "Encoding Parameters", [
+					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
 
-						pinformative(
-							"The ", r("encode_group_member"), " function maps each ", r("PsiGroup"), " member (i.e., each ed25519 public key, which is already a sequence of bytes) to iself."
-						),
+					pinformative(
+						"The ", r("encode_group_member"), " function maps each ", r("PsiGroup"), " member (i.e., each ed25519 public key, which is already a sequence of bytes) to iself."
+					),
 
-						pinformative(
-							"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the ", r("subspace_cap_namespace"), "."
-						),
+					pinformative(
+						"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the ", r("subspace_cap_namespace"), "."
+					),
 
-						pinformative(
-							"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
-						),
+					pinformative(
+						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+					),
 
-						pinformative(
-							"The ", r("encode_read_capability"), " function is ", r("encode_mc_capability"), ", except you omit encoding the ", r("communal_cap_namespace"), "."
-						),
+					pinformative(
+						"The ", r("encode_read_capability"), " function is ", r("encode_mc_capability"), ", except you omit encoding the ", r("communal_cap_namespace"), "."
+					),
 
-						pinformative(
-							"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
-						),
+					pinformative(
+						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+					),
 
-						pinformative(
-							"The total order on ", r("SubspaceId"), " (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
-						),
+					pinformative(
+						"The total order on ", r("SubspaceId"), " (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
+					),
 
-						pinformative(
-							"The ", r("encode_static_token"), " function is ", r("encode_mc_capability"), ", encoding relative to the ", r("full_area"), "."
-						),
+					pinformative(
+						"The ", r("encode_static_token"), " function is ", r("encode_mc_capability"), ", encoding relative to the ", r("full_area"), "."
+					),
 
-						pinformative(
-							"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
-						),
+					pinformative(
+						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is aready a sequence of bytes) to itself."
+					),
 
-						pinformative(
-							"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is aready a sequence of bytes) to itself."
-						),
-
-
-
-
-					]),
-
+					pinformative(
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is aready a sequence of bytes) to itself."
+					),
 				]),
 				
 			]),
