@@ -4,6 +4,7 @@ import {
   em,
   figcaption,
   figure,
+  hr,
   img,
   span,
   table,
@@ -98,7 +99,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
       def_fake({id: "d3rbsr", singular: "3d range-based set reconciliation"}), " is an algorithm for letting two peers compute the union of their ", rs("LengthyEntry"), " in some ", r("D3Range"), " by exchanging ", rs("D3RangeFingerprint"), " and ", rs("D3RangeEntrySet"), ".",
     ]), " takes these ideas and applies them to Willow. The core design decision is to delimit sets of ", rs("LengthyEntry"), " via ", rs("D3Range"), ". When a peer splits its ", rs("D3Range"), ", it is crucial for overall efficiency to not split based on volume (for example, by splitting the ", rs("D3RangeTime"), " in half numerically)", ", but to split into subranges in which the peer holds roughly the same number of ", rs("Entry"), "."),
 
-    pinformative("Let ", def_type({id: "d3rbsr_fp", singular: "Fingerprint", plural: "Fingerprints"}), " denote the type of hashes of ", rs("LengthyEntry"), " that the peers exchange. Then the precise pieces of information that peers exchange are the following:"),
+    pinformative("Let ", def_type({id: "d3rbsr_fp", singular: "Fingerprint", plural: "Fingerprints"}), " denote the type of hashes of ", rs("LengthyEntry"), " that the peers exchange. Then the precise pieces of information that the peers need to exchange are the following:"),
 
     pseudocode(
       new Struct({
@@ -155,6 +156,12 @@ export const range3d_based_set_reconciliation: Expression = site_template(
     pinformative("To any such ", r("D3RangeEntrySet"), ", a peer replies with its own ", r("D3RangeEntrySet"), ", setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ", and omitting all ", rs("LengthyEntry"), " it had just received in the other peer’s ", r("D3RangeEntrySet"), "."),
 
     pinformative("When a peer receives a ", r("D3RangeFingerprint"), " that matches the ", r("d3rbsr_fp"), " over its local ", rs("LengthyEntry"), " in the same ", r("D3Range"), ", the peer should reply with an empty ", r("D3RangeEntrySet"), " for that ", r("D3Range"), ", setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ". This notifies the sender of the ", r("D3RangeFingerprint"), " that reconciliation has successfully concluded for the ", r("D3Range"), "."),
+
+    hr(),
+
+    pinformative("The peers might be interested in when they have successfully reconciled a particular ", r("D3Range"), ". Unfortunately, tracking all the ", rs("D3Range"), " that you receive and determining whether their union covers the particular ", r("D3Range"), " you are interested in is a comparatively expensive (and annoying) algorithmic problem. To circumvent this problem, peers can attach small bits of metadata to their messages: whenever a peer splits a ", r("D3Range"), " into a set of covering ", rs("D3Range"), ", the peer can simply attach some metadata to the final such subrange that it sends that indicates which of the ", rs("D3Range"), " sent by the other peer has now been fully covered by subranges."),
+
+    pinformative("As long as both peers are accurate in supplying this metadata, they can maintain perfect information about the progress of reconciliation without the need for any sophisticated data structures. Peers should be cautious that a malicious peer could provide wildly inadequate metadata, but in general this is tolerable: a malicious peer can sabotage reconciliation in all sorts of interesting ways regardless."),
 
     hsection("d3rbsr_parameters", "Fingerprinting", [
       pinformative(R("d3rbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("d3rbsr_fp"), ". To quickly compute ", rs("d3rbsr_fp"), ", it helps if the ", r("d3rbsr_fp"), " for a ", r("D3Range"), " can be assembled from precomputed ", rs("d3rbsr_fp"), " of other, smaller ", rs("D3Range"), ". For this reason, we define the fingerprinting function in terms of some building blocks: ", rs("LengthyEntry"), " are mapped into a set ", def_type({id: "d3rbsr_prefp", singular: "PreFingerprint"}), " with a function that satisfies certain algebraic properties that allow for incremental computation, and ", rs("d3rbsr_prefp"), " are then converted", marginale(["The split into ", rs("d3rbsr_prefp"), " and ", rs("d3rbsr_fp"), " allows for compression: the ", rs("d3rbsr_prefp"), " might be efficient to compute but rather large, so you would not want to exchange them over the network. Converting a ", r("d3rbsr_prefp"), " into a ", r("d3rbsr_fp"), " can be as simple as hashing it with a typical, secure hash function, thus preserving collision resistance but yielding smaller final fingerprints."]), " into the final ", r("d3rbsr_fp"), "."),

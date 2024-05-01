@@ -5,10 +5,10 @@ import { aside, code, div, em, hr, img, p } from "../../h.ts";
 import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
-import { Expression } from "../../tsgen.ts";
+import { Expression, surpress_output } from "../../tsgen.ts";
 import { site_template, pinformative, lis, pnormative, link, def_parameter_type, def_parameter_value, def_value, def_fake_value, aside_block, ols, quotes, def_parameter_fn, def_fn } from "../main.ts";
 import { $, $comma, $dot } from "../../katex.ts";
-import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array, function_call, field_access } from "../../pseudocode.ts";
+import { SimpleEnum, pseudocode, hl_builtin, Struct, def_type, pseudo_tuple, pseudo_array, function_call, field_access, pseudo_choices, def_symbol } from "../../pseudocode.ts";
 
 import { asset } from "../../out.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
@@ -442,6 +442,8 @@ export const sync: Expression = site_template(
                 hsection("sync_reconciliation", "Reconciliation", [
                     pinformative("We use ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronise the data of the peers."),
                     
+                    surpress_output(def_symbol({id: "covers_none", singular: "none"}, "none", ["A value that signals that a message does not complete a ", r("D3Range"), " cover."])),
+                    
                     pseudocode(
                         new Struct({
                             id: "ReconciliationSendFingerprint",
@@ -471,11 +473,21 @@ export const sync: Expression = site_template(
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
                                     rhs: r("U64"),
                                 },
+                                {
+                                    id: "ReconciliationSendFingerprintCovers",
+                                    name: "covers",
+                                    comment: ["If this message is the last of a set of messages that together cover the ", r("ReconciliationSendFingerprintRange"), " of some prior ", r("ReconciliationSendFingerprint"), " message, then this field contains the ", r("range_count"), " of that ", r("ReconciliationSendFingerprint"), " message. Otherwise, ", r("covers_none"), "."],
+                                    rhs: pseudo_choices(r("U64"), r("covers_none")),
+                                },
                             ],
                         }),
                     ),
                 
                     pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress ", r("d3rbsr"), ". Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+
+                    pinformative("In order to inform each other whenever they fully cover a ", r("D3Range"), " during reconciliation, each peer tracks two numbers: ", def_value("my_range_counter"), " and ", def_value("your_range_counter"), ". Both are initialised to zero. Whenever a peer ", em("sends"), " a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("my_range_counter"), ". Whenever it ", em("receives"), " a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("your_range_counter"), ". When a messages causes one of these values to be incremented, we call ", sidenote("the", ["Both peers assign the same values to the same messages."]), " value ", em("before"), " incrementation the message's ", def("range_count"), "."),
+
+                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of ", r("range_count"), " ", def_value({id: "recon_send_fp_count", singular: "count"}), ", it may recurse by producing a cover of smaller ", rs("D3Range"), ". For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationSendFingerprint"), " message, its ", r("ReconciliationSendFingerprintCovers"), " field should be set to ", r("recon_send_fp_count"), ". The ", r("ReconciliationSendFingerprintCovers"), " field of all other ", r("ReconciliationSendFingerprint"), " messages should be set to ", r("covers_none"), "."),
 
                     pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
                     
@@ -521,6 +533,12 @@ export const sync: Expression = site_template(
                                     comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
                                     rhs: r("U64"),
                                 },
+                                {
+                                    id: "ReconciliationAnnounceEntriesCovers",
+                                    name: "covers",
+                                    comment: ["If this message is the last of a set of messages that together cover the ", r("ReconciliationSendFingerprintRange"), " of some prior ", r("ReconciliationSendFingerprint"), " message, then this field contains the ", r("range_count"), " of that ", r("ReconciliationSendFingerprint"), " message. Otherwise, ", r("covers_none"), "."],
+                                    rhs: pseudo_choices(r("U64"), r("covers_none")),
+                                },
                             ],
                         }),
                     ),
@@ -534,6 +552,8 @@ export const sync: Expression = site_template(
                     pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent."),
 
                     pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
+
+                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of ", r("range_count"), " ", def_value({id: "recon_announce_count", singular: "count"}), ", it may recurse by producing a cover of smaller ", rs("D3Range"), ". For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationAnnounceEntries"), " message, its ", r("ReconciliationAnnounceEntriesCovers"), " field should be set to ", r("recon_announce_count"), ". The ", r("ReconciliationAnnounceEntriesCovers"), " field of all other ", r("ReconciliationAnnounceEntries"), " messages should be set to ", r("covers_none"), "."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                     
@@ -567,7 +587,50 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " message has announced the containing ", r("D3Range"), ", and the number of messages must not exceed the announced number of ", rs("Entry"), ". The transmitted ", rs("Entry"), " must be ", r("d3_range_include", "included"), " in the announced ", r("D3Range"), "."),
 
+                    pinformative("No ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " message may be sent after a ", r("ReconciliationSendEntry"), " message, until a sequence of zero or more ", r("ReconciliationSendPayload"), " messages followed by exactly one ", r("ReconciliationTerminatePayload"), " message has been sent."),
+
                     pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    pseudocode(
+                        new Struct({
+                            id: "ReconciliationSendPayload",
+                            comment: ["Transmit some ", link_name("sync_payloads_transform", "transformed"), " ", r("Payload"), " bytes."],
+                            fields: [
+                                {
+                                    id: "ReconciliationSendPayloadAmount",
+                                    name: "amount",
+                                    comment: ["The number of transmitted bytes."],
+                                    rhs: r("U64"),
+                                },
+                                {
+                                    id: "ReconciliationSendPayloadBytes",
+                                    name: "bytes",
+                                    comment: [r("ReconciliationSendPayloadAmount"), " many bytes, a substring of the bytes obtained by applying ", r("transform_payload"), " to the ", r("Payload"), " to be transmitted."],
+                                    rhs: ["[", hl_builtin("u8"), "]"],
+                                },
+                            ],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("ReconciliationSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " ", rs("Payload"), "."),
+
+                    pinformative("Each ", r("ReconciliationSendPayload"), " message transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the ", r("currently_received_entry"), " of the receiver. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
+
+                    pinformative("After sending a ", r("ReconciliationSendPayload"), " message, a peer may not send ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages until it has sent a ", r("ReconciliationTerminatePayload"), " message. ", r("ReconciliationSendPayload"), " messages must only be sent when there was a corresponding ", r("ReconciliationSendEntry"), " message that indicates which ", r("Entry"), " the payload chunk belongs to."),
+
+                    pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
+
+                    pseudocode(
+                        new Struct({
+                            id: "ReconciliationTerminatePayload",
+                            comment: ["Indicate that no more bytes will be transmitted for the currently transmitted ", r("Payload"), " as part of set reconciliation."],
+                            fields: [],
+                        }),
+                    ),
+                
+                    pinformative("The ", r("ReconciliationTerminatePayload"), " messages let peers indicate that they will not send more payload bytes for the current ", r("Entry"), " as part of set reconciliation. This may be because the end of the ", r("Payload"), " has been reached, or simply because the peer chooses to not send any further bytes."),
+
+                    pinformative(R("ReconciliationTerminatePayload"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_data", "Data", [
@@ -617,7 +680,7 @@ export const sync: Expression = site_template(
                     pseudocode(
                         new Struct({
                             id: "DataSendPayload",
-                            comment: ["Transmit some ", r("Payload"), " bytes."],
+                            comment: ["Transmit some ", link_name("sync_payloads_transform", "transformed"), " ", r("Payload"), " bytes."],
                             fields: [
                                 {
                                     id: "DataSendPayloadAmount",
@@ -637,7 +700,7 @@ export const sync: Expression = site_template(
                 
                     pinformative("The ", r("DataSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " ", rs("Payload"), "."),
 
-                    pinformative("Each ", r("DataSendPayload"), " transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the ", r("currently_received_entry"), " of the receiver. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
+                    pinformative("Each ", r("DataSendPayload"), " message transmits a succesive part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the ", r("currently_received_entry"), " of the receiver. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
                 
                     pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
 
@@ -1209,20 +1272,22 @@ export const sync: Expression = site_template(
                                     code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
                                 ],
                             ),
-                        ),
-                    ),
-                    
-                    pinformative("If either bit 6 or 7 of this initial bitfield are ", code("0"), ", this is followed by the following bitflag:"),
-
-                    encodingdef(
-                        new Bitfields(
-                            two_bit_int(0, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), [
+                            two_bit_int(8, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), [
                                 code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), " == ", r("sync_enc_prev_sender")),
                             ]),
-                            two_bit_int(2, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), [
+                            two_bit_int(10, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), [
                                 code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
                             ]),
-                            bitfieldrow_unused(4),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintCovers"), " != ", r("covers_none")),
+                                ],
+                            ),
+                            bitfieldrow_unused(1),
+                            two_bit_int(14, field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintCovers"), [
+                                code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintCovers"), " != ", r("covers_none")),
+                            ]),
                         ),
                     ),
 
@@ -1309,8 +1374,48 @@ export const sync: Expression = site_template(
                                     code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesWillSort"), " == ", code("true")),
                                 ],
                             ),
-                            bitfieldrow_unused(1),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " != ", r("covers_none")),
+                                ],
+                            ),
                         ),
+                    ),
+
+                    pinformative("If ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " != ", r("covers_none")), ", this is followed by:"),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                0,
+                                [
+                                    div(
+                                        code("11111111"), " if the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is greater or equal to 2^32,"
+                                    ),
+                                    div(
+                                        code("11111110"), " if the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is greater or equal to 2^16,"
+                                    ),
+                                    div(
+                                        code("11111101"), " if the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is greater or equal to 256,"
+                                    ),
+                                    div(
+                                        code("11111100"), " if the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is greater or equal to 252, or"
+                                    ),
+                                    div(
+                                        "the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " otherwise."
+                                    ),
+                                ],
+                            ),
+                        ),
+                        [[
+                            encode_two_bit_int(["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers")], ["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is less than or equal to 251"]),
+                        ]],
+                    ),
+
+                    pinformative("This is followed by:"),
+
+                    encodingdef(
                         [[
                             encode_two_bit_int(
                                 field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"),
@@ -1426,6 +1531,61 @@ export const sync: Expression = site_template(
                                 "Must match bit 5 of the initial bitfield."
                             ],
                         ],
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        r("ReconciliationSendPayload"), " and ", r("ReconciliationTerminatePayload"), " messages need to be distinguishable from each other, bit not from ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages."
+                    ),
+
+                    pinformative(                        
+                        "The encoding of a ", r("ReconciliationSendPayload"), " message ", def_value({id: "enc_recon_send_payload", singular: "m"}), " is the concatenation of:",
+                    ),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                3,
+                                [code("010")],
+                                ["message category"],
+                            ),
+                            new BitfieldRow(
+                                2,
+                                [code("10")],
+                                ["message kind"],
+                            ),
+                            bitfieldrow_unused(1),
+                            two_bit_int(6, field_access(r("enc_recon_send_payload"), "ReconciliationSendPayloadAmount")),
+                        ),
+                        [[
+                            encode_two_bit_int(field_access(r("enc_recon_send_payload"), "ReconciliationSendPayloadAmount")),
+                        ]],
+                        [[
+                            field_access(r("enc_recon_send_payload"), "ReconciliationSendPayloadBytes"),
+                        ]],
+                    ),
+
+                    hr(),
+
+                    pinformative(                        
+                        "The encoding of a ", r("ReconciliationTerminatePayload"), " message is a single byte:",
+                    ),
+
+                    encodingdef(
+                        new Bitfields(
+                            new BitfieldRow(
+                                3,
+                                [code("010")],
+                                ["message category"],
+                            ),
+                            new BitfieldRow(
+                                2,
+                                [code("11")],
+                                ["message kind"],
+                            ),
+                            bitfieldrow_unused(3),
+                        ),
                     ),
                 ]),
 
