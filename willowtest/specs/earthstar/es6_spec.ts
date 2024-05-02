@@ -7,7 +7,8 @@ import { marginale, sidenote } from "../../../marginalia.ts";
 import { link_name } from "../../../linkname.ts";
 import { def } from "../../../defref.ts";
 import { def_parameter_value, def_value, lis, def_fn } from "../../main.ts";
-import { function_call } from "../../../pseudocode.ts";
+import { field_access, function_call } from "../../../pseudocode.ts";
+import { encode_two_bit_int } from "../encodings.ts";
 
 export const es6_spec: Expression = site_template(
 		{
@@ -29,7 +30,7 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_cinn25519", "Cinn25519", [
 					pinformative(
-						"Earthstar uses a non-standard signature scheme that augments each public key with a human-readable string to aid in identifying keys. These schemes are parameterised by a minimum and maximum length of the string."
+						"Earthstar uses non-standard signature schemes that augment each public key with a human-readable string to aid in identifying keys. These schemes are parameterised by a minimum and maximum length of the string."
 					),
 
 					pinformative(
@@ -43,7 +44,7 @@ export const es6_spec: Expression = site_template(
 					pinformative(
 						"The type of ", rs("dss_signature"), " is the same as for ed25519, but the signing algorithm differs: to ", r("dss_sign"), " a bytestring ", def_value({id: "cinn_b", singular: "b"}), ", compute the ed25519 signature over the concatenation of the following strings:", lis(
 							["The ", r("cinn_shortname"), ", encoded as ascii,"],
-							["If ", code(r("cinn_min"), " <= ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
+							["If ", code(r("cinn_min"), " < ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
 							[r("cinn_b"), "."],
 						), 
 					),
@@ -80,7 +81,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is TODO, the ", r("max_component_count"), " is TODO, and the ", r("max_path_length"), " is TODO."
+					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."
 				),
 
 				pinformative(
@@ -145,19 +146,19 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_wgps_pai", "Private Area Intersection", [
 					pinformative(
-						"The type ", r("PsiGroup"), " is the type of ed25519 public keys."
+						"The type ", r("PsiGroup"), " is the type of ", link("Curve25519", "https://en.wikipedia.org/wiki/Curve25519"), " public keys (i.e., the type of all 32-byte integers)."
 					),
 
 					pinformative(
-						"The type ", r("PsiScalar"), " is the type of ed25519 secret keys."
+						"The type ", r("PsiScalar"), " is the type of Curve25519 scalars."
 					),
 
 					pinformative(
-						"The ", r("psi_scalar_multiplication"), " function is scalar multiplication in the group used by ed25519 (", link("Curve25519", "https://en.wikipedia.org/wiki/Curve25519"), ")."
+						"The ", r("psi_scalar_multiplication"), " function is scalar multiplication in Curve25519 (as defined on all possible 32-byte curve point encodings)."
 					),
 
 					pinformative(
-						"The ", r("hash_into_group"), " function encodes a ", r("fragment"), " using the ", r("encode_fragment"), " function that we define below, then computes the Blake3 digest of 256 bits for the encoding, and uses the resulting 256 bits as input to the ", link("ed25519 key generation algorithm", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.5"), ")."
+						"The ", r("hash_into_group"), " function encodes a ", r("fragment"), " using the ", r("encode_fragment"), " function that we define below, then uses the encoding as input to ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6i"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
 					),
 
 					pinformative("We define the ", def_fn({id: "encode_fragment", singular: "encode_fragment"}), " function as follows:", lis(
@@ -179,19 +180,24 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_wgps_reconciliation", "3d Range-Based Set Reconciliation", [
 					pinformative(
-						"The type ", r("Fingerprint"), " is TODO, the type ", r("PreFingerprint"), " is TODO, and the ", r("fingerprint_finalise"), " function is TODO.",
+						"The type ", r("Fingerprint"), " is the type of ", link("Curve25519", "https://en.wikipedia.org/wiki/Curve25519"), " public keys (i.e., the type of all 32-byte integers), the type ", r("PreFingerprint"), " is the type of Curve25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point as a 32-byte Curve25519 public key.",
 					),
 
 					pinformative(
-						"The ", r("fingerprint_singleton"), " is TODO."
+						"The ", r("fingerprint_singleton"), " function encodes a ", r("LengthyEntry"), " using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
+					),
+
+					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a ", r("LengthyEntry"), " ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
+						[encode_two_bit_int(field_access(r("es6_le"), "lengthy_entry_available")),],
+						[function_call(r("encode_entry"), field_access(r("es6_le"), "lengthy_entry_entry")), "."],
+					)),
+
+					pinformative(
+						"The ", r("fingerprint_combine"), " function is addition of curve points of the Curve25519 curve.",
 					),
 
 					pinformative(
-						"The ", r("fingerprint_combine"), " function is TODO.",
-					),
-
-					pinformative(
-						"The ", r("fingerprint_neutral"), " value is TODO.",
+						"The ", r("fingerprint_neutral"), " value is the neutral element of the Curve25519 curve.",
 					),
 				]),
 
@@ -201,7 +207,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("transform_payload"), " algorithm is TODO."
+						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding its first eight bytes (which would encode the length)."
 					),
 
 					pinformative(
@@ -253,7 +259,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each TODO, which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each Curve25519 public key, which is already a sequence of bytes) to itself."
 					),
 				]),
 				
