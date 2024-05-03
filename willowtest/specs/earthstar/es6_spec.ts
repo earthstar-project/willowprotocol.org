@@ -23,7 +23,7 @@ export const es6_spec: Expression = site_template(
 			),
 
 			pinformative(
-				"In addition to fixing a specific set of protocol parameters for Willow, Earthstar restricts the set of bytes that may appear in ", rs("Path"), " to the ascii encodings of the following characters: ", code("-.01223456789abcdefghijklmnopqrstuvwxyz_"), ", that is, digits, lowercase letters, and ", code("-"), ", ", code("."), ", and ", code("_"), "."
+				"In addition to fixing a specific set of protocol parameters for Willow, Earthstar restricts the set of bytes that may appear in ", rs("Path"), " to the ascii encodings of the following characters: ", code("-.01223456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."
 			),
 
 			pinformative(
@@ -86,7 +86,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024. Remember that Earthstar only allows bytes that are ascii encodings of the following characters in paths: ", code("-.01223456789abcdefghijklmnopqrstuvwxyz_"), "."
+					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024. Remember that Earthstar only allows bytes that are ascii encodings of the following characters in paths: ", code("-.01223456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), "."
 				),
 
 				pinformative(
