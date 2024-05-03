@@ -1394,7 +1394,7 @@ export const sync: Expression = site_template(
                     encodingdef(
                         new Bitfields(
                             new BitfieldRow(
-                                0,
+                                8,
                                 [
                                     div(
                                         code("11111111"), " if the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is greater or equal to 2^32,"
@@ -1414,14 +1414,14 @@ export const sync: Expression = site_template(
                                 ],
                             ),
                         ),
-                        [[
-                            encode_two_bit_int(["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers")], ["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is less than or equal to 251"]),
-                        ]],
                     ),
 
                     pinformative("This is followed by:"),
 
                     encodingdef(
+                        [[
+                            encode_two_bit_int(["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers")], ["the length of ", field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " is less than or equal to 251"]),
+                        ]],
                         [[
                             encode_two_bit_int(
                                 field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"),
