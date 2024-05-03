@@ -19,10 +19,15 @@ export const es6_spec: Expression = site_template(
 			table_of_contents(7),
 
 			pinformative(
-				"This document specifies version 6 of the ", link("Earthstar protocol", "https://earthstar-project.org/"), ". The protocol behind Earthstar is simply an instantiation of ", link_name("willow", "Willow"), ": the Earthstar data model is a particular instantiation of the ", link_name("data_model", "Willow data model"), ", using an instantiation of ", link_name("meadowcap", "Meadowcap"), " for access control, and synchronising data with the ", link_name("sync", "WGPS"), "."
+				"This document specifies version 6 of the ", link("Earthstar protocol", "https://earthstar-project.org/"), ". The protocol behind Earthstar is an instantiation of ", link_name("willow", "Willow"), ": the Earthstar data model is a particular instantiation of the ", link_name("data_model", "Willow data model"), ", using an instantiation of ", link_name("meadowcap", "Meadowcap"), " for access control, and synchronising data with the ", link_name("sync", "WGPS"), "."
 			),
+
 			pinformative(
-				"We assume familiarity with Willow and specifies Earthstar by giving instantiations of all of Willow's protocol parameters."
+				"In addition to fixing a specific set of protocol parameters for Willow, Earthstar restricts the set of bytes that may appear in ", rs("Path"), " to the ascii encodings of the following characters: ", code("-.01223456789abcdefghijklmnopqrstuvwxyz_"), ", that is, digits, lowercase letters, and ", code("-"), ", ", code("."), ", and ", code("_"), "."
+			),
+
+			pinformative(
+				"We assume familiarity with Willow and specify Earthstar by giving instantiations of all of Willow's protocol parameters."
 			),
 
 			hsection("es6_preliminaries", "Preliminaries", [
@@ -81,7 +86,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."
+					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024. Remember that Earthstar only allows bytes that are ascii encodings of the following characters in paths: ", code("-.01223456789abcdefghijklmnopqrstuvwxyz_"), "."
 				),
 
 				pinformative(
