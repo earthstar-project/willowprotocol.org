@@ -1296,6 +1296,12 @@ export const sync: Expression = site_template(
                     encodingdef(
                         [[
                             encode_two_bit_int(
+                                field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintCovers"),
+                                [code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintCovers"), " == ", r("covers_none"))],
+                            ),
+                        ]],
+                        [[
+                            encode_two_bit_int(
                                 field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"),
                                 [code(field_access(r("enc_recon_fp"), "ReconciliationSendFingerprintSenderHandle"), " == ", r("sync_enc_prev_sender"))],
                             ),
