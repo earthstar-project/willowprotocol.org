@@ -1,3 +1,7 @@
 {
-  "co.gwil.deno.config.formatOnSave" : "false"
+  "co.gwil.deno.config.formatOnSave" : "false",
+  "deno.enablePaths" : [
+    "willowtest",
+    "deno.json"
+  ]
 }
