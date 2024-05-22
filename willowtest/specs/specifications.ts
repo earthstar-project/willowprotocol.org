@@ -1,6 +1,8 @@
 import { def } from "../../defref.ts";
-import { code, nav } from "../../h.ts";
+import { code, img, nav } from "../../h.ts";
 import { link_name } from "../../linkname.ts";
+import { marginale } from "../../marginalia.ts";
+import { asset } from "../../out.ts";
 import { def_type } from "../../pseudocode.ts";
 import { Expression, surpress_output } from "../../tsgen.ts";
 import { link, lis, pinformative, site_template } from "../main.ts";
@@ -11,8 +13,12 @@ export const specifications: Expression = site_template(
     name: "specifications",
   },
   [
+    marginale([
+      img(asset("specs/emblems.png"), "An illustration of the four emblems of Willow's specifications laid out somewhat like playing cards.")
+    ]),
+    
     pinformative("Willow is a family of specifications:"),
-
+    
     lis(
       [link_name("data_model", "Data Model"), ": The fundamental data model, a system for giving structured names to bytestrings."],
       [link_name("meadowcap", "Meadowcap"), ": A capability system for controlling access to Willow data."],
