@@ -1857,6 +1857,8 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+                    pinformative(
+                    img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),)
 
                 ]),
 

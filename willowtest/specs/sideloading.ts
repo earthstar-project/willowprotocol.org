@@ -2,10 +2,11 @@ import { Expression } from "macro";
 import { pinformative, site_template, lis, link, def_parameter_fn, def_value, def_fn } from "../main.ts";
 import { def, preview_scope, r, rs } from "../../defref.ts";
 import { link_name } from "../../linkname.ts";
-import { code, em } from "../../h.ts";
+import { code, em, img } from "../../h.ts";
 import { hsection } from "../../hsection.ts";
 import { marginale } from "../../marginalia.ts";
 import { field_access, function_call } from "../../pseudocode.ts";
+import { asset } from "../../out.ts";
 
 export const sideloading: Expression = site_template(
 	{
@@ -89,7 +90,11 @@ export const sideloading: Expression = site_template(
 				pinformative("Finally, let ", def_value({id: "side_drop", singular: "drop"}), " be the result of", code(function_call(r("encrypt"), r("side_contents"))), ".")),
 				hsection("sideload_transport", "Transport", [
 					"Once created, ", r("side_drop"), " can be transported by whatever means a single bytestring can be transferred, to be decrypted and the recovered ", r("side_contents"), " ingested by its intended recipient."  
-				])
+				]),
+				
+				pinformative(
+				
+				img(asset("sideload/sideload_emblem.png"), `A Sideloading emblem: A stylised drawing of tufty grass growing in between the cracks of paving stones, next to a graffiti-styled rendition of the word "Sideload".`)),
 		])
 	],
 	
