@@ -4,12 +4,11 @@ import { RssFeedItemMeta, create_rss_item } from "../../../rss.ts";
 import { hsection } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
 import { code } from "../../../h.ts";
-import { rs } from "../../../defref.ts";
+import { r, rs } from "../../../defref.ts";
 
 export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
 	return create_rss_item("Willow News and Updates", item, description);
   }
-  
   
   export function create_changelog_item(item: RssFeedItemMeta, description: Expression): Expression {
 	return create_rss_item("Willow Specification Changelog", item, description);
@@ -51,6 +50,18 @@ export const changes: Expression = site_template({
 			pinformative("Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful."),
 			pinformative(link("RSS feed available here", "/rss_news.xml"), "."),
 			lis(
+				create_news_item(
+					{
+						name: 'sideload_spec', title: "Willow Sideloading Protocol", pubDate: new Date(2024, 4, 23, 0)
+					},
+					[
+						pinformative(
+							"A few months ago we published the ", link_name("sync", "Willow General Purpose Sync protocol"), ", a synchronisation specification for securely and efficiently synchronising data over a network connection. However, there are many contexts where establishing such a connection is difficult, undesirable, or outright impossible."
+						),
+						pinformative("The ", link_name("sideloading", "Willow Sideloading protocol"), " is a new protocol for securely delivering Willow data by whatever means possible. We build upon the tradition of sneakernets to introduce the concept of the ", r("sidenet"), ", the sporadically online and ad-hoc infrastructure users already have."),
+						pinformative("This new protocol can be used in place of (or as a complement to) the ", link_name("sync", "WGPS"), ", is relatively simple to implement, and has a mercifully short specification.")
+					]
+				),
 				create_news_item(
 					{
 						name: 'willowjs_0_2_1', title: "willow-js released", pubDate: new Date(2024, 4, 6, 0)
