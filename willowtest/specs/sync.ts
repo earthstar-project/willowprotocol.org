@@ -2059,6 +2059,10 @@ export const sync: Expression = site_template(
                             ]],
                         ),
                     ),
+                    pinformative(
+                        "And with that, we have all the pieces we need for secure, efficient synchronisation of ", rs("namespace"), ". Thanks for reading!"),
+                    pinformative(
+                    img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),)
 
                 ]),
 
