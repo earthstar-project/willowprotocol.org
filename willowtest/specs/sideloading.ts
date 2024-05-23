@@ -21,7 +21,7 @@ export const sideloading: Expression = site_template(
 			id: 'drop',
 			singular: 'drop',
 			plural: 'drops',
-		}, 'drops'), ", arbitrary sets of ", rs("Entry"), " and ", rs("Payload"), " compiled into on-disk archives. A ", r('drop'), " can then be treated as a kind of static ", r("store"), " which can be ", r("store_join", "joined"), " with any other ", r("store"), " as per the ", link_name("data_model", "Willow Data Model.")),
+		}, 'drops'), ", arbitrary sets of ", rs("Entry"), " and ", rs("Payload"), " compiled into a single bytestring. A ", r('drop'), " can then be treated as a kind of static ", r("store"), " which can be ", r("store_join", "joined"), " with any other ", r("store"), " as per the ", link_name("data_model", "Willow Data Model.")),
 		preview_scope(
 			pinformative(rs("drop", "Drops"), " are then shared via the informal ad-hoc infrastructure we refer to as the ", def("sidenet", "Sidenet"), ":", marginale([
 				"In contrast with ", link("sneakernets", "https://en.wikipedia.org/wiki/Sneakernet"), " which only use physically transported storage devices, the ", r('sidenet'), " also includes the internet and other established networks."
@@ -36,7 +36,7 @@ export const sideloading: Expression = site_template(
 				["Or ", em("whatever means users have at hand"), "."]
 			)
 		),
-		pinformative(rs("drop", "Drops"), " will often undoubtedly contain stale data that users are already aware of or no longer need. But what the ", r("sideloading_protocol", "sideloading protocol"), " gives up in efficiency it more than makes up for in simplicity and flexibility. It is simple to implement and permits users to exchange data using the infrastructure they already have."),
+		pinformative(rs("drop", "Drops"), " will often undoubtedly contain stale data that users are already aware of or no longer need. But what the ", r("sideloading_protocol", "sideloading protocol"), " gives up in efficiency it more than makes up for in simplicity and flexibility. It is simple to implement, and works with the infrastructure users already have."),
 		pinformative("Finally, given that this protocol cannot interactively authorise users (e.g. via ", link_name("private_area_intersection", "private area intersection"), "), drops are always fully encrypted."),
 		
 		hsection("sideload_parameters", "Parameters", [
