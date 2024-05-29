@@ -52,6 +52,15 @@ export const changes: Expression = site_template({
 			lis(
 				create_news_item(
 					{
+						name: "willow_js_0_5_0", title: 'Sideloading in willow-js', pubDate: new Date(2024, 4, 29, 0)
+					},
+					[
+						pinformative("Last week we published the ", link_name("sideloading", "Willow Sideloading protocol"), ", and this week we have a working implementation available via ", link("willow-js 0.5.0", "https://github.com/earthstar-project/willow-js"), "."),
+						pinformative("For more information on this implementation, please see the documentation for ", link(code("createDrop"), "https://jsr.io/@earthstar/willow/doc/~/createDrop"), " and ", link(code("ingestDrop"), "https://jsr.io/@earthstar/willow/doc/~/ingestDrop"), ".")
+					]
+				),
+				create_news_item(
+					{
 						name: 'sideload_spec', title: "Willow Sideloading Protocol", pubDate: new Date(2024, 4, 23, 0)
 					},
 					[
