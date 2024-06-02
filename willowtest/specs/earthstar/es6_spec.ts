@@ -2,7 +2,7 @@ import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
 import { code, em, hr, pre } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
-import { r, rs } from "../../../defref.ts";
+import { r, rs, R } from "../../../defref.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
 import { link_name } from "../../../linkname.ts";
 import { def } from "../../../defref.ts";
@@ -280,6 +280,11 @@ a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own, or in the reference implementation, please reach out."]),
 						"A pre-order offset of ", code("0"), " corresponds to byte zero (the start of the root parent node), a pre-order offset of ", code("1"), " corresponds to byte 64 (the start of the left parent node), a pre-order offset of ", code("2"), " corresponds to byte 128 (the start of the first chunk), a pre-order offset of ", code("3"), " corresponds to byte 1152 (the start of the second chunk), and a pre-order offset of ", code("4"), " corresponds to byte 3176 (the start of the last chunk). It is impossible to specify positions ", em("inside"), " a parent node or chunk.", 
 					),
+
+					pinformative("The following fields of messages use pre-order-offset semantics instead of payload-byte-offset semantics in earthstar:", lis(
+						[R("DataSendEntry"), ": ", r("DataSendEntryOffset"), ", and"],
+						[R("DataBindPayloadRequest"), ": ", r("DataBindPayloadRequestOffset"), "."],
+					)),
 
 				]),
 				
