@@ -40,18 +40,20 @@ export const sideloading: Expression = site_template(
 		pinformative("Finally, given that this protocol cannot interactively authorise users (e.g. via ", link_name("private_area_intersection", "private area intersection"), "), drops are always fully encrypted."),
 		
 		hsection("sideload_parameters", "Parameters", [
-			pinformative("In order to use the sideloading protocol, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". In addition to this, the sideloading protocol requires the following:"),
-			lis(
-				["A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on ", r("SubspaceId"), " with least element ", r("sync_default_subspace_id"), ", in which for every ", r("SubspaceId"), " ", r("subspace"), " there exists a successor ", r("subspace_successor_t"), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other ", r("SubspaceId"), " is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), "."],
-				["An ", r("encoding_function"), " for ", r("NamespaceId")],
-				["An ", r("encoding_function"), " for ", r("SubspaceId")],
-				["An ", r("encoding_function"), " for ", r("PayloadDigest")],
-				["An ", r("encoding_function"), " ", def_fn({id: "sideload_encode_token", singular: "encode_authorisation_token"}), " for ", r("AuthorisationToken")],
-				["A ", r("NamespaceId"), " ", def_value({id:"side_default_namespace_id", singular: "default_namespace_id" })],
-				["A ", r("SubspaceId"), " ", def_value({id:"side_default_subspace_id", singular: "default_subspace_id" })],
-				["A ", r("PayloadDigest"), " ", def_value({id:"side_default_payload_digest", singular: "default_payload_digest" })],
-				["And a function which encrypts the final compiled encoding, ", def_parameter_fn({id: "encrypt"}), "."]
-			)
+			preview_scope(
+				pinformative("In order to use the sideloading protocol, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". In addition to this, the sideloading protocol requires the following:"),
+				lis(
+					["A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on ", r("SubspaceId"), " with least element ", r("sync_default_subspace_id"), ", in which for every ", r("SubspaceId"), " ", r("subspace"), " there exists a successor ", r("subspace_successor_t"), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other ", r("SubspaceId"), " is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), "."],
+					["An ", r("encoding_function"), " for ", r("NamespaceId")],
+					["An ", r("encoding_function"), " for ", r("SubspaceId")],
+					["An ", r("encoding_function"), " for ", r("PayloadDigest")],
+					["An ", r("encoding_function"), " ", def_fn({id: "sideload_encode_token", singular: "encode_authorisation_token"}), " for ", r("AuthorisationToken")],
+					["A ", r("NamespaceId"), " ", def_value({id:"side_default_namespace_id", singular: "default_namespace_id" })],
+					["A ", r("SubspaceId"), " ", def_value({id:"side_default_subspace_id", singular: "default_subspace_id" })],
+					["A ", r("PayloadDigest"), " ", def_value({id:"side_default_payload_digest", singular: "default_payload_digest" })],
+					["And a function which encrypts the final compiled encoding, ", def_parameter_fn({id: "encrypt"}), "."]
+				),
+			),
 		]),
 		
 		hsection("sideload_protocol", "Protocol", [
