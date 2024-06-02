@@ -151,19 +151,19 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_wgps_pai", "Private Area Intersection", [
 					pinformative(
-						"The type ", r("PsiGroup"), " is the type of ", link("Curve25519", "https://en.wikipedia.org/wiki/Curve25519"), " public keys (i.e., the type of all 32-byte integers)."
+						"The type ", r("PsiGroup"), " is the type of curve points of Edwards25519, i.e., the twisted Edwards curve used by ", link("ed25519", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1"), "."
 					),
 
 					pinformative(
-						"The type ", r("PsiScalar"), " is the type of Curve25519 scalars."
+						"The type ", r("PsiScalar"), " is the type of Ed25519 scalars."
 					),
 
 					pinformative(
-						"The ", r("psi_scalar_multiplication"), " function is scalar multiplication in Curve25519 (as defined on all possible 32-byte curve point encodings)."
+						"The ", r("psi_scalar_multiplication"), " function is scalar multiplication in Edwards25519."
 					),
 
 					pinformative(
-						"The ", r("hash_into_group"), " function encodes a ", r("fragment"), " using the ", r("encode_fragment"), " function that we define below, then uses the encoding as input to ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6i"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
+						"The ", r("hash_into_group"), " function encodes a ", r("fragment"), " using the ", r("encode_fragment"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6i"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
 					),
 
 					pinformative("We define the ", def_fn({id: "encode_fragment", singular: "encode_fragment"}), " function as follows:", lis(
@@ -185,11 +185,11 @@ export const es6_spec: Expression = site_template(
 
 				hsection("es6_wgps_reconciliation", "3d Range-Based Set Reconciliation", [
 					pinformative(
-						"The type ", r("Fingerprint"), " is the type of ", link("Curve25519", "https://en.wikipedia.org/wiki/Curve25519"), " public keys (i.e., the type of all 32-byte integers), the type ", r("PreFingerprint"), " is the type of Curve25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point as a 32-byte Curve25519 public key.",
+						"The type ", r("Fingerprint"), " is the type of 32 byte arrays that are valid ", link("encodings of Edwards25519 curve points", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ", the type ", r("PreFingerprint"), " is the type of Edwards25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point according to ", link("RFC 8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ".",
 					),
 
 					pinformative(
-						"The ", r("fingerprint_singleton"), " function encodes a ", r("LengthyEntry"), " using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("curve25519XMD:SHA-512_ELL2_RO", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
+						"The ", r("fingerprint_singleton"), " function encodes a ", r("LengthyEntry"), " using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
 					),
 
 					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a ", r("LengthyEntry"), " ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
@@ -198,11 +198,11 @@ export const es6_spec: Expression = site_template(
 					)),
 
 					pinformative(
-						"The ", r("fingerprint_combine"), " function is addition of curve points of the Curve25519 curve.",
+						"The ", r("fingerprint_combine"), " function is addition of curve points of the Edwards25519 curve.",
 					),
 
 					pinformative(
-						"The ", r("fingerprint_neutral"), " value is the neutral element of the Curve25519 curve.",
+						"The ", r("fingerprint_neutral"), " value is the neutral element of the Edwards25519 curve.",
 					),
 				]),
 
@@ -232,7 +232,7 @@ export const es6_spec: Expression = site_template(
 					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
 
 					pinformative(
-						"The ", r("encode_group_member"), " function maps each ", r("PsiGroup"), " member (i.e., each ed25519 public key, which is already a sequence of bytes) to iself."
+						"The ", r("encode_group_member"), " function encodes each ", r("PsiGroup"), " member (i.e., each Edwards25519 curve point) ", link("according to RFC8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), "."
 					),
 
 					pinformative(
@@ -264,7 +264,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(i.e., each Curve25519 public key, which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(which is already a sequence of bytes) to itself."
 					),
 				]),
 				
