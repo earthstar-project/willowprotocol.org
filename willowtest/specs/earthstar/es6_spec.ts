@@ -1,6 +1,6 @@
 import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
-import { code, em, hr } from "../../../h.ts";
+import { code, em, hr, pre } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
 import { r, rs } from "../../../defref.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
@@ -266,6 +266,21 @@ export const es6_spec: Expression = site_template(
 					pinformative(
 						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(which is already a sequence of bytes) to itself."
 					),
+				]),
+
+				hsection("es6_wgps_bao", "Bao Integration", [
+					pinformative("In addition to these parameters, Earthstar integrates ", link("Bao", "https://github.com/oconnor663/bao/blob/master/docs/spec.md"), " verified streaming in a way that slightly stretches the intended semantics of the WGPS. The WGPS has several messages that require peers to specify an offset in a payload as an unsigned integer. Earthstar changes the semantics of that integer: instead of a payload offset, those messages give an offset into the depth-first numbering of the Blake3 tree of the payload. This offset must then be converted into an offset of the Bao ", link("combined encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", to determine where in the transformed payload (i.e., the combined encoding of the payload sans the first eight length-bytes) to resume transmission."),
+
+					pinformative("Consider the example from the Bao spec for a payload of 2049 zero bytes (two full chunks and a third chunk with just one byte):"),
+
+					pre(`root parent node  |left parent node  |first chunk|second chunk|last chunk
+a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
+
+					pinformative(
+						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own, or in the reference implementation, please reach out."]),
+						"A pre-order offset of ", code("0"), " corresponds to byte zero (the start of the root parent node), a pre-order offset of ", code("1"), " corresponds to byte 64 (the start of the left parent node), a pre-order offset of ", code("2"), " corresponds to byte 128 (the start of the first chunk), a pre-order offset of ", code("3"), " corresponds to byte 1152 (the start of the second chunk), and a pre-order offset of ", code("4"), " corresponds to byte 3176 (the start of the last chunk). It is impossible to specify positions ", em("inside"), " a parent node or chunk.", 
+					),
+
 				]),
 				
 			]),
