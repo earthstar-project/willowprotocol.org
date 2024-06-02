@@ -61,6 +61,7 @@ import { spec_statuses } from "./specs/more/statuses.ts";
 import { SpecStatus, specStatus } from "../spec_status.ts";
 import { willow_compared } from "./specs/more/compare.ts";
 import { about } from "./specs/more/about.ts";
+import { sideloading } from "./specs/sideloading.ts";
 import { es6_spec } from "./specs/earthstar/es6_spec.ts";
 
 export function quotes(...contents: Expression[]) {
@@ -664,6 +665,7 @@ evaluate(enable_previews([
         range3d_based_set_reconciliation,
       ),
       out_index_directory("access-control", access_control),
+      out_index_directory("sideloading", sideloading)
     ]),
     out_directory("more", [
       out_file("index.html", more),

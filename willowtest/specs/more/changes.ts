@@ -4,11 +4,11 @@ import { RssFeedItemMeta, create_rss_item } from "../../../rss.ts";
 import { hsection } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
 import { code } from "../../../h.ts";
+import { r, rs } from "../../../defref.ts";
 
 export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
 	return create_rss_item("Willow News and Updates", item, description);
   }
-  
   
   export function create_changelog_item(item: RssFeedItemMeta, description: Expression): Expression {
 	return create_rss_item("Willow Specification Changelog", item, description);
@@ -50,6 +50,35 @@ export const changes: Expression = site_template({
 			pinformative("Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful."),
 			pinformative(link("RSS feed available here", "/rss_news.xml"), "."),
 			lis(
+				create_news_item(
+					{
+						name: "willow_js_0_5_0", title: 'Sideloading in willow-js', pubDate: new Date(2024, 4, 29, 0)
+					},
+					[
+						pinformative("Last week we published the ", link_name("sideloading", "Willow Sideloading protocol"), ", and this week we have a working implementation available via ", link("willow-js 0.5.0", "https://github.com/earthstar-project/willow-js"), "."),
+						pinformative("For more information on this implementation, please see the documentation for ", link(code("createDrop"), "https://jsr.io/@earthstar/willow/doc/~/createDrop"), " and ", link(code("ingestDrop"), "https://jsr.io/@earthstar/willow/doc/~/ingestDrop"), ".")
+					]
+				),
+				create_news_item(
+					{
+						name: 'sideload_spec', title: "Willow Sideloading Protocol", pubDate: new Date(2024, 4, 23, 0)
+					},
+					[
+						pinformative(
+							"A few months ago we published the ", link_name("sync", "Willow General Purpose Sync protocol"), ", a synchronisation specification for securely and efficiently synchronising data over a network connection. However, there are many contexts where establishing such a connection is difficult, undesirable, or outright impossible."
+						),
+						pinformative("The ", link_name("sideloading", "Willow Sideloading protocol"), " is a new protocol for securely delivering Willow data by whatever means possible. We build upon the tradition of sneakernets to introduce the concept of the ", r("sidenet"), ", the sporadically online and ad-hoc infrastructure users already have."),
+						pinformative("This new protocol can be used in place of (or as a complement to) the ", link_name("sync", "WGPS"), ", is relatively simple to implement, and has a mercifully short specification.")
+					]
+				),
+				create_news_item(
+					{
+						name: 'willowjs_0_2_1', title: "willow-js released", pubDate: new Date(2024, 4, 6, 0)
+					}, 
+					[
+						pinformative(link("willow-js", "https://github.com/earthstar-project/willow-js"), ", our own TypeScript implementation of the ", link_name("data_model", "Willow Data Model"), " and the ", link_name("sync", "Willow General Purpose Sync protocol"), " now conforms to these specifications as of May 6th, 2024. This module can be used to create, query, and sync ", rs("Entry"), " and their corresponding ", rs("Payload")," in ", rs("store"), " in the browser and Deno runtime."), pinformative("The source, documentation, and usage instructions can be found at the ", link("willow-js repository", "https://github.com/earthstar-project/willow-js"), ".")
+					]
+				),
 				create_news_item(
 					{ name: "meadowcap_0_1_0", title: "meadowcap-js 0.2.0 released", pubDate: new Date(2024, 0, 23, 0)}, [
 						pinformative("Our own TypeScript implementation of ", link_name("meadowcap", "Meadowcap"), " now conforms to the specification as of January 23rd, 2024. The source, documentation, and usage instructions can be found at the ", link("meadowcap-js repository", "https://github.com/earthstar-project/meadowcap-js"), ".")

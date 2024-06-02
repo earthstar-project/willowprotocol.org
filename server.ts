@@ -2,6 +2,7 @@ import { dirname } from "std/path/dirname.ts";
 import { contentType } from "std/media_types/mod.ts";
 import { extname } from "std/path/extname.ts";
 import { join } from "std/path/join.ts";
+import { createHash } from "npm:sha256-uint8array";
 
 const emblemFileNames = [
   "a.png",
@@ -25,8 +26,6 @@ Deno.serve(async (req) => {
 
   const url = new URL(req.url);
 
-  console.log(url.pathname);
-
   if (url.pathname === "/emblem.png") {
     return new Response(await pickRandomEmblem(), {
       headers: {
@@ -37,6 +36,43 @@ Deno.serve(async (req) => {
 
   try {
     const extension = extname(url.pathname);
+
+    // Special carve-out for RSS feeds.
+    if (extension === ".xml") {
+      const filePath = join(
+        ".",
+        "willowtest",
+        "build",
+        url.pathname,
+      );
+
+      const etag = createHash().update(await Deno.readTextFile(filePath))
+        .digest("hex");
+
+      const ifNoneMatch = req.headers.get("If-None-Match");
+
+      if (
+        ifNoneMatch && (ifNoneMatch === `W/${etag}` || ifNoneMatch === etag)
+      ) {
+        console.log(304, "RSS", url.pathname);
+
+        return new Response(undefined, {
+          status: 304,
+        });
+      }
+
+      const file = await Deno.open(filePath);
+
+      console.log(200, "RSS", url.pathname);
+
+      return new Response(file.readable, {
+        headers: {
+          "Content-Type": "application/rss+xml",
+          "ETag": etag,
+          "Cache-Control": "s-max-age=3600,max-age=3600,public",
+        },
+      });
+    }
 
     const longCacheDirs = ["/assets", "/previews"];
 
@@ -53,7 +89,7 @@ Deno.serve(async (req) => {
 
       const contentKind = contentType(extension) || "text/plain";
 
-      console.log(200, url.pathname);
+      console.log(200, "content-addressed", url.pathname);
 
       return new Response(file.readable, {
         headers: {
@@ -97,9 +133,9 @@ Deno.serve(async (req) => {
       try {
         const fileBytes = await Deno.readFile(filePath);
 
-        console.log(200, url.pathname);
-        
-        const contentKind = extension === '' ? 'text/html' : contentType(extension) || "text/plain";
+        const contentKind = extension === ""
+          ? "text/html"
+          : contentType(extension) || "text/plain";
 
         return new Response(fileBytes, {
           headers: {
@@ -119,8 +155,10 @@ Deno.serve(async (req) => {
       // No etag.
       try {
         const fileBytes = await Deno.readFile(filePath);
-        
-        const contentKind = extension === '' ? 'text/html' : contentType(extension) || "text/plain";
+
+        const contentKind = extension === ""
+          ? "text/html"
+          : contentType(extension) || "text/plain";
 
         return new Response(fileBytes, {
           headers: {

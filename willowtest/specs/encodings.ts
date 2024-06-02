@@ -1075,6 +1075,28 @@ export const encodings: Expression = site_template({
         code(function_call(def_fn({id: "encode_mc_subspace_capability", math: "encode\\_mc\\_subspace\\_capability"}), r("enc_sc_cap"))), " as the concatenation of:",
 
         encodingdef(
+          new Bitfields(
+            new BitfieldRow(
+              8,
+              [
+                div(
+                  code("11111111"), " if the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " is greater or equal to 2^32,"
+                ),
+                div(
+                  code("11111110"), " if the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " is greater or equal to 2^16,"
+                ),
+                div(
+                  code("11111101"), " if the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " is greater or equal to 256,"
+                ),
+                div(
+                  code("11111100"), " if the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " is greater or equal to 252, or"
+                ),
+                div(
+                  "the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " otherwise."
+                ),
+              ],
+            ),
+          ),
           [[
             code(function_call(
               r("encode_namespace_pk"),
@@ -1092,6 +1114,9 @@ export const encodings: Expression = site_template({
               r("encode_namespace_sig"),
               field_access(r("enc_sc_cap"), "subspace_cap_initial_authorisation"),
             )),
+          ]],
+          [[
+            encode_two_bit_int(["the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations")], ["the length of ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " is less than or equal to 251"]),
           ]],
           [[
             "for each pair ", code("(", def_value({id: "enc_subspace_cap_del_pk", singular: "pk"}), ", ", def_value({id: "enc_subspace_cap_del_sig", singular: "sig"}), ")"), " in ", field_access(r("enc_sc_cap"), "subspace_cap_delegations"), " the concatenation of:", lis(

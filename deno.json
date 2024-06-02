@@ -9,5 +9,6 @@
     "build-watch": "cd willowtest && deno run --watch --allow-read --allow-write main.ts",
     "server": "deno run --allow-read --allow-net server.ts"
   },
+  "include": ["willowtest"],
   "exclude": ["willowtest/build", "willowtest/named_assets"]
 }
