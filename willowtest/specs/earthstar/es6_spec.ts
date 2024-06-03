@@ -1,6 +1,6 @@
 import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
-import { code, em, hr, pre } from "../../../h.ts";
+import { code, em, hr, img, pre } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
 import { r, rs, R } from "../../../defref.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
@@ -9,6 +9,7 @@ import { def } from "../../../defref.ts";
 import { def_parameter_value, def_value, lis, def_fn } from "../../main.ts";
 import { field_access, function_call } from "../../../pseudocode.ts";
 import { encode_two_bit_int } from "../encodings.ts";
+import { asset } from "../../../out.ts";
 
 export const es6_spec: Expression = site_template(
 		{
@@ -289,5 +290,7 @@ a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 				]),
 				
 			]),
+			
+			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
 		],
 );
