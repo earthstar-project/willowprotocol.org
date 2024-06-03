@@ -44,7 +44,7 @@ export const specifications: Expression = site_template(
     
     nav(
       lis(
-        [link_name("es6_spec", "Earthstar"), ": a recommended set of parameters for the Willow protocol."]        
+        [link_name("es6_spec", "Earthstar"), ": a friendly set of parameters for the Willow protocol."]        
       )
     ),
 
