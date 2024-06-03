@@ -24,10 +24,6 @@ export const es6_spec: Expression = site_template(
 			),
 
 			pinformative(
-				"In addition to fixing a specific set of protocol parameters for Willow, Earthstar restricts the set of bytes that may appear in ", rs("Path"), " to the ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."
-			),
-
-			pinformative(
 				"We assume familiarity with Willow and specify Earthstar by giving instantiations of all of Willow's protocol parameters."
 			),
 
@@ -127,8 +123,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024. Remember that Earthstar only allows bytes that are ascii encodings of the following characters in paths: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), "."
-				),
+					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
 
 				pinformative(
 					"The type ", r("PayloadDigest"), " is the type of unsigned 256-bit integers, the total order we use is the numeric one."
