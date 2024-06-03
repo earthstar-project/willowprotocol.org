@@ -1,9 +1,9 @@
 import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
-import { br, code, em, hr, img, pre, var_ } from "../../../h.ts";
+import { br, code, em, img, pre } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
 import { r, rs, R } from "../../../defref.ts";
-import { marginale, sidenote } from "../../../marginalia.ts";
+import { marginale } from "../../../marginalia.ts";
 import { link_name } from "../../../linkname.ts";
 import { def } from "../../../defref.ts";
 import { def_parameter_value, def_value, lis, def_fn } from "../../main.ts";
@@ -15,6 +15,8 @@ export const es6_spec: Expression = site_template(
 		{
 				title: "Earthstar Specification",
 				name: "es6_spec",
+				status: "proposal",
+				status_date: "03.06.2024",
 		},
 		[
 			table_of_contents(7),
