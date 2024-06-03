@@ -63,7 +63,7 @@ export const es6_spec: Expression = site_template(
 				]),
 
 				hsection("es6_ids", "Identifiers", [
-					pinformative("Various concepts in Earthstar use ", r("cinn25519"), " as identifiers."),
+					pinformative("Two concepts in Earthstar use ", r("cinn25519"), " as identifiers."),
 
 					pinformative("An ", def({id: "es6_identity", singular: "identity identifier"}), " is a ", r("cinn25519"), "<4, 4> public key."),
 
@@ -217,7 +217,7 @@ export const es6_spec: Expression = site_template(
 					)),
 
 					pinformative(
-						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for out instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
+						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for our instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
 					),
 				]),
 
@@ -250,7 +250,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding its first eight bytes (which would encode the length)."
+						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding the first eight bytes of the combined encoding (which would encode the length)."
 					),
 
 					pinformative(
@@ -267,7 +267,7 @@ export const es6_spec: Expression = site_template(
 				]),
 
 				hsection("es6_wgps_encoding", "Encoding Parameters", [
-					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
+					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding function needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
 
 					pinformative(
 						"The ", r("encode_group_member"), " function encodes each ", r("PsiGroup"), " member (i.e., each Edwards25519 curve point) ", link("according to RFC8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), "."
@@ -278,7 +278,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -286,7 +286,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -298,11 +298,11 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), " (which is already a sequence of bytes) to itself."
 					),
 				]),
 
@@ -315,7 +315,7 @@ export const es6_spec: Expression = site_template(
 a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 
 					pinformative(
-						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own, or in the reference implementation, please reach out."]),
+						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own or in the reference implementation, please reach out."]),
 						"A pre-order offset of ", code("0"), " corresponds to byte zero (the start of the root parent node), a pre-order offset of ", code("1"), " corresponds to byte 64 (the start of the left parent node), a pre-order offset of ", code("2"), " corresponds to byte 128 (the start of the first chunk), a pre-order offset of ", code("3"), " corresponds to byte 1152 (the start of the second chunk), and a pre-order offset of ", code("4"), " corresponds to byte 3176 (the start of the last chunk). It is impossible to specify positions ", em("inside"), " a parent node or chunk.", 
 					),
 
