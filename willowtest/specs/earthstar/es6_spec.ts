@@ -331,6 +331,16 @@ a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 				
 			]),
 			
+			hsection("es6_friendly_paths", "Friendly paths", [
+				pinformative("While Willow's ", rs("Path"), " are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
+					id: "es6_friendly_path",
+					singular: "friendly path",
+					plural: "friendly paths",
+				}, "friendly paths"), "."),
+				pinformative("A path may be considered ", r("es6_friendly_path", 'friendly'), " if every byte of its bytestrings belong to the set of ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."),
+				pinformative("This makes it possible to provide legible encodings of paths, e.g. ", path('blog', 'recipes', 'chocolate_pizza'), ", and to input paths using a keyboard.")
+			]),
+			
 			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
 		],
 );
