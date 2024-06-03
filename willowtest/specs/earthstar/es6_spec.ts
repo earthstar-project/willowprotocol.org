@@ -1,6 +1,6 @@
 import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
-import { code, em, hr, img, pre } from "../../../h.ts";
+import { br, code, em, hr, img, pre, var_ } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
 import { r, rs, R } from "../../../defref.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
@@ -70,6 +70,46 @@ export const es6_spec: Expression = site_template(
 					pinformative("An ", def({id: "es6_identity", singular: "identity identifier"}), " is a ", r("cinn25519"), "<4, 4> public key."),
 
 					pinformative("A ", def({id: "es6_namespace", singular: "namespace identifier"}), " is a ", r("cinn25519"), "<1, 15> public key."),
+					
+					hsection("es6_id_tags", "Tag encodings", [
+						
+						pinformative("Identifiers have (optional) ", def({
+							id: "tag_encoding",
+							singular: "tag encoding",
+							plural: "tag encodings"
+						}, 'tag encodings'), ', which encode identifiers as more legible strings, e.g. ', code("@suzy.b3kxcquuxuckzqcovqhtk32ncj6aiixk46zg6pkfocdkhpst4selq"), "."),
+						
+						pinformative("To encode an identifier to a ", r('tag_encoding', 'tag,'), 
+							lis(
+								["let ", def_value('tag_sigil', "sigil"), ' be ', 
+									lis(
+										[code('@'), ' if the identifier is a ', r('es6_identity'), ', or,'], 
+										[code('+'), ' if the identifier is a ', r("es6_namespace"), " for a ", r("communal_namespace"), ', or,'], 
+										[code("-"), " if the identifier is a ", r("es6_namespace"), " for an ", r("owned_namespace"),]
+									),
+								],
+								[
+									"let ", def_value('tag_shortname', "shortname"), " be the the identifier's ", r("cinn_shortname"), ","
+								],
+								[
+									"let ", def_value('tag_b32_pub_key', "b32_pub_key"), " be the identifier's ", r("cinn_pk_pk"), ", encoded as a ", link("RFC4648 Base32 string", "https://www.rfc-editor.org/rfc/rfc4648#section-6"),  em(" without padding characters and prepended by the character", code('b')), "."
+								],
+								[
+									"And interpolate them into a single string of the format",
+									br(),
+									code(
+										"{",
+										r("tag_sigil", "sigil"),
+										"}{",
+										r("tag_shortname", 'shortname'),
+										"}.{",
+										r("tag_b32_pub_key", 'b32_pub_key'),
+										"}"
+									)
+								]
+							), 
+						),					
+					])
 				]),
 			]),
 
