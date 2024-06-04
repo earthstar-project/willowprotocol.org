@@ -39,6 +39,14 @@ export const specifications: Expression = site_template(
         link_name("resource_control", "Multiplexing and Flow Control"),
       ),
     ),
+    
+    pinformative("And until we build our own fancy cross-domain referencing system, this site is the temporary home for:"),
+    
+    nav(
+      lis(
+        [link_name("es6_spec", "Earthstar"), ": a friendly set of parameters for the Willow protocol."]        
+      )
+    ),
 
     surpress_output(def_type("U64", "U64", ["The type of unsigned 64 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("2^64"), "."])),
     surpress_output(def_type("U8", "U8", ["The type of unsigned 8 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("256"), "."])),
