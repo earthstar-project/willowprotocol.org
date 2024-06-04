@@ -1,29 +1,28 @@
 import { Expression } from "macro";
 import { link, path, pinformative, quotes, site_template } from "../../main.ts";
-import { code, em, hr, pre } from "../../../h.ts";
+import { br, code, em, img, pre } from "../../../h.ts";
 import { hsection, table_of_contents } from "../../../hsection.ts";
 import { r, rs, R } from "../../../defref.ts";
-import { marginale, sidenote } from "../../../marginalia.ts";
+import { marginale } from "../../../marginalia.ts";
 import { link_name } from "../../../linkname.ts";
 import { def } from "../../../defref.ts";
 import { def_parameter_value, def_value, lis, def_fn } from "../../main.ts";
 import { field_access, function_call } from "../../../pseudocode.ts";
 import { encode_two_bit_int } from "../encodings.ts";
+import { asset } from "../../../out.ts";
 
 export const es6_spec: Expression = site_template(
 		{
 				title: "Earthstar Specification",
 				name: "es6_spec",
+				status: "proposal",
+				status_date: "03.06.2024",
 		},
 		[
 			table_of_contents(7),
 
 			pinformative(
 				"This document specifies version 6 of the ", link("Earthstar protocol", "https://earthstar-project.org/"), ". The protocol behind Earthstar is an instantiation of ", link_name("willow", "Willow"), ": the Earthstar data model is a particular instantiation of the ", link_name("data_model", "Willow data model"), ", using an instantiation of ", link_name("meadowcap", "Meadowcap"), " for access control, and synchronising data with the ", link_name("sync", "WGPS"), "."
-			),
-
-			pinformative(
-				"In addition to fixing a specific set of protocol parameters for Willow, Earthstar restricts the set of bytes that may appear in ", rs("Path"), " to the ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."
 			),
 
 			pinformative(
@@ -64,11 +63,51 @@ export const es6_spec: Expression = site_template(
 				]),
 
 				hsection("es6_ids", "Identifiers", [
-					pinformative("Various concepts in Earthstar use ", r("cinn25519"), " as identifiers."),
+					pinformative("Two concepts in Earthstar use ", r("cinn25519"), " as identifiers."),
 
 					pinformative("An ", def({id: "es6_identity", singular: "identity identifier"}), " is a ", r("cinn25519"), "<4, 4> public key."),
 
 					pinformative("A ", def({id: "es6_namespace", singular: "namespace identifier"}), " is a ", r("cinn25519"), "<1, 15> public key."),
+					
+					hsection("es6_id_tags", "Tag encodings", [
+						
+						pinformative("Identifiers have (optional) ", def({
+							id: "tag_encoding",
+							singular: "tag encoding",
+							plural: "tag encodings"
+						}, 'tag encodings'), ', which encode identifiers as more legible strings, e.g. ', code("@suzy.b3kxcquuxuckzqcovqhtk32ncj6aiixk46zg6pkfocdkhpst4selq"), "."),
+						
+						pinformative("To encode an identifier to a ", r('tag_encoding', 'tag,'), 
+							lis(
+								["let ", def_value('tag_sigil', "sigil"), ' be ', 
+									lis(
+										[code('@'), ' if the identifier is a ', r('es6_identity'), ', or,'], 
+										[code('+'), ' if the identifier is a ', r("es6_namespace"), " for a ", r("communal_namespace"), ', or,'], 
+										[code("-"), " if the identifier is a ", r("es6_namespace"), " for an ", r("owned_namespace"),]
+									),
+								],
+								[
+									"let ", def_value('tag_shortname', "shortname"), " be the the identifier's ", r("cinn_shortname"), ","
+								],
+								[
+									"let ", def_value('tag_b32_pub_key', "b32_pub_key"), " be the identifier's ", r("cinn_pk_pk"), ", encoded as a ", link("RFC4648 Base32 string", "https://www.rfc-editor.org/rfc/rfc4648#section-6"),  em(" without padding characters and prepended by the character", code('b')), "."
+								],
+								[
+									"And interpolate them into a single string of the format",
+									br(),
+									code(
+										"{",
+										r("tag_sigil", "sigil"),
+										"}{",
+										r("tag_shortname", 'shortname'),
+										"}.{",
+										r("tag_b32_pub_key", 'b32_pub_key'),
+										"}"
+									)
+								]
+							), 
+						),					
+					])
 				]),
 			]),
 
@@ -86,8 +125,7 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024. Remember that Earthstar only allows bytes that are ascii encodings of the following characters in paths: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), "."
-				),
+					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
 
 				pinformative(
 					"The type ", r("PayloadDigest"), " is the type of unsigned 256-bit integers, the total order we use is the numeric one."
@@ -179,7 +217,7 @@ export const es6_spec: Expression = site_template(
 					)),
 
 					pinformative(
-						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for out instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
+						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for our instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
 					),
 				]),
 
@@ -212,7 +250,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding its first eight bytes (which would encode the length)."
+						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding the first eight bytes of the combined encoding (which would encode the length)."
 					),
 
 					pinformative(
@@ -229,7 +267,7 @@ export const es6_spec: Expression = site_template(
 				]),
 
 				hsection("es6_wgps_encoding", "Encoding Parameters", [
-					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding functino needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
+					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding function needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
 
 					pinformative(
 						"The ", r("encode_group_member"), " function encodes each ", r("PsiGroup"), " member (i.e., each Edwards25519 curve point) ", link("according to RFC8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), "."
@@ -240,7 +278,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -248,7 +286,7 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_sync_signature"), " function maps each ", r("sync_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
@@ -260,11 +298,11 @@ export const es6_spec: Expression = site_template(
 					),
 
 					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), "(i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), "(which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), " (which is already a sequence of bytes) to itself."
 					),
 				]),
 
@@ -277,7 +315,7 @@ export const es6_spec: Expression = site_template(
 a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 
 					pinformative(
-						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own, or in the reference implementation, please reach out."]),
+						marginale(["We will add offset conversion formulae here once we get to implementing this ourselves. Right now, the Earthstar implementation is a beta version that performs no payload transformations. If you want to implement Bao support for Earthstar/Willow, whether in an implementation of your own or in the reference implementation, please reach out."]),
 						"A pre-order offset of ", code("0"), " corresponds to byte zero (the start of the root parent node), a pre-order offset of ", code("1"), " corresponds to byte 64 (the start of the left parent node), a pre-order offset of ", code("2"), " corresponds to byte 128 (the start of the first chunk), a pre-order offset of ", code("3"), " corresponds to byte 1152 (the start of the second chunk), and a pre-order offset of ", code("4"), " corresponds to byte 3176 (the start of the last chunk). It is impossible to specify positions ", em("inside"), " a parent node or chunk.", 
 					),
 
@@ -289,5 +327,17 @@ a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 				]),
 				
 			]),
+			
+			hsection("es6_friendly_paths", "Friendly paths", [
+				pinformative("While Willow's ", rs("Path"), " are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
+					id: "es6_friendly_path",
+					singular: "friendly path",
+					plural: "friendly paths",
+				}, "friendly paths"), "."),
+				pinformative("A path is considered ", r("es6_friendly_path", 'friendly'), " if every byte of its bytestrings belong to the set of ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."),
+				pinformative("This makes it possible to provide legible encodings of paths, e.g. ", path('blog', 'recipes', 'chocolate_pizza'), ", and to input paths using a keyboard.")
+			]),
+			
+			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
 		],
 );
