@@ -101,7 +101,7 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
           }),
           meta({
             name: "description",
-            content: "A protocol for peer-to-peer data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."
+            content: "Protocols for synchronisable data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."
           }),
           meta({
             name: 'language',
@@ -550,7 +550,7 @@ evaluate(enable_previews([
         },
         [
           pintroductory(
-            "A protocol for peer-to-peer data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
+            "Protocols for synchronisable data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint.",
           ),
           nav(
             lis(
