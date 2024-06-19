@@ -1,5 +1,5 @@
 import { Expression } from "macro";
-import { link, lis, pinformative, site_template } from "../../main.ts";
+import { link, lis, pinformative, site_template, sky_blue } from "../../main.ts";
 import { RssFeedItemMeta, create_rss_item } from "../../../rss.ts";
 import { hsection } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
@@ -50,6 +50,16 @@ export const changes: Expression = site_template({
 			pinformative("Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful."),
 			pinformative(link("RSS feed available here", "/rss_news.xml"), "."),
 			lis(
+				create_changelog_item(
+					{
+						name: "wgps_candidate",
+						title: "Willow General Purpose Sync specification status promoted to ‘Candidate’",
+						pubDate: new Date(2024, 5, 19)
+					}, 
+					[
+						pinformative("With a working implementation of the ", link_name('sync', "Willow General Purpose Sync Protocol"), " in ", link("willow-js", "https://github.com/earthstar-project/willow-js"), " — and several other implementations now in progress — we feel comfortable in promoting the specification's status to ", sky_blue(r('status_candidate')), ".")
+					]
+				),
 				create_news_item(
 					{
 						name: "willow_js_0_5_0", title: 'Sideloading in willow-js', pubDate: new Date(2024, 4, 29, 0)
