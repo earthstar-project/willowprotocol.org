@@ -57,7 +57,7 @@ export const es6_spec: Expression = site_template(
 
 					pinformative("We define ", def_fn("encode_cinn_pk"), " as the function that maps a ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> public key to the concatenation of ", lis(
 						["The ", r("cinn_shortname"), ", encoded as ascii,"],
-						["If ", code(r("cinn_min"), " <= ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
+						["If ", code(r("cinn_min"), " < ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
 						["the ", r("cinn_pk_pk"), " (which is a sequence of bytes)."],
 					)),
 				]),
