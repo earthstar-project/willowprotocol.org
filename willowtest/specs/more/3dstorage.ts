@@ -23,7 +23,7 @@ title: "Three-Dimensional Data Storage",
     hsection("d3storage_requirements", "Requirements", [
         pinformative("The difficult part in storing any kind of data is to enable efficient access and manipulation. The patterns of data access that a Willow implementation needs to support are primarily determined by two factors: how do applications access the data, and how do several data stores sync their contents?"),
 
-        pinformative("The bare minimum functionality that a Willow database has to provide to applications is the creation of new ", rs("Entry"), ", and retrieval of ", rs("Payload"), " by ", r("Entry"), ". The ", link_name("grouping_entries", "three-dimnsionality"), " of Willow suggests a natural way for applications to access data in bulk: by querying for all ", rs("Entry"), " in an ", sidenote(r("Area"), [
+        pinformative("The bare minimum functionality that a Willow database has to provide to applications is the creation of new ", rs("Entry"), ", and retrieval of ", rs("Payload"), " by ", r("Entry"), ". The ", link_name("grouping_entries", "three-dimensionality"), " of Willow suggests a natural way for applications to access data in bulk: by querying for all ", rs("Entry"), " in an ", sidenote(r("Area"), [
             "Queries for ", rs("D3Range"), " are not particularly meaningful in the face of end-to-end encrypted data; we recommend to always use ", rs("Area"), " in human-facing components such as programming APIs.",
         ]), "."),
 
