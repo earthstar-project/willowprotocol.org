@@ -72,7 +72,7 @@ export const range3d_based_set_reconciliation: Expression = site_template(
 
     pinformative("Once the two peers have reconciled their sets, they can filter out ", rs("Entry"), " that overwrite each other, and they can separately request any missing (suffixes of) ", rs("Payload"), ". Going forward, we thus concentrate on the set reconciliation part only."),
 
-    pinformative("To perform set reconciliation, we adapt the approach of ", em("range-based set "), sidenote(em("reconciliation"), [link(`https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf`, "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " (this peer-reviewed paper was presented at ", link("SRDS2023", "https://srds-conference.org/"), ", the proceedings have not been published yet)"]), marginale(["For a more accessible introduction to the technique, see also ", link("this webpage", "https://logperiodic.com/rbsr.html"), "."]), "."),
+    pinformative("To perform set reconciliation, we adapt the approach of ", em("range-based set "), sidenote(em("reconciliation"), [link(`Meyer, Aljoscha. "Range-Based Set Reconciliation." 2023 42nd International Symposium on Reliable Distributed Systems (SRDS). IEEE, 2023.`, "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), "."]), "."),
 
     pinformative("Range-based set reconciliation solves the problem recursively. To reconcile two sets, one peer first computes a hash over all items in its set, and sends this fingerprint to the other peer. That peer then computes the fingerprint over its items as well. If the fingerprints match, they are done reconciling."),
     
