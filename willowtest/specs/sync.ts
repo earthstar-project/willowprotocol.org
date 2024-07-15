@@ -518,7 +518,7 @@ export const sync: Expression = site_template(
                                 {
                                     id: "ReconciliationAnnounceEntriesWillSort",
                                     name: "will_sort",
-                                    comment: ["Whether the sender promises to send the ", rs("Entry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " sorted from ", r("entry_newer", "oldest to newest"), "."],
+                                    comment: ["Whether the sender promises to send the ", rs("Entry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by ", r("entry_subspace_id"), " first, ", r("entry_path"), " second."],
                                     rhs: r("Bool"),
                                 },
                                 {
@@ -547,7 +547,7 @@ export const sync: Expression = site_template(
 
                     pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
                         "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("d3rbsr"), "."
-                    ]), "sorted from ", r("entry_newer", "oldest to newest"), ", if the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
+                    ]), " sorted in ascending order by ", r("entry_subspace_id"), " first, using the ", r("entry_path"), " as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
                     pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent."),
 
