@@ -681,23 +681,14 @@ export const encodings: Expression = site_template({
                 ])),
                 ],
                 [
-                  "Combine ", r("eir_time"), " with ",
+                  "Add ", r("eir_time"), " to ",
                   field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart"),
-                  ", or with ",
+                  ", or subtract it from ",
                   field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd"),
                   "?",
                 ],
               ),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), "  bit 2 is ", code("1"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeStart")), ", or ",
-                  " bit 2 is ", code("0"), " and ", code(field_access(r("eir_inner"), "entry_timestamp"), " >= ", field_access(field_access(r("eir_outer"), "D3RangeTime"), "TimeRangeEnd")), ".",
-                ],
-                [
-                  "Add or subtract ", r("eir_time"), "?",
-                ],
-              ),
+              zero_bits(1),
               two_bit_int(4, r("eir_time")),
               two_bit_int(6, field_access(r("eir_inner"), "entry_payload_length")),
             ),
