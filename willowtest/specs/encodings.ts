@@ -800,7 +800,7 @@ export const encodings: Expression = site_template({
             new BitfieldRow(
               1,
               [
-                code("1"), " ", r("iff"), " ",
+                code("0"), " if ", code(field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"), " == ", r("range_open")), ", otherwise ", code("1"), " ", r("iff"), " ",
                 code(r("aia_end"), " == ", field_access(field_access(r("area_in_area_inner"), "AreaTime"), "TimeRangeEnd"),
                 " - ", field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeStart")),
               ],
