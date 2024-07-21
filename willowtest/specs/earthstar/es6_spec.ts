@@ -166,6 +166,10 @@ export const es6_spec: Expression = site_template(
 				),
 
 				pinformative(
+					"The ", r("is_communal"), " function maps a ", r("es6_namespace"), " to ", code("true"), " if and only if the least significant bit of its ", r("cinn_pk_pk"), " is ", code("0"), "."
+				),
+
+				pinformative(
 					"The choices for the Meadowcap ", r("mc_max_component_length"), ", ", r("mc_max_component_count"), ", and ", r("mc_max_path_length"), " are the same as those for the data model ", r("max_component_length"), ", ", r("max_component_count"), ", and ", r("max_path_length"), "."
 				),
 
