@@ -321,7 +321,7 @@ export const psi: Expression = site_template(
         [
           "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
           lis(
-            [code(function_call(r("encode_user_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
+            [code(function_call(r("encode_namespace_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
             [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
           ),
         ],
