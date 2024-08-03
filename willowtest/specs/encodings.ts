@@ -842,7 +842,7 @@ export const encodings: Expression = site_template({
     hsection("enc_3d_range_relative_3d_range", {short_title: "3drange_relative_3drange"}, code("encode_3drange_relative_3drange"), [
       pinformative(
         preview_scope(
-          "To encode a ", r("D3Range"), " ", def_value({ id: "threed3d_primary", singular: "r" }), " relative to a reference ", r("D3Range"), " ", def_value({ id: "threedr3d_reference", singular: "ref" }), ", we first define ", lis(
+          "To encode a ", r("D3Range"), " ", def_value({ id: "threed3d_primary", singular: "ran" }), " relative to a reference ", r("D3Range"), " ", def_value({ id: "threedr3d_reference", singular: "ref" }), ", we first define ", lis(
             [def_value({ id: "threedr3d_s2s", singular: "start_to_start" }), " as the absolute value of ", code(
               field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeStart"),
               " - ",

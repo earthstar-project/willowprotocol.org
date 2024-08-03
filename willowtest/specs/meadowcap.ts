@@ -379,6 +379,7 @@ export const meadowcap: Expression = site_template(
         pseudocode(
           new Struct({
               id: "MeadowcapAuthorisationToken",
+              name: "McAuthorisationToken",
               comment: ["To be used as an ", r("AuthorisationToken"), " for Willow."],
               fields: [
                   {
