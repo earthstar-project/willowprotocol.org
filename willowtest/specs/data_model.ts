@@ -124,7 +124,7 @@ export const data_model: Expression = site_template(
 
       pinformative("A ", def_type("Path"), " is a sequence of at most ", r("max_component_count"), " many bytestrings, each of at most ", r("max_component_length"), " bytes, and whose total number of bytes is at most ", r("max_path_length"), ". The bytestrings that make up a ", r("Path"), " are called its ", def_type("Component", "Components"), "."),
 
-      pinformative("A ", def_type("Timestamp"), " is a 64-bit unsigned integer, that is, a natural number between zero (inclusive) and ", code("2^64 - 1"), " (exclusive). ", Rs("Timestamp"), " are to be interpreted as a time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), "."),
+      pinformative("A ", def_type("Timestamp"), " is a 64-bit unsigned integer, that is, a natural number between zero (inclusive) and ", code("2^64"), " (exclusive). ", Rs("Timestamp"), " are to be interpreted as a time in microseconds since the ", link("Unix epoch", "https://en.wikipedia.org/wiki/Unix_epoch"), "."),
 
       preview_scope(
         p("The metadata associated with each ", r("Payload"), " is called an ", r("Entry"), ":"),
