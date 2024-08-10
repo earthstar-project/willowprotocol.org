@@ -18,24 +18,21 @@ export const projects_and_communities: Expression = site_template(
 				
 				hsection("earthstar_project_implementations", "Earthstar Project", [
 					pinformative("Willow is brought to you by the ", link("Earthstar Project", "https://earthstar-project.org"), ". We aim to provide implementations of Willow specifications in both TypeScript and Rust."),
-					pinformative("We have complete TypeScript implementations of Meadowcap and Willow (comprising the ", link_name("data_model", "Willow Data Model"), ", ", link_name("sync", "Willow General Purpose Sync protocol"), ", and ", link_name("sideloading", "Willow Sideloading protocol"), "). These implementations have been funded by ", link("NGI Assure", "https://nlnet.nl/assure/"), "."),
+					pinformative("We have complete TypeScript implementations of Meadowcap and Willow (comprising the ", link_name("data_model", "Willow Data Model"), ", ", link_name("sync", "Willow General Purpose Sync protocol"), ", and ", link_name("sideloading", "Willow Sideloading protocol"), "). These implementations have been funded by ", link("NGI Assure", "https://nlnet.nl/assure/"), ":"),
 					lis(
 						link("meadowcap-js", "https://github.com/earthstar-project/meadowcap-js"),
 						link("willow-js", "https://github.com/earthstar-project/willow-js"),		
 					),
 					
-					pinformative("Earthstar will become a Willow protocol sometime in 2024."),
+					pinformative("We are currently working on ", link("Rust implementations of the Willow specifications", "https://github.com/earthstar-project/willow-rs"), ", with our work funded by ", link("NGI Core", "https://nlnet.nl/core/"), ". As the time of writing, we have released the following crates:"),
 					lis(
-						link("Earthstar website", "https://earthstar-project.org"),
-						link("Earthstar repo", "https://github.com/earthstar-project/earthstar"),
+						link("willow-data-model", "https://docs.rs/willow-data-model/0.1.0/willow_data_model/"),
+						link("meadowcap", "https://docs.rs/meadowcap/0.1.0/meadowcap/")
 					),
-					
-					pinformative("In the first half of 2024 we will begin working on a Rust implementation funded by ", link("NGI Core", "https://nlnet.nl/core/"), ". This will include ",
-					link_name("meadowcap", "Meadowcap"), ", the ", link_name("data_model", "Willow Data Model"), ", ", link_name("sync", "Willow General Purpose Sync protocol"), ", and ", link_name("sideloading", "Willow Sideloading protocol"), ".")
 				]),
 				
 				hsection("iroh_implementations", "Iroh", [
-					pinformative("Iroh is a sync protocol using the Willow data model. It has a high-performance Rust implementation, and is open source."),
+					pinformative("Iroh is an open-source framework for p2p applications adopting the ", link_name("data_model", "Willow Data Model"), ", ", link_name("meadowcap", "Meadowcap"), ", and the ", link_name("sync", "Willow General Purpose Sync protocol"), ". They are users and contributors to our Rust implementations."),
 					lis(
 						link("Iroh website", "https://iroh.computer"),
 						link("Iroh repo", "https://github.com/n0-computer/iroh")

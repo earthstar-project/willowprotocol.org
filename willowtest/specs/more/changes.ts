@@ -3,7 +3,7 @@ import { link, lis, pinformative, site_template, sky_blue } from "../../main.ts"
 import { RssFeedItemMeta, create_rss_item } from "../../../rss.ts";
 import { hsection } from "../../../hsection.ts";
 import { link_name } from "../../../linkname.ts";
-import { code } from "../../../h.ts";
+import { code, em } from "../../../h.ts";
 import { r, rs } from "../../../defref.ts";
 
 export function create_news_item(item: RssFeedItemMeta, description: Expression): Expression {
@@ -50,7 +50,15 @@ export const changes: Expression = site_template({
 			pinformative("Here we’ll share bits of news relevant to the Willow protocol, as well as improvements to the site. For example, the completion of an implementation, or the addition of new explanatory text and drawings to the site. Updates will be occasional and meaningful."),
 			pinformative(link("RSS feed available here", "/rss_news.xml"), "."),
 			lis(
-				create_changelog_item(
+				create_news_item(
+					{
+						name: 'meadowcap_rs_0_1_0', title: "Rust implementation of Meadowcap released", pubDate: new Date(2024, 7, 10)
+					},
+					[ 
+					pinformative("Our own ", em("Rust"), " implementation of ", link_name("meadowcap", "Meadowcap"), " now conforms to the specification as of August 10th, 2024. The source, can be found at ", link("the willow-rs repository", "https://github.com/earthstar-project/willow-rs"), ", and complete documentation can be found at ", link("docs.rs", "https://docs.rs/meadowcap/0.1.0/meadowcap/"), ".")
+					],
+				),
+				create_news_item(
 					{
 						name: "wgps_candidate",
 						title: "Willow General Purpose Sync specification status promoted to ‘Candidate’",
