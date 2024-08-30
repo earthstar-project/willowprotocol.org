@@ -20,29 +20,7 @@ export const changes: Expression = site_template({
 }, [
 	pinformative("Here, we maintain a changelog of breaking changes, and one of general site updates. You can subscribe to either via RSS."),
 
-	hsection(
-		'spec_changes', 'Necessary Changes',
-		[
-			pinformative("Although we consider Willow’s specifications stable, unforeseen outcomes may force us to make amendments. Rather than making this a source of exciting surprises for implementors, we prefer to list those (hopefully few) changes here. "),
-			pinformative(link("RSS feed available here", "/rss_changelog.xml"), "."),
-			lis(
-				create_changelog_item(
-					{ name: "prefingerprints_and_payload_transformations", title: "Sync Protocol Tweaks", pubDate: new Date(2024, 3, 26, 0)},
-					[
-						pinformative("We are progressing with implementing the Willow General Purpose Sync Protocol (WGPS), and have discovered some tweaks that make the protocol more powerful."),
-
-						pinformative("First, we have generalised the parameters for fingerprint computation in range-based set reconciliation: the old type of ", code("Fingerprints"), " is now called ", code("PreFingerprint"), ". After computing a ", code("PreFingerprint"), " but before sending it to the other peer for comparison, it is transformed into an actual ", code("Fingerprint"), " with an arbitrary function. This allows using large fingerprints with nice algebraic properties for the computations, but compressing them with a conventional hash function before transmission."),
-
-						pinformative("The second generalisation concerns payload transmission. Instead of transmitting payloads verbatim, peers may now transform the payloads into arbitrary other bytestrings, and exchange those instead. This opens up features such as streaming verification of partial payloads, or on-the-fly compression."),
-					],
-				),
-				create_changelog_item(
-					{ name: "changelog_launch", title: "Willow specification published", pubDate: new Date(2024, 0, 17, 0)},
-					[pinformative("No changes yet!")],
-				),
-			)
-		]
-	),
+	
 	
 	hsection(
 		'news_and_updates', 'News and Updates',
@@ -105,6 +83,30 @@ export const changes: Expression = site_template({
 				create_news_item(
 					{ name: "news_launch", title: "Welcome to willowprotocol.org!", pubDate: new Date(2024, 0, 17, 0)},
 					[pinformative("The site for the Willow protocol has been officially released to the public.")],
+				),
+			)
+		]
+	),
+	
+	hsection(
+		'spec_changes', 'Necessary Changes',
+		[
+			pinformative("Although we consider Willow’s specifications stable, unforeseen outcomes may force us to make amendments. Rather than making this a source of exciting surprises for implementors, we prefer to list those (hopefully few) changes here. "),
+			pinformative(link("RSS feed available here", "/rss_changelog.xml"), "."),
+			lis(
+				create_changelog_item(
+					{ name: "prefingerprints_and_payload_transformations", title: "Sync Protocol Tweaks", pubDate: new Date(2024, 3, 26, 0)},
+					[
+						pinformative("We are progressing with implementing the Willow General Purpose Sync Protocol (WGPS), and have discovered some tweaks that make the protocol more powerful."),
+	
+						pinformative("First, we have generalised the parameters for fingerprint computation in range-based set reconciliation: the old type of ", code("Fingerprints"), " is now called ", code("PreFingerprint"), ". After computing a ", code("PreFingerprint"), " but before sending it to the other peer for comparison, it is transformed into an actual ", code("Fingerprint"), " with an arbitrary function. This allows using large fingerprints with nice algebraic properties for the computations, but compressing them with a conventional hash function before transmission."),
+	
+						pinformative("The second generalisation concerns payload transmission. Instead of transmitting payloads verbatim, peers may now transform the payloads into arbitrary other bytestrings, and exchange those instead. This opens up features such as streaming verification of partial payloads, or on-the-fly compression."),
+					],
+				),
+				create_changelog_item(
+					{ name: "changelog_launch", title: "Willow specification published", pubDate: new Date(2024, 0, 17, 0)},
+					[pinformative("No changes yet!")],
 				),
 			)
 		]
