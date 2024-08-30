@@ -158,8 +158,9 @@ export function site_template(metadata: Document, bodyexp: Expression): Invocati
                   li(a({ href: "/", class: "internal" }, "Home")),
                   li(link_name("specifications", "Specs")),
                   li(link_name("changes", "News")),
-                  li(link_name("more", "More")),
                   li(link_name("about", "About us")),
+                  li(link_name("projects_and_communities", "Active projects")),
+                  li(link_name("more", "More")),
                 ),
                 div(
                   marginale_inlineable(
