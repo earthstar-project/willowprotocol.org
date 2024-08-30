@@ -42,7 +42,7 @@ export const about: Expression = site_template(
 				hsection("gwil_section", "Sam “gwil” Gwilym", [
 					pinformative(
 					marginale_inlineable(img(asset("about/gwil.png"), `A webcam-angle drawing of gwil in his studio, as seen by Aljoscha in their many video chats. Thankfully still drawn by gwil, however. Sunlight fills the room, the walls are full of drawings. Gwil grins as he often does, and gives a thumbs-up.`)),
-					span({style: "font-style: italic;"}, "I’m ", def({ id: "gwil", singular: "gwil"}, "gwil",), ". I’m a programmer, illustrator, and dad living in the Hague, the Netherlands. I’m the core maintainer of the Earthstar project, and seized upon ", r("Aljoscha"), "’s initial designs for Willow as soon as he made the mistake of sharing them. We’ve really pushed each other to do our best work with this project, and making all the wobbly drawings for the site has been the highlight of my computer science career. Now that the protocol is nearly final, I guess I have to implement it, too? Hmmm… anyone need any drawings done?")),
+					span({style: "font-style: italic;"}, "I’m ", def({ id: "gwil", singular: "gwil"}, "gwil",), ". I’m a programmer, illustrator, and dad living in the Hague, the Netherlands. Despite my better judgement, I've been active in the decentralised space for a couple of years now. I'm the core maintainer of Earthstar and the Rust and TypeScript implementations of Willow. ", r("Aljoscha"), " and I have really pushed each other to do our best work in designing these protocols, though it's really all the wobbly drawings for the site that have been the highlight of my computer science career.")),
 					
 					
 					
