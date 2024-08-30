@@ -557,6 +557,7 @@ evaluate(enable_previews([
               link_name("why_willow", "Why did we make Willow?"),
               link_name("data_model", "If you read only one specification, let it be this one"),
               link_name("specifications", "All of the specifications"),
+              link_name('changes', "News and updates")
             ),
           ),
 
