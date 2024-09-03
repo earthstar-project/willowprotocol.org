@@ -842,6 +842,44 @@ export const sync: Expression = site_template(
                                 },
                             ],
                         }),
+
+                        new Struct({
+                            id: "ControlLimitSending",
+                            comment: [
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will send on some ", r("logical_channel"), ".",
+                            ],
+                            fields: [
+                              {
+                                id: "ControlLimitSendingBound",
+                                name: "bound",
+                                rhs: r("U64"),
+                              },
+                              {
+                                id: "ControlLimitSendingChannel",
+                                name: "channel",
+                                rhs: r("LogicalChannel"),
+                              },
+                            ],
+                          }),
+
+                          new Struct({
+                            id: "ControlLimitReceiving",
+                            comment: [
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will still receive on some ", r("logical_channel"), ".",
+                            ],
+                            fields: [
+                              {
+                                id: "Bound",
+                                name: "bound",
+                                rhs: r("U64"),
+                              },
+                              {
+                                id: "Channel",
+                                name: "channel",
+                                rhs: r("LogicalChannel"),
+                              },
+                            ],
+                          }),
         
                         new Struct({
                             id: "ControlAnnounceDropping",
