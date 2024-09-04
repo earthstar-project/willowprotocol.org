@@ -869,12 +869,12 @@ export const sync: Expression = site_template(
                             ],
                             fields: [
                               {
-                                id: "Bound",
+                                id: "ControlLimitReceivingBound",
                                 name: "bound",
                                 rhs: r("U64"),
                               },
                               {
-                                id: "Channel",
+                                id: "ControlLimitReceivingChannel",
                                 name: "channel",
                                 rhs: r("LogicalChannel"),
                               },
@@ -1905,7 +1905,7 @@ export const sync: Expression = site_template(
 
                 hsection("sync_encode_control", "Control", [
                     pinformative(
-                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. ", def_fn({id: "encode_channel"}), " maps ", lis(
+                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. The ", def_fn({id: "encode_channel"}), " function maps ", lis(
                             [r("ReconciliationChannel"), " to ", code("000"), ","],
                             [r("DataChannel"), " to ", code("001"), ","],
                             [r("IntersectionChannel"), " to ", code("010"), ","],
@@ -1928,16 +1928,17 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("000")],
+                                    4,
+                                    [code("0000")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
@@ -1957,16 +1958,17 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("001")],
+                                    4,
+                                    [code("0001")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_absolve"), "ControlAbsolveChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
@@ -1986,19 +1988,78 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("010")],
+                                    4,
+                                    [code("0010")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_plead"), "ControlPleadChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlLimitSending"), " message ", def_value({id: "enc_ctrl_limit_sending", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    5,
+                                    [code("00110")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(8, field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingChannel"))]
+                                ),
+                                bitfieldrow_unused(3),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlLimitReceiving"), " message ", def_value({id: "enc_ctrl_limit_receiving", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    5,
+                                    [code("00111")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(8, field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingChannel"))]
+                                ),
+                                bitfieldrow_unused(3),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
                             ]],
                         ),
                     ),
@@ -2075,11 +2136,12 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("011")],
+                                    2,
+                                    [code("01")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                                bitfieldrow_unused(3),
+                                two_bit_int(8, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_handle_type"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
@@ -2090,7 +2152,7 @@ export const sync: Expression = site_template(
                                         code("1"), " ", r("iff"), " ", code(field_access(r("enc_ctrl_free"), "ControlFreeHandleMine"), " == true"),
                                     ],
                                 ),
-                                bitfieldrow_unused(4),
+                                bitfieldrow_unused(2),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
@@ -2100,7 +2162,8 @@ export const sync: Expression = site_template(
                     pinformative(
                         "And with that, we have all the pieces we need for secure, efficient synchronisation of ", rs("namespace"), ". Thanks for reading!"),
                     pinformative(
-                    img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),)
+                        img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),
+                    ),
 
                 ]),
 
