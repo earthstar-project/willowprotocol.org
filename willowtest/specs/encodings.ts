@@ -23,7 +23,7 @@ import {
   thead,
   tr,
 } from "../../h.ts";
-import { def, preview_scope, r, r$, rs } from "../../defref.ts";
+import { Rs, def, preview_scope, r, r$, rs } from "../../defref.ts";
 import { asset } from "../../out.ts";
 import { marginale, sidenote } from "../../marginalia.ts";
 import { Expression, Invocation, new_macro } from "macro";
@@ -71,6 +71,20 @@ export function two_bit_int(start_bit: number, value_to_encode: Expression, unle
   );
 }
 
+export function two_bit_int_explicit(start_bit: number, id: string): BitfieldRow {
+  return new BitfieldRow(
+    2,
+    [
+      div(
+        `Bit ${start_bit} is `, code("1"), " ", r("iff"), " ", r(id), " is ", code("4"), " or ", code("8"), ".",
+      ),
+      div(
+        `Bit ${start_bit + 1} is `, code("1"), " ", r("iff"), " ", r(id), " is ", code("2"), " or ", code("8"), ".",
+      ),
+    ],
+  );
+}
+
 export function two_bit_int_def(start_bit: number, value_to_encode: Expression, unless?: Expression): Expression {
   return [
       unless ? [
@@ -102,11 +116,38 @@ export function encode_two_bit_int(
   return new Invocation(macro, exception ? [int_exp, exception] : [int_exp]);
 }
 
+export function encode_int_width(
+  int_exp: Expression,
+  width_id: string,
+  exception?: Expression,
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [
+        args[0], ", encoded as an unsigned, big-endian ", r(width_id), "-byte integer",
+        args.length === 2
+          ? [", or the empty string, if ", args[1]]
+          : "",
+      ];
+    },
+  );
+  return new Invocation(macro, exception ? [int_exp, exception] : [int_exp]);
+}
+
 export function zero_bits(number_of_bits: number): BitfieldRow {
   return new BitfieldRow(
     number_of_bits,
     [
       "always ", code("0"),
+    ],
+  );
+}
+
+export function arbitrary_bits(number_of_bits: number): BitfieldRow {
+  return new BitfieldRow(
+    number_of_bits,
+    [
+      "arbitrary"
     ],
   );
 }
@@ -120,6 +161,18 @@ export function inclusion_flag_remark(
     },
   );
   return new Invocation(macro, [value_to_include]);
+}
+
+export function choose_width(
+  def: Expression,
+  min: Expression,
+): Expression {
+  const macro = new_macro(
+    (args, _ctx) => {
+      return [args[0], " is 1, 2, 4, or 8, but at least ", code(function_call(r("compact_width"), args[1]))];
+    },
+  );
+  return new Invocation(macro, [def, min]);
 }
 
 export const encodings: Expression = site_template({
@@ -302,6 +355,25 @@ export const encodings: Expression = site_template({
         ),
       ],
     ),
+
+    pinformative(
+      Rs("encoding_function"), " enforce a one-to-one mapping between values and their encodings. Sometimes, this strict requirement can hinder performance: when there are several natural ways of encoding values, then forcing a decoder to reject all but one of those ways causes extra overhead. For these situations, we define the notion of an ", r("encoding_relation"), ":"
+    ),
+
+    pinformative(
+      "An ", def({ id: "encoding_relation", singular: "encoding relation" }), " is a ", link("binary relation", "https://en.wikipedia.org/wiki/Binary_relation"), " on some set ", def_type({id: "relS", singular: "S"}), " and the set of bytestrings, such that:", lis(
+        [
+          "for every ", def_value({id: "rel_s", singular: "s"}), " in ", r("relS"), ", there is at least one bytestring in relation with ", r("rel_s"), ", and",
+        ],
+        [
+          "no bytestring in the relation is a prefix of another bytestring in the relation."
+        ],
+      ),
+    ),
+
+    pinformative(
+      "We usually define an ", r("encoding_relation"), " first, and then deine a specific subset of it that is an ", r("encoding_functions"), ". Even in places where we use the ", em("relation"), ", we recommend that implementations of encoders use the corresponding ", em("function"), ". The decoders in those places, however, must be able to decode any opssible encoding from the ", r("encoding_relation"), "."
+    ),
   ]),
 
   hsection("specific_encodings", "Encoding Techniques", [
@@ -456,92 +528,212 @@ export const encodings: Expression = site_template({
     ]),
 
     hsection("enc_etry_relative_entry", {short_title: "entry_relative_entry"}, code("encode_entry_relative_entry"), [
-      pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
-      code(function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as the concatenation of:",
-
-        encodingdef(
-          new Bitfields(
-            new BitfieldRow(
-              1,
-              [
-                code("1"), " ", r("iff"), " ",
-                code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
-              ],
-              [
-                inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_namespace_id")),
-              ],
-            ),
-            new BitfieldRow(
-              1,
-              [
-                code("1"), " ", r("iff"), " ",
-                code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
-              ],
-              [
-                inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_subspace_id")),
-              ],
-            ),
-            new BitfieldRow(
-              1,
-              [
-                code("1"), " ", r("iff"), " ",
-                code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
-              ],
-              [
-                "Add or subtract ", r("erele_time_difference"), " from ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), "?",
-              ],
-            ),
-            zero_bits(1),
-            two_bit_int(4, r("erele_time_difference")),
-            two_bit_int(6, field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
-          ),
+      pinformative(
+        "We define an ", r("encoding_relation"), " ", def_type("EntryRelativeEntry"), " for encoding an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ". First, define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". The encodings then vary based on the following choices made by the encoder:", lis(
           [
-            [
-              code(function_call(
-                r("encode_namespace_id"),
-                field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
-              )), ",  or the empty string, if ",
-              code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
-            ],
+            def_value({id: "ere_encode_nsid", singular: "encode_namespace_id"}), " is a ", r("Bool"), " that must be ", code("true"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")), ",",
           ],
           [
-            [
-              code(function_call(
-                r("encode_subspace_id"),
-                field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
-              )), ",  or the empty string, if ",
-              code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
-            ],
+            def_value({id: "ere_encode_ssid", singular: "encode_subspace_id"}), " is a ", r("Bool"), " that must be ", code("true"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")), ",",
           ],
           [
-            [
-              code(function_call(
-                r("encode_path_relative_path"),
-                field_access(r("entry_rel_entry_primary"), "entry_path"),
-                field_access(r("entry_rel_entry_reference"), "entry_path"),
-              )),
-            ],
+            def_value({id: "ere_ts_add", singular: "timestamp_add"}), " is a ", r("Bool"), " that must be ", code("true"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " > ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ", that must be ", code("false"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " < ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ", and that can be chosen freely if ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " == ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ","
           ],
           [
-            [
-              encode_two_bit_int(r("erele_time_difference")),
-            ],
+            choose_width(def_value({id: "ere_time_width", singular: "time_diff_width"}), r("erele_time_difference")),
           ],
           [
-            [
-              encode_two_bit_int(field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
-            ],
+            choose_width(def_value({id: "ere_payload_length_width", singular: "payload_length_width"}), field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
           ],
-          [
-            [
-              code(function_call(
-                r("encode_payload_digest"),
-                field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
-              )),
-            ],
-          ],
-        ),      
+        ),
       ),
+
+      pinformative(
+        "Then, the following bitstrings are in ", r("EntryRelativeEntry"), " for encoding ", r("entry_rel_entry_primary"), " relative to ", r("entry_rel_entry_reference"), ":"
+      ),
+
+      encodingdef(
+        new Bitfields(
+          new BitfieldRow(
+            1,
+            [
+              code("1"), " ", r("iff"), " ", r("ere_encode_nsid"),
+            ],
+          ),
+          new BitfieldRow(
+            1,
+            [
+              code("1"), " ", r("iff"), " ", r("ere_encode_ssid"),
+            ],
+          ),
+          new BitfieldRow(
+            1,
+            [
+              code("1"), " ", r("iff"), " ", r("ere_ts_add"),
+            ],
+            [
+              "Whether to add or subtract ", r("erele_time_difference"), ".",
+            ],
+          ),
+          arbitrary_bits(1),
+          two_bit_int_explicit(4, "ere_time_width"),
+          two_bit_int_explicit(6, "ere_payload_length_width"),
+        ),
+        [
+          [
+            code(function_call(
+              r("encode_namespace_id"),
+              field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
+            )), " if ", r("ere_encode_nsid"), ", or the empty string, otherwise",
+          ],
+        ],
+        [
+          [
+            code(function_call(
+              r("encode_subspace_id"),
+              field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
+            )), " if ", r("ere_encode_ssid"), ",  or the empty string, otherwise",
+          ],
+        ],
+        [
+          [
+            code(function_call(
+              r("encode_path_relative_path"),
+              field_access(r("entry_rel_entry_primary"), "entry_path"),
+              field_access(r("entry_rel_entry_reference"), "entry_path"),
+            )),
+          ],
+        ],
+        [
+          [
+            encode_int_width(r("erele_time_difference"), "ere_time_width"),
+          ],
+        ],
+        [
+          [
+            encode_int_width(field_access(r("entry_rel_entry_primary"), "entry_payload_length"), "ere_payload_length_width"),
+          ],
+        ],
+        [
+          [
+            code(function_call(
+              r("encode_payload_digest"),
+              field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
+            )),
+          ],
+        ],
+      ),
+
+      pinformative(
+        "Finally, we define the ", r("encoding_function"), " ", code(function_call(def_fn({id: "can_ere", singular: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as producing the encoding obtained when ", lis(
+          [
+            r("ere_encode_nsid"), " is ", code("false"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")), ",",
+          ],
+          [
+            r("ere_encode_ssid"), " is ", code("false"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")), ",",
+          ],
+          [
+            r("ere_ts_add"), " is ", code("false"), " if ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " == ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ",",
+          ],
+          [
+            "the third bit of the encoding is zero",
+          ],
+          [
+            r("ere_time_width"), " is ", code(function_call(r("compact_width"), r("erele_time_difference"))), ", and"
+          ],
+          [
+            r("ere_payload_length_width"), " is ", code(function_call(r("compact_width"), field_access(r("entry_rel_entry_primary"), "entry_payload_length"))), "."
+          ],
+        ),
+      ),
+
+
+      // pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
+      // code(function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as the concatenation of:",
+
+        // encodingdef(
+        //   new Bitfields(
+        //     new BitfieldRow(
+        //       1,
+        //       [
+        //         code("1"), " ", r("iff"), " ",
+        //         code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
+        //       ],
+        //       [
+        //         inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_namespace_id")),
+        //       ],
+        //     ),
+        //     new BitfieldRow(
+        //       1,
+        //       [
+        //         code("1"), " ", r("iff"), " ",
+        //         code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
+        //       ],
+        //       [
+        //         inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_subspace_id")),
+        //       ],
+        //     ),
+        //     new BitfieldRow(
+        //       1,
+        //       [
+        //         code("1"), " ", r("iff"), " ",
+        //         code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
+        //       ],
+        //       [
+        //         "Add or subtract ", r("erele_time_difference"), " from ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), "?",
+        //       ],
+        //     ),
+        //     zero_bits(1),
+        //     two_bit_int(4, r("erele_time_difference")),
+        //     two_bit_int(6, field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
+        //   ),
+        //   [
+        //     [
+        //       code(function_call(
+        //         r("encode_namespace_id"),
+        //         field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
+        //       )), ",  or the empty string, if ",
+        //       code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
+        //     ],
+        //   ],
+        //   [
+        //     [
+        //       code(function_call(
+        //         r("encode_subspace_id"),
+        //         field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
+        //       )), ",  or the empty string, if ",
+        //       code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
+        //     ],
+        //   ],
+        //   [
+        //     [
+        //       code(function_call(
+        //         r("encode_path_relative_path"),
+        //         field_access(r("entry_rel_entry_primary"), "entry_path"),
+        //         field_access(r("entry_rel_entry_reference"), "entry_path"),
+        //       )),
+        //     ],
+        //   ],
+        //   [
+        //     [
+        //       encode_two_bit_int(r("erele_time_difference")),
+        //     ],
+        //   ],
+        //   [
+        //     [
+        //       encode_two_bit_int(field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
+        //     ],
+        //   ],
+        //   [
+        //     [
+        //       code(function_call(
+        //         r("encode_payload_digest"),
+        //         field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
+        //       )),
+        //     ],
+        //   ],
+        // ),      
+      // ),
     ]),
 
     hsection("enc_entry_in_namespace_area", {short_title: "entry_in_area"}, code("encode_entry_in_namespace_area"), [
