@@ -756,7 +756,7 @@ export const encodings: Expression = site_template({
       ),
 
       pinformative(
-        "Finally, we define the ", r("encoding_function"), " ", code(function_call(def_fn({id: "can_eia", singular: "encode_entry_in_area", math: "encode\\_entry\\_in\\_area"}), r("eia_inner"), r("eia_outer"))), " as producing the encoding obtained when ", lis(
+        "Finally, we define the ", r("encoding_function"), " ", code(function_call(def_fn({id: "can_eia", singular: "encode_entry_in_namespace_area", math: "encode\\_entry\\_in\\_area"}), r("eia_inner"), r("eia_outer"))), " as producing the encoding obtained when ", lis(
           [
             r("eia_encode_ssid"), " is ", code("false"), " if ", code(field_access(r("eia_inner"), "entry_subspace_id"), " == ", field_access(r("eia_outer"), "entry_subspace_id")), ",",
           ],
