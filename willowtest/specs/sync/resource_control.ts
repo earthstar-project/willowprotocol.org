@@ -73,6 +73,8 @@ export const resource_control: Expression = site_template(
 
       pinformative("The ", r("resources_server"), " should be able to resize its buffers to cope with competing resource demands. Increasing buffer capacity is unproblematic, but we will see that decreasing buffer capacity requires cooperation with the ", r("resources_client"), " in some situations."),
 
+      pinformative("Both the ", r("resources_client"), " and the ", r("resources_server"), " should be able to voluntarily imposse and communicate limits on how many bytes they will still send or receive over a ", r("logical_channel"), ". Once that limit reaches zero, the other peer can consider the channel as being closed."),
+
       pinformative("Finally, the ", r("resources_client"), " should be able to optimistically send messages even though their corresponding buffer might be full — by the time the messages arrive at the ", r("resources_server"), ", the buffer space might have become available after all. The ", r("resources_server"), " must be able to reject and drop such optimistically transmitted messages, however. When it does, it must inform the ", r("resources_client"), ", because the ", r("resources_client")," always needs to maintain accurate (if delayed) information about all buffer states."),
     ]),
 
@@ -130,6 +132,18 @@ export const resource_control: Expression = site_template(
       figure(
         img(asset("resource_control/complex_shrinking.png"), `A server-client diagram. The server starts with nine buffer slots, two of which are occupied by a message. Its issuable guarantees are zero, the client starts with seven remaining guarantees. In the first step, the server asks for absolution down to four remaining guarantees, and concurrently, the clients sends a message of size one. Hence, the client’s remaining guarantees are six when the server’s request for absolution arrives. The server receives the one-byte message and buffers it. The client then absolves two guarantees, reducing its remaining guarantees to four. The server receives the absolution and can shrink its buffer by two slots, leaving it with a total buffer capacity of seven (three slots occupied by the two buffered messages, and four unused slots).`),
         figcaption("Concurrent to the ", r("resources_server"), " asking for ", r("absolution"), ", the ", r("resources_client"), " sends a message. The protocol is designed so that nothing goes wrong."),
+      ),
+
+      pinformative(
+        "Next, we consider the ability to close ", rs("logical_channel"), ". More precisely, we consider generalizations of closing: the communication of an upper bound of pending usage.",
+      ),
+
+      pinformative(
+        "At any point, the ", r("resources_client"), " may communicate an upper bound on how many bytes of messages it will send to a ", r("logical_channel"), ". Both peers can track this number and subtract from it whenever the ", r("resources_client"), " sends more bytes accross the ", r("logical_channel"), ". The ", r("resources_client"), " must not send any messages that turn the tracked number negative. The ", r("resources_client"), " may send new upper bounds over time, but only if they strictly tighten the limit. Any bounds that would allow the ", r("resources_client"), " to send more bytes than promised in a previous bound are forbidden."
+      ),
+
+      pinformative(
+        "Completely analogously, the ", r("resources_server"), " may communicate an upper bound on how many more bytes of messages it might still accept over a ", r("logical_channel"), ". After accepting that many bytes, all future bytes must be dropped. In particular, this bound thus also gives an upper bound on how many more ", rs("guarantee"), " the ", r("resources_server"), " might issue in the future. The ", r("resources_server"), " may communicate new upper bounds over time, but only if they stictly tighten the limit."
       ),
 
       pinformative(
@@ -240,6 +254,44 @@ export const resource_control: Expression = site_template(
             },
             {
               id: "ResourceControlOopsChannel",
+              name: "channel",
+              rhs: r("C"),
+            },
+          ],
+        }),
+        new Struct({
+          id: "ResourceControlLimitSending",
+          name: "LimitSending",
+          comment: [
+            "The ", r("resources_client"), " promises to the ", r("resources_server"), " an upper bound on the number of bytes of messages that it will send on some ", r("logical_channel"), ".",
+          ],
+          fields: [
+            {
+              id: "ResourceControlLimitSendingBound",
+              name: "bound",
+              rhs: r("U64"),
+            },
+            {
+              id: "ResourceControlLimitSendingChannel",
+              name: "channel",
+              rhs: r("C"),
+            },
+          ],
+        }),
+        new Struct({
+          id: "ResourceControlLimitReceiving",
+          name: "LimitReceiving",
+          comment: [
+            "The ", r("resources_server"), " promises to the ", r("resources_client"), " an upper bound on the number of bytes of messages that it will still receive on some ", r("logical_channel"), ".",
+          ],
+          fields: [
+            {
+              id: "ReceivingBound",
+              name: "bound",
+              rhs: r("U64"),
+            },
+            {
+              id: "ReceivingChannel",
               name: "channel",
               rhs: r("C"),
             },

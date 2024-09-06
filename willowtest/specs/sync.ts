@@ -504,10 +504,10 @@ export const sync: Expression = site_template(
                                     rhs: r("D3Range"),
                                 },
                                 {
-                                    id: "ReconciliationAnnounceEntriesCount",
-                                    name: "count",
-                                    comment: ["The number of ", rs("Entry"), " the sender has in the ", r("ReconciliationAnnounceEntriesRange"), "."],
-                                    rhs: r("U64"),
+                                    id: "ReconciliationAnnounceEntriesEmpty",
+                                    name: "is_empty",
+                                    comment: ["True if and only if the the sender has zero ", rs("Entry") ," in the ", r("ReconciliationAnnounceEntriesRange"), "."],
+                                    rhs: r("Bool"),
                                 },
                                 {
                                     id: "ReconciliationAnnounceEntriesFlag",
@@ -543,17 +543,17 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers announce how many ", rs("Entry"), " they have in a ", r("D3Range"), " by transmitting their ", rs("LengthyEntry"), " in the ", r("D3Range"), ". Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
+                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers begin transmission of their ", rs("LengthyEntry"), " in a ", r("D3Range"), ". Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
 
                     pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
                         "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("d3rbsr"), "."
                     ]), " sorted in ascending order by ", r("entry_subspace_id"), " first, using the ", r("entry_path"), " as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent."),
+                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent. The ", rs("Entry"), " are known to all have been sent if the ", r("ReconciliationAnnounceEntriesEmpty"), " has been set to ", code("true"), ", or once a ", r("ReconciliationTerminatePayload"), " message with the ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("true"), " has been sent."),
 
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message of ", r("ReconciliationAnnounceEntriesCount"), " zero and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
+                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesEmpty"), " set to ", code("true"), " and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of ", r("range_count"), " ", def_value({id: "recon_announce_count", singular: "count"}), ", it may recurse by producing a cover of smaller ", rs("D3Range"), ". For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationAnnounceEntries"), " message, its ", r("ReconciliationAnnounceEntriesCovers"), " field should be set to ", r("recon_announce_count"), ". The ", r("ReconciliationAnnounceEntriesCovers"), " field of all other ", r("ReconciliationAnnounceEntries"), " messages should be set to ", r("covers_none"), "."),
+                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of some ", r("range_count"), " ", def_value({id: "recon_announce_count", singular: "count"}), ", it may recurse by producing a cover of smaller ", rs("D3Range"), ". For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationAnnounceEntries"), " message, its ", r("ReconciliationAnnounceEntriesCovers"), " field should be set to ", r("recon_announce_count"), ". The ", r("ReconciliationAnnounceEntriesCovers"), " field of all other ", r("ReconciliationAnnounceEntries"), " messages should be set to ", r("covers_none"), "."),
 
                     pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
                     
@@ -585,9 +585,9 @@ export const sync: Expression = site_template(
                         }),
                     ),
                 
-                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " message has announced the containing ", r("D3Range"), ", and the number of messages must not exceed the announced number of ", rs("Entry"), ". The transmitted ", rs("Entry"), " must be ", r("d3_range_include", "included"), " in the announced ", r("D3Range"), "."),
+                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " with its ", r("ReconciliationAnnounceEntriesEmpty"), " flag set to ", code("true"), ", or a ", r("ReconciliationTerminatePayload"), " with its ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("false"), ". The transmitted ", rs("Entry"), " must be ", r("d3_range_include", "included"), " in the ", r("D3Range"), " of the corresponding ", r("ReconciliationAnnounceEntries"), " message."),
 
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " message may be sent after a ", r("ReconciliationSendEntry"), " message, until a sequence of zero or more ", r("ReconciliationSendPayload"), " messages followed by exactly one ", r("ReconciliationTerminatePayload"), " message has been sent."),
+                    pinformative("No ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " message may be sent after a ", r("ReconciliationSendEntry"), " message, until a sequence of zero or more ", r("ReconciliationSendPayload"), " messages followed by exactly one ", r("ReconciliationTerminatePayload"), " message has been sent. If the ", r("ReconciliationTerminatePayloadFinal"), " flag of the ", r("ReconciliationTerminatePayload"), " message is set to ", code("false"), ", then another ", r("ReconciliationSendEntry"), " message may be sent. Otherwise, another ", r("ReconciliationAnnounceEntries"), " message may be sent."),
 
                     pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
 
@@ -624,11 +624,20 @@ export const sync: Expression = site_template(
                         new Struct({
                             id: "ReconciliationTerminatePayload",
                             comment: ["Indicate that no more bytes will be transmitted for the currently transmitted ", r("Payload"), " as part of set reconciliation."],
-                            fields: [],
+                            fields: [
+                                {
+                                    id: "ReconciliationTerminatePayloadFinal",
+                                    name: "is_final",
+                                    comment: ["True if and only if no further ", r("ReconciliationSendEntry"), " message will be sent as part of reconciling the current ", r("D3Range"), "."],
+                                    rhs: r("Bool"),
+                                },
+                            ],
                         }),
                     ),
                 
                     pinformative("The ", r("ReconciliationTerminatePayload"), " messages let peers indicate that they will not send more payload bytes for the current ", r("Entry"), " as part of set reconciliation. This may be because the end of the ", r("Payload"), " has been reached, or simply because the peer chooses to not send any further bytes."),
+
+                    pinformative("The ", r("ReconciliationTerminatePayloadFinal"), " flag announces whether more ", rs("Entry"), " will be sent as part of the current ", r("D3Range"), "."),
 
                     pinformative(R("ReconciliationTerminatePayload"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
@@ -842,6 +851,44 @@ export const sync: Expression = site_template(
                                 },
                             ],
                         }),
+
+                        new Struct({
+                            id: "ControlLimitSending",
+                            comment: [
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will send on some ", r("logical_channel"), ".",
+                            ],
+                            fields: [
+                              {
+                                id: "ControlLimitSendingBound",
+                                name: "bound",
+                                rhs: r("U64"),
+                              },
+                              {
+                                id: "ControlLimitSendingChannel",
+                                name: "channel",
+                                rhs: r("LogicalChannel"),
+                              },
+                            ],
+                          }),
+
+                          new Struct({
+                            id: "ControlLimitReceiving",
+                            comment: [
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will still receive on some ", r("logical_channel"), ".",
+                            ],
+                            fields: [
+                              {
+                                id: "ControlLimitReceivingBound",
+                                name: "bound",
+                                rhs: r("U64"),
+                              },
+                              {
+                                id: "ControlLimitReceivingChannel",
+                                name: "channel",
+                                rhs: r("LogicalChannel"),
+                              },
+                            ],
+                          }),
         
                         new Struct({
                             id: "ControlAnnounceDropping",
@@ -1367,13 +1414,18 @@ export const sync: Expression = site_template(
                                     code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
                                 ],
                             ),
-                            two_bit_int(0, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), [
+                            two_bit_int(8, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), [
                                 code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesSenderHandle"), " == ", r("sync_enc_prev_sender")),
                             ]),
-                            two_bit_int(2, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), [
+                            two_bit_int(10, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), [
                                 code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver")),
                             ]),
-                            two_bit_int(4, field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCount")),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesEmpty"), " == ", code("true")),
+                                ],
+                            ),
                             new BitfieldRow(
                                 1,
                                 [
@@ -1386,6 +1438,7 @@ export const sync: Expression = site_template(
                                     code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCovers"), " != ", r("covers_none")),
                                 ],
                             ),
+                            bitfieldrow_unused(1),
                         ),
                     ),
 
@@ -1433,9 +1486,6 @@ export const sync: Expression = site_template(
                                 field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"),
                                 [code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesReceiverHandle"), " == ", r("sync_enc_prev_receiver"))],
                             ),
-                        ]],
-                        [[
-                            encode_two_bit_int(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesCount")),
                         ]],
                         [
                             [
@@ -1542,7 +1592,7 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        r("ReconciliationSendPayload"), " and ", r("ReconciliationTerminatePayload"), " messages need to be distinguishable from each other, bit not from ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages."
+                        r("ReconciliationSendPayload"), " and ", r("ReconciliationTerminatePayload"), " messages need to be distinguishable from each other, but not from ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages."
                     ),
 
                     pinformative(                        
@@ -1590,7 +1640,13 @@ export const sync: Expression = site_template(
                                 [code("11")],
                                 ["message kind"],
                             ),
-                            bitfieldrow_unused(3),
+                            new BitfieldRow(
+                                1,
+                                [
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationTerminatePayloadFinal"), " == ", code("true")),
+                                ],
+                            ),
+                            bitfieldrow_unused(2),
                         ),
                     ),
                 ]),
@@ -1867,7 +1923,7 @@ export const sync: Expression = site_template(
 
                 hsection("sync_encode_control", "Control", [
                     pinformative(
-                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. ", def_fn({id: "encode_channel"}), " maps ", lis(
+                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. The ", def_fn({id: "encode_channel"}), " function maps ", lis(
                             [r("ReconciliationChannel"), " to ", code("000"), ","],
                             [r("DataChannel"), " to ", code("001"), ","],
                             [r("IntersectionChannel"), " to ", code("010"), ","],
@@ -1890,16 +1946,17 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("000")],
+                                    4,
+                                    [code("0000")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
@@ -1919,16 +1976,17 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("001")],
+                                    4,
+                                    [code("0001")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_absolve"), "ControlAbsolveChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
@@ -1948,19 +2006,78 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("010")],
+                                    4,
+                                    [code("0010")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                                bitfieldrow_unused(1),
+                                two_bit_int(8, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_channel"), field_access(r("enc_ctrl_plead"), "ControlPleadChannel"))]
                                 ),
-                                bitfieldrow_unused(5),
+                                bitfieldrow_unused(3),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlLimitSending"), " message ", def_value({id: "enc_ctrl_limit_sending", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    5,
+                                    [code("00110")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(8, field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingChannel"))]
+                                ),
+                                bitfieldrow_unused(3),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
+                            ]],
+                        ),
+                    ),
+
+                    hr(),
+
+                    pinformative(
+                        "The encoding of a ", r("ControlLimitReceiving"), " message ", def_value({id: "enc_ctrl_limit_receiving", singular: "m"}), " is the concatenation of:",
+                        encodingdef(
+                            new Bitfields(
+                                new BitfieldRow(
+                                    3,
+                                    [code("100")],
+                                    ["message category"],
+                                ),
+                                new BitfieldRow(
+                                    5,
+                                    [code("00111")],
+                                    ["message kind"],
+                                ),
+                                two_bit_int(8, field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
+                                new BitfieldRow(
+                                    3,
+                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingChannel"))]
+                                ),
+                                bitfieldrow_unused(3),
+                            ),
+                            [[
+                                encode_two_bit_int(field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
                             ]],
                         ),
                     ),
@@ -2037,11 +2154,12 @@ export const sync: Expression = site_template(
                                     ["message category"],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("011")],
+                                    2,
+                                    [code("01")],
                                     ["message kind"],
                                 ),
-                                two_bit_int(6, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
+                                bitfieldrow_unused(3),
+                                two_bit_int(8, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
                                 new BitfieldRow(
                                     3,
                                     [function_call(r("encode_handle_type"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
@@ -2052,7 +2170,7 @@ export const sync: Expression = site_template(
                                         code("1"), " ", r("iff"), " ", code(field_access(r("enc_ctrl_free"), "ControlFreeHandleMine"), " == true"),
                                     ],
                                 ),
-                                bitfieldrow_unused(4),
+                                bitfieldrow_unused(2),
                             ),
                             [[
                                 encode_two_bit_int(field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
@@ -2062,7 +2180,8 @@ export const sync: Expression = site_template(
                     pinformative(
                         "And with that, we have all the pieces we need for secure, efficient synchronisation of ", rs("namespace"), ". Thanks for reading!"),
                     pinformative(
-                    img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),)
+                        img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),
+                    ),
 
                 ]),
 
