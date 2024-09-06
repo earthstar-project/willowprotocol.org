@@ -372,7 +372,7 @@ export const encodings: Expression = site_template({
     ),
 
     pinformative(
-      "We usually define an ", r("encoding_relation"), " first, and then deine a specific subset of it that is an ", r("encoding_functions"), ". Even in places where we use the ", em("relation"), ", we recommend that implementations of encoders use the corresponding ", em("function"), ". The decoders in those places, however, must be able to decode any opssible encoding from the ", r("encoding_relation"), "."
+      "We usually define an ", r("encoding_relation"), " first, and then deine a specific subset of it that is an ", r("encoding_functions"), ". Even in places where we use the ", em("relation"), ", we recommend that implementations of encoders use the corresponding ", em("function"), ". The decoders in those places, however, must be able to decode any possible encoding from the ", r("encoding_relation"), "."
     ),
   ]),
 
@@ -646,179 +646,154 @@ export const encodings: Expression = site_template({
           ],
         ),
       ),
-
-
-      // pinformative("To encode an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ", we first define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". We then define ",
-      // code(function_call(def_fn({id: "encode_entry_relative_entry", math: "encode\\_entry\\_relative\\_entry"}), r("entry_rel_entry_primary"), r("entry_rel_entry_reference"))), " as the concatenation of:",
-
-        // encodingdef(
-        //   new Bitfields(
-        //     new BitfieldRow(
-        //       1,
-        //       [
-        //         code("1"), " ", r("iff"), " ",
-        //         code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
-        //       ],
-        //       [
-        //         inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_namespace_id")),
-        //       ],
-        //     ),
-        //     new BitfieldRow(
-        //       1,
-        //       [
-        //         code("1"), " ", r("iff"), " ",
-        //         code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " != ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
-        //       ],
-        //       [
-        //         inclusion_flag_remark(field_access(r("entry_rel_entry_primary"), "entry_subspace_id")),
-        //       ],
-        //     ),
-        //     new BitfieldRow(
-        //       1,
-        //       [
-        //         code("1"), " ", r("iff"), " ",
-        //         code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), " > 0"),
-        //       ],
-        //       [
-        //         "Add or subtract ", r("erele_time_difference"), " from ", field_access(r("entry_rel_entry_reference"), "entry_timestamp"), "?",
-        //       ],
-        //     ),
-        //     zero_bits(1),
-        //     two_bit_int(4, r("erele_time_difference")),
-        //     two_bit_int(6, field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
-        //   ),
-        //   [
-        //     [
-        //       code(function_call(
-        //         r("encode_namespace_id"),
-        //         field_access(r("entry_rel_entry_primary"), "entry_namespace_id"),
-        //       )), ",  or the empty string, if ",
-        //       code(field_access(r("entry_rel_entry_primary"), "entry_namespace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_namespace_id")),
-        //     ],
-        //   ],
-        //   [
-        //     [
-        //       code(function_call(
-        //         r("encode_subspace_id"),
-        //         field_access(r("entry_rel_entry_primary"), "entry_subspace_id"),
-        //       )), ",  or the empty string, if ",
-        //       code(field_access(r("entry_rel_entry_primary"), "entry_subspace_id"), " == ", field_access(r("entry_rel_entry_reference"), "entry_subspace_id")),
-        //     ],
-        //   ],
-        //   [
-        //     [
-        //       code(function_call(
-        //         r("encode_path_relative_path"),
-        //         field_access(r("entry_rel_entry_primary"), "entry_path"),
-        //         field_access(r("entry_rel_entry_reference"), "entry_path"),
-        //       )),
-        //     ],
-        //   ],
-        //   [
-        //     [
-        //       encode_two_bit_int(r("erele_time_difference")),
-        //     ],
-        //   ],
-        //   [
-        //     [
-        //       encode_two_bit_int(field_access(r("entry_rel_entry_primary"), "entry_payload_length")),
-        //     ],
-        //   ],
-        //   [
-        //     [
-        //       code(function_call(
-        //         r("encode_payload_digest"),
-        //         field_access(r("entry_rel_entry_primary"), "entry_payload_digest"),
-        //       )),
-        //     ],
-        //   ],
-        // ),      
-      // ),
     ]),
 
     hsection("enc_entry_in_namespace_area", {short_title: "entry_in_area"}, code("encode_entry_in_namespace_area"), [
       pinformative(
-        preview_scope(
-          "To encode an ", r("Entry"), " ", def_value({ id: "eia_inner", singular: "e" }), " that is ", r("area_include", "included"), " in an outer ", r("Area"), " ", def_value({ id: "eia_outer", singular: "out" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eia_namespace_id", singular: "namespace_id"}), ", we first define ", def_value({ id: "eia_time", singular: "time_diff" }), " as the minimum of ",
-          code(
-            field_access(r("eia_inner"), "entry_timestamp"),
-            " - ",
-            field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
-          ),
-          " and ",
-          code(
-            field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
-            " - ",
-            field_access(r("eia_inner"), "entry_timestamp"),
-          ),
-          ". We then define ",
-          code(function_call(def_fn({id: "encode_entry_in_namespace_area", math: "encode\\_enrty\\_in\\_namespace\\_area"}), r("eia_inner"), r("eia_outer"), r("eia_namespace_id"))), " as the concatenation of:",
-
-          encodingdef(
-            new Bitfields(
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " ",
-                  code(field_access(r("eia_outer"), "AreaSubspace"), " == ", r("area_any")),
-                ],
-                [
-                  inclusion_flag_remark(field_access(r("eia_inner"), "entry_subspace_id")),
-                ],
-              ),
-              new BitfieldRow(
-                1,
-                [
-                  code("1"), " ", r("iff"), " ",
-                  code(
-                    field_access(r("eia_inner"), "entry_timestamp"),
-                    " - ",
-                    field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
-                    " <= ",
-                    field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeEnd"),
-                    " - ",
-                    field_access(r("eia_inner"), "entry_timestamp"),
-                  ),
-                ],
-                [
-                  "Add ", r("eia_time"), " to ",
-                  field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
-                  ", or subtract from ",
-                  field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeEnd"),
-                  "?",
-                ],
-              ),
-              two_bit_int(2, r("eia_time")),
-              two_bit_int(4, field_access(r("eia_inner"), "entry_payload_length")),
-              zero_bits(2),
+        "We define an ", r("encoding_relation"), " ", def_type("EntryInArea"), " for encoding an ", r("Entry"), " ", def_value({ id: "eia_inner", singular: "e" }), " that is ", r("area_include", "included"), " in an outer ", r("Area"), " ", def_value({ id: "eia_outer", singular: "out" }), " in a ", r("namespace"), " of ", r("NamespaceId"), " ", def_value({id: "eia_namespace_id", singular: "namespace_id"}), ". The encodings then vary based on the following choices made by the encoder:", lis(
+          [
+            def_value({id: "eia_encode_ssid", singular: "encode_subspace_id"}), " is a ", r("Bool"), " that must be ", code("true"), " if ", code(field_access(r("eia_outer"), "AreaSubspace"), " == ", r("area_any")), ",",
+          ],
+          [
+            def_value({id: "eia_time_difference", singular: "time_diff"}), " is either ",
+            code(
+              field_access(r("eia_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
             ),
-            [[
-              code(function_call(
-                r("encode_subspace_id"),
-                field_access(r("eia_inner"), "entry_subspace_id"),
-              )), ",  or the empty string, if ",
-              code(field_access(r("eia_outer"), "AreaSubspace"), " != ", r("area_any")),
-            ]],
-            [[
-              code(function_call(
-                r("encode_path_relative_path"),
-                field_access(r("eia_inner"), "entry_path"),
-                field_access(r("eia_outer"), "AreaPath"),
-              )),
-            ]],
-            [[
-              encode_two_bit_int(r("eia_time")),
-            ]],
-            [[
-              encode_two_bit_int(field_access(r("eia_inner"), "entry_payload_length")),
-            ]],
-            [[
-              code(function_call(
-                r("encode_payload_digest"),
-                field_access(r("eia_inner"), "entry_payload_digest"),
-              )),
-            ]],
+            " or ",
+            code(
+              field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+              " - ",
+              field_access(r("eia_inner"), "entry_timestamp"),
+            ), ",",
+          ],
+          [
+            def_value({id: "eia_ts_add", singular: "timestamp_add"}), " is a ", r("Bool"), " that can be chosen freely if ",
+            code(
+              field_access(r("eia_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
+              " == ",
+              field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+              " - ",
+              field_access(r("eia_inner"), "entry_timestamp"),
+            ), ", and that otherwise must be ", code("true"), " if ", code(r("eia_time_difference"), " == ", field_access(r("eia_inner"), "entry_timestamp"),
+            " - ",
+            field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),), ", and ", code("false"), " otherwise."
+          ],
+          [
+            choose_width(def_value({id: "eia_time_width", singular: "time_diff_width"}), r("eia_time_difference")),
+          ],
+          [
+            choose_width(def_value({id: "eia_payload_length_width", singular: "payload_length_width"}), field_access(r("eia_inner"), "entry_payload_length")),
+          ],
+        ),
+      ),
+
+      pinformative(
+        "Then, the following bitstrings are in ", r("EntryInArea"), " for encoding ", r("eia_inner"), " in ", r("eia_outer"), " and a ", r("namespace"), " of ", r("NamespaceId"), " ", r("eia_namespace_id"), ":"
+      ),
+
+      encodingdef(
+        new Bitfields(
+          new BitfieldRow(
+            1,
+            [
+              code("1"), " ", r("iff"), " ", r("eia_encode_ssid"),
+            ],
           ),
+          new BitfieldRow(
+            1,
+            [
+              code("1"), " ", r("iff"), " ", r("eia_ts_add"),
+            ],
+            [
+              "Whether to add ", r("eia_time_difference"), " to ", field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
+              ", or subtract from ",
+              field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeEnd"), ".",
+            ],
+          ),
+          two_bit_int_explicit(2, "eia_time_width"),
+          two_bit_int_explicit(4, "eia_payload_length_width"),
+          arbitrary_bits(2),
+        ),
+        [
+          [
+            code(function_call(
+              r("encode_subspace_id"),
+              field_access(r("eia_inner"), "entry_subspace_id"),
+            )), " if ", r("eia_encode_ssid"), ",  or the empty string, otherwise",
+          ],
+        ],
+        [
+          [
+            code(function_call(
+              r("encode_path_relative_path"),
+              field_access(r("eia_inner"), "entry_path"),
+              field_access(r("eia_outer"), "AreaPath"),
+            )),
+          ],
+        ],
+        [
+          [
+            encode_int_width(r("eia_time_difference"), "eia_time_width"),
+          ],
+        ],
+        [
+          [
+            encode_int_width(field_access(r("eia_inner"), "entry_payload_length"), "eia_payload_length_width"),
+          ],
+        ],
+        [
+          [
+            code(function_call(
+              r("encode_payload_digest"),
+              field_access(r("eia_inner"), "entry_payload_digest"),
+            )),
+          ],
+        ],
+      ),
+
+      pinformative(
+        "Finally, we define the ", r("encoding_function"), " ", code(function_call(def_fn({id: "can_eia", singular: "encode_entry_in_area", math: "encode\\_entry\\_in\\_area"}), r("eia_inner"), r("eia_outer"))), " as producing the encoding obtained when ", lis(
+          [
+            r("eia_encode_ssid"), " is ", code("false"), " if ", code(field_access(r("eia_inner"), "entry_subspace_id"), " == ", field_access(r("eia_outer"), "entry_subspace_id")), ",",
+          ],
+          [
+            r("eia_time_difference"), " is the minimum of ",
+            code(
+              field_access(r("eia_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
+            ),
+            " or ",
+            code(
+              field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+              " - ",
+              field_access(r("eia_inner"), "entry_timestamp"),
+            ), ",",
+          ],
+          [
+            r("eia_ts_add"), " is ", code("false"), " if ", code(
+              field_access(r("eia_inner"), "entry_timestamp"),
+              " - ",
+              field_access(field_access(r("eia_outer"), "AreaTime"), "TimeRangeStart"),
+              " == ",
+              field_access(field_access(r("area_in_area_outer"), "AreaTime"), "TimeRangeEnd"),
+              " - ",
+              field_access(r("eia_inner"), "entry_timestamp"),
+            ), ",",
+          ],
+          [
+            r("eia_time_width"), " is ", code(function_call(r("compact_width"), r("eia_time_difference"))), ", and"
+          ],
+          [
+            r("eia_payload_length_width"), " is ", code(function_call(r("compact_width"), field_access(r("eia_inner"), "entry_payload_length"))), "."
+          ],
+          [
+            "bits six and seven of the encoding are zero",
+          ],
         ),
       ),
     ]),
