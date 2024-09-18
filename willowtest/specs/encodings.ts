@@ -1215,7 +1215,7 @@ export const encodings: Expression = site_template({
             encode_two_bit_int(r("threedr3d_start_diff")),
           ]],
           [[
-            encode_two_bit_int(r("threedr3d_end_diff"), code(field_access(field_access(r("threedr3d_end_diff"), "D3RangeTime"), "TimeRangeEnd"), " == ", r("range_open"))),
+            encode_two_bit_int(r("threedr3d_end_diff"), code(field_access(field_access(r("threed3d_primary"), "D3RangeTime"), "TimeRangeEnd"), " == ", r("range_open"))),
           ]],
         ),
       ),
