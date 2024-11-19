@@ -1,7 +1,7 @@
 
 
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { aside, code, div, em, hr, img, p } from "../../h.ts";
+import { aside, code, div, em, hr, img, p, tbody, tr } from "../../h.ts";
 import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
@@ -14,6 +14,7 @@ import { asset } from "../../out.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
 import { encode_two_bit_int, inclusion_flag_remark, two_bit_int, two_bit_int_def } from "./encodings.ts";
 import { CHAR_9 } from "https://deno.land/std@0.198.0/path/_constants.ts";
+import { table, td, thead, th } from "../../h.ts";
 
 const apo = "’";
 
@@ -942,6 +943,8 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
+                pinformative("Attention: we are currently (as of November 2024) in the process of redefining all message encodings. If this paragraph is still here, then things might still change."),
+
                 pinformative("We now describe how to encode the various messages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
 
                 hsection("sync_encoding_params", "Parameters", [
@@ -984,11 +987,53 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
-                    pinformative("We can now define the encodings for all messages."),
+                    pinformative(
+                        "The WGPS uses ", r("lcmux"), " to frame its messages and implement ", rs("logical_channel"), ". The mapping from ", rs("LogicalChannel"), " to the unsigned integer ids of ", r("lcmux"), " is as follows:"
+                    ),
+
+                    table(
+                        thead(tr(
+                            th(r("LogicalChannel")), th("integer id"),
+                        )),
+                        tbody(tr(
+                            td(r("ReconciliationChannel")), td("0"),
+                        )),
+                        tbody(tr(
+                            td(r("DataChannel")), td("1"),
+                        )),
+                        tbody(tr(
+                            td(r("IntersectionChannel")), td("2"),
+                        )),
+                        tbody(tr(
+                            td(r("CapabilityChannel")), td("3"),
+                        )),
+                        tbody(tr(
+                            td(r("AreaOfInterestChannel")), td("4"),
+                        )),
+                        tbody(tr(
+                            td(r("PayloadRequestChannel")), td("5"),
+                        )),
+                        tbody(tr(
+                            td(r("StaticTokenChannel")), td("6"),
+                        )),
+                    ),
+
+                    pinformative("The encodings for ",
+                        r("ControlIssueGuarantee"), " messages, ",
+                        r("ControlAbsolve"), " messages, ",
+                        r("ControlPlead"), " messages, ",
+                        r("ControlLimitSending"), " messages, ",
+                        r("ControlLimitReceiving"), " messages, ",
+                        r("ControlAnnounceDropping"), " messages, and ",
+                        r("ControlApologise"), " messages ",
+                        " are defined by ", r("lcmux"), ".",
+                        " The remaining messages use the appropriate ", r("lcmux"), " framing (", code("SendControl"), " for control messages, ", code("SendToChannel"), " for all other messages), with the post-header message bytes as defined in the following sections."
+                    ),
                 ]),
 
                 hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
                     pinformative(
+                        "TODO",
                         "The encoding of a ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
