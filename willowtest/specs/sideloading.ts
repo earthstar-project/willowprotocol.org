@@ -65,11 +65,11 @@ export const sideloading: Expression = site_template(
 				"A ", r("PossiblyAuthorisedEntry"), " ", def_value({id: "side_ord_p1", singular: "p1"}), " is prior to an ", r("PossiblyAuthorisedEntry"), " ", def_value({id: "side_ord_p2", singular: "p2"}), " if ", lis(
 					[
 						marginale(['using the ', link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on ", r("SubspaceId")]),
-						code(r("side_ord_p1"), ".", field_access("0", "entry_subspace_id"), " < ", r("side_ord_p2"), ".", field_access("0", "entry_subspace_id")), ", or",
+						code(r("side_ord_p1"), ".", field_access("0", "entry_subspace_id"), " < ", r("side_ord_p2"), ".", field_access("0", "entry_subspace_id")), ", or (in case of equal subspace ids)",
 					],
 					[
 						marginale(["using ", link("lexicographic", "https://en.wikipedia.org/wiki/Lexicographic_order"), " ordering"]),
-						code(r("side_ord_p1"), ".", field_access("0", "entry_path"), " < ", r("side_ord_p2"), ".", field_access("0", "entry_path")), ", or",
+						code(r("side_ord_p1"), ".", field_access("0", "entry_path"), " < ", r("side_ord_p2"), ".", field_access("0", "entry_path")), ", or (in case of equal subspace ids and equal paths)",
 					],
 					[
 						"the ", r("entry_newer", "newer relation"), " on entries."
@@ -83,7 +83,7 @@ export const sideloading: Expression = site_template(
 					[	"Each ", r("PossiblyAuthorisedEntry"), " of ",  r("side_entries"), " mapped to the concatenation of ", code("(", def_value({id: "side_encoded_entry", singular: "encoded_entry"}), ", ", def_value({id: "side_encoded_token", singular: "encoded_token"}), ", ", def_value({id: "side_payload", singular: "payload"}), ")"), " where ", def_value({id: "side_pauthorised", singular: "possibly_authorised_entry"}), " is the ", r("PossiblyAuthorisedEntry"), " being mapped, and", lis(
 						[
 							marginale(["And if ", code(r("side_pauthorised"), ".0"), " is the first entry, ", r("side_prior_entry"), " is ", r("initial_entry"), '.']),
-							r("side_encoded_entry"), " is the result of ", code(function_call(r("encode_entry_relative_entry"), [r("side_pauthorised"), ".0"], r('side_prior_entry'), )), " where ", def_value({id: 'side_prior_entry', singular: "prior_entry"}), " is the ", r("Entry"), " prior to ", r("side_pauthorised"), " in ", r("side_entries"), ",",
+							r("side_encoded_entry"), " is any encoding in ", r("EntryRelativeEntry"), " of ", code(r("side_pauthorised"), ".0"), " relative to ", r('side_prior_entry'), ", where ", def_value({id: 'side_prior_entry', singular: "prior_entry"}), " is the ", r("Entry"), " prior to ", r("side_pauthorised"), " in ", r("side_entries"), ",",
 						],
 						[ " where ", r("side_encoded_token"), " is the result of ", code(function_call(r("sideload_encode_token"), [r("side_pauthorised"), ".1"])), ", and"],
 						[
