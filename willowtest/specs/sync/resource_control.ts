@@ -11,12 +11,14 @@ import {
 blue,
   def_parameter_type,
   def_value,
+  link,
   ols,
   pinformative,
   purple,
   site_template,
   vermillion,
 } from "../../main.ts";
+import { link_name } from "../../../linkname.ts";
 
 const apo = "’";
 
@@ -326,6 +328,60 @@ export const resource_control: Expression = site_template(
           ],
         }),
       ),
+    ]),
+
+    hsection("sec_lcmux", "LCMUX", [
+      pinformative(
+        "We now describe ", def({id: "lcmux", singular: "LCMUX", plural: "LCMUXs"}, "LCMUX", [
+          "The ", def_fake("lcmux"), " (Logical Channel MULtiplexing) protocol specifies message encodings for resource control and multiplexing based on ", rs("logical_channel"), ".",
+        ]), ", a protocol that provides concrete message encodings for resource control and multiplexing based on ", rs("logical_channel"), ". It is a message-based protocol for use over a reliable, ordered, byte-oriented, bidirectional communication channel, and allows for the sending of control messages as well as channels over ", code("2^64 - 1"), " ", rs("logical_channel"), ".",
+      ),
+
+      pinformative(
+        "The messages of ", r("lcmux"), " are ", link_name("resources_message_types", "those described earlier for guarantee management"), ", as well as messages for sending arbitrary bytes either as a control message or to a ", r("logical_channel"), ". Specifically, the distinct message types are: ", code("SendToChannel"), ", ", code("SendControl"), ", ", code("IssueGuarantee"), ", ", code("Absolve"), ", ", code("Plead"), ", ", code("LimitSending"), ", ", code("LimitReceiving"), ", ", code("AnnounceDropping"), ", and ", code("Apologise"), ".",
+      ),
+
+      pinformative(
+        "The encodings for all of these follow the same shape. Each encoding starts with a header byte. Its most significant four bits indicate the message type: ",
+        code("0b0000"), " to ", code("0b0111"), " for ", code("SendToChannel"), " messages (the last three of the four bits form a three-bit unsigned integer whose meaning we define later), ",
+        code("0b1000"), " for ", code("SendControl"), " messages, "
+        , code("0b1001"), " for ", code("IssueGuarantee"), " messages, "
+        , code("0b1010"), " for ", code("Absolve"), " messages, "
+        , code("0b1011"), " for ", code("Plead"), " messages, "
+        , code("0b1100"), " for ", code("LimitSending"), " messages, "
+        , code("0b1101"), " for ", code("LimitReceiving"), " messages, "
+        , code("0b1110"), " for ", code("AnnounceDropping"), " messages, and"
+        , code("0b1111"), " for ", code("Apologise"), " messages."
+      ),
+
+      pinformative(
+        "The remaining, less significant four bits of the header byte are used to encode a 64-bit unsigned integer: if the integer is eleven or less, the four bits may be set to the four least significant bits of the integer.",
+        " If the integer is strictly less than 256, the four bits may be set to ", code("0b1100"), " in which case the header byte is followed by another byte containing the integer.",
+        " If the integer is strictly less than 256^2, the four bits may be set to ", code("0b1101"), " in which case the header byte is followed by another two bytes containing the big-endian encoding of the integer.",
+        " If the integer is strictly less than 256^4, the four bits may be set to ", code("0b1110"), " in which case the header byte is followed by another four bytes containing the big-endian encoding of the integer.",
+        " In every case, the four bits may be set to ", code("0b1111"), " in which case the header byte is followed by another eight bytes containing the big-endian encoding of the integer.",
+      ),
+
+      pinformative(
+        "For ", code("SendControl"), " messages, the integer encoded in the less significant four bits (and the following bytes when necessary) specifies the length of the control message in bytes. For all other messages, the integer gives the ", r("logical_channel"), " to which the message pertains.",
+      ),
+
+      pinformative(
+        "The header byte (and optional further bytes to specify large channels) of each ", code("SendToChannel"), " messages are followed by an unsigned integer, encoded in as many bytes as the three-bit integer encoded in the more significant half of the header indicates. This integer gives the length of the message to send to the channel. Following the integers are as many arbitrary bytes, to be delived to that channel."
+      ),
+
+      pinformative(
+        " The header bytes of each ", code("SendControl"), " message are followed by the control message (whose length was encoded in the headre bytes)."
+      ),
+
+      pinformative(
+        "The header bytes of each ", code("IssueGuarantee"), ", ", code("Absolve"), ", ", code("Plead"), ", ", code("LimitSending"), ", or ", code("LimitReceiving"), " message is followed by a ", link("VarU64", "https://github.com/AljoschaMeyer/varu64?tab=readme-ov-file#varu64"), " encoding of the one unsigned 64-bit integer that is a field of the message type."
+      ),
+
+      pinformative(
+        " The header bytes of  ", code("AnnounceDropping"), " and ", code("Apologise"), " messages are not followed by any additional data."
+      ),
+
     ]),
 
     hsection("resources_data_handles", "Data Handles", [
