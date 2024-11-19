@@ -7,6 +7,7 @@ import { hsection } from "../../hsection.ts";
 import { marginale } from "../../marginalia.ts";
 import { field_access, function_call } from "../../pseudocode.ts";
 import { asset } from "../../out.ts";
+import { html5_dependency_css } from "../../html5.ts";
 
 export const sideloading: Expression = site_template(
 	{
@@ -15,6 +16,7 @@ export const sideloading: Expression = site_template(
 		status: 'proposal',
 	},
 	[
+		html5_dependency_css("/named_assets/katex.min.css"),
 		pinformative("The ", r('WGPS'), " presents a way for two peers with an established connection to efficiently exchange data. But running the necessary infrastructure to establish such connections (e.g. a ", link("STUN server", "https://en.wikipedia.org/wiki/STUN"), ", ",  link("distributed hash table", "https://en.wikipedia.org/wiki/Distributed_hash_table"), ", or relay servers) is a non-trivial task, limiting who can operate them."),
 		pinformative("The ", def("sideloading_protocol", "Willow Sideloading Protocol"), " presents a way for peers to transmit data to each other asynchronously and via completely user-improvised channels."),
 		pinformative("Instead of statefully coordinating which data to exchange, the Sideloading Protocol uses ", def({
