@@ -372,7 +372,7 @@ export const encodings: Expression = site_template({
     ),
 
     pinformative(
-      "We usually define an ", r("encoding_relation"), " first, and then deine a specific subset of it that is an ", r("encoding_functions"), ". Even in places where we use the ", em("relation"), ", we recommend that implementations of encoders use the corresponding ", em("function"), ". The decoders in those places, however, must be able to decode any possible encoding from the ", r("encoding_relation"), "."
+      "We usually define an ", r("encoding_relation"), " first, and then define a specific subset of it that is an ", r("encoding_function"), ". Even in places where we use the ", em("relation"), ", we recommend that implementations of encoders use the corresponding ", em("function"), ". The decoders in those places, however, must be able to decode any possible encoding from the ", r("encoding_relation"), "."
     ),
   ]),
 
@@ -527,7 +527,7 @@ export const encodings: Expression = site_template({
         
     ]),
 
-    hsection("enc_etry_relative_entry", {short_title: "entry_relative_entry"}, code("encode_entry_relative_entry"), [
+    hsection("enc_entry_relative_entry", {short_title: "entry_relative_entry"}, code("encode_entry_relative_entry"), [
       pinformative(
         "We define an ", r("encoding_relation"), " ", def_type("EntryRelativeEntry"), " for encoding an ", r("Entry"), " ", def_value({ id: "entry_rel_entry_primary", singular: "e" }), " relative to a reference ", r("Entry"), " ", def_value({ id: "entry_rel_entry_reference", singular: "ref" }), ". First, define ", def_value({id: "erele_time_difference", singular: "time_diff"}), " as the absolute value of ", code(field_access(r("entry_rel_entry_primary"), "entry_timestamp"), " - ", field_access(r("entry_rel_entry_reference"), "entry_timestamp")), ". The encodings then vary based on the following choices made by the encoder:", lis(
           [
