@@ -355,15 +355,11 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        "The remaining, less significant four bits of the header byte are used to encode a 64-bit unsigned integer: if the integer is eleven or less, the four bits may be set to the four least significant bits of the integer.",
-        " If the integer is strictly less than 256, the four bits may be set to ", code("0b1100"), " in which case the header byte is followed by another byte containing the integer.",
-        " If the integer is strictly less than 256^2, the four bits may be set to ", code("0b1101"), " in which case the header byte is followed by another two bytes containing the big-endian encoding of the integer.",
-        " If the integer is strictly less than 256^4, the four bits may be set to ", code("0b1110"), " in which case the header byte is followed by another four bytes containing the big-endian encoding of the integer.",
+        "The remaining, less significant four bits of the header byte can be set arbitrarily for ", code("SendControl"), " messages. For all other messages, they are used are used to encode the ", r("logical_channel"), " to which the message pertains as a 64-bit unsigned integer: if the integer is eleven or less, the four bits may be set to the four least significant bits of the integer.",
+        " If the integer is strictly less than 256, the four bits may be set to ", code("0b1100"), ", in which case the header byte is followed by another byte containing the integer.",
+        " If the integer is strictly less than 256^2, the four bits may be set to ", code("0b1101"), ", in which case the header byte is followed by another two bytes containing the big-endian encoding of the integer.",
+        " If the integer is strictly less than 256^4, the four bits may be set to ", code("0b1110"), ", in which case the header byte is followed by another four bytes containing the big-endian encoding of the integer.",
         " In every case, the four bits may be set to ", code("0b1111"), " in which case the header byte is followed by another eight bytes containing the big-endian encoding of the integer.",
-      ),
-
-      pinformative(
-        "For ", code("SendControl"), " messages, the integer encoded in the less significant four bits (and the following bytes when necessary) specifies the length of the control message in bytes. For all other messages, the integer gives the ", r("logical_channel"), " to which the message pertains.",
       ),
 
       pinformative(
@@ -371,7 +367,7 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        " The header bytes of each ", code("SendControl"), " message are followed by the control message (whose length was encoded in the headre bytes)."
+        " The header bytes of each ", code("SendControl"), " message are followed by the control message (whose length is implicit, so the encoding of the control message must be decodable without knowing the length up-front)."
       ),
 
       pinformative(
