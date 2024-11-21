@@ -139,7 +139,7 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        "At any point, the ", r("resources_client"), " may communicate an upper bound on how many bytes of messages it will send to a ", r("logical_channel"), ". Both peers can track this number and subtract from it whenever the ", r("resources_client"), " sends more bytes accross the ", r("logical_channel"), ". The ", r("resources_client"), " must not send any messages that turn the tracked number negative. The ", r("resources_client"), " may send new upper bounds over time, but only if they strictly tighten the limit. Any bounds that would allow the ", r("resources_client"), " to send more bytes than promised in a previous bound are forbidden."
+        "At any point, the ", r("resources_client"), " may communicate an upper bound on how many bytes of messages it will send to a ", r("logical_channel"), ". Both peers can track this number and subtract from it whenever the ", r("resources_client"), " sends more bytes accross the ", r("logical_channel"), ", or provides an ", r("absolution"), " for the channel. The ", r("resources_client"), " must not send any messages that turn the tracked number negative. The ", r("resources_client"), " may send new upper bounds over time, but only if they strictly tighten the limit. Any bounds that would allow the ", r("resources_client"), " to send more bytes than promised in a previous bound are forbidden."
       ),
 
       pinformative(
