@@ -5,7 +5,7 @@ import { $, $comma } from "../../../katex.ts";
 import { marginale, sidenote } from "../../../marginalia.ts";
 import { asset } from "../../../out.ts";
 import { hl_builtin, Struct } from "../../../pseudocode.ts";
-import { pseudocode } from "../../../pseudocode.ts";
+import { pseudocode, def_type } from "../../../pseudocode.ts";
 import { Expression } from "macro";
 import {
 blue,
@@ -205,83 +205,83 @@ export const resource_control: Expression = site_template(
 
       pseudocode(
         new Struct({
-          id: "ResourceControlGuarantee",
+          id: "Guarantee",
           name: "IssueGuarantee",
           comment: [
-            "The ", r("resources_server"), " makes a binding promise of ", r("ResourceControlGuaranteeAmount"), " many bytes of available buffer capacity to the ", r("resources_client"), ".",
+            "The ", r("resources_server"), " makes a binding promise of ", r("GuaranteeAmount"), " many bytes of available buffer capacity to the ", r("resources_client"), ".",
           ],
           fields: [
             {
-              id: "ResourceControlGuaranteeAmount",
+              id: "GuaranteeAmount",
               name: "amount",
               rhs: r("U64"),
             },
             {
-              id: "ResourceControlGuaranteeChannel",
+              id: "GuaranteeChannel",
               name: "channel",
               rhs: r("C"),
             },
           ],
         }),
         new Struct({
-          id: "ResourceControlAbsolve",
+          id: "Absolve",
           name: "Absolve",
           comment: [
-            "The ", r("resources_client"), " allows the ", r("resources_server"), " to reduce its total buffer capacity by ", r("ResourceControlAbsolveAmount"), ".",
+            "The ", r("resources_client"), " allows the ", r("resources_server"), " to reduce its total buffer capacity by ", r("AbsolveAmount"), ".",
           ],
           fields: [
             {
-              id: "ResourceControlAbsolveAmount",
+              id: "AbsolveAmount",
               name: "amount",
               rhs: r("U64"),
             },
             {
-              id: "ResourceControlAbsolveChannel",
+              id: "AbsolveChannel",
               name: "channel",
               rhs: r("C"),
             },
           ],
         }),
         new Struct({
-          id: "ResourceControlOops",
+          id: "Oops",
           name: "Plead",
           comment: [
-            "The ", r("resources_server"), " asks the ", r("resources_client"), " to send an ", r("ResourceControlAbsolve"), " message such that the client’s remaining ", rs("guarantee"), " will be ", r("ResourceControlOopsTarget"), ".",
+            "The ", r("resources_server"), " asks the ", r("resources_client"), " to send an ", r("Absolve"), " message such that the client’s remaining ", rs("guarantee"), " will be ", r("OopsTarget"), ".",
           ],
           fields: [
             {
-              id: "ResourceControlOopsTarget",
+              id: "OopsTarget",
               name: "target",
               rhs: r("U64"),
             },
             {
-              id: "ResourceControlOopsChannel",
+              id: "OopsChannel",
               name: "channel",
               rhs: r("C"),
             },
           ],
         }),
         new Struct({
-          id: "ResourceControlLimitSending",
+          id: "LimitSending",
           name: "LimitSending",
           comment: [
             "The ", r("resources_client"), " promises to the ", r("resources_server"), " an upper bound on the number of bytes of messages that it will send on some ", r("logical_channel"), ".",
           ],
           fields: [
             {
-              id: "ResourceControlLimitSendingBound",
+              id: "LimitSendingBound",
               name: "bound",
               rhs: r("U64"),
             },
             {
-              id: "ResourceControlLimitSendingChannel",
+              id: "LimitSendingChannel",
               name: "channel",
               rhs: r("C"),
             },
           ],
         }),
         new Struct({
-          id: "ResourceControlLimitReceiving",
+          id: "LimitReceiving",
           name: "LimitReceiving",
           comment: [
             "The ", r("resources_server"), " promises to the ", r("resources_client"), " an upper bound on the number of bytes of messages that it will still receive on some ", r("logical_channel"), ".",
@@ -300,28 +300,28 @@ export const resource_control: Expression = site_template(
           ],
         }),
         new Struct({
-          id: "ResourceControlStartedDropping",
+          id: "StartedDropping",
           name: "AnnounceDropping",
           comment: [
-            "The ", r("resources_server"), " notifies the ", r("resources_client"), " that it has started dropping messages and will continue to do so until it receives an ", r("ResourceControlApology"), " message. The ", r("resources_server"), " must send any outstanding ", rs("guarantee"), " of the ", r("logical_channel"), " before sending a ", r("ResourceControlStartedDropping"), " message.",
+            "The ", r("resources_server"), " notifies the ", r("resources_client"), " that it has started dropping messages and will continue to do so until it receives an ", r("Apology"), " message. The ", r("resources_server"), " must send any outstanding ", rs("guarantee"), " of the ", r("logical_channel"), " before sending a ", r("StartedDropping"), " message.",
           ],
           fields: [
             {
-              id: "ResourceControlStartedDroppingChannel",
+              id: "StartedDroppingChannel",
               name: "channel",
               rhs: r("C"),
             },
           ],
         }),
         new Struct({
-          id: "ResourceControlApology",
+          id: "Apology",
           name: "Apologise",
           comment: [
             "The ", r("resources_client"), " notifies the ", r("resources_server"), " that it can stop dropping messages on this ", r("logical_channel"), ".",
           ],
           fields: [
             {
-              id: "ResourceControlApologyChannel",
+              id: "ApologyChannel",
               name: "channel",
               rhs: r("C"),
             },
@@ -334,24 +334,24 @@ export const resource_control: Expression = site_template(
       pinformative(
         "We now describe ", def({id: "lcmux", singular: "LCMUX", plural: "LCMUXs"}, "LCMUX", [
           "The ", def_fake("lcmux"), " (Logical Channel MULtiplexing) protocol specifies message encodings for resource control and multiplexing based on ", rs("logical_channel"), ".",
-        ]), ", a protocol that provides concrete message encodings for resource control and multiplexing based on ", rs("logical_channel"), ". It is a message-based protocol for use over a reliable, ordered, byte-oriented, bidirectional communication channel, and allows for the sending of control messages as well as channels over ", code("2^64 - 1"), " ", rs("logical_channel"), ".",
+        ]), ", a protocol that provides concrete message encodings for resource control and multiplexing based on ", rs("logical_channel"), ". It is a message-based protocol for use over a reliable, ordered, byte-oriented, bidirectional communication channel, and allows for the sending of control messages as well as sending messages over ", code("2^64"), " distinct ", rs("logical_channel"), ".",
       ),
 
       pinformative(
-        "The messages of ", r("lcmux"), " are ", link_name("resources_message_types", "those described earlier for guarantee management"), ", as well as messages for sending arbitrary bytes either as a control message or to a ", r("logical_channel"), ". Specifically, the distinct message types are: ", code("SendToChannel"), ", ", code("SendControl"), ", ", code("IssueGuarantee"), ", ", code("Absolve"), ", ", code("Plead"), ", ", code("LimitSending"), ", ", code("LimitReceiving"), ", ", code("AnnounceDropping"), ", and ", code("Apologise"), ".",
+        "The messages of ", r("lcmux"), " are ", link_name("resources_message_types", "those described earlier for guarantee management"), ", as well as messages for sending arbitrary bytes either as a control message or to a ", r("logical_channel"), ". Specifically, the distinct message types are: ", def_type("SendToChannel"), ", ", def_type("SendControl"), ", ", r("Guarantee"), ", ", r("Absolve"), ", ", r("Oops"), ", ", r("LimitSending"), ", ", r("LimitReceiving"), ", ", r("StartedDropping"), ", and ", r("Apology"), ".",
       ),
 
       pinformative(
         "The encodings for all of these follow the same shape. Each encoding starts with a header byte. Its most significant four bits indicate the message type: ",
-        code("0b0000"), " to ", code("0b0111"), " for ", code("SendToChannel"), " messages (the last three of the four bits form a three-bit unsigned integer whose meaning we define later), ",
-        code("0b1000"), " for ", code("SendControl"), " messages, "
-        , code("0b1001"), " for ", code("IssueGuarantee"), " messages, "
-        , code("0b1010"), " for ", code("Absolve"), " messages, "
-        , code("0b1011"), " for ", code("Plead"), " messages, "
-        , code("0b1100"), " for ", code("LimitSending"), " messages, "
-        , code("0b1101"), " for ", code("LimitReceiving"), " messages, "
-        , code("0b1110"), " for ", code("AnnounceDropping"), " messages, and"
-        , code("0b1111"), " for ", code("Apologise"), " messages."
+        code("0b0000"), " to ", code("0b0111"), " for ", r("SendToChannel"), " messages (the last three of the four bits form a three-bit unsigned integer whose meaning we define later), ",
+        code("0b1000"), " for ", r("SendControl"), " messages, "
+        , code("0b1001"), " for ", r("Guarantee"), " messages, "
+        , code("0b1010"), " for ", r("Absolve"), " messages, "
+        , code("0b1011"), " for ", r("Oops"), " messages, "
+        , code("0b1100"), " for ", r("LimitSending"), " messages, "
+        , code("0b1101"), " for ", r("LimitReceiving"), " messages, "
+        , code("0b1110"), " for ", r("StartedDropping"), " messages, and"
+        , code("0b1111"), " for ", r("Apology"), " messages."
       ),
 
       pinformative(
@@ -367,15 +367,15 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        " The header bytes of each ", code("SendControl"), " message are followed by the control message (whose length is implicit, so the encoding of the control message must be decodable without knowing the length up-front)."
+        " The header bytes of each ", r("SendControl"), " message are followed by the control message (whose length is implicit, so the encoding of the control message must be decodable without knowing the length up-front)."
       ),
 
       pinformative(
-        "The header bytes of each ", code("IssueGuarantee"), ", ", code("Absolve"), ", ", code("Plead"), ", ", code("LimitSending"), ", or ", code("LimitReceiving"), " message is followed by a ", link("VarU64", "https://github.com/AljoschaMeyer/varu64?tab=readme-ov-file#varu64"), " encoding of the one unsigned 64-bit integer that is a field of the message type."
+        "The header bytes of each ", r("Guarantee"), ", ", r("Absolve"), ", ", r("Oops"), ", ", r("LimitSending"), ", or ", r("LimitReceiving"), " message is followed by a ", link("VarU64", "https://github.com/AljoschaMeyer/varu64?tab=readme-ov-file#varu64"), " encoding of the one unsigned 64-bit integer that is a field of the message type."
       ),
 
       pinformative(
-        " The header bytes of  ", code("AnnounceDropping"), " and ", code("Apologise"), " messages are not followed by any additional data."
+        " The header bytes of  ", r("StartedDropping"), " and ", r("Apology"), " messages are not followed by any additional data."
       ),
 
     ]),
@@ -447,7 +447,7 @@ export const resource_control: Expression = site_template(
 
         pinformative("The ", r("handle_client"), " may send optimistic messages on such a ", r("logical_channel"), ". The ", r("handle_client"), " may even reference these optimistically ", r("handle_bind", "bound"), " ", rs("resource_handle"), " in arbitrary other messages. When the ", r("handle_server"), " receives a message that references a ", r("resource_handle"), " that is greater than the greatest ", r("resource_handle"), " it has ", r("handle_bind", "bound"), " of that ", r("handle_type"), ", it must first check whether it has unprocessed messages for ", r("handle_bind", "binding"), " ", rs("resource_handle"), " of this type, and process as many of them as possible."),
 
-        pinformative("If processing those messages ", rs("handle_bind"), " the ", r("resource_handle"), " in question, the ", r("handle_server"), " can then resume processing the optimistic reference to that ", r("resource_handle"), " as if nothing had happened. If, however, it then still has not ", r("handle_bind", "bound"), " the ", r("resource_handle"), " in question, then the message for ", r("handle_bind", "binding"), " the ", r("resource_handle"), " must have been dropped, and the ", r("handle_server"), " has already sent a ", r("ResourceControlStartedDropping"), " message, from which the ", r("handle_client"), " can infer that its optimistic reference to the ", r("resource_handle"), " could not be processed either. The ", r("handle_server"), " then simply drops the message without any further processing."),
+        pinformative("If processing those messages ", rs("handle_bind"), " the ", r("resource_handle"), " in question, the ", r("handle_server"), " can then resume processing the optimistic reference to that ", r("resource_handle"), " as if nothing had happened. If, however, it then still has not ", r("handle_bind", "bound"), " the ", r("resource_handle"), " in question, then the message for ", r("handle_bind", "binding"), " the ", r("resource_handle"), " must have been dropped, and the ", r("handle_server"), " has already sent a ", r("StartedDropping"), " message, from which the ", r("handle_client"), " can infer that its optimistic reference to the ", r("resource_handle"), " could not be processed either. The ", r("handle_server"), " then simply drops the message without any further processing."),
 
       ]),
 

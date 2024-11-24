@@ -400,6 +400,22 @@ export const encodings: Expression = site_template({
         [$comma("8"), " otherwise."],
       ),
     ),
+
+    pinformative(
+      "Many encodings indicate the number of bytes used to encode a ", r("U64"), " via two bits of metadata. We say a sequence of two bits is a ",
+      def({ id: "width_specifier", singular: "width specifier", plural: "width specifiers"}), " of a ", r("U64"), " ",
+      def_value({ id: "width_specifier_n", singular: "n" }),
+      ", if the sequence is ", code("00"), " and ", $comma([r$("width_specifier_n"), " <= 256"]),
+      " or if the sequence is ", code("01"), " and ", $comma([r$("width_specifier_n"), " <= 256^2"]),
+      " or if the sequence is ", code("10"), " and ", $comma([r$("width_specifier_n"), " <= 256^4"]),
+      " or if the sequence is ", code("11"), " and ", $dot([r$("width_specifier_n"), " <= 256^8"]),
+      " The ", def({ id: "corresponding_width", singular: "corresponding width", plural: "corresponding widths"}), " of a ",
+      r("width_specifier"), " is ",
+      $("1"), " for the ", r("width_specifier"), " ", code("00"), ", ",
+      $("2"), " for the ", r("width_specifier"), " ", code("01"), ", ",
+      $("4"), " for the ", r("width_specifier"), " ", code("10"), ", and ",
+      $("8"), " for the ", r("width_specifier"), " ", code("11"), "." ,
+    ),
   ]),
 
   hsection("encodings_data_model", "Data Model Encodings", [

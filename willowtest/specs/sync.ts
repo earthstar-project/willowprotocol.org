@@ -1033,22 +1033,8 @@ export const sync: Expression = site_template(
 
                 hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
                     pinformative(
-                        "TODO",
-                        "The encoding of a ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is the concatenation of:",
+                        "A ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("0000"), ", followed by:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(2),
-                            ),
                             [[
                                 field_access(r("enc_commitment_reveal"), "CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
                             ]],
@@ -1088,23 +1074,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("01XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ", field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", followed by the concatenation of:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("010")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"))), "-byte integer",
+                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                             [[
                                 code(function_call(r("encode_group_member"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentGroupMember"))),
@@ -1115,23 +1088,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("10XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ",field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", followed by:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("011")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"))), "-byte integer",
+                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                         ),
                     ),
@@ -1139,23 +1099,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("11XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", followed by the concatenation of:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
+                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                             [[
                                 code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
@@ -1822,36 +1769,51 @@ export const sync: Expression = site_template(
 
                     hr(),
 
-                    pinformative(                        
-                        "The encoding of a ", r("DataSetMetadata"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
+                    pinformative(
+                        "A ", r("DataSetMetadata"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("0001"), ", followed by:",
                         encodingdef(
                             new Bitfields(
+                                // new BitfieldRow(
+                                //     3,
+                                //     [code("011")],
+                                //     ["message category"],
+                                // ),
+                                // new BitfieldRow(
+                                //     3,
+                                //     [code("010")],
+                                //     ["message kind"],
+                                // ),
+                                // new BitfieldRow(
+                                //     1,
+                                //     [
+                                //         code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
+                                //     ],
+                                // ),
+                                // bitfieldrow_unused(1),
+                                // two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
+                                // two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
+
                                 new BitfieldRow(
-                                    3,
-                                    [code("011")],
-                                    ["message category"],
+                                    2,
+                                    ["A ", r("width_specifier"), " of ", field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle"), "."],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("010")],
-                                    ["message kind"],
+                                    2,
+                                    ["A ", r("width_specifier"), " of ", field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle"), "."],
                                 ),
+                                bitfieldrow_unused(3),
                                 new BitfieldRow(
                                     1,
                                     [
                                         code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
                                     ],
                                 ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
-                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
-                                bitfieldrow_unused(4),
                             ),
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
+                                field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle"), " as a big-endian, unsigned integer whose width in bytes is the ", r("corresponding_width"), " of bits 0 and 1."
                             ]],
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
+                                field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle"), " as a big-endian, unsigned integer whose width in bytes is the ", r("corresponding_width"), " of bits 2 and 3."
                             ]],
                         ),
                     ),
