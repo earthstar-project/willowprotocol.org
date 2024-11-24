@@ -1027,8 +1027,12 @@ export const sync: Expression = site_template(
                         r("ControlAnnounceDropping"), " messages, and ",
                         r("ControlApologise"), " messages ",
                         " are defined by ", r("lcmux"), ".",
-                        " The remaining messages use the appropriate ", r("lcmux"), " framing (", code("SendControl"), " for control messages, ", code("SendToChannel"), " for all other messages), with the post-header message bytes as defined in the following sections."
+                        " The remaining messages use the appropriate ", r("lcmux"), " framing (", r("SendControl"), " for control messages, ", r("SendToChannel"), " for all other messages), with the post-header message bytes as defined in the following sections."
                     ),
+
+
+                    marginale("This allows future protocols to add new message types on other logical channels, while keeping the ability to sync with peers that use the WGPS and do not know about those additional message types."),
+                    pinformative("When a peer receives a message pertaining to a ", r("logical_channel"), " strictly greater than 6, it must correctly parse the message, drop the data, send an ", r("StartedDropping"), " message for that channel, followed by a ", r("ControlLimitReceiving"), " message for that channel with a ", r("ControlLimitReceivingBound"), " of zero."),
                 ]),
 
                 hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
