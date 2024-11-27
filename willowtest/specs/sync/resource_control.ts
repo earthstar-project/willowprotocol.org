@@ -371,7 +371,7 @@ export const resource_control: Expression = site_template(
       ),
 
       pinformative(
-        "The header bytes of each ", r("Guarantee"), ", ", r("Absolve"), ", ", r("Oops"), ", ", r("LimitSending"), ", or ", r("LimitReceiving"), " message is followed by a ", link("VarU64", "https://github.com/AljoschaMeyer/varu64?tab=readme-ov-file#varu64"), " encoding of the one unsigned 64-bit integer that is a field of the message type."
+        "The header bytes of each ", r("Guarantee"), ", ", r("Absolve"), ", ", r("Oops"), ", ", r("LimitSending"), ", or ", r("LimitReceiving"), " message is followed by the one unsigned 64-bit integer that is a field of the message type, encoded as follows: if it is 251 or less, it can be encoded as a single byte. If it is 255 or less, it can be encoded as the byte ", code("252"), ", followed by the integer as a single byte. If it is strictly less than 2^16, it can be encoded as the byte ", code("253"), ", followed by the two-byte unsigned big-endian encoding of the integer. If it is strictly less than 2^32, it can be encoded as the byte ", code("254"), ", followed by the four-byte unsigned big-endian encoding of the integer. It can always be encoded as the byte ", code("254"), ", followed by the eight-byte unsigned big-endian encoding of the integer."
       ),
 
       pinformative(
