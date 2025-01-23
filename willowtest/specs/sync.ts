@@ -1,7 +1,7 @@
 
 
 import { R, Rs, def, def_fake, preview_scope, r, rs } from "../../defref.ts";
-import { aside, code, div, em, hr, img, p } from "../../h.ts";
+import { aside, code, div, em, hr, img, p, tbody, tr } from "../../h.ts";
 import { hsection, table_of_contents } from "../../hsection.ts";
 import { link_name } from "../../linkname.ts";
 import { marginale, marginale_inlineable, sidenote } from "../../marginalia.ts";
@@ -14,6 +14,7 @@ import { asset } from "../../out.ts";
 import { BitfieldRow, Bitfields, encodingdef } from "../encodingdef.ts";
 import { encode_two_bit_int, inclusion_flag_remark, two_bit_int, two_bit_int_def } from "./encodings.ts";
 import { CHAR_9 } from "https://deno.land/std@0.198.0/path/_constants.ts";
+import { table, td, thead, th } from "../../h.ts";
 
 const apo = "’";
 
@@ -942,6 +943,8 @@ export const sync: Expression = site_template(
             ]),
 
             hsection("sync_encodings", "Encodings", [
+                pinformative("Attention: we are currently (as of November 2024) in the process of redefining all message encodings. If this paragraph is still here, then things might still change."),
+
                 pinformative("We now describe how to encode the various messages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
 
                 hsection("sync_encoding_params", "Parameters", [
@@ -984,26 +987,58 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
-                    pinformative("We can now define the encodings for all messages."),
+                    pinformative(
+                        "The WGPS uses ", r("lcmux"), " to frame its messages and implement ", rs("logical_channel"), ". The mapping from ", rs("LogicalChannel"), " to the unsigned integer ids of ", r("lcmux"), " is as follows:"
+                    ),
+
+                    table(
+                        thead(tr(
+                            th(r("LogicalChannel")), th("integer id"),
+                        )),
+                        tbody(tr(
+                            td(r("ReconciliationChannel")), td("0"),
+                        )),
+                        tbody(tr(
+                            td(r("DataChannel")), td("1"),
+                        )),
+                        tbody(tr(
+                            td(r("IntersectionChannel")), td("2"),
+                        )),
+                        tbody(tr(
+                            td(r("CapabilityChannel")), td("3"),
+                        )),
+                        tbody(tr(
+                            td(r("AreaOfInterestChannel")), td("4"),
+                        )),
+                        tbody(tr(
+                            td(r("PayloadRequestChannel")), td("5"),
+                        )),
+                        tbody(tr(
+                            td(r("StaticTokenChannel")), td("6"),
+                        )),
+                    ),
+
+                    pinformative("The encodings for ",
+                        r("ControlIssueGuarantee"), " messages, ",
+                        r("ControlAbsolve"), " messages, ",
+                        r("ControlPlead"), " messages, ",
+                        r("ControlLimitSending"), " messages, ",
+                        r("ControlLimitReceiving"), " messages, ",
+                        r("ControlAnnounceDropping"), " messages, and ",
+                        r("ControlApologise"), " messages ",
+                        " are defined by ", r("lcmux"), ".",
+                        " The remaining messages use the appropriate ", r("lcmux"), " framing (", r("SendControl"), " for control messages, ", r("SendToChannel"), " for all other messages), with the post-header message bytes as defined in the following sections."
+                    ),
+
+
+                    marginale("This allows future protocols to add new message types on other logical channels, while keeping the ability to sync with peers that use the WGPS and do not know about those additional message types."),
+                    pinformative("When a peer receives a message pertaining to a ", r("logical_channel"), " strictly greater than 6, it must correctly parse the message, drop the data, send an ", r("StartedDropping"), " message for that channel, followed by a ", r("ControlLimitReceiving"), " message for that channel with a ", r("ControlLimitReceivingBound"), " of zero."),
                 ]),
 
                 hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
                     pinformative(
-                        "The encoding of a ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is the concatenation of:",
+                        "A ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("0000"), ", followed by:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(2),
-                            ),
                             [[
                                 field_access(r("enc_commitment_reveal"), "CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
                             ]],
@@ -1043,23 +1078,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("01XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ", field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", followed by the concatenation of:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("010")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"))), "-byte integer",
+                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                             [[
                                 code(function_call(r("encode_group_member"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentGroupMember"))),
@@ -1070,23 +1092,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("10XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ",field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", followed by:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("011")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"))), "-byte integer",
+                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                         ),
                     ),
@@ -1094,23 +1103,10 @@ export const sync: Expression = site_template(
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
+                        "A ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("11XX"), ", where ", code("XX"), " is a ", r("width_specifier"), " of ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", followed by the concatenation of:",
                         encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle")),
-                            ),
                             [[
-                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
+                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned big-endian integer of the ", r("corresponding_width"), " of ", code("XX"), ".",
                             ]],
                             [[
                                 code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
@@ -1777,36 +1773,51 @@ export const sync: Expression = site_template(
 
                     hr(),
 
-                    pinformative(                        
-                        "The encoding of a ", r("DataSetMetadata"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is the concatenation of:",
+                    pinformative(
+                        "A ", r("DataSetMetadata"), " message ", def_value({id: "enc_data_eager", singular: "m"}), " is encoded as a ", r("SendControl"), " message whose four less significant header bits are set to ", code("0001"), ", followed by:",
                         encodingdef(
                             new Bitfields(
+                                // new BitfieldRow(
+                                //     3,
+                                //     [code("011")],
+                                //     ["message category"],
+                                // ),
+                                // new BitfieldRow(
+                                //     3,
+                                //     [code("010")],
+                                //     ["message kind"],
+                                // ),
+                                // new BitfieldRow(
+                                //     1,
+                                //     [
+                                //         code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
+                                //     ],
+                                // ),
+                                // bitfieldrow_unused(1),
+                                // two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
+                                // two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
+
                                 new BitfieldRow(
-                                    3,
-                                    [code("011")],
-                                    ["message category"],
+                                    2,
+                                    ["A ", r("width_specifier"), " of ", field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle"), "."],
                                 ),
                                 new BitfieldRow(
-                                    3,
-                                    [code("010")],
-                                    ["message kind"],
+                                    2,
+                                    ["A ", r("width_specifier"), " of ", field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle"), "."],
                                 ),
+                                bitfieldrow_unused(3),
                                 new BitfieldRow(
                                     1,
                                     [
                                         code("1"), " ", r("iff"), " ", code(field_access(r("enc_data_eager"), "DataSetMetadataEagerness"), " == true"),
                                     ],
                                 ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
-                                two_bit_int(10, field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
-                                bitfieldrow_unused(4),
                             ),
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle")),
+                                field_access(r("enc_data_eager"), "DataSetMetadataSenderHandle"), " as a big-endian, unsigned integer whose width in bytes is the ", r("corresponding_width"), " of bits 0 and 1."
                             ]],
                             [[
-                                encode_two_bit_int(field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle")),
+                                field_access(r("enc_data_eager"), "DataSetMetadataReceiverHandle"), " as a big-endian, unsigned integer whose width in bytes is the ", r("corresponding_width"), " of bits 2 and 3."
                             ]],
                         ),
                     ),
@@ -1919,264 +1930,6 @@ export const sync: Expression = site_template(
                         ),
                     ),
 
-                ]),
-
-                hsection("sync_encode_control", "Control", [
-                    pinformative(
-                        "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. The ", def_fn({id: "encode_channel"}), " function maps ", lis(
-                            [r("ReconciliationChannel"), " to ", code("000"), ","],
-                            [r("DataChannel"), " to ", code("001"), ","],
-                            [r("IntersectionChannel"), " to ", code("010"), ","],
-                            [r("CapabilityChannel"), " to ", code("011"), ","],
-                            [r("AreaOfInterestChannel"), " to ", code("100"), ","],
-                            [r("PayloadRequestChannel"), " to ", code("101"), ", and"],
-                            [r("StaticTokenChannel"), " to ", code("110"), "."],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlIssueGuarantee"), " message ", def_value({id: "enc_ctrl_issue", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    4,
-                                    [code("0000")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeChannel"))]
-                                ),
-                                bitfieldrow_unused(3),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_issue"), "ControlIssueGuaranteeAmount")),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlAbsolve"), " message ", def_value({id: "enc_ctrl_absolve", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    4,
-                                    [code("0001")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_absolve"), "ControlAbsolveChannel"))]
-                                ),
-                                bitfieldrow_unused(3),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_absolve"), "ControlAbsolveAmount")),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlPlead"), " message ", def_value({id: "enc_ctrl_plead", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    4,
-                                    [code("0010")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(8, field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_plead"), "ControlPleadChannel"))]
-                                ),
-                                bitfieldrow_unused(3),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_plead"), "ControlPleadTarget")),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlLimitSending"), " message ", def_value({id: "enc_ctrl_limit_sending", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    5,
-                                    [code("00110")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(8, field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingChannel"))]
-                                ),
-                                bitfieldrow_unused(3),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_limit_sending"), "ControlLimitSendingBound")),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlLimitReceiving"), " message ", def_value({id: "enc_ctrl_limit_receiving", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    5,
-                                    [code("00111")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(8, field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingChannel"))]
-                                ),
-                                bitfieldrow_unused(3),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_limit_receiving"), "ControlLimitReceivingBound")),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlAnnounceDropping"), " message ", def_value({id: "enc_ctrl_announce", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("10")],
-                                    ["message kind"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_announce"), "ControlAnnounceDroppingChannel"))]
-                                ),
-                            ),
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlApologise"), " message ", def_value({id: "enc_ctrl_apo", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("11")],
-                                    ["message kind"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_channel"), field_access(r("enc_ctrl_apo"), "ControlApologiseChannel"))]
-                                ),
-                            ),
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "To denote ", rs("HandleType"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_type"}), " maps ", lis(
-                            [r("IntersectionHandle"), " to ", code("000"), ","],
-                            [r("CapabilityHandle"), " to ", code("001"), ","],
-                            [r("AreaOfInterestHandle"), " to ", code("010"), ","],
-                            [r("PayloadRequestHandle"), " to ", code("011"), ","],
-                            [r("StaticTokenHandle"), " to ", code("100"), ","],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("ControlFreeHandle"), " message ", def_value({id: "enc_ctrl_free", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("01")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(3),
-                                two_bit_int(8, field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
-                                new BitfieldRow(
-                                    3,
-                                    [function_call(r("encode_handle_type"), field_access(r("enc_ctrl_free"), "ControlFreeHandleType"))],
-                                ),
-                                new BitfieldRow(
-                                    1,
-                                    [
-                                        code("1"), " ", r("iff"), " ", code(field_access(r("enc_ctrl_free"), "ControlFreeHandleMine"), " == true"),
-                                    ],
-                                ),
-                                bitfieldrow_unused(2),
-                            ),
-                            [[
-                                encode_two_bit_int(field_access(r("enc_ctrl_free"), "ControlFreeHandleHandle")),
-                            ]],
-                        ),
-                    ),
                     pinformative(
                         "And with that, we have all the pieces we need for secure, efficient synchronisation of ", rs("namespace"), ". Thanks for reading!"),
                     pinformative(
