@@ -1,27 +1,17 @@
 import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
-
+import { createLogger } from "macromania-logger";
+import { createSubstate, Expression, Expressions } from "macromania";
+import { Code, P, Table, Td, Th, Tr } from "macromania-html";
+import { Marginale } from "macromania-marginalia";
+import { PreviewScope } from "macromania-previews";
 import {
-AccessStruct,
-Code,
-  createLogger,
-  createSubstate,
-  Def,
+  AccessStruct,
   DefFunction,
   DefType,
   DefValue,
-  Expression,
-  Expressions,
-  M,
-  Marginale,
-  P,
-  PreviewScope,
-  R,
-  Rs,
-  Table,
-  Td,
-  Th,
-  Tr,
-} from "../deps.ts";
+} from "macromania-rustic";
+import { Def, R, Rs } from "macromania-defref";
+import { M } from "macromania-katex";
 
 const l = createLogger("LoggerEncodings");
 const ConfigMacro = l.ConfigMacro;
@@ -595,8 +585,12 @@ export function ValName(): Expression {
 /**
  * Creates a struct field access on the value being encoded.
  */
-export function ValAccess({ field } : {field: string}): Expression {
-  return <AccessStruct field={field}><ValName/></AccessStruct>;
+export function ValAccess({ field }: { field: string }): Expression {
+  return (
+    <AccessStruct field={field}>
+      <ValName />
+    </AccessStruct>
+  );
 }
 
 /**
@@ -787,7 +781,7 @@ export function bitfieldConstant(
     count: bits.length,
     content: (
       <>
-        The bitstring <Code>{bits.map(b => `${b}`).join("")}</Code>.
+        The bitstring <Code>{bits.map((b) => `${b}`).join("")}</Code>.
       </>
     ),
   };
@@ -796,10 +790,13 @@ export function bitfieldConstant(
 /**
  * Creates an encoding content that is an 8-bit c64 tag for some value (the children), followed by the corresponding c64 encoding.
  */
-export function C64Standalone({ children }: { children: Expressions }): Expression {
+export function C64Standalone(
+  { children }: { children: Expressions },
+): Expression {
   return (
     <>
-      A <R n="c64_tag"/> of <R n="c64_width"/> <M>8</M> for <exps x={children}/>, followed by the <R n="c64_corresponding"/>.
+      A <R n="c64_tag" /> of <R n="c64_width" /> <M>8</M> for{" "}
+      <exps x={children} />, followed by the <R n="c64_corresponding" />.
     </>
   );
 }
@@ -807,10 +804,17 @@ export function C64Standalone({ children }: { children: Expressions }): Expressi
 /**
  * The phrase for using the raw bytes of some bytestring in an encoding.
  */
-export function RawBytes({ children, lowercase, noPeriod }: { children: Expressions, lowercase?: boolean, noPeriod?: boolean }): Expression {
+export function RawBytes(
+  { children, lowercase, noPeriod }: {
+    children: Expressions;
+    lowercase?: boolean;
+    noPeriod?: boolean;
+  },
+): Expression {
   return (
     <>
-      {lowercase ? "the" : "The"} raw bytes of <exps x={children}/>{noPeriod ? "" : "."}
+      {lowercase ? "the" : "The"} raw bytes of <exps x={children} />
+      {noPeriod ? "" : "."}
     </>
   );
 }

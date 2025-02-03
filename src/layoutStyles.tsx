@@ -1,6 +1,4 @@
-import {
-  Expression,
-} from "../deps.ts";
+import { Expression } from "macromania";
 
 /**
 The layouts (multiple instances of "free space" in the same layout have equal width),
@@ -159,12 +157,14 @@ body:not(.isPreview) {
 }
 
 @media (min-width:${
-  htmlFontSizeInPx *
-    (paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia) +
-  SCROLLBAR
-}px) {
+    htmlFontSizeInPx *
+      (paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia) +
+    SCROLLBAR
+  }px) {
   .previewContainer.wide {
-    max-width: min(calc(${paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia}rem + 18px), 100vw);
+    max-width: min(calc(${
+    paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia
+  }rem + 18px), 100vw);
   }
 }
 

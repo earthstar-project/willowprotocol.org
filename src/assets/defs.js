@@ -19,7 +19,8 @@ document.querySelector("body").addEventListener("mouseover", (evt) => {
 
   let refNode = evt.target;
   while (
-    !(refNode.dataset.ref && refNode.dataset.previewAnchor && refNode.dataset.hl) &&
+    !(refNode.dataset.ref && refNode.dataset.previewAnchor &&
+      refNode.dataset.hl) &&
     refNode.parentElement
   ) {
     refNode = refNode.parentElement;

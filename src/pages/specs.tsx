@@ -1,4 +1,4 @@
-import { File } from "../../deps.ts";
+import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
 
 export const specs = (

@@ -1,7 +1,31 @@
 {
   "imports": {
     "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
-    "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts"
+    "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania-assets": "../macromania_temporary_monorepo/macromania_assets/mod.tsx",
+    "macromania-config": "../macromania_temporary_monorepo/macromania_config/mod.tsx",
+    "macromania-counters": "../macromania_temporary_monorepo/macromania_counters/mod.tsx",
+    "macromania-defref": "../macromania_temporary_monorepo/macromania_defref/mod.tsx",
+    "macromania-figures": "../macromania_temporary_monorepo/macromania_figures/mod.tsx",
+    "macromania-fs": "../macromania_temporary_monorepo/macromania_fs/mod.tsx",
+    "macromania-hsection": "../macromania_temporary_monorepo/macromania_hsection/mod.tsx",
+    "macromania-html": "../macromania_temporary_monorepo/macromania_html/mod.tsx",
+    "macromania-html-utils": "../macromania_temporary_monorepo/macromania_html_utils/mod.tsx",
+    "macromania-katex": "../macromania_temporary_monorepo/macromania_katex/mod.tsx",
+    "macromania-katex-macros": "../macromania_temporary_monorepo/macromania_katex_macros/mod.tsx",
+    "macromania-logger": "../macromania_temporary_monorepo/macromania_logger/mod.tsx",
+    "macromania-marginalia": "../macromania_temporary_monorepo/macromania_marginalia/mod.tsx",
+    "macromania-names": "../macromania_temporary_monorepo/macromania_names/mod.tsx",
+    "macromania-outfs": "../macromania_temporary_monorepo/macromania_outfs/mod.tsx",
+    "macromania-previews": "../macromania_temporary_monorepo/macromania_previews/mod.tsx",
+    "macromania-webserverroot": "../macromania_temporary_monorepo/macromania_webserverroot/mod.tsx",
+    "macromania-pseudocode": "../macromania_temporary_monorepo/macromania_pseudocode/mod.tsx",
+    "macromania-rustic": "../macromania_temporary_monorepo/macromania_rustic/mod.tsx",
+    "macromania-bib": "../macromania_temporary_monorepo/macromania_bib/mod.tsx",
+    "macromania-bib/": "../macromania_temporary_monorepo/macromania_bib/",
+    "macromania-wip": "../macromania_temporary_monorepo/macromania_wip/mod.tsx",
+    "macromania-emit-latex": "../macromania_temporary_monorepo/macromania_emit_latex/mod.tsx"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
