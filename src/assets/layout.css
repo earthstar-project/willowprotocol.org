@@ -1,0 +1,95 @@
+
+/* Automatically generated from src/layoutStyles.tsx */
+
+/* Start implementing L1 */
+
+body {
+    
+}
+
+body:not(.isPreview) {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+}
+
+.toc {
+    
+    display: none;
+}
+
+.marginale, .sidenoteCounter {
+    
+    display: none;
+}
+
+.marginale.inlineable, .sidenoteCounter.inlineable {
+  display: block;
+}
+
+/* Start implementing L2 */
+
+@media (min-width:554.6px) {
+    #wrapContent {
+        
+        width: 32rem;
+        margin: 0 auto;
+    }
+}
+
+/* Start implementing L3 */
+
+@media (min-width:868.2px) {
+    #wrapContent {
+        width: 51.6rem;
+
+        >*:not(section, main), section>*:not(section, main)  {
+            max-width: 32rem;
+        }
+
+        .wide {
+          max-width: 51.6rem;
+          clear: right;
+        }
+    }
+
+    .marginale {
+      display: initial;
+      float: right;
+      clear: right;
+      position: relative;
+      width: 18rem;
+      margin-right: -19.6rem;
+    }
+
+    .sidenoteCounter {
+        display: initial;
+    }
+}
+
+/* Start implementing L4 */
+
+@media (min-width:1335.4px) {
+    .toc {
+        display: initial;
+        width: 13rem;
+
+        position: fixed;
+        top: 0.5rem;
+        transform: translateX(-14.6rem);
+    }
+}
+
+/* Other styling */
+
+.previewContainer {
+  max-width: min(33.6rem, 100vw);
+}
+
+@media (min-width:868.2px) {
+  .previewContainer.wide {
+    max-width: min(calc(53.2rem + 18px), 100vw);
+  }
+}
+

@@ -1,0 +1,23 @@
+:root {
+    --main-bg: #ffffff;
+    --main-fg: #000000;
+    --main-subtle: rgb(112, 132, 132);
+}
+
+/* @media (prefers-color-scheme: dark) {
+    :root {
+        --main-bg: #151515;
+        --main-fg: #ddd;
+    }
+} */
+
+:root {
+    --font-body: 'Linux Libertine', Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+    --font-heading: var(--font-body);
+    --font-mono: 'Monaspace Neon', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+
+    --default-spacing: 0.8rem;
+
+    /* Background color for <code>. */
+    --code-bg: #eaeaea;
+}
