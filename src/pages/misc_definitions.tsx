@@ -53,6 +53,22 @@ export const misc_definitions = (
 
         <PreviewScope>
           <P>
+            The value <DefVariant n="range_open" r="open" /> signals that a{" "}
+            <R n="range" /> is <R n="open_range">open</R>.
+          </P>
+        </PreviewScope>
+
+        <PreviewScope>
+          <P>
+            The value <DefVariant n="area_any" r="any" /> signals that an{" "}
+            <R n="Area" /> <R n="area_include">includes</R> <Rs n="Entry" />
+            {" "}
+            with arbitrary <Rs n="entry_subspace_id" />.
+          </P>
+        </PreviewScope>
+
+        <PreviewScope>
+          <P>
             <DefVariant n="access_read" r="read" />{" "}
             is a value that signifies that a capability grants the ability to
             {" "}

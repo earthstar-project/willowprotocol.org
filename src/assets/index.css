@@ -1,7 +1,5 @@
 /*
 Entrypoint for the main stylesheet.
-
-To tweak the appearence, change values in `variables.css`
 */
 @import "textFonts.css";
 @import "layout.css";
@@ -143,7 +141,7 @@ aside.long {
   margin: 2em 0;
 }
 
-figcaption {
+figcaption, .margincaption {
   font-size: 1rem;
 }
 

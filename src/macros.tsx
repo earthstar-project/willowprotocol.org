@@ -417,3 +417,16 @@ export function An(
     return an ? "an" : "a";
   }
 }
+
+/**
+ * Like `Figcaption`, but it works in marginalia.
+ */
+export function MarginCaption(
+  { children }: { children: Expressions },
+): Expression {
+  return (
+    <Span clazz="margincaption">
+      <exps x={children} />
+    </Span>
+  );
+}
