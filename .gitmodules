@@ -1,0 +1,3 @@
+[submodule "macromania_temporary_monorepo"]
+	path = macromania_temporary_monorepo
+	url = https://github.com/worm-blossom/macromania_temporary_monorepo.git

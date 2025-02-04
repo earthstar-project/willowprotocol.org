@@ -30,13 +30,10 @@ import { Marginale, Sidenote } from "macromania-marginalia";
 import { Def, R, Rs } from "macromania-defref";
 import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { Dir, File } from "macromania-outfs";
-import {
-  DefType,
-  DefValue,
-  Hsection,
-  M,
-  PreviewScope,
-} from "../../../../macromania_temporary_monorepo/mod.tsx";
+import { Hsection } from "macromania-hsection";
+import { PreviewScope } from "macromania-previews";
+import { DefType, DefValue } from "macromania-rustic";
+import { M } from "macromania-katex";
 
 export const encodings = (
   <Dir name="encodings">
