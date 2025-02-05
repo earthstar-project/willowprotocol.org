@@ -4,11 +4,14 @@ import {
   c64Tag,
   ChooseMaximal,
   CodeFor,
+  EncConditional,
   Encoding,
   EncodingRelationRelativeTemplate,
   EncodingRelationTemplate,
   MinTags,
+  RelAccess,
   RelName,
+  ValAccess,
   ValName,
 } from "../../encoding_macros.tsx";
 import { MSet } from "../../macros.tsx";
@@ -32,8 +35,10 @@ import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { Dir, File } from "macromania-outfs";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
-import { DefType, DefValue } from "macromania-rustic";
+import { AccessStruct, DefType, DefValue } from "macromania-rustic";
 import { M } from "macromania-katex";
+import { EncIterator } from "../../encoding_macros.tsx";
+import { Tuple } from "macromania-rustic";
 
 export const encodings = (
   <Dir name="encodings">
@@ -46,13 +51,15 @@ export const encodings = (
         statusDate="17.01.2024"
         toc
       >
-        <Em>
-          Those encodings referenced from the{" "}
-          <R n="meadowcap">Meadowcap specification</R> have status{" "}
-          <SkyBlue>
-            <R n="status_candidate" />
-          </SkyBlue>.
-        </Em>
+        <P>
+          <Em>
+            Those encodings referenced from the{" "}
+            <R n="meadowcap">Meadowcap specification</R> have status{" "}
+            <SkyBlue>
+              <R n="status_candidate" />
+            </SkyBlue>.
+          </Em>
+        </P>
 
         <P>
           <Alj>TODO: improve the TOC rendering (styling, top, Home?)</Alj>
@@ -626,9 +633,15 @@ export const encodings = (
               contents={[
                 <C64Encoding id="total_length" />,
                 <C64Encoding id="component_count" />,
-                <>
-                  For every <R n="Component" /> of <ValName />{" "}
-                  but the final one, a concatenation of the following form:
+                <EncIterator
+                  val={
+                    <>
+                      <R n="Component" /> <DefValue n="encpath_comp" r="comp" />
+                    </>
+                  }
+                  iter={<ValName />}
+                  skipLast
+                >
                   <Encoding
                     idPrefix="EncodePath_nested"
                     bitfields={[
@@ -636,18 +649,18 @@ export const encodings = (
                         "component_len",
                         8,
                         <>
-                          the length of the <R n="Component" />
+                          the length of <R n="encpath_comp" />
                         </>,
                       ),
                     ]}
                     contents={[
                       <C64Encoding id="component_len" />,
                       <RawBytes>
-                        the <R n="Component" />
+                        <R n="encpath_comp" />
                       </RawBytes>,
                     ]}
                   />
-                </>,
+                </EncIterator>,
                 {
                   content: (
                     <>
@@ -816,6 +829,120 @@ export const encodings = (
               }}
             />
           </Hsection>
+        </Hsection>
+
+        <Hsection n="enc_capabilities" title="Capabilities">
+          <P>
+            Encodings for <R n="meadowcap" /> and{" "}
+            <Rs n="McSubspaceCapability" />.<Alj>fix Meadowcap link color</Alj>
+          </P>
+
+          <P>
+            <Alj inline>TODO mc subspace cap absolute</Alj>
+          </P>
+
+          <Hr />
+
+          <P>
+            <Alj inline>TODO mc cap absolute</Alj>
+          </P>
+
+          <Hr />
+
+          <EncodingRelationRelativeTemplate
+            n="EncodeMcSubspaceCapabilityRelativePrivateInterest"
+            valType={<R n="McSubspaceCapability" />}
+            relToDescription={
+              <>
+                <R n="PersonalPrivateInterest" /> with{" "}
+                <Code>
+                  <AccessStruct field="pi_ss">
+                    <RelAccess field="ppi_pi" />
+                  </AccessStruct>{" "}
+                  == <R n="area_any" />
+                </Code>{" "}
+                and{" "}
+                <Code>
+                  <AccessStruct field="pi_ns">
+                    <RelAccess field="ppi_pi" />
+                  </AccessStruct>{" "}
+                  == <ValAccess field="subspace_cap_namespace" />
+                </Code>
+              </>
+            }
+            shortRelToDescription={<R n="PersonalPrivateInterest" />}
+            bitfields={[
+              c64Tag(
+                "delegation_count",
+                8,
+                <>
+                  the number of pairs in{" "}
+                  <ValAccess field="subspace_cap_delegations" />
+                </>,
+              ),
+            ]}
+            contents={[
+              <C64Encoding id="delegation_count" />,
+              <CodeFor enc="encode_namespace_sig">
+                <ValAccess field="subspace_cap_initial_authorisation" />
+              </CodeFor>,
+              <EncConditional
+                condition={
+                  <>
+                    the number of pairs in{" "}
+                    <ValAccess field="subspace_cap_delegations" /> is nonzero
+                  </>
+                }
+              >
+                <CodeFor enc="encode_user_pk" notStandalone>
+                  <ValAccess field="subspace_cap_user" />
+                </CodeFor>
+              </EncConditional>,
+              <EncIterator
+                val={
+                  <>
+                    pair{" "}
+                    <Tuple
+                      fields={[
+                        <DefValue n="enc_sscap_rel_pk" r="pk" />,
+                        <DefValue n="enc_sscap_rel_sig" r="sig" />,
+                      ]}
+                    />
+                  </>
+                }
+                iter={<ValAccess field="subspace_cap_delegations" />}
+                skipLast
+              >
+                <Alj inline>TODO fix styling of nested encoding without bitfields</Alj>
+                <Encoding
+                  idPrefix="enc_sscap_rel_nested"
+                  bitfields={[]}
+                  contents={[
+                    <CodeFor enc="encode_user_pk">
+                      <R n="enc_sscap_rel_pk" />
+                    </CodeFor>,
+                    <CodeFor enc="encode_user_sig">
+                      <R n="enc_sscap_rel_sig" />
+                    </CodeFor>,
+                  ]}
+                />
+              </EncIterator>,
+              <EncConditional
+              condition={
+                <>
+                  the number of pairs in{" "}
+                  <ValAccess field="subspace_cap_delegations" /> is nonzero
+                </>
+              }
+            >
+              <CodeFor enc="encode_user_pk" notStandalone>
+                the final <R n="UserSignature"/> in <ValAccess field="subspace_cap_delegations"/>
+              </CodeFor>
+            </EncConditional>,
+            ]}
+          />
+
+          <Hr />
         </Hsection>
       </PageTemplate>
     </File>

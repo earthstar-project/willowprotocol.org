@@ -5,6 +5,7 @@ import { misc_definitions } from "./pages/misc_definitions.tsx";
 import { specs } from "./pages/specs.tsx";
 import { data_model } from "./pages/specs/data_model.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
+import { private_interest_intersection } from "./pages/specs/private_interest_intersection.tsx";
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
@@ -108,6 +109,7 @@ const exp = (
             {encodings}
             {lcmux}
             {grouping_entries}
+            {private_interest_intersection}
           </Dir>
 
           <Dir name="more">

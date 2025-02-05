@@ -1,7 +1,7 @@
 import * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";
 import { createLogger } from "macromania-logger";
 import { createSubstate, Expression, Expressions } from "macromania";
-import { Code, P, Table, Td, Th, Tr } from "macromania-html";
+import { Code, Li, P, Table, Td, Th, Tr, Ul } from "macromania-html";
 import { Marginale } from "macromania-marginalia";
 import { PreviewScope } from "macromania-previews";
 import {
@@ -9,6 +9,8 @@ import {
   DefFunction,
   DefType,
   DefValue,
+  FreshId,
+  RenderFreshValue,
 } from "macromania-rustic";
 import { Def, R, Rs } from "macromania-defref";
 import { M } from "macromania-katex";
@@ -377,6 +379,7 @@ export function EncodingRelationTemplate(
 export type RelativeRelationProps = {
   // relName: string;
   relToDescription: Expressions;
+  shortRelToDescription?: Expressions;
 };
 
 export function EncodingRelationRelativeTemplate(
@@ -388,6 +391,7 @@ export function EncodingRelationRelativeTemplate(
     contents,
     canonic,
     relToDescription,
+    shortRelToDescription,
   }: EncodingRelationTemplateProps & RelativeRelationProps,
 ): Expression {
   const valName = "val";
@@ -406,7 +410,13 @@ export function EncodingRelationRelativeTemplate(
                 <DefValue n={encvalN(n, valName)} r={valName} /> be any{" "}
                 <exps x={valType} />, and let{" "}
                 <DefValue n={encrelN(n, relName)} r={relName} /> be any{" "}
-                <exps x={relToDescription} />.
+                {shortRelToDescription
+                  ? (
+                    <>
+                      fitting <exps x={shortRelToDescription} />
+                    </>
+                  )
+                  : <exps x={relToDescription} />}.
               </P>
               {preDefs}
               <P>
@@ -428,7 +438,13 @@ export function EncodingRelationRelativeTemplate(
               for any <exps x={valType} />{" "}
               <DefValue n={encvalN(n, valName)} r={valName} /> relative to any
               {" "}
-              <exps x={relToDescription} />{" "}
+              {shortRelToDescription
+                ? (
+                  <>
+                    fitting <exps x={shortRelToDescription} />
+                  </>
+                )
+                : <exps x={relToDescription} />}{" "}
               <DefValue n={encrelN(n, relName)} r={relName} />{" "}
               are the bytestrings that are concatenations of the following form:
             </P>
@@ -629,6 +645,17 @@ export function RelName(): Expression {
 }
 
 /**
+ * Creates a struct field access on the value relative to which one encodes.
+ */
+export function RelAccess({ field }: { field: string }): Expression {
+  return (
+    <AccessStruct field={field}>
+      <RelName />
+    </AccessStruct>
+  );
+}
+
+/**
  * Creates a reference to a bitfield in the current encoding.
  */
 export function Bitfield({ id }: { id: string }): Expression {
@@ -729,24 +756,27 @@ export function C64Encoding({ id }: { id: string }): Expression {
  * An encoding content for encoding some value according to some encoding relation (optionally relative).
  */
 export function CodeFor(
-  { enc, relativeTo, children }: {
+  { enc, notStandalone, relativeTo, children }: {
     enc: string;
+    notStandalone?: boolean;
     relativeTo?: Expressions;
     children: Expressions;
   },
 ): Expression {
   return (
     <>
-      Any {relativeTo ? <R n="rel_code" /> : <R n="code" />} in <R n={enc} />
+      {notStandalone ? "a" : "A"}ny{" "}
+      {relativeTo ? <R n="rel_code" /> : <R n="code" />} in <R n={enc} /> for
       {" "}
-      for <exps x={children} />
+      <exps x={children} />
       {relativeTo
         ? (
           <>
             , relative to <exps x={relativeTo} />
           </>
         )
-        : ""}.
+        : ""}
+      {notStandalone ? "" : "."}
     </>
   );
 }
@@ -815,6 +845,43 @@ export function RawBytes(
     <>
       {lowercase ? "the" : "The"} raw bytes of <exps x={children} />
       {noPeriod ? "" : "."}
+    </>
+  );
+}
+
+/**
+ * Creates an encoding content that is the empty string if some condition does not hold.
+ */
+export function EncConditional(
+  { children, condition }: { condition: Expressions; children: Expressions },
+): Expression {
+  return (
+    <Ul>
+      <Li>
+        If <exps x={condition} />: <exps x={children} />,
+      </Li>
+      <Li>otherwise: the empty string.</Li>
+    </Ul>
+  );
+}
+
+/**
+ * Creates an encoding content that corresponds to a rust `for x in slice { stuff }` loop.
+ */
+export function EncIterator(
+  { children, val, iter, skipLast }: {
+    val: Expressions;
+    iter: Expressions;
+    skipLast?: boolean;
+    children: Expressions;
+  },
+): Expression {
+  return (
+    <>
+      For every <exps x={val}/> of <exps x={iter} />{" "}
+      {skipLast ? <>but the final one</> : ""}, a concatenation of the following
+      form:
+      <exps x={children} />
     </>
   );
 }
