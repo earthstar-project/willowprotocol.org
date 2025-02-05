@@ -42,6 +42,8 @@ Entrypoint for the main stylesheet.
   --color-comment-member: #356a41;
   --color-comment-symbol: #446993;
   --color-comment-fn: #544000;
+  
+  --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
 .orange,

@@ -230,11 +230,11 @@ macromania_rustic
 
 .rustic {
     font-family: var(--font-mono);
-    font-size: 0.85em;
+    font-size: 0.9em;
 }
 
 .pseudocode .rustic {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .rustic.value {
