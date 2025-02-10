@@ -32,6 +32,7 @@ export const private_interest_intersection = (
         <PreviewScope>
           <P>
             <Alj>TODO</Alj>
+            A <R n="PrivateInterest"/> <Def n="pi_include" r="include">includes</Def> an <R n="Area"/> bla.
           </P>
         </PreviewScope>
 

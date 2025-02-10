@@ -406,7 +406,20 @@ export const data_model = (
               <Def n="path_prefix" r="prefix" rs="prefixes" /> of a{" "}
               <R n="Path" /> <DefValue n="prefix_t" r="t" /> if the first{" "}
               <Rs n="Component" /> of <R n="prefix_t" /> are exactly the{" "}
-              <Rs n="Component" /> of <R n="prefix_s" />.
+              <Rs n="Component" /> of{" "}
+              <R n="prefix_s" />. Conversely, we then call <R n="prefix_t" /> an
+              {" "}
+              <Def n="path_extension" r="extension" rs="extensions" /> of{" "}
+              <R n="prefix_s" />. The{" "}
+              <Def n="path_difference" r="difference" rs="differences" />{"  "}
+              from
+              <R n="prefix_s" /> to <R n="prefix_t" /> is the <R n="Path" />
+              {" "}
+              whose concatenation to <R n="prefix_s" /> yields{" "}
+              <R n="prefix_t" />. Any two <Rs n="Path" /> are{" "}
+              <Def n="path_related" r="related" /> is one is a <R n="prefix" />
+              {" "}
+              of the other.
             </P>
           </PreviewScope>
 

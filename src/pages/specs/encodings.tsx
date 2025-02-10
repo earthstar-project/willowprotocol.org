@@ -1,6 +1,8 @@
 import { Curly, NoWrap, Path } from "../../macros.tsx";
 import {
+  bitfieldIff,
   C64Encoding,
+  C64Standalone,
   c64Tag,
   ChooseMaximal,
   CodeFor,
@@ -35,10 +37,18 @@ import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { Dir, File } from "macromania-outfs";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
-import { AccessStruct, DefType, DefValue } from "macromania-rustic";
+import { Pseudocode } from "macromania-pseudocode";
+import {
+  AccessStruct,
+  ChoiceType,
+  DefType,
+  DefValue,
+  StructDef,
+} from "macromania-rustic";
 import { M } from "macromania-katex";
 import { EncIterator } from "../../encoding_macros.tsx";
 import { Tuple } from "macromania-rustic";
+import { DefFunction } from "macromania-rustic";
 
 export const encodings = (
   <Dir name="encodings">
@@ -604,10 +614,32 @@ export const encodings = (
         </Hsection>
 
         <Hsection n="encodings_data_model" title="Data Model Encodings">
-          <P>
-            We now list some useful encodings for the types of the{" "}
-            <R n="data_model">Willow data model</R>.
-          </P>
+          <PreviewScope>
+            <P>
+              We now list some useful encodings for the types of the{" "}
+              <R n="data_model">Willow data model</R>. We assume availability of
+              {" "}
+              <Rs n="encoding_function" /> for various parameters of Willow:
+            </P>
+
+            <Ul>
+              <Li>
+                an <R n="encoding_function" />{" "}
+                <DefFunction n="encode_namespace_id" /> for{" "}
+                <R n="NamespaceId" />,
+              </Li>
+              <Li>
+                an <R n="encoding_function" />{" "}
+                <DefFunction n="encode_subspace_id" /> for{" "}
+                <R n="SubspaceId" />, and
+              </Li>
+              <Li>
+                an <R n="encoding_function" />{" "}
+                <DefFunction n="encode_payload_digest" /> for{" "}
+                <R n="PayloadDigestd" />.
+              </Li>
+            </Ul>
+          </PreviewScope>
 
           <Hsection n="enc_path" title="Path Encoding" shortTitle="path">
             <EncodingRelationTemplate
@@ -814,15 +846,38 @@ export const encodings = (
               contents={[
                 <C64Encoding id="prefix_count" />,
                 <CodeFor enc="EncodePath">
-                  the path obtained from <ValName /> by removing the first{" "}
-                  <R n="EncodePathRelativePath_prefix_count" />{" "}
-                  <Rs n="Component" />
+                  the <R n="path_difference" /> from <RelName /> to <ValName />
                 </CodeFor>,
               ]}
               canonic={{
                 n: "path_rel_path",
                 how: [
                   <ChooseMaximal n="EncodePathRelativePath_prefix_count" />,
+                  <MinTags />,
+                  <CanonicSubencodings />,
+                ],
+              }}
+            />
+
+            <Hr />
+
+            <EncodingRelationRelativeTemplate
+              n="EncodePathExtendsPath"
+              valType={<R n="Path" />}
+              relToDescription={
+                <>
+                  <R n="Path" /> which is a <R n="path_prefix" /> of <ValName />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <CodeFor enc="EncodePath">
+                  the <R n="path_difference" /> from <RelName /> to <ValName />
+                </CodeFor>,
+              ]}
+              canonic={{
+                n: "path_extends_path",
+                how: [
                   <MinTags />,
                   <CanonicSubencodings />,
                 ],
@@ -835,6 +890,7 @@ export const encodings = (
           <P>
             Encodings for <R n="meadowcap" /> and{" "}
             <Rs n="McSubspaceCapability" />.<Alj>fix Meadowcap link color</Alj>
+            <Alj>TODO add hsections to make for a useful TOC</Alj>
           </P>
 
           <P>
@@ -913,7 +969,9 @@ export const encodings = (
                 iter={<ValAccess field="subspace_cap_delegations" />}
                 skipLast
               >
-                <Alj inline>TODO fix styling of nested encoding without bitfields</Alj>
+                <Alj inline>
+                  TODO fix styling of nested encoding without bitfields
+                </Alj>
                 <Encoding
                   idPrefix="enc_sscap_rel_nested"
                   bitfields={[]}
@@ -928,21 +986,567 @@ export const encodings = (
                 />
               </EncIterator>,
               <EncConditional
-              condition={
-                <>
-                  the number of pairs in{" "}
-                  <ValAccess field="subspace_cap_delegations" /> is nonzero
-                </>
-              }
-            >
-              <CodeFor enc="encode_user_pk" notStandalone>
-                the final <R n="UserSignature"/> in <ValAccess field="subspace_cap_delegations"/>
-              </CodeFor>
-            </EncConditional>,
+                condition={
+                  <>
+                    the number of pairs in{" "}
+                    <ValAccess field="subspace_cap_delegations" /> is nonzero
+                  </>
+                }
+              >
+                <CodeFor enc="encode_user_pk" notStandalone>
+                  the final <R n="UserSignature" /> in{" "}
+                  <ValAccess field="subspace_cap_delegations" />
+                </CodeFor>
+              </EncConditional>,
             ]}
           />
+        </Hsection>
 
-          <Hr />
+        <Hsection n="enc_private" title="Private Encodings">
+          <P>
+            We now define some relative encodings which take care to not reveal
+            certain parts of the values being encoded. We use these in the{" "}
+            <R n="private_interest_intersection" /> parts of the{" "}
+            <R n="sync">WGPS</R>.
+          </P>
+
+          <Hsection
+            n="enc_private_paths"
+            title="Private Path Encoding"
+            shortTitle="Path Extends Path"
+          >
+            <P>
+              We start with a building block for more complex private encodings:
+              the ability to encode a <R n="Path" /> relative to one of its{" "}
+              <Rs n="path_prefix" />, while keeping secret all{" "}
+              <Rs n="Component" /> that coincide with a third <R n="Path" />.
+            </P>
+
+            <Pseudocode n="private_path_def">
+              <StructDef
+                comment={
+                  <>
+                    The context necessary to <R n="enc_private">privately</R>
+                    {" "}
+                    encode <Rs n="Path" />.
+                  </>
+                }
+                id={[
+                  "PrivatePathContext",
+                  "PrivatePathContext",
+                  "PrivatePathContexts",
+                ]}
+                fields={[
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="Path" /> whose <Rs n="Component" />{" "}
+                          are to be kept private.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["private", "PrivatePathContextPrivate"],
+                        <R n="Path" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="path_prefix" /> relative to which we encode.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["rel", "PrivatePathContextRel"],
+                        <R n="Path" />,
+                      ],
+                    },
+                  },
+                ]}
+              />
+            </Pseudocode>
+
+            <EncodingRelationRelativeTemplate
+              n="EncodePrivatePathExtendsPath"
+              valType={<R n="Path" />}
+              relToDescription={
+                <>
+                  <R n="PrivatePathContext" /> such that{" "}
+                  <RelAccess field="PrivatePathContextRel" /> is a{" "}
+                  <R n="path_prefix" /> of <ValName /> and{" "}
+                  <RelAccess field="PrivatePathContextPrivate" /> is{" "}
+                  <R n="path_related" /> to <ValName />
+                </>
+              }
+              preDefs={
+                <P>
+                  Let <DefValue n="eppep_val_count" r="val_count" />{" "}
+                  be the number of components in <ValName />. Let{" "}
+                  <DefValue n="eppep_rel_count" r="rel_count" />{" "}
+                  be the number of components in{" "}
+                  <RelAccess field="PrivatePathContextRel" />. Let{" "}
+                  <DefValue n="eppep_private_count" r="private_count" />{" "}
+                  be the number of components in{" "}
+                  <RelAccess field="PrivatePathContextPrivate" />.
+                </P>
+              }
+              shortRelToDescription={<R n="PrivatePathContext" />}
+              bitfields={[]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <R n="eppep_rel_count" />
+                        {" < "}
+                        <R n="eppep_private_count" />
+                      </Code>
+                    </>
+                  }
+                >
+                  <C64Standalone notStandalone>
+                    <Code>
+                      min(<R n="eppep_val_count" />,{" "}
+                      <R n="eppep_private_count" />) - <R n="eppep_rel_count" />
+                    </Code>
+                  </C64Standalone>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <R n="eppep_val_count" />
+                        {" >= "}
+                        <R n="eppep_private_count" />
+                      </Code>
+                    </>
+                  }
+                >
+                  <CodeFor enc="EncodePathExtendsPath" notStandalone>
+                    the <R n="path_difference" /> from{" "}
+                    <RelAccess field="PrivatePathContextPrivate" /> to{" "}
+                    <ValName />, or the <R n="path_difference" /> from{" "}
+                    <RelAccess field="PrivatePathContextRel" /> to{" "}
+                    <ValName />, whichever is shorter
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="enc_private_areas"
+            title="Private Area Encoding"
+            shortTitle="Area in Area"
+          >
+            <P>
+              Next, we build up to private <R n="Area" /> encoding: we encode an
+              {" "}
+              <R n="Area" /> that is <R n="area_include">included</R> in another
+              {" "}
+              <R n="Area" />, while keeping secret a <R n="PrivateInterest" />
+              {" "}
+              which <R n="pi_include">includes</R> both.
+            </P>
+
+            <Pseudocode n="private_are_def">
+              <StructDef
+                comment={
+                  <>
+                    The context necessary to <R n="enc_private">privately</R>
+                    {" "}
+                    encode <Rs n="Area" />.
+                  </>
+                }
+                id={[
+                  "PrivateAreaContext",
+                  "PrivateAreaContext",
+                  "PrivateAreaContexts",
+                ]}
+                fields={[
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="PrivateInterest" /> to be kept private.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["private", "PrivateAreaContextPrivate"],
+                        <R n="PrivateInterest" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="area_include">containing</R> <R n="Area" />
+                          {" "}
+                          relative to which we encode.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["rel", "PrivateAreaContextRel"],
+                        <R n="Area" />,
+                      ],
+                    },
+                  },
+                ]}
+              />
+            </Pseudocode>
+
+            <EncodingRelationRelativeTemplate
+              n="EncodePrivateAreaInArea"
+              valType={<R n="Area" />}
+              relToDescription={
+                <>
+                  <R n="PrivateAreaContext" /> such that{" "}
+                  <RelAccess field="PrivateAreaContextRel" />{" "}
+                  <R n="area_include">includes</R> <ValName /> and{" "}
+                  <RelAccess field="PrivateAreaContextPrivate" />{" "}
+                  <R n="pi_include">includes</R> to <RelName />
+                </>
+              }
+              preDefs={
+                <P>
+                  Let{" "}
+                  <DefValue n="epaia_start_from_start" r="start_from_start" />
+                  {" "}
+                  and <DefValue n="epaia_end_from_start" r="end_from_start" />
+                  {" "}
+                  be arbitrary <Rs n="Bool" />. If{" "}
+                  <AccessStruct field="TimeRangeEnd">
+                    <AccessStruct field="AreaTime">
+                      <RelAccess field="PrivateAreaContextRel" />
+                    </AccessStruct>
+                  </AccessStruct>{" "}
+                  is <R n="range_open" />, they must both be <Code>true</Code>.
+                </P>
+              }
+              shortRelToDescription={<R n="PrivateAreaContext" />}
+              bitfields={[
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="AreaSubspace" /> !={" "}
+                    <AccessStruct field="AreaSubspace">
+                      <RelAccess field="PrivateAreaContextRel" />
+                    </AccessStruct>
+                  </Code>,
+                ),
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="AreaSubspace" /> == <R n="range_open" />
+                  </Code>,
+                ),
+                bitfieldIff(<R n="epaia_start_from_start" />),
+                bitfieldIff(<R n="epaia_end_from_start" />),
+                c64Tag(
+                  "start_diff",
+                  2,
+                  <>
+                    either{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeStart">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <AccessStruct field="AreaTime">
+                          <RelAccess field="PrivateAreaContextRel" />
+                        </AccessStruct>
+                      </AccessStruct>
+                    </Code>{" "}
+                    (if <R n="epaia_start_from_start" />), or{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <AccessStruct field="AreaTime">
+                          <RelAccess field="PrivateAreaContextRel" />
+                        </AccessStruct>
+                      </AccessStruct>{" "}
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (otherwise)
+                  </>,
+                ),
+                c64Tag(
+                  "end_diff",
+                  2,
+                  <>
+                    either{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <AccessStruct field="AreaTime">
+                          <RelAccess field="PrivateAreaContextRel" />
+                        </AccessStruct>
+                      </AccessStruct>
+                    </Code>{" "}
+                    (if <R n="epaia_end_from_start" />), or{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <AccessStruct field="AreaTime">
+                          <RelAccess field="PrivateAreaContextRel" />
+                        </AccessStruct>
+                      </AccessStruct>{" "}
+                      -{" "}
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (otherwise). If{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>, these two bits can be set arbitrarily instead
+                  </>,
+                ),
+              ]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="AreaSubspace" /> !={" "}
+                      <AccessStruct field="AreaSubspace">
+                        <RelAccess field="PrivateAreaContextRel" />
+                      </AccessStruct>
+                    </Code>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    <ValAccess field="AreaSubspace" />
+                  </CodeFor>
+                </EncConditional>,
+                <C64Encoding id="start_diff" />,
+                <>
+                  <C64Encoding id="end_diff" noDot />, or the empty string if
+                  {" "}
+                  <Code>
+                    <AccessStruct field="TimeRangeEnd">
+                      <ValAccess field="AreaTime" />
+                    </AccessStruct>{" "}
+                    == <R n="range_open" />
+                  </Code>.
+                </>,
+                <CodeFor
+                  enc="EncodePrivatePathExtendsPath"
+                  relativeTo={
+                    <>
+                      the <R n="PrivatePathContext" /> with{" "}
+                      <NoWrap>
+                        <Code>
+                          <R n="PrivatePathContextPrivate" /> :={" "}
+                          <AccessStruct field="AreaPath">
+                            <RelAccess field="PrivateAreaContextPrivate" />
+                          </AccessStruct>
+                        </Code>
+                      </NoWrap>{" "}
+                      and{" "}
+                      <NoWrap>
+                        <Code>
+                          <R n="PrivatePathContextRel" /> :={" "}
+                          <AccessStruct field="AreaPath">
+                            <RelAccess field="PrivateAreaContextRel" />
+                          </AccessStruct>
+                        </Code>
+                      </NoWrap>
+                    </>
+                  }
+                >
+                  <ValAccess field="AreaPath" />
+                </CodeFor>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="enc_private_communal_capabilities"
+            title="Communal Capability Encoding"
+            shortTitle="Communal Capability"
+          >
+            <EncodingRelationRelativeTemplate
+              n="EncodeCommunalCapabilityRelativePrivateInterest"
+              valType={<R n="CommunalCapability" />}
+              valRestriction={
+                <>
+                  with{" "}
+                  <Code>
+                    <ValAccess field="communal_cap_access_mode" /> =={" "}
+                    <R n="access_read" />
+                  </Code>
+                </>
+              }
+              relToDescription={
+                <>
+                  <Marginale>
+                    Note that <Rs n="CommunalCapability" />{" "}
+                    are always restricted to a single <R n="SubspaceId" />, so
+                    {" "}
+                    <Rs n="PersonalPrivateInterest" /> with{" "}
+                    <Code>
+                      <R n="pi_ss" /> == <R n="area_any" />
+                    </Code>{" "}
+                    are never needed.
+                  </Marginale>
+                  <R n="PersonalPrivateInterest" /> with{" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <RelAccess field="ppi_pi" />
+                    </AccessStruct>{" "}
+                    == <ValAccess field="communal_cap_user" />
+                  </Code>{" "}
+                  ,
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <RelAccess field="ppi_pi" />
+                    </AccessStruct>{" "}
+                    == <ValAccess field="subspace_cap_namespace" />
+                  </Code>, and such that the <R n="AreaPath" /> of the{" "}
+                  <R n="communal_cap_granted_area" /> of <ValName /> is a{" "}
+                  <R n="path_prefix" /> of{" "}
+                  <AccessStruct field="pi_path">
+                    <RelAccess field="ppi_pi" />
+                  </AccessStruct>, and such that <RelAccess field="ppi_user" />
+                  {" "}
+                  is equal to the final <R n="UserPublicKey" /> in{" "}
+                  <ValAccess field="communal_cap_delegations" />{" "}
+                  (if there is at least one delegation), or equal to{" "}
+                  <ValAccess field="communal_cap_user" /> otherwise
+                </>
+              }
+              shortRelToDescription={<R n="PersonalPrivateInterest" />}
+              preDefs={
+                <P>
+                  To efficiently and privately encode the <Rs n="Area" /> in the
+                  {" "}
+                  <R n="communal_cap_delegations" /> of{" "}
+                  <ValName />, we define a sequence of{" "}
+                  <Rs n="PrivateAreaContext" />.{" "}
+                  <M>
+                    <DefValue n="ccrpi_ctx_i" r="ctx_i" />
+                  </M>{" "}
+                  is the <R n="PrivateAreaContext" /> whose{" "}
+                  <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
+                  {" "}
+                  <R n="PrivateAreaContextRel" /> is the <M>i</M>-th{" "}
+                  <R n="Area" /> in{" "}
+                  <ValAccess field="communal_cap_delegations" />. Further, we
+                  define{" "}
+                  <M>
+                    <Def n="ccrpi_ctx_base" r="ctx_{-1}" />
+                  </M>{" "}
+                  as the <R n="PrivateAreaContext" /> whose{" "}
+                  <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
+                  {" "}
+                  <R n="PrivateAreaContextRel" /> is the <R n="subspace_area" />
+                  {" "}
+                  of <R n="SubspaceId" />{" "}
+                  <AccessStruct field="pi_ss">
+                    <AccessStruct field="ppi_pi">
+                      <RelAccess field="PrivateAreaContextPrivate" />
+                    </AccessStruct>
+                  </AccessStruct>.
+                </P>
+              }
+              bitfields={[]}
+              contents={[
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_ccap_rel_area" r="area" />,
+                          <DefValue n="enc_ccap_rel_pk" r="pk" />,
+                          <DefValue n="enc_ccap_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="communal_cap_delegations" />}
+                  skipLast
+                >
+                  <Encoding
+                    idPrefix="enc_ccap_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="EncodePrivateAreaInArea"
+                        relativeTo={
+                          <M>
+                            <R n="ccrpi_ctx_i">
+                              ctx_<Curly>i - 1</Curly>
+                            </R>
+                          </M>
+                        }
+                      >
+                        <R n="enc_ccap_rel_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk">
+                        <R n="enc_ccap_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig">
+                        <R n="enc_ccap_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of pairs in{" "}
+                      <ValAccess field="communal_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor
+                    enc="EncodePrivateAreaInArea"
+                    relativeTo={
+                      <>
+                        <M>
+                          <R n="ccrpi_ctx_i">
+                            ctx_<Curly>i - 1</Curly>
+                          </R>
+                        </M>{" "}
+                        (where <M>i</M> is the length of{" "}
+                        <ValAccess field="communal_cap_delegations" />{" "}
+                        minus one)
+                      </>
+                    }
+                  >
+                    <R n="enc_ccap_rel_area" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of pairs in{" "}
+                      <ValAccess field="communal_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_sig">
+                    the final <R n="UserSignature" /> in{" "}
+                    <ValAccess field="communal_cap_delegations" />
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
         </Hsection>
       </PageTemplate>
     </File>

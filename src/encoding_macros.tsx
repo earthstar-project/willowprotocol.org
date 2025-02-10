@@ -289,6 +289,10 @@ export type EncodingRelationTemplateProps = {
   //  */
   // valName: string;
   /**
+   * A restriction on the values of the `valType` that can be encoded. Used as in "For any <Type> `val` <valRestriction> do stuff."
+   */
+  valRestriction?: Expressions;
+  /**
    * A passage to be inserted after the `valName` has been bound but before the encoding is defined.
    */
   preDefs?: Expressions;
@@ -318,7 +322,7 @@ export type CanonicSubsetProps = {
 };
 
 export function EncodingRelationTemplate(
-  { n, valType, preDefs, bitfields, contents, canonic }:
+  { n, valType, preDefs, bitfields, contents, canonic, valRestriction }:
     EncodingRelationTemplateProps,
 ): Expression {
   const valName = "val";
@@ -331,8 +335,8 @@ export function EncodingRelationTemplate(
               <P>
                 We define an <R n="encoding_relation" /> <DefType n={n} /> for
                 {" "}
-                <exps x={valType} />. Let{" "}
-                <DefValue n={encvalN(n, valName)} r={valName} /> be any{" "}
+                <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""}. Let{" "}
+                <DefValue n={encvalN(n, valName)} r={valName} /> be any{valRestriction ? " such " : " "}
                 <exps x={valType} />.
               </P>
               {preDefs}
@@ -348,8 +352,8 @@ export function EncodingRelationTemplate(
             <P>
               We define an <R n="encoding_relation" /> <DefType n={n} /> for
               {" "}
-              <exps x={valType} />. The <Rs n="code" /> in <R n={n} /> for any
-              {" "}
+              <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""}. The <Rs n="code" /> in <R n={n} /> for any
+              {valRestriction ? " such " : " "}
               <exps x={valType} />{" "}
               <DefValue n={encvalN(n, valName)} r={valName} />{" "}
               are the bytestrings that are concatenations of the following form:
@@ -392,6 +396,7 @@ export function EncodingRelationRelativeTemplate(
     canonic,
     relToDescription,
     shortRelToDescription,
+    valRestriction,
   }: EncodingRelationTemplateProps & RelativeRelationProps,
 ): Expression {
   const valName = "val";
@@ -404,10 +409,10 @@ export function EncodingRelationRelativeTemplate(
             <>
               <P>
                 We define a <R n="relative_encoding_relation" />{" "}
-                <DefType n={n} /> for any <exps x={valType} /> relative to any
+                <DefType n={n} /> for any <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any
                 {" "}
                 <exps x={relToDescription} />. Let{" "}
-                <DefValue n={encvalN(n, valName)} r={valName} /> be any{" "}
+                <DefValue n={encvalN(n, valName)} r={valName} /> be any{valRestriction ? " such " : " "}
                 <exps x={valType} />, and let{" "}
                 <DefValue n={encrelN(n, relName)} r={relName} /> be any{" "}
                 {shortRelToDescription
@@ -432,11 +437,11 @@ export function EncodingRelationRelativeTemplate(
             <P>
               We define a <R n="relative_encoding_relation" /> <DefType n={n} />
               {" "}
-              for any <exps x={valType} /> relative to any{" "}
+              for any <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any{" "}
               <exps x={relToDescription} />. The <Rs n="code" /> in <R n={n} />
               {" "}
-              for any <exps x={valType} />{" "}
-              <DefValue n={encvalN(n, valName)} r={valName} /> relative to any
+              for any{valRestriction ? " such " : " "}<exps x={valType} />{" "}
+              <DefValue n={encvalN(n, valName)} r={valName} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any
               {" "}
               {shortRelToDescription
                 ? (
@@ -744,10 +749,10 @@ export function ChooseMinimal({ n }: { n: string }): Expression {
 /**
  * Creates an encoding content that is a corresponding c64 encoding for a c64 tag at a given bitfield id.
  */
-export function C64Encoding({ id }: { id: string }): Expression {
+export function C64Encoding({ id, noDot }: { id: string, noDot?: boolean }): Expression {
   return (
     <>
-      The <R n="c64_corresponding" /> for bits <Bitfield id={id} />.
+      The <R n="c64_corresponding" /> for bits <Bitfield id={id} />{noDot ? "" : "."}
     </>
   );
 }
@@ -818,15 +823,31 @@ export function bitfieldConstant(
 }
 
 /**
+ * Returns a `BitfieldDef` for a `1` bit if and only if some condition holds.
+ */
+export function bitfieldIff(
+  condition: Expressions,
+): BitfieldDef {
+  return {
+    count: 1,
+    content: (
+      <>
+        <Code>1</Code> iff <exps x={condition}/>
+      </>
+    ),
+  };
+}
+
+/**
  * Creates an encoding content that is an 8-bit c64 tag for some value (the children), followed by the corresponding c64 encoding.
  */
 export function C64Standalone(
-  { children }: { children: Expressions },
+  { children, notStandalone }: { children: Expressions, notStandalone?: boolean },
 ): Expression {
   return (
     <>
-      A <R n="c64_tag" /> of <R n="c64_width" /> <M>8</M> for{" "}
-      <exps x={children} />, followed by the <R n="c64_corresponding" />.
+      {notStandalone ? "a" : "A"} <R n="c64_tag" /> of <R n="c64_width" /> <M>8</M> for{" "}
+      <exps x={children} />, followed by the <R n="c64_corresponding" />{notStandalone ? "" : "."}
     </>
   );
 }
