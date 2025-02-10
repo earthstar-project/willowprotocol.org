@@ -1,10 +1,19 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import {
+  AE,
+  Alj,
+  AsideBlock,
+  Curly,
+  Gwil,
+  NoWrap,
+  Path,
+  Quotes,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
-import { Def, R, Rb, Rs } from "macromania-defref";
+import { Def, R, Rb, Rs, Rsb } from "macromania-defref";
 import {
   AccessStruct,
   ChoiceType,
@@ -18,6 +27,10 @@ import {
 import { Marginale } from "macromania-marginalia";
 import { Pseudocode } from "macromania-pseudocode";
 import { ResolveAsset } from "macromania-assets";
+import { Tuple } from "macromania-rustic";
+import { CodeFor, Encoding, LiteralByte } from "../../encoding_macros.tsx";
+import { EncConditional } from "../../encoding_macros.tsx";
+import { RawBytes } from "../../encoding_macros.tsx";
 
 export const meadowcap = (
   <Dir name="meadowcap">
@@ -38,23 +51,227 @@ export const meadowcap = (
 
         <Hsection n="meadowcap_overview" title="Overview">
           <P>
-            <Alj inline>TODO</Alj>
+            When interacting with a peer in Willow, there are two fundamental
+            operations: <Em>writing</Em> data — asking your peer to add{" "}
+            <Rs n="Entry" /> to their <Rs n="store" /> — and <Em>reading</Em>
+            {" "}
+            data — asking your peer to send <Rs n="Entry" />{" "}
+            to you. Both operations should be restricted; Willow would be close
+            to useless if everyone in the world could (over-)write data
+            everywhere, and it would be rather scary if everyone could request
+            to read any piece of data.
+          </P>
+
+          <P>
+            A capability system helps enforce boundaries on who gets to read and
+            write which data. A <Em>capability</Em>{" "}
+            is an unforgeable token that bestows read or write access for some
+            data to a particular person, issued by the owner of that data. When
+            Alfie asks Betty for some entries owned by Gemma, then Betty will
+            only answer when presented with a valid capability proving that
+            Gemma gave read access to Alfie. Similarly, Betty will not integrate
+            data created by Alfie in a <R n="subspace" />{" "}
+            owned by Gemma, unless the data is accompanied by a capability
+            proving that Gemma gave write access to Alfie.
+          </P>^
+
+          <Img
+            src={
+              <ResolveAsset asset={["meadowcap", "capability_attempts.png"]} />
+            }
+            alt={`A two-column comic. The left column first shows Alfie handing a neat slip of paper to Betty. The second panel shows Betty inspecting the paper with a magnifying glass. The magnified text clearly reads "signed: Gemma". In the final panel, a happy Betty hands a box over to a happy Alfie. The right column depicts a less fruitful interaction. A cartoonish troll approaches Betty with a crumpled paper sheet. When Betty inspects it in the second panel, it reads "i AM StiNKY GEMA", clearly not Gemma’s real signature. In the final panel, Betty tells the troll off, not handing over anything.`}
+          />
+
+          <P>
+            What makes somebody <Quotes>the owner</Quotes> of{" "}
+            <Quotes>some data</Quotes>? Meadowcap offers two different models,
+            which we call <Rs n="owned_namespace" /> and{" "}
+            <Rs n="communal_namespace" />.
           </P>
 
           <PreviewScope>
             <P>
+              <Marginale>
+                <Img
+                  src={
+                    <ResolveAsset
+                      asset={["meadowcap", "communal_namespace.png"]}
+                    />
+                  }
+                  alt={`A front view of a stylised house. The house has three separate entries, each with a differently-coloured keyhole. Above each entry is a window in a matching color, each with some happy denizens sticking their heads out. The outer windows contain a single person each, the middle window is shared by two people.`}
+                />
+                A{" "}
+                <R n="communal_namespace" />. Metaphorically, everyone has their
+                own private space in the same building.
+              </Marginale>
+
+              In a{" "}
               <Def
                 n="communal_namespace"
                 r="communal namespace"
                 rs="communal namespaces"
-              />{" "}
+              />, each <R n="subspace" />{" "}
+              is owned by a particular author. This is implemented by using
+              public keys of a{" "}
+              <AE href="https://en.wikipedia.org/wiki/Digital_signature_scheme">
+                digital signature scheme
+              </AE>{" "}
+              as{" "}
+              <Rs n="SubspaceId" />, you then prove ownership by providing valid
+              signatures (which requires the corresponding secret key).
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              <Marginale>
+                <Img
+                  src={
+                    <ResolveAsset
+                      asset={["meadowcap", "owned_namespace.png"]}
+                    />
+                  }
+                  alt={`A similar front view of a house, with windows showing the inhabitants. Unlike the preceding drawing, this house only a single door, with an orange keyhole. The three windows each show a combination of orange and an individual color per window. In front of the window stands the owner, dutifully (and cheerfully) maintaining the lawn with a broom.`}
+                />
+                An{" "}
+                <R n="owned_namespace" />. Metaphorically, a single owner
+                manages others’ access to their building.
+              </Marginale>
+              In an{" "}
               <Def
                 n="owned_namespace"
                 r="owned namespace"
                 rs="owned namespaces"
-              />
+              />, the person who created the <R n="namespace" />{" "}
+              is the owner of all its data. To implement this,{" "}
+              <Rs n="NamespaceId" /> are public keys. In an{" "}
+              <R n="owned_namespace" />, peers reject all requests unless they
+              involve a signature from the <R n="namespace" /> keypair; in a
+              {" "}
+              <R n="communal_namespace" />, peers reject all requests unless
+              they involve a signature from the <R n="subspace" /> keypair.
             </P>
           </PreviewScope>
+
+          <P>
+            <Rsb n="owned_namespace">Owned namespaces</Rsb>{" "}
+            would be quite pointless were it not for the next feature:{" "}
+            <Em>capability delegation</Em>. A capability bestows not only access
+            rights but also the ability to mint new capabilities for the same
+            resources but to another peer. When you create an owned namespace,
+            you can invite others to join the fun by delegating read and/or
+            write access to them.
+          </P>
+
+          <P>
+            The implementation relies on signature schemes again. Consider Alfie
+            and Betty, each holding a key pair. Alfie can mint a new capability
+            for Betty by signing his own capability together with her public
+            key.
+          </P>
+
+          <P>
+            Once Alfie has minted a capability for Betty, Betty can mint one (or
+            several) for Gemma, and so on.
+          </P>
+
+          <P>
+            Verifying whether a delegated capability bestows access rights is
+            done recursively: check that the last delegation step is accompanied
+            by a valid signature, then verify the capability that was being
+            delegated.
+          </P>
+
+          <P>
+            The next important feature of Meadowcap is that of{" "}
+            <Em>restricting</Em>{" "}
+            capabilities. Suppose I maintain several code repositories inside my
+            personal <R n="subspace" />. I use different <Rs n="Path" />{" "}
+            to organise the data pertaining to different repositories, say{" "}
+            <Path components={["code", "seasonal-clock"]} /> and{" "}
+            <Path components={["code", "earthstar"]} />. If I wanted to give
+            somebody write-access to the{" "}
+            <Path components={["code", "seasonal-clock"]} />{" "}
+            repository, I should <Em>not</Em>{" "}
+            simply grant them write access to my complete <R n="subspace" />
+            {" "}
+            — if I did, they could also write to{" "}
+            <Path components={["code", "earthstar"]} />. Or to{" "}
+            <Path components={["blog", "embarrassing-facts"]} />{" "}
+            for that matter.
+          </P>
+
+          <P>
+            Hence, Meadowcap allows to <Em>restrict</Em>{" "}
+            capabilities, turning them into less powerful ones. Restrictions can
+            limit access by{" "}
+            <R n="entry_subspace_id" />, by ", r("entry_path"), ", and/or by
+            {" "}
+            <R n="entry_timestamp" />.
+          </P>
+
+          <AsideBlock>
+            <P>
+              Another typical example of using restrictions is an{" "}
+              <R n="owned_namespace" />, whose owner — Owen — gives write
+              capabilities for distinct <Rs n="subspace" />{" "}
+              to distinct people. Alfie might get the <R n="subspace" /> of{" "}
+              <R n="SubspaceId" /> <Code>alfies-things</Code>, Betty would get
+              {" "}
+              <Code>bettys-things</Code>, and so on. This results in a system
+              similar to a{" "}
+              <R n="communal_namespace" />, except that Owen has control over
+              who gets to participate, and can also remove or change anything
+              written by Alfie or Betty. It is however still clear which{" "}
+              <Rs n="Entry" />{" "}
+              were created by Owen and which were not — Owen cannot impersonate
+              anyone.
+            </P>
+
+            <P>
+              Going even further, Owen might only give out capabilities that are
+              valid for one week at a time. If Alfie starts posting abusive
+              comments, Owen can delete some or all of Alfie's <Rs n="Entry" />
+              {" "}
+              by writing <Rs n="Entry" /> to <Code>alfies-things</Code> whose
+              {" "}
+              <R n="entry_timestamp" /> lies{" "}
+              <Em>two weeks in the future</Em>. Any <Rs n="Entry" />{" "}
+              Alfie can create are immediately overwritten by Owen's{" "}
+              <Rs n="Entry" />{" "}
+              from the future. Owen probably will not give Alfie a new
+              capability at the end of the week either, effectively removing
+              Alfie from the space.
+            </P>
+
+            <P>
+              Using these techniques, Willow can support moderated spaces
+              similar to, for example, the fediverse. And Owen can create
+              powerful capabilities that allow other, trusted people to help
+              moderating the space. If the idea of a privileged group of users
+              who can actively shape what happens in a <R n="namespace" />{" "}
+              makes you feel safe and unburdened, <Rs n="owned_namespace" />
+              {" "}
+              might be for you. If it sounds like an uncomfortable level of
+              control and power, you might prefer{" "}
+              <Rs n="communal_namespace" />. Meadowcap supports both, because we
+              believe that both kinds of spaces fulfil important roles.
+            </P>
+          </AsideBlock>
+
+          <P>
+            <Marginale>
+              If it helps to have some code to look at, there's also a{" "}
+              <AE href="https://github.com/earthstar-project/meadowcap-js">
+                reference implementation
+              </AE>{" "}
+              of Meadowcap.<Alj inline>link to the rust code instead?</Alj>
+            </Marginale>
+
+            This concludes the intuitive overview of Meadowcap. The remainder of
+            this document is rather formal: capabilities are a security feature,
+            so we have to be fully precise when defining them.
+          </P>
         </Hsection>
 
         <Hsection n="meadowcap_parameters" title="Parameters">
@@ -651,123 +868,776 @@ export const meadowcap = (
               <P>
                 For a <R n="CommunalCapability" />{" "}
                 <DefValue n="communal_cap_defvalid" r="cap" />{" "}
-                with more than zero <R n="communal_cap_delegations" />, let TODO
+                with more than zero <R n="communal_cap_delegations" />, let{" "}
+                <Code>
+                  <Tuple
+                    fields={[
+                      <DefValue n="communal_new_area" r="new_area" />,
+                      <DefValue n="communal_new_user" r="new_user" />,
+                      <DefValue n="communal_new_signature" r="new_signature" />,
+                    ]}
+                  />
+                </Code>{" "}
+                be the final triplet of{" "}
+                <AccessStruct field="communal_cap_delegations">
+                  <R n="communal_cap_defvalid" />
+                </AccessStruct>, and let{" "}
+                <DefValue n="communal_prev_cap" r="prev_cap" /> be the{" "}
+                <R n="CommunalCapability" />{" "}
+                obtained by removing the last triplet from{" "}
+                <AccessStruct field="communal_cap_delegations">
+                  <R n="communal_cap_defvalid" />
+                </AccessStruct>. Denote the <R n="communal_cap_receiver" /> of
+                {" "}
+                <R n="communal_prev_cap" /> as{" "}
+                <DefValue n="communal_prev_receiver" r="prev_receiver" />, and
+                the <R n="communal_cap_granted_area" /> of{" "}
+                <R n="communal_prev_cap" /> as{" "}
+                <DefValue n="communal_prev_area" r="prev_area" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                Then <R n="communal_cap_defvalid" /> is{" "}
+                <R n="communal_cap_valid" /> if <R n="communal_prev_cap" /> is
+                {" "}
+                <R n="communal_cap_valid" />, the{" "}
+                <R n="communal_cap_granted_area" /> of{" "}
+                <R n="communal_prev_cap" />{" "}
+                <R n="area_include_area">includes</R>{" "}
+                <R n="communal_new_area" />, and{" "}
+                <R n="communal_new_signature" /> is a <R n="UserSignature" />
+                {" "}
+                issued by the <R n="communal_prev_receiver" />{" "}
+                over the bytestring{" "}
+                <DefValue n="communal_handover" r="handover" />, which is
+                defined as follows:
+              </P>
+
+              <Ul>
+                <Li>
+                  If{" "}
+                  <AccessStruct field="communal_cap_delegations">
+                    <R n="communal_prev_cap" />
+                  </AccessStruct>{" "}
+                  is empty, then <R n="communal_handover" />{" "}
+                  is the concatenation of the following bytestrings:<Gwil>
+                    make styling adjustments
+                  </Gwil>
+
+                  <Encoding
+                    standalone
+                    idPrefix="communal_handover1"
+                    bitfields={[]}
+                    contents={[
+                      <EncConditional
+                        condition={
+                          <>
+                            <AccessStruct field="communal_cap_access_mode">
+                              <R n="communal_prev_cap" />
+                            </AccessStruct>{" "}
+                            is <R n="access_read" />
+                          </>
+                        }
+                        otherwise={
+                          <LiteralByte lowercase noPeriod>0x01</LiteralByte>
+                        }
+                      >
+                        <LiteralByte lowercase noPeriod>0x00</LiteralByte>
+                      </EncConditional>,
+                      <CodeFor enc="encode_namespace_pk" isFunction>
+                        <AccessStruct field="communal_cap_namespace">
+                          <R n="communal_prev_cap" />
+                        </AccessStruct>
+                      </CodeFor>,
+                      <CodeFor enc="encode_area_in_area" isFunction>
+                        <AccessStruct field="communal_new_area">
+                          <R n="communal_prev_area" />
+                        </AccessStruct>
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="communal_new_user" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </Li>
+                <Li>
+                  Otherwise, let{" "}
+                  <DefValue n="communal_prev_signature" r="prev_signature" />
+                  {" "}
+                  be the <R n="UserSignature" /> in the last triplet of{" "}
+                  <AccessStruct field="communal_cap_delegations">
+                    <R n="communal_prev_cap" />
+                  </AccessStruct>. Then <R n="communal_handover" />{" "}
+                  is the concatenation of the following bytestrings:
+
+                  <Encoding
+                    standalone
+                    idPrefix="communal_handover2"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="encode_area_in_area"
+                        isFunction
+                        relativeTo={<R n="communal_prev_area" />}
+                      >
+                        <R n="communal_new_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <R n="communal_prev_signature" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="communal_new_user" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </Li>
+              </Ul>
+            </PreviewScope>
+          </Hsection>
+
+          <Hsection n="owned_capabilities" title="Owned Namespaces">
+            <P>
+              <Gwil inline>Make the indentation bars seamless again.</Gwil>
+            </P>
+            <Pseudocode n="owned_capability_definition">
+              <StructDef
+                comment={
+                  <>
+                    A capability that implements <Rs n="owned_namespace" />
+                  </>
+                }
+                id={[
+                  "OwnedCapability",
+                  "OwnedCapability",
+                  "OwnedCapabilities",
+                ]}
+                fields={[
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The kind of access this grants.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["access_mode", "owned_cap_access_mode"],
+                        <ChoiceType
+                          types={[
+                            <R n="access_read" />,
+                            <R n="access_write" />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="namespace" /> for which this grants access.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["namespace_key", "owned_cap_namespace"],
+                        <R n="NamespacePublicKey" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The user <Em>to whom</Em>{" "}
+                          this grants access; granting access for the full{" "}
+                          <R n="owned_cap_namespace" />, not just to a{" "}
+                          <R n="subspace" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["user_key", "owned_cap_user"],
+                        <R n="UserPublicKey" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Authorisation of the <R n="owned_cap_user" /> by the
+                          {" "}
+                          <R n="owned_cap_namespace" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "initial_authorisation",
+                          "owned_cap_initial_authorisation",
+                        ],
+                        <R n="NamespaceSignature" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Successive authorisations of new{" "}
+                          <Rs n="UserPublicKey" />, each restricted to a
+                          particular <R n="Area" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["delegations", "owned_cap_delegations"],
+                        <SliceType>
+                          <TupleType
+                            types={[
+                              <R n="Area" />,
+                              <R n="UserPublicKey" />,
+                              <R n="UserSignature" />,
+                            ]}
+                          />
+                        </SliceType>,
+                      ],
+                    },
+                  },
+                ]}
+              />
+            </Pseudocode>
+
+            <PreviewScope>
+              <P>
+                The <Def n="owned_cap_mode" r="access mode" /> of an{" "}
+                <R n="OwnedCapability" />{" "}
+                <DefValue n="owned_mode_cap" r="cap" /> is{" "}
+                <AccessStruct field="owned_cap_access_mode">
+                  <R n="owned_mode_cap" />
+                </AccessStruct>.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                The <R n="owned_cap_receiver" /> of an <R n="OwnedCapability" />
+                {" "}
+                is the user to whom it grants access. Formally, the{" "}
+                <Def n="owned_cap_receiver" r="receiver" /> is the final{" "}
+                <R n="UserPublicKey" /> in the{" "}
+                <R n="owned_cap_delegations" />, or the <R n="owned_cap_user" />
+                {" "}
+                if the <R n="owned_cap_delegations" /> are empty.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                The <R n="owned_cap_granted_namespace" /> of an{" "}
+                <R n="OwnedCapability" /> is the <R n="namespace" />{" "}
+                for which it grants access. Formally, the{" "}
+                <Def n="owned_cap_granted_namespace" r="granted namespace" />
+                {" "}
+                of an <R n="OwnedCapability" /> is its{" "}
+                <R n="owned_cap_namespace" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                The <R n="owned_cap_granted_area" /> of an{" "}
+                <R n="OwnedCapability" /> is the <R n="Area" />{" "}
+                for which it grants access. Formally, the{" "}
+                <Def n="owned_cap_granted_area" r="granted area" /> of an{" "}
+                <R n="OwnedCapability" /> is the final <R n="Area" /> in its
+                {" "}
+                <R n="owned_cap_delegations" /> if the{" "}
+                <R n="owned_cap_delegations" />{" "}
+                are non-empty. Otherwise, it is the <R n="full_area" />.
+              </P>
+            </PreviewScope>
+
+            <P>
+              <R n="owned_cap_valid">Validity</R> governs how{" "}
+              <Rs n="OwnedCapability" />{" "}
+              can be delegated and restricted. We define{" "}
+              <Def
+                n="owned_cap_valid"
+                r="valid"
+                preview={
+                  <>
+                    <P>
+                      An <R n="OwnedCapability" /> is{" "}
+                      <Def n="owned_cap_valud" fake>valid</Def> if its{" "}
+                      <R n="owned_cap_delegations" /> form a correct chain of
+                      {" "}
+                      <Rs n="dss_signature" /> over{" "}
+                      <Rs n="UserPublicKey" />, and if the <Rs n="Area" />{" "}
+                      form a chain of containment.
+                    </P>
+                    <P>
+                      For the formal definition, click the reference, the proper
+                      definition does not fit into a tooltip.
+                    </P>
+                  </>
+                }
+              >
+                validity
+              </Def>{" "}
+              based on the number of <R n="owned_cap_delegations" />.
+            </P>
+
+            <PreviewScope>
+              <P>
+                An <R n="OwnedCapability" />{" "}
+                <DefValue n="owned_cap_valid_zero_val" r="cap" /> with zero{" "}
+                <R n="owned_cap_delegations" /> is <R n="owned_cap_valid" />
+                {" "}
+                if its <R n="owned_cap_initial_authorisation" /> is a{" "}
+                <R n="NamespaceSignature" /> issued by the{" "}
+                <R n="owned_cap_namespace" />{" "}
+                over the following concatenation of bytes:
+              </P>
+            </PreviewScope>
+
+            <Encoding
+              standalone
+              idPrefix="owned_initial"
+              bitfields={[]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <AccessStruct field="owned_cap_access_mode">
+                        <R n="owned_cap_valid_zero_val" />
+                      </AccessStruct>{" "}
+                      is <R n="access_read" />
+                    </>
+                  }
+                  otherwise={<LiteralByte lowercase noPeriod>0x03</LiteralByte>}
+                >
+                  <LiteralByte lowercase noPeriod>0x02</LiteralByte>
+                </EncConditional>,
+                <CodeFor enc="encode_user_pk" isFunction>
+                  <AccessStruct field="owned_cap_user">
+                    <R n="owned_cap_valid_zero_val" />
+                  </AccessStruct>
+                </CodeFor>,
+              ]}
+            />
+
+            <PreviewScope>
+              <P>
+                For an <Rs n="OwnedCapability" />{" "}
+                <DefValue n="owned_cap_defvalid" r="cap" /> with more than zero
+                {" "}
+                <R n="owned_cap_delegations" />, let{" "}
+                <Code>
+                  <Tuple
+                    fields={[
+                      <DefValue n="owned_new_area" r="new_area" />,
+                      <DefValue n="owned_new_user" r="new_user" />,
+                      <DefValue n="owned_new_signature" r="new_signature" />,
+                    ]}
+                  />
+                </Code>{" "}
+                be the final triplet of{" "}
+                <AccessStruct field="owned_cap_delegations">
+                  <R n="owned_cap_defvalid" />
+                </AccessStruct>, and let{" "}
+                <DefValue n="owned_prev_cap" r="prev_cap" /> be the{" "}
+                <R n="OwnedCapability" />{" "}
+                obtained by removing the last triplet from{" "}
+                <AccessStruct field="owned_cap_delegations">
+                  <R n="owned_cap_defvalid" />
+                </AccessStruct>. Denote the <R n="owned_cap_receiver" /> of{" "}
+                <R n="owned_prev_cap" /> as{" "}
+                <DefValue n="owned_prev_receiver" r="prev_receiver" />, and the
+                {" "}
+                <R n="owned_cap_granted_area" /> of <R n="owned_prev_cap" /> as
+                {" "}
+                <DefValue n="owned_prev_area" r="prev_area" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                Then <R n="owned_cap_defvalid" /> is <R n="owned_cap_valid" />
+                {" "}
+                if <R n="owned_prev_cap" /> is <R n="owned_cap_valid" />, the
+                {" "}
+                <R n="owned_cap_granted_area" /> of <R n="owned_prev_cap" />
+                {" "}
+                <R n="area_include_area">includes</R>{" "}
+                <R n="owned_new_area" />, and <R n="owned_new_signature" /> is a
+                {" "}
+                <R n="UserSignature" /> issued by the{" "}
+                <R n="owned_prev_receiver" /> over the bytestring{" "}
+                <DefValue n="owned_handover" r="handover" />, which is defined
+                as follows:
+              </P>
+
+              <Ul>
+                <Li>
+                  If{" "}
+                  <AccessStruct field="owned_prev_cap">
+                    <R n="owned_prev_cap" />
+                  </AccessStruct>{" "}
+                  is empty, then <R n="owned_handover" />{" "}
+                  is the concatenation of the following bytestrings:
+
+                  <Encoding
+                    standalone
+                    idPrefix="owned_handover1"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor enc="encode_area_in_area" isFunction>
+                        <AccessStruct field="owned_new_area">
+                          <R n="owned_prev_area" />
+                        </AccessStruct>
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <AccessStruct field="owned_cap_initial_authorisation">
+                          <R n="owned_prev_cap" />
+                        </AccessStruct>
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="owned_new_user" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </Li>
+                <Li>
+                  Otherwise, let{" "}
+                  <DefValue n="owned_prev_signature" r="prev_signature" />{" "}
+                  be the <R n="UserSignature" /> in the last triplet of{" "}
+                  <AccessStruct field="owned_cap_delegations">
+                    <R n="owned_prev_cap" />
+                  </AccessStruct>. Then <R n="owned_handover" />{" "}
+                  is the concatenation of the following bytestrings:
+
+                  <Encoding
+                    standalone
+                    idPrefix="communal_handover1"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="encode_area_in_area"
+                        isFunction
+                        relativeTo={<R n="owned_prev_area" />}
+                      >
+                        <R n="owned_new_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <R n="owned_prev_signature" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="owned_new_user" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </Li>
+              </Ul>
+            </PreviewScope>
+          </Hsection>
+
+          <Hsection
+            n="proper_capabilities"
+            title="Bringing Everything Together"
+          >
+            <P>
+              <Rsb n="CommunalCapability" /> and <Rs n="OwnedCapability" />{" "}
+              are capability types for realising <Rs n="communal_namespace" />
+              and <Rs n="owned_namespace" /> respectively. It remains<Marginale>
+                If you do not need to support both cases, you can also use one
+                of <Rs n="CommunalCapability" /> or <Rs n="OwnedCapability" />
+                {" "}
+                directly.
+              </Marginale>{" "}
+              to define a type that unifies both.
+            </P>
+
+            <P>
+              Crucially, for a given{" "}
+              <R n="NamespaceId" />, all its valid capabilities should implement
+              either a <R n="communal_namespace" /> or an{" "}
+              <R n="owned_namespace" />, but there should be no mixture of
+              capabilities. It should be impossible to have people believe they
+              work in a{" "}
+              <R n="communal_namespace" />, for example, only to later present
+              an <R n="OwnedCapability" />{" "}
+              that allows you to read or edit all their <Rs n="Entry" />.
+            </P>
+
+            <P>
+              To ensure a strict distinction between{" "}
+              <Rs n="communal_namespace" /> and{" "}
+              <Rs n="owned_namespace" />, we rely on the function{" "}
+              <R n="is_communal" />{" "}
+              that specifies which kinds of capabilities are valid for which
+              {" "}
+              <Rs n="namespace" />.
+            </P>
+
+            <Pseudocode n="mc_capability_definition">
+              <StructDef
+                comment={
+                  <>
+                    A Meadowcap capability.
+                  </>
+                }
+                id={[
+                  "McCapability",
+                  "Capability",
+                  "McCapabilities",
+                ]}
+                fields={[
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The kind of access this grants.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["inner", "capability_inner"],
+                        <ChoiceType
+                          types={[
+                            <R n="CommunalCapability" />,
+                            <R n="OwnedCapability" />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                ]}
+              />
+            </Pseudocode>
+
+            <PreviewScope>
+              <P>
+                A <R n="Capability" /> <DefValue n="cap_cap" r="cap" /> is{" "}
+                <Def n="cap_valid" r="valid" /> if either
+              </P>
+              <Ul>
+                <Li>
+                  <AccessStruct field="capability_inner">
+                    <R n="cap_cap" />
+                  </AccessStruct>{" "}
+                  is a <R n="communal_cap_valid" /> <R n="Communalcapability" />
+                  {" "}
+                  and{" "}
+                  <Code>
+                    <R n="is_communal" />(<AccessStruct field="communal_cap_namespace">
+                      <AccessStruct field="capability_inner">
+                        <R n="cap_cap" />
+                      </AccessStruct>
+                    </AccessStruct>)
+                  </Code>{" "}
+                  is <Code>true</Code>, or
+                </Li>
+                <Li>
+                  <AccessStruct field="capability_inner">
+                    <R n="cap_cap" />
+                  </AccessStruct>{" "}
+                  is a <R n="owned_cap_valid" /> <R n="OwnedCapability" /> and
+                  {" "}
+                  <Code>
+                    <R n="is_communal" />(<AccessStruct field="owned_cap_namespace">
+                      <AccessStruct field="capability_inner">
+                        <R n="cap_cap" />
+                      </AccessStruct>
+                    </AccessStruct>)
+                  </Code>{" "}
+                  is <Code>false</Code>.
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                <Def n="cap_mode" r="access mode">Access mode</Def>,{" "}
+                <Def n="cap_receiver" r="receiver" />,{" "}
+                <Def n="cap_granted_namespace" r="granted namespace" />, and
+                {" "}
+                <Def n="cap_granted_area" r="granted area" /> of a{" "}
+                <R n="Capability" /> <DefValue n="cap_cap2" r="cap" />{" "}
+                are those of{" "}
+                <AccessStruct field="capability_inner">
+                  <R n="cap_cap2" />
+                </AccessStruct>.
               </P>
             </PreviewScope>
           </Hsection>
         </Hsection>
 
-        {
-          /*
+        <Hsection n="mc_with_willow" title="Usage With Willow">
+          <P>
+            We have defined capabilities and their semantics. Now what?
+          </P>
 
-        pinformative("For a ", rs("CommunalCapability"), " ", def_value({id: "communal_cap_defvalid", singular: "cap"}), " with more than zero ", r("communal_cap_delegations"), ", let ", code("(", def_value({id: "communal_new_area", singular: "new_area"}), ", ", def_value({id: "communal_new_user", singular: "new_user"}), ", ", def_value({id: "communal_new_signature", singular: "new_signature"}), ")"), "be the final triplet of ", field_access(r("communal_cap_defvalid"), "communal_cap_delegations"), ", and let ", def_value({id: "communal_prev_cap", singular: "prev_cap"}), " be the ", r("CommunalCapability"), " obtained by removing the last triplet from ", field_access(r("communal_cap_defvalid"), "communal_cap_delegations"), ". Denote the  ", r("communal_cap_receiver"), " of ", r("communal_prev_cap"), " as ", def_value({id: "communal_prev_receiver", singular: "prev_receiver"}), ", and the ", r("communal_cap_granted_area"), " of ", r("communal_prev_cap"), " as ", def_value({id: "communal_prev_area", singular: "prev_area"}), "."),
+          <Hsection n="mc_writing_entries" title="Writing Entries">
+            <P>
+              <Rsb n="Capability" /> with <R n="cap_mode" />{" "}
+              <R n="access_write" /> can be used to control who gets to write
+              {" "}
+              <Rs n="Entry" /> in which <Rs n="namespace" /> and with which{" "}
+              <Rs n="entry_subspace_id" />, <Rs n="entry_path" />, and/or{" "}
+              <Rs n="entry_timestamp" />. Intuitively, you authorise writing an
+              {" "}
+              <R n="Entry" /> by supplying a <R n="Capability" /> that grants
+              {" "}
+              <R n="access_write" /> <R n="cap_mode">access</R> to the{" "}
+              <R n="Entry" /> together with a <R n="dss_signature" /> over the
+              {" "}
+              <R n="Entry" /> by the <R n="cap_receiver" /> of the{" "}
+              <R n="Capability" />.
+            </P>
 
-        pinformative("Then ", r("communal_cap_defvalid"), " is ", r("communal_cap_valid"), " if ", r("communal_prev_cap"), " is ", r("communal_cap_valid"), ", the ", r("communal_cap_granted_area"), " of ", r("communal_prev_cap"), " ", rs("area_include_area"), " ", r("communal_new_area"), ", and ", r("communal_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("communal_prev_receiver"), " over the bytestring ", def_value({id: "communal_handover", singular: "handover"}), ", which is defined as follows:"),
+            <P>
+              More precisely, Willow verifies <Rs n="Entry" /> via its{" "}
+              <R n="AuthorisationToken" /> and <R n="is_authorised_write" />
+              {" "}
+              parameters. Meadowcap supplies concrete choices of these
+              parameters:
+            </P>
 
-        lis(
-          [
-            "If ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), " is empty, then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
-            lis(
-              ["the byte ", code("0x00"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x01"), " (if ", field_access(r("communal_prev_cap"), "communal_cap_access_mode"), " is ", r("access_write"), "),"],
-              [code(function_call(r("encode_namespace_pk"), field_access(r("communal_prev_cap"), "communal_cap_namespace"))), ","],
-              [code(function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area"))), ","],
-              [code(function_call(r("encode_user_pk"), r("communal_new_user"))), "."],
-            ),
-          ],
-          [
-            preview_scope("Otherwise, let ", def_value({id: "communal_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("communal_prev_cap"), "communal_cap_delegations"), "."), " Then ", r("communal_handover"), " is the concatenation of the following bytestrings:",
-            lis(
-              [code(function_call(r("encode_area_in_area"), r("communal_new_area"), r("communal_prev_area"))), ","],
-              [code(function_call(r("encode_user_sig"), r("communal_prev_signature"))), "."],
-              [code(function_call(r("encode_user_pk"), r("communal_new_user"))), "."],
-            ),
-          ],
-        ),
-
-      ]),
-
-      hsection("owned_capabilities", "Owned Namespaces", [
-        pseudocode(
-          new Struct({
-              id: "OwnedCapability",
-              plural: "OwnedCapabilities",
-              comment: ["A capability that implements ", rs("owned_namespace"), "."],
-              fields: [
+            <Pseudocode n="mc_auth_token_def">
+              <StructDef
+                comment={
+                  <>
+                    To be used as an <R n="AuthorisationToken" /> for Willow.
+                  </>
+                }
+                id={[
+                  "MeadowcapAuthorisationToken",
+                  "MeadowcapAuthorisationToken",
+                  "MeadowcapAuthorisationTokens",
+                ]}
+                fields={[
                   {
-                      id: "owned_cap_access_mode",
-                      name: "access_mode",
-                      comment: ["The kind of access this grants."],
-                      rhs: pseudo_choices(r("access_read"), r("access_write")),
-                  },
-                  {
-                      id: "owned_cap_namespace",
-                      name: "namespace_key",
-                      comment: ["The ", r("namespace"), " for which this grants access."],
-                      rhs: r("NamespacePublicKey"),
-                  },
-                  {
-                      id: "owned_cap_user",
-                      name: "user_key",
-                      comment: [
-                        pinformative("The user ", em("to whom"), " this grants access; granting access for the full ", r("owned_cap_namespace"), ", not just to a ", r("subspace"), "."),
+                    commented: {
+                      comment: (
+                        <>
+                          Certifies that an <R n="Entry" /> may be written.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["capability", "mcat_cap"],
+                        <R n="Capability" />,
                       ],
-                      rhs: r("UserPublicKey"),
+                    },
                   },
                   {
-                      id: "owned_cap_initial_authorisation",
-                      name: "initial_authorisation",
-                      comment: [
-                        pinformative("Authorisation of the ", r("owned_cap_user"), " by the ", r("owned_cap_namespace"), "."),
+                    commented: {
+                      comment: (
+                        <>
+                          Proves that the <R n="Entry" /> was created by the
+                          {" "}
+                          <R n="cap_receiver" /> of the <R n="mcat_cap" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["signature", "mcat_sig"],
+                        <R n="UserSignature" />,
                       ],
-                      rhs: r("NamespaceSignature"),
+                    },
                   },
-                  {
-                      id: "owned_cap_delegations",
-                      name: "delegations",
-                      comment: ["Successive authorisations of new ", rs("UserPublicKey"), ", each restricted to a particular ", r("Area"), "."],
-                      rhs: pseudo_array(pseudo_tuple(r("Area"), r("UserPublicKey"), r("UserSignature"))),
-                  },
-              ],
-          }),
-        ),
+                ]}
+              />
+            </Pseudocode>
 
-        pinformative("The ", def({id: "owned_cap_mode", singular: "access mode"}), " of an ", r("OwnedCapability"), " ", def_value({id: "owned_mode_cap", singular: "cap"}), " is ", field_access(r("owned_mode_cap"), "owned_cap_access_mode"), "."),
+            <PreviewScope>
+              <P>
+                The function <DefFunction n="meadowcap_is_authorised_write" />
+                {" "}
+                maps an <R n="Entry" /> and a{" "}
+                <R n="MeadowcapAuthorisationToken" /> to a{" "}
+                <R n="Bool" />. It maps values{" "}
+                <DefValue n="mcia_entry" r="entry" /> and{" "}
+                <DefValue n="mcia_tok" r="mat" /> to <Code>true</Code>{" "}
+                if and only if
+              </P>
 
-        pinformative("The ", r("owned_cap_receiver"), " of an ", r("OwnedCapability"), " is the user to whom it grants access. Formally, the ", def({id: "owned_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("owned_cap_delegations"), ", or the ", r("owned_cap_user"), " if the ", r("owned_cap_delegations"), " are empty."),
+              <Ul>
+                <Li>
+                  <AccessStruct field="mcat_cap">
+                    <R n="mcia_tok" />
+                  </AccessStruct>{" "}
+                  is <R n="cap_valid" />,
+                </Li>
+                <Li>
+                  the <R n="cap_mode" /> of{" "}
+                  <AccessStruct field="mcat_cap">
+                    <R n="mcia_tok" />
+                  </AccessStruct>{" "}
+                  is <R n="access_write" />,
+                </Li>
+                <Li>
+                  the <R n="cap_granted_area" /> of{" "}
+                  <AccessStruct field="mcat_cap">
+                    <R n="mcia_tok" />
+                  </AccessStruct>{" "}
+                  <R n="area_include">includes</R> <R n="mcia_entry" />, and
+                </Li>
+                <Li>
+                  <Code>
+                    <R n="user_verify" />(<R n="mcia_receiver" />,{" "}
+                    <AccessStruct field="mcat_sig">
+                      <R n="mcia_tok" />
+                    </AccessStruct>,{" "}
+                    <R n="encode_entry" />(<R n="mcia_entry" />))
+                  </Code>{" "}
+                  is <Code>true</Code>, where{" "}
+                  <DefValue n="mcia_receiver" r="receiver" /> is the{" "}
+                  <R n="cap_receiver" /> of{" "}
+                  <AccessStruct field="mcat_cap">
+                    <R n="mcia_tok" />
+                  </AccessStruct>.
+                </Li>
+              </Ul>
+            </PreviewScope>
 
-        pinformative("The ", r("owned_cap_granted_namespace"), " of an ", r("OwnedCapability"), " is the ", r("namespace"), " for which it grants access. Formally, the ", def({id: "owned_cap_granted_namespace", singular: "granted namespace"}), " of an ", r("OwnedCapability"), " is its ", r("owned_cap_namespace"), "."),
+            <P>
+              For this definition to make sense, the protocol parameters of
+              Meadowcap must be <R n="mc_compatible" />{" "}
+              with those of Willow. Further, there must be concrete choices for
+              the <Rs n="encoding_function" /> <R n="encode_namespace_id" />,
+              {" "}
+              <R n="encode_subspace_id" />, and <R n="encode_payload_digest" />
+              {" "}
+              that determine the exact output of <R n="encode_entry" />.
+            </P>
+          </Hsection>
 
-        pinformative("The ", r("owned_cap_granted_area"), " of an ", r("OwnedCapability"), " is the ", r("Area"), " for which it grants access. Formally, the ", def({id: "owned_cap_granted_area", singular: "granted area"}), " of an ", r("OwnedCapability"), " is the final ", r("Area"), " in its ", r("owned_cap_delegations"), " if the ", r("owned_cap_delegations"), " are non-empty. Otherwise, it is the ", r("full_area"), "."),
+          <Hsection n="mc_reading_entries" title="Reading Entries">
+            <P>
+              Whereas write access control is baked into the Willow data model,
+              read access control resides in the replication layer. To manage
+              read access via capabilities, all peers must cooperate in sending
+              {" "}
+              <Rs n="Entry" />{" "}
+              only to peers who have presented a valid read capability for the
+              {" "}
+              <R n="Entry" />.
+            </P>
 
-        pinformative(R("owned_cap_valid", "Validity"), " governs how ", rs("OwnedCapability"), " can be delegated and restricted. We define ", def({id: "owned_cap_valid", singular: "valid"}, "validity", [pinformative("An ", r("OwnedCapability"), " is ", def_fake("owned_cap_valid", "valid"), " if its ", r("owned_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), ", and if the ", rs("Area"), " form a chain of containment."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("owned_cap_delegations"), "."),
-
-        pinformative("An ", r("OwnedCapability"), " with zero ", r("owned_cap_delegations"), " is ", r("owned_cap_valid"), " if ", r("owned_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("owned_cap_namespace"), " over either the byte ", code("0x02"), " (if ", r("owned_cap_access_mode"), " is ", r("access_read"), ") or the byte ", code("0x03"), " (if ", r("owned_cap_access_mode"), " is ", r("access_write"), "), followed by the ", r("owned_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
-
-        pinformative("For an ", rs("OwnedCapability"), " ", def_value({id: "owned_cap_defvalid", singular: "cap"}), " with more than zero ", r("owned_cap_delegations"), ", let ", code("(", def_value({id: "owned_new_area", singular: "new_area"}), ", ", def_value({id: "owned_new_user", singular: "new_user"}), ", ", def_value({id: "owned_new_signature", singular: "new_signature"}), ")"), "be the final triplet of ", field_access(r("owned_cap_defvalid"), "owned_cap_delegations"), ", and let ", def_value({id: "owned_prev_cap", singular: "prev_cap"}), " be the ", r("OwnedCapability"), " obtained by removing the last triplet from ", field_access(r("owned_cap_defvalid"), "owned_cap_delegations"), ". Denote the  ", r("owned_cap_receiver"), " of ", r("owned_prev_cap"), " as ", def_value({id: "owned_prev_receiver", singular: "prev_receiver"}), ", and the ", r("owned_cap_granted_area"), " of ", r("owned_prev_cap"), " as ", def_value({id: "owned_prev_area", singular: "prev_area"}), "."),
-
-        pinformative("Then ", r("owned_cap_defvalid"), " is ", r("owned_cap_valid"), " if ", r("owned_prev_cap"), " is ", r("owned_cap_valid"), ", the ", r("owned_cap_granted_area"), " of ", r("owned_prev_cap"), " ", rs("area_include_area"), " ", r("owned_new_area"), ", and ", r("owned_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("owned_prev_receiver"), " over the bytestring ", def_value({id: "owned_handover", singular: "handover"}), ", which is defined as follows:"),
-
-        lis(
-          [
-            "If ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), " is empty, then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
-            lis(
-              [code(function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area"))), ","],
-              [code(function_call(r("encode_user_sig"), field_access(r("owned_prev_cap"), "owned_cap_initial_authorisation"))), "."],
-              [code(function_call(r("encode_user_pk"), r("owned_new_user"))), "."],
-            ),
-          ],
-          [
-            preview_scope("Otherwise, let ", def_value({id: "owned_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last triplet of ", field_access(r("owned_prev_cap"), "owned_cap_delegations"), "."), " Then ", r("owned_handover"), " is the concatenation of the following bytestrings:",
-            lis(
-              [code(function_call(r("encode_area_in_area"), r("owned_new_area"), r("owned_prev_area"))), ","],
-              [code(function_call(r("encode_user_sig"), r("owned_prev_signature"))), "."],
-              [code(function_call(r("encode_user_pk"), r("owned_new_user"))), "."],
-            ),
-          ],
-        ),
-
-          */
-        }
+            <P>
+              We describe the details in a capability-system-agnostic way{" "}
+              <R n="access_control">here</R>. To use Meadowcap for this
+              approach, simply choose the type of <R n="cap_valid" />{" "}
+              <Rs n="Capability" /> with <R n="cap_mode" />{" "}
+              <R n="access_read" /> as the <Rs n="read_capability" />.
+            </P>
+          </Hsection>
+        </Hsection>
 
         <Img
           src={<ResolveAsset asset={["meadowcap", "meadowcap.png"]} />}

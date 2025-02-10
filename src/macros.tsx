@@ -1,6 +1,6 @@
 import { Expression, Expressions } from "macromania";
 import { Wip } from "macromania-wip";
-import { A, Span } from "macromania-html";
+import { A, Aside, Span } from "macromania-html";
 import { M } from "macromania-katex";
 import { Def } from "macromania-defref";
 
@@ -16,6 +16,20 @@ export function Alj(
       fg="#6804cc"
       bg="#ecdbfc"
       wrap={(_ctx, inner) => <>alj: {inner}</>}
+      children={children}
+      inline={inline}
+    />
+  );
+}
+
+export function Gwil(
+  { children, inline }: { children?: Expressions; inline?: boolean },
+): Expression {
+  return (
+    <Wip
+      fg="#cc7504"
+      bg="#fceedb"
+      wrap={(_ctx, inner) => <>gwil: {inner}</>}
       children={children}
       inline={inline}
     />
@@ -428,5 +442,18 @@ export function MarginCaption(
     <Span clazz="margincaption">
       <exps x={children} />
     </Span>
+  );
+}
+
+/**
+ * Like `Figcaption`, but it works in marginalia.
+ */
+export function AsideBlock(
+  { children }: { children: Expressions },
+): Expression {
+  return (
+    <Aside clazz="long">
+      <exps x={children} />
+    </Aside>
   );
 }

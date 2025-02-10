@@ -100,6 +100,10 @@ export type EncodingProps = {
   bitfields: BitfieldDef[];
   contents: EncodingContent[];
   idPrefix: string;
+  /**
+   * Whether the encoding can be used outside of an encoding template.
+   */
+  standalone?: boolean;
 };
 
 /**
@@ -120,11 +124,11 @@ export type EncodingContent =
   };
 
 export function Encoding(
-  { bitfields, contents, idPrefix }: EncodingProps,
+  { bitfields, contents, idPrefix, standalone }: EncodingProps,
 ): Expression {
   let oldState: EncodingState | null = null;
 
-  return (
+  const encExp = (
     <lifecycle
       pre={(ctx) => {
         oldState = getEncodingState(ctx) === null
@@ -257,6 +261,14 @@ export function Encoding(
       />
     </lifecycle>
   );
+
+  if (standalone) {
+    return (
+      <TemplateLifecycle n="dummy" valName="dummy">{encExp}</TemplateLifecycle>
+    );
+  } else {
+    return encExp;
+  }
 }
 
 function Bitrange(
@@ -335,8 +347,16 @@ export function EncodingRelationTemplate(
               <P>
                 We define an <R n="encoding_relation" /> <DefType n={n} /> for
                 {" "}
-                <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""}. Let{" "}
-                <DefValue n={encvalN(n, valName)} r={valName} /> be any{valRestriction ? " such " : " "}
+                <exps x={valType} />
+                {valRestriction
+                  ? (
+                    <>
+                      <exps x={valRestriction} />
+                    </>
+                  )
+                  : ""}. Let <DefValue n={encvalN(n, valName)} r={valName} />
+                {" "}
+                be any{valRestriction ? " such " : " "}
                 <exps x={valType} />.
               </P>
               {preDefs}
@@ -352,7 +372,14 @@ export function EncodingRelationTemplate(
             <P>
               We define an <R n="encoding_relation" /> <DefType n={n} /> for
               {" "}
-              <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""}. The <Rs n="code" /> in <R n={n} /> for any
+              <exps x={valType} />
+              {valRestriction
+                ? (
+                  <>
+                    <exps x={valRestriction} />
+                  </>
+                )
+                : ""}. The <Rs n="code" /> in <R n={n} /> for any
               {valRestriction ? " such " : " "}
               <exps x={valType} />{" "}
               <DefValue n={encvalN(n, valName)} r={valName} />{" "}
@@ -409,10 +436,16 @@ export function EncodingRelationRelativeTemplate(
             <>
               <P>
                 We define a <R n="relative_encoding_relation" />{" "}
-                <DefType n={n} /> for any <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any
-                {" "}
-                <exps x={relToDescription} />. Let{" "}
-                <DefValue n={encvalN(n, valName)} r={valName} /> be any{valRestriction ? " such " : " "}
+                <DefType n={n} /> for any <exps x={valType} />
+                {valRestriction
+                  ? (
+                    <>
+                      <exps x={valRestriction} />
+                    </>
+                  )
+                  : ""} relative to any <exps x={relToDescription} />. Let{" "}
+                <DefValue n={encvalN(n, valName)} r={valName} />{" "}
+                be any{valRestriction ? " such " : " "}
                 <exps x={valType} />, and let{" "}
                 <DefValue n={encrelN(n, relName)} r={relName} /> be any{" "}
                 {shortRelToDescription
@@ -437,13 +470,25 @@ export function EncodingRelationRelativeTemplate(
             <P>
               We define a <R n="relative_encoding_relation" /> <DefType n={n} />
               {" "}
-              for any <exps x={valType} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any{" "}
-              <exps x={relToDescription} />. The <Rs n="code" /> in <R n={n} />
-              {" "}
-              for any{valRestriction ? " such " : " "}<exps x={valType} />{" "}
-              <DefValue n={encvalN(n, valName)} r={valName} />{valRestriction ? <> <exps x={valRestriction}/></> : ""} relative to any
-              {" "}
-              {shortRelToDescription
+              for any <exps x={valType} />
+              {valRestriction
+                ? (
+                  <>
+                    <exps x={valRestriction} />
+                  </>
+                )
+                : ""} relative to any <exps x={relToDescription} />. The{" "}
+              <Rs n="code" /> in <R n={n} />{" "}
+              for any{valRestriction ? " such " : " "}
+              <exps x={valType} />{" "}
+              <DefValue n={encvalN(n, valName)} r={valName} />
+              {valRestriction
+                ? (
+                  <>
+                    <exps x={valRestriction} />
+                  </>
+                )
+                : ""} relative to any {shortRelToDescription
                 ? (
                   <>
                     fitting <exps x={shortRelToDescription} />
@@ -749,10 +794,13 @@ export function ChooseMinimal({ n }: { n: string }): Expression {
 /**
  * Creates an encoding content that is a corresponding c64 encoding for a c64 tag at a given bitfield id.
  */
-export function C64Encoding({ id, noDot }: { id: string, noDot?: boolean }): Expression {
+export function C64Encoding(
+  { id, noDot }: { id: string; noDot?: boolean },
+): Expression {
   return (
     <>
-      The <R n="c64_corresponding" /> for bits <Bitfield id={id} />{noDot ? "" : "."}
+      The <R n="c64_corresponding" /> for bits <Bitfield id={id} />
+      {noDot ? "" : "."}
     </>
   );
 }
@@ -761,16 +809,19 @@ export function C64Encoding({ id, noDot }: { id: string, noDot?: boolean }): Exp
  * An encoding content for encoding some value according to some encoding relation (optionally relative).
  */
 export function CodeFor(
-  { enc, notStandalone, relativeTo, children }: {
+  { enc, notStandalone, relativeTo, isFunction, children }: {
     enc: string;
     notStandalone?: boolean;
     relativeTo?: Expressions;
+    isFunction?: boolean;
     children: Expressions;
   },
 ): Expression {
   return (
     <>
-      {notStandalone ? "a" : "A"}ny{" "}
+      {isFunction
+        ? <>{notStandalone ? "t" : "T"}he</>
+        : <>{notStandalone ? "a" : "A"}ny</>}{" "}
       {relativeTo ? <R n="rel_code" /> : <R n="code" />} in <R n={enc} /> for
       {" "}
       <exps x={children} />
@@ -832,7 +883,7 @@ export function bitfieldIff(
     count: 1,
     content: (
       <>
-        <Code>1</Code> iff <exps x={condition}/>
+        <Code>1</Code> iff <exps x={condition} />
       </>
     ),
   };
@@ -842,12 +893,17 @@ export function bitfieldIff(
  * Creates an encoding content that is an 8-bit c64 tag for some value (the children), followed by the corresponding c64 encoding.
  */
 export function C64Standalone(
-  { children, notStandalone }: { children: Expressions, notStandalone?: boolean },
+  { children, notStandalone }: {
+    children: Expressions;
+    notStandalone?: boolean;
+  },
 ): Expression {
   return (
     <>
-      {notStandalone ? "a" : "A"} <R n="c64_tag" /> of <R n="c64_width" /> <M>8</M> for{" "}
-      <exps x={children} />, followed by the <R n="c64_corresponding" />{notStandalone ? "" : "."}
+      {notStandalone ? "a" : "A"} <R n="c64_tag" /> of <R n="c64_width" />{" "}
+      <M>8</M> for <exps x={children} />, followed by the{" "}
+      <R n="c64_corresponding" />
+      {notStandalone ? "" : "."}
     </>
   );
 }
@@ -871,17 +927,44 @@ export function RawBytes(
 }
 
 /**
+ * The phrase for using a byte literal in an encoding.
+ */
+export function LiteralByte(
+  { children, lowercase, noPeriod }: {
+    children: Expressions;
+    lowercase?: boolean;
+    noPeriod?: boolean;
+  },
+): Expression {
+  return (
+    <>
+      {lowercase ? "the" : "The"} byte{" "}
+      <Code>
+        <exps x={children} />
+      </Code>
+      {noPeriod ? "" : "."}
+    </>
+  );
+}
+
+/**
  * Creates an encoding content that is the empty string if some condition does not hold.
  */
 export function EncConditional(
-  { children, condition }: { condition: Expressions; children: Expressions },
+  { children, condition, otherwise }: {
+    condition: Expressions;
+    otherwise?: Expressions;
+    children: Expressions;
+  },
 ): Expression {
   return (
     <Ul>
       <Li>
         If <exps x={condition} />: <exps x={children} />,
       </Li>
-      <Li>otherwise: the empty string.</Li>
+      <Li>
+        otherwise: {otherwise ? <exps x={otherwise} /> : <>the empty string</>}.
+      </Li>
     </Ul>
   );
 }
@@ -899,7 +982,7 @@ export function EncIterator(
 ): Expression {
   return (
     <>
-      For every <exps x={val}/> of <exps x={iter} />{" "}
+      For every <exps x={val} /> of <exps x={iter} />{" "}
       {skipLast ? <>but the final one</> : ""}, a concatenation of the following
       form:
       <exps x={children} />
