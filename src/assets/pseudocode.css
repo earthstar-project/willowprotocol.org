@@ -58,8 +58,14 @@ code.pseudocode {
     }
 
     >.locContent {
+        line-height: 1.5em;
         display: inline-grid;
         grid-template-columns: auto minmax(10ch, 1fr);
+        
+        >div {
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+        }
 
         >div:first-child {
             >.indent {
@@ -80,8 +86,8 @@ code.pseudocode {
             border-left: dotted var(--pseudo-fg-muted) 2px;
             color: var(--pseudo-fg-slightly-muted);
             padding-left: calc(1ch - 2px);
-
-            font-family: 'Monaspace Xenon', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+   
+            font-family: --var(font-mono)
 
             p:first-child {
                 margin-top: 0;
@@ -101,7 +107,7 @@ code.pseudocode {
             border-right: dotted var(--pseudo-fg-muted) 2px;
             padding-left: calc(1ch - 2px);
             padding-right: calc(1ch - 2px);
-            font-family: 'Monaspace Xenon', ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+            font-family: --var(font-mono)
 
             color: var(--pseudo-fg-slightly-muted);
         }
@@ -230,11 +236,11 @@ macromania_rustic
 
 .rustic {
     font-family: var(--font-mono);
-    font-size: 0.85em;
+    font-size: 0.9em;
 }
 
 .pseudocode .rustic {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
 }
 
 .rustic.value {
