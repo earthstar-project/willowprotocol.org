@@ -902,104 +902,6 @@ export const encodings = (
           <P>
             <Alj inline>TODO mc cap absolute</Alj>
           </P>
-
-          <Hr />
-
-          <EncodingRelationRelativeTemplate
-            n="EncodeMcSubspaceCapabilityRelativePrivateInterest"
-            valType={<R n="McSubspaceCapability" />}
-            relToDescription={
-              <>
-                <R n="PersonalPrivateInterest" /> with{" "}
-                <Code>
-                  <AccessStruct field="pi_ss">
-                    <RelAccess field="ppi_pi" />
-                  </AccessStruct>{" "}
-                  == <R n="area_any" />
-                </Code>{" "}
-                and{" "}
-                <Code>
-                  <AccessStruct field="pi_ns">
-                    <RelAccess field="ppi_pi" />
-                  </AccessStruct>{" "}
-                  == <ValAccess field="subspace_cap_namespace" />
-                </Code>
-              </>
-            }
-            shortRelToDescription={<R n="PersonalPrivateInterest" />}
-            bitfields={[
-              c64Tag(
-                "delegation_count",
-                8,
-                <>
-                  the number of pairs in{" "}
-                  <ValAccess field="subspace_cap_delegations" />
-                </>,
-              ),
-            ]}
-            contents={[
-              <C64Encoding id="delegation_count" />,
-              <CodeFor enc="encode_namespace_sig">
-                <ValAccess field="subspace_cap_initial_authorisation" />
-              </CodeFor>,
-              <EncConditional
-                condition={
-                  <>
-                    the number of pairs in{" "}
-                    <ValAccess field="subspace_cap_delegations" /> is nonzero
-                  </>
-                }
-              >
-                <CodeFor enc="encode_user_pk" notStandalone>
-                  <ValAccess field="subspace_cap_user" />
-                </CodeFor>
-              </EncConditional>,
-              <EncIterator
-                val={
-                  <>
-                    pair{" "}
-                    <Tuple
-                      fields={[
-                        <DefValue n="enc_sscap_rel_pk" r="pk" />,
-                        <DefValue n="enc_sscap_rel_sig" r="sig" />,
-                      ]}
-                    />
-                  </>
-                }
-                iter={<ValAccess field="subspace_cap_delegations" />}
-                skipLast
-              >
-                <Alj inline>
-                  TODO fix styling of nested encoding without bitfields
-                </Alj>
-                <Encoding
-                  idPrefix="enc_sscap_rel_nested"
-                  bitfields={[]}
-                  contents={[
-                    <CodeFor enc="encode_user_pk">
-                      <R n="enc_sscap_rel_pk" />
-                    </CodeFor>,
-                    <CodeFor enc="encode_user_sig">
-                      <R n="enc_sscap_rel_sig" />
-                    </CodeFor>,
-                  ]}
-                />
-              </EncIterator>,
-              <EncConditional
-                condition={
-                  <>
-                    the number of pairs in{" "}
-                    <ValAccess field="subspace_cap_delegations" /> is nonzero
-                  </>
-                }
-              >
-                <CodeFor enc="encode_user_pk" notStandalone>
-                  the final <R n="UserSignature" /> in{" "}
-                  <ValAccess field="subspace_cap_delegations" />
-                </CodeFor>
-              </EncConditional>,
-            ]}
-          />
         </Hsection>
 
         <Hsection n="enc_private" title="Private Encodings">
@@ -1542,6 +1444,118 @@ export const encodings = (
                   <CodeFor enc="encode_user_sig">
                     the final <R n="UserSignature" /> in{" "}
                     <ValAccess field="communal_cap_delegations" />
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="enc_private_owned_capabilities"
+            title="Owned Capability Encoding"
+            shortTitle="Owned Capability"
+          >
+            <P>
+              <Alj inline>TODO</Alj>
+            </P>
+          </Hsection>
+
+          <Hsection
+            n="enc_private_subspace_capabilities"
+            title="Subspace Capability Encoding"
+            shortTitle="Subspace Capability"
+          >
+            <EncodingRelationRelativeTemplate
+              n="EncodeMcSubspaceCapabilityRelativePrivateInterest"
+              valType={<R n="McSubspaceCapability" />}
+              relToDescription={
+                <>
+                  <R n="PersonalPrivateInterest" /> with{" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <RelAccess field="ppi_pi" />
+                    </AccessStruct>{" "}
+                    == <R n="area_any" />
+                  </Code>{" "}
+                  and{" "}
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <RelAccess field="ppi_pi" />
+                    </AccessStruct>{" "}
+                    == <ValAccess field="subspace_cap_namespace" />
+                  </Code>
+                </>
+              }
+              shortRelToDescription={<R n="PersonalPrivateInterest" />}
+              bitfields={[
+                c64Tag(
+                  "delegation_count",
+                  8,
+                  <>
+                    the number of pairs in{" "}
+                    <ValAccess field="subspace_cap_delegations" />
+                  </>,
+                ),
+              ]}
+              contents={[
+                <C64Encoding id="delegation_count" />,
+                <CodeFor enc="encode_namespace_sig">
+                  <ValAccess field="subspace_cap_initial_authorisation" />
+                </CodeFor>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of pairs in{" "}
+                      <ValAccess field="subspace_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_pk" notStandalone>
+                    <ValAccess field="subspace_cap_user" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncIterator
+                  val={
+                    <>
+                      pair{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_sscap_rel_pk" r="pk" />,
+                          <DefValue n="enc_sscap_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="subspace_cap_delegations" />}
+                  skipLast
+                >
+                  <Alj inline>
+                    TODO fix styling of nested encoding without bitfields
+                  </Alj>
+                  <Encoding
+                    idPrefix="enc_sscap_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor enc="encode_user_pk">
+                        <R n="enc_sscap_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig">
+                        <R n="enc_sscap_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of pairs in{" "}
+                      <ValAccess field="subspace_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_pk" notStandalone>
+                    the final <R n="UserSignature" /> in{" "}
+                    <ValAccess field="subspace_cap_delegations" />
                   </CodeFor>
                 </EncConditional>,
               ]}
