@@ -174,7 +174,7 @@ export function PageTemplate(
                     <R n="specifications">Specs</R>
                   </Li>
                   <Li>
-                    <R n="news">News</R>
+                    <R n="changes">News</R>
                   </Li>
                   <Li>
                     <R n="about">About Us</R>
