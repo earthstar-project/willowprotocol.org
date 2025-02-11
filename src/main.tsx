@@ -2,14 +2,27 @@ import { Context } from "macromania";
 import { LayoutStyles } from "./layoutStyles.tsx";
 import { index } from "./pages/index.tsx";
 import { misc_definitions } from "./pages/misc_definitions.tsx";
+import { es6_spec } from "./pages/earthstar/es6_spec.tsx";
 import { specs } from "./pages/specs.tsx";
 import { data_model } from "./pages/specs/data_model.tsx";
+import { e2e } from "./pages/specs/e2e.tsx";
+import { rbsr } from "./pages/specs/rbsr.tsx";
+import { access_control } from "./pages/specs/access_control.tsx";
+import { sync } from "./pages/specs/sync.tsx";
+import { sideloading } from "./pages/specs/sideloading.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_intersection } from "./pages/specs/private_interest_intersection.tsx";
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
+import { more } from "./pages/more.tsx";
 import { about_us } from "./pages/more/about_us.tsx";
+import { threedstorage } from "./pages/more/3dstorage.tsx";
+import { changes } from "./pages/more/changes.tsx";
+import { willow_compared } from "./pages/more/willow_compared.tsx";
+import { projects_and_communities } from "./pages/more/projects_and_communities.tsx";
+import { timestamps_really } from "./pages/more/timestamps_really.tsx";
+import { why_willow } from "./pages/more/why_willow.tsx";
 import { ScriptDependencyInfo } from "macromania-html-utils";
 import { Config } from "macromania-config";
 import { ConfigPseudocode } from "macromania-pseudocode";
@@ -105,15 +118,31 @@ const exp = (
           <Dir name="specs">
             {specs}
             {data_model}
+            {access_control}
+            {e2e}
             {meadowcap}
             {encodings}
+            {sideloading}
+            {sync}
+            {rbsr}
             {lcmux}
             {grouping_entries}
             {private_interest_intersection}
           </Dir>
 
           <Dir name="more">
+            {more}
+            {threedstorage}
             {about_us}
+            {changes}
+            {willow_compared}
+            {projects_and_communities}
+            {timestamps_really}
+            {why_willow}
+          </Dir>
+
+          <Dir name="earthstar">
+            {es6_spec}
           </Dir>
         </PreviewScopePushWrapper>
       </ServerRoot>

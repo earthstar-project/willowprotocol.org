@@ -40,11 +40,53 @@ export const data_model = (
             alt={`A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`}
           />
         </P>
+{/* 
+        pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
+
+pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
+
+figure(img(asset("data_model/paths.png"), `A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`)),
+
+pinformative("A little later you overwrite the existing entry at path ", path("blog", "idea", "2"), " with ", code("I've made a mistake"), ". Willow tracks the timestamp of each assignment, and the new entry overwrites the old one."),
+
+figure(img(asset("data_model/timestamps.png"), "The same visualization of paths as before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.")),
+
+pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", def({id: "prefix_pruning", singular: "prefix pruning"}), "."),
+
+figure(
+  img(asset("data_model/prefix_pruning.png"), `The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylised file whistling in a totally inconspicuous way.`),
+  figcaption("The entries ", em("prefixed"), " by ", path('blog', 'idea'), " are deleted by a newer entry at that prefix.")
+),
+
+pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
+
+figure(
+  img(asset("data_model/subspaces.png"), `Stylised files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves to the viewer, good vibes all around.`),
+  figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
+),
+
+pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorisation from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
+
+figure(
+  img(asset("data_model/namespaces.png"), `Three simplified three-dimensional visualisations of namespaces, each shaded in a different color. One is labeled "family", one "wiki", and one "project".`),
+  figcaption("Three completely independent namespaces.")
+),
+
+pinformative("This constitutes a full overview of the data model of Willow. Applications read and write payloads from and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
+
+pinformative( "Now we can ", em("almost"), " delve into the precise definition of these concepts."),
+*/}
 
         <Hsection n="willow_parameters" title="Parameters">
           <P>
             <Alj inline>TODO: introductory text</Alj>
           </P>
+{/* 
+          pinformative("Some questions in protocol design have no clear-cut answer. Should namespaces be identified via human-readable strings, or via the public keys of some digital signature scheme? That depends entirely on the use-case. To sidestep such questions, the Willow data model is ", em("generic"), " over certain choices of parameters. You can instantiate Willow to use strings as the identifiers of namespaces, or you could have it use 256 bit integers, or urls, or iris scans, etc."),
+
+pinformative("This makes Willow a higher-order protocol: you supply a set of specific choices for its parameters, and in return you get a concrete protocol that you can then use. If different systems instantiate Willow with non-equal parameters, the results will not be interoperable, even though both systems use Willow."),
+*/}
+
 
           <P>
             <Marginale>
@@ -665,6 +707,24 @@ export const data_model = (
           <P>
             <Alj inline>TODO</Alj>
           </P>
+{/* 
+          pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
+
+      pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
+
+      pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterised nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
+
+      pinformative("How should we select the ", r("AuthorisationToken"), " and ", r("is_authorised_write"), " parameters? Different deployments of Willow will have different needs. We provide ", link_name("meadowcap", "Meadowcap"), ", a capability-based solution that should be suitable for most use-cases."),
+
+      pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronise data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
+
+      pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
+
+      pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
+
+      pinformative("How can I contribute to Willow and support it? So glad you asked — we have prepared a collection of pointers ", link_name("projects_and_communities", "here"), "."),
+    */}
+
         </Hsection>
 
         <Img
