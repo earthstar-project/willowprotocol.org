@@ -1043,16 +1043,30 @@ export const encodings = (
           <Hsection
             n="enc_private_areas"
             title="Private Area Encoding"
-            shortTitle="Area in Area"
+            shortTitle="Area almost in Area"
           >
+            <PreviewScope>
+              <P>
+                Next, we build up to private <R n="Area" /> encoding. We say an
+                {" "}
+                <R n="Area" />{" "}
+                <Def n="almost_include" r="almost include">almost includes</Def>
+                {" "}
+                another <R n="Area" /> if setting the <R n="AreaSubspace" />
+                {" "}
+                of the first <R n="Area" /> to that of the second <R n="Area" />
+                {" "}
+                would make the first <R n="Area" /> <R n="area_include" />{" "}
+                the second <R n="Area" />.
+              </P>
+            </PreviewScope>
             <P>
               Next, we build up to private <R n="Area" /> encoding: we encode an
               {" "}
-              <R n="Area" /> that is <R n="area_include">included</R> in another
-              {" "}
-              <R n="Area" />, while keeping secret a <R n="PrivateInterest" />
-              {" "}
-              which <R n="pi_include">includes</R> both.
+              <R n="Area" /> that <R n="almost_include">almost includes</R>{" "}
+              another <R n="Area" />, while keeping secret a{" "}
+              <R n="PrivateInterest" /> which almost includes both{" "}
+              <Rs n="Area" />.
             </P>
 
             <Pseudocode n="private_are_def">
@@ -1088,7 +1102,7 @@ export const encodings = (
                     commented: {
                       comment: (
                         <>
-                          The <R n="area_include">containing</R> <R n="Area" />
+                          The <R n="almost_include">almost containing</R> <R n="Area" />
                           {" "}
                           relative to which we encode.
                         </>
@@ -1105,7 +1119,7 @@ export const encodings = (
             </Pseudocode>
 
             <EncodingRelationRelativeTemplate
-              n="EncodePrivateAreaInArea"
+              n="EncodePrivateAreaAlmostInArea"
               valType={<R n="Area" />}
               relToDescription={
                 <>
@@ -1221,12 +1235,19 @@ export const encodings = (
               contents={[
                 <EncConditional
                   condition={
-                    <Code>
-                      <ValAccess field="AreaSubspace" /> !={" "}
-                      <AccessStruct field="AreaSubspace">
-                        <RelAccess field="PrivateAreaContextRel" />
-                      </AccessStruct>
-                    </Code>
+                    <>
+                      <Code>
+                        <ValAccess field="AreaSubspace" /> !={" "}
+                        <R n="range_open" />
+                      </Code>{" "}
+                      and{" "}
+                      <Code>
+                        <ValAccess field="AreaSubspace" /> !={" "}
+                        <AccessStruct field="AreaSubspace">
+                          <RelAccess field="PrivateAreaContextRel" />
+                        </AccessStruct>
+                      </Code>
+                    </>
                   }
                 >
                   <CodeFor notStandalone enc="encode_subspace_id">
@@ -1324,10 +1345,7 @@ export const encodings = (
                     <RelAccess field="ppi_pi" />
                   </AccessStruct>, and such that <RelAccess field="ppi_user" />
                   {" "}
-                  is equal to the final <R n="UserPublicKey" /> in{" "}
-                  <ValAccess field="communal_cap_delegations" />{" "}
-                  (if there is at least one delegation), or equal to{" "}
-                  <ValAccess field="communal_cap_user" /> otherwise
+                  is equal to the <R n="communal_cap_receiver" /> of <ValName />
                 </>
               }
               shortRelToDescription={<R n="PersonalPrivateInterest" />}
@@ -1387,7 +1405,7 @@ export const encodings = (
                     bitfields={[]}
                     contents={[
                       <CodeFor
-                        enc="EncodePrivateAreaInArea"
+                        enc="EncodePrivateAreaAlmostInArea"
                         relativeTo={
                           <M>
                             <R n="ccrpi_ctx_i">
@@ -1410,13 +1428,13 @@ export const encodings = (
                 <EncConditional
                   condition={
                     <>
-                      the number of pairs in{" "}
+                      the number of triplets in{" "}
                       <ValAccess field="communal_cap_delegations" /> is nonzero
                     </>
                   }
                 >
                   <CodeFor
-                    enc="EncodePrivateAreaInArea"
+                    enc="EncodePrivateAreaAlmostInArea"
                     relativeTo={
                       <>
                         <M>
@@ -1436,7 +1454,7 @@ export const encodings = (
                 <EncConditional
                   condition={
                     <>
-                      the number of pairs in{" "}
+                      the number of triplets in{" "}
                       <ValAccess field="communal_cap_delegations" /> is nonzero
                     </>
                   }
@@ -1455,9 +1473,178 @@ export const encodings = (
             title="Owned Capability Encoding"
             shortTitle="Owned Capability"
           >
-            <P>
-              <Alj inline>TODO</Alj>
-            </P>
+            <EncodingRelationRelativeTemplate
+              n="EncodeOwnedCapabilityRelativePrivateInterest"
+              valType={<R n="OwnedCapability" />}
+              valRestriction={
+                <>
+                  with{" "}
+                  <Code>
+                    <ValAccess field="owned_cap_access_mode" /> =={" "}
+                    <R n="access_read" />
+                  </Code>
+                </>
+              }
+              relToDescription={
+                <>
+                  <R n="PersonalPrivateInterest" /> with{" "}
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <RelAccess field="ppi_pi" />
+                    </AccessStruct>{" "}
+                    == <ValAccess field="subspace_cap_namespace" />
+                  </Code>, whose{" "}
+                  <AccessStruct field="pi_ss">
+                    <RelAccess field="ppi_pi" />
+                  </AccessStruct>{" "}
+                  is a specific <R n="SubspaceId" /> only if the{" "}
+                  <R n="owned_cap_granted_area" /> of <ValName /> has that{" "}
+                  <R n="SubspaceId" /> as its <R n="AreaSubspace" />,{" "}
+                  , and such that the <R n="AreaPath" /> of the{" "}
+                  <R n="owned_cap_granted_area" /> of <ValName /> is a{" "}
+                  <R n="path_prefix" /> of{" "}
+                  <AccessStruct field="pi_path">
+                    <RelAccess field="ppi_pi" />
+                  </AccessStruct>, and such that <RelAccess field="ppi_user" />
+                  {" "}
+                  is equal to the <R n="owned_cap_receiver" /> of <ValName />
+                </>
+              }
+              shortRelToDescription={<R n="PersonalPrivateInterest" />}
+              preDefs={
+                <P>
+                  To efficiently and privately encode the <Rs n="Area" /> in the
+                  {" "}
+                  <R n="owned_cap_delegations" /> of{" "}
+                  <ValName />, we define a sequence of{" "}
+                  <Rs n="PrivateAreaContext" />.{" "}
+                  <M>
+                    <DefValue n="owrpi_ctx_i" r="ctx_i" />
+                  </M>{" "}
+                  is the <R n="PrivateAreaContext" /> whose{" "}
+                  <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
+                  {" "}
+                  <R n="PrivateAreaContextRel" /> is the <M>i</M>-th{" "}
+                  <R n="Area" /> in{" "}
+                  <ValAccess field="owned_cap_delegations" />. Further, we
+                  define{" "}
+                  <M>
+                    <Def n="owrpi_ctx_base" r="ctx_{-1}" />
+                  </M>{" "}
+                  as the <R n="PrivateAreaContext" /> whose{" "}
+                  <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
+                  {" "}
+                  <R n="PrivateAreaContextRel" /> is the <R n="subspace_area" />
+                  {" "}
+                  of <R n="SubspaceId" />{" "}
+                  <AccessStruct field="pi_ss">
+                    <AccessStruct field="ppi_pi">
+                      <RelAccess field="PrivateAreaContextPrivate" />
+                    </AccessStruct>
+                  </AccessStruct>{" "}
+                  if that is not <R n="area_any" />, or the <R n="full_area" />
+                  {" "}
+                  if it <Em>is</Em> <R n="area_any" />.
+                </P>
+              }
+              bitfields={[]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      the number of triplets in{" "}
+                      <ValAccess field="owned_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_pk" isFunction notStandalone>
+                    <ValAccess field="owned_cap_user" />
+                  </CodeFor>
+                </EncConditional>,
+                <CodeFor enc="encode_user_sig" isFunction>
+                  <ValAccess field="owned_cap_initial_authorisation" />
+                </CodeFor>,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_ocap_rel_area" r="area" />,
+                          <DefValue n="enc_ocap_rel_pk" r="pk" />,
+                          <DefValue n="enc_ocap_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="owned_cap_delegations" />}
+                  skipLast
+                >
+                  <Encoding
+                    idPrefix="enc_ocap_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="EncodePrivateAreaAlmostInArea"
+                        relativeTo={
+                          <M>
+                            <R n="owrpi_ctx_i">
+                              ctx_<Curly>i - 1</Curly>
+                            </R>
+                          </M>
+                        }
+                      >
+                        <R n="enc_ocap_rel_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk">
+                        <R n="enc_ocap_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig">
+                        <R n="enc_ocap_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of triplets in{" "}
+                      <ValAccess field="owned_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor
+                    enc="EncodePrivateAreaAlmostInArea"
+                    relativeTo={
+                      <>
+                        <M>
+                          <R n="owrpi_ctx_i">
+                            ctx_<Curly>i - 1</Curly>
+                          </R>
+                        </M>{" "}
+                        (where <M>i</M> is the length of{" "}
+                        <ValAccess field="owned_cap_delegations" /> minus one)
+                      </>
+                    }
+                  >
+                    <R n="enc_ocap_rel_area" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      the number of triplets in{" "}
+                      <ValAccess field="owned_cap_delegations" /> is nonzero
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_sig">
+                    the final <R n="UserSignature" /> in{" "}
+                    <ValAccess field="owned_cap_delegations" />
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
           </Hsection>
 
           <Hsection

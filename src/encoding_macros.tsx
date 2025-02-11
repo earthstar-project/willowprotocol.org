@@ -351,6 +351,7 @@ export function EncodingRelationTemplate(
                 {valRestriction
                   ? (
                     <>
+                      {" "}
                       <exps x={valRestriction} />
                     </>
                   )
@@ -376,6 +377,7 @@ export function EncodingRelationTemplate(
               {valRestriction
                 ? (
                   <>
+                    {" "}
                     <exps x={valRestriction} />
                   </>
                 )
@@ -440,6 +442,7 @@ export function EncodingRelationRelativeTemplate(
                 {valRestriction
                   ? (
                     <>
+                      {" "}
                       <exps x={valRestriction} />
                     </>
                   )
@@ -474,6 +477,7 @@ export function EncodingRelationRelativeTemplate(
               {valRestriction
                 ? (
                   <>
+                    {" "}
                     <exps x={valRestriction} />
                   </>
                 )
@@ -485,6 +489,7 @@ export function EncodingRelationRelativeTemplate(
               {valRestriction
                 ? (
                   <>
+                    {" "}
                     <exps x={valRestriction} />
                   </>
                 )
