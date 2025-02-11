@@ -131,10 +131,7 @@ export const misc_definitions = (
 
             <P>
               We keep a changelog and RSS feed of all changes to{" "}
-              <SkyBlue>
-                <R n="status_candidate" />
-              </SkyBlue>{" "}
-              specifications <R n="spec_changes" />.
+              <R n="status_candidate" /> specifications <R n="spec_changes" />.
             </P>
           </PreviewScope>
 
