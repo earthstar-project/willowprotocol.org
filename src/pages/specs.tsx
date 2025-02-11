@@ -53,7 +53,10 @@ export const specs = (
             <R n="grouping_entries">Grouping Entries</R>
           </Li>
           <Li>
-            <R n="encodings">Grouping Entries</R>
+            <R n="encodings">On Encodings</R>
+          </Li>
+          <Li>
+            <R n="e2e">Encrypting Entries</R>
           </Li>
           <Li>
             <R n="access_control">Access Control</R>
