@@ -854,10 +854,10 @@ function linkTag(opts: {
       if (isMathMode(opts.ctx)) {
         return mathLink({
           url: "#",
-          children: "invalid-reference",
+          children: `??${opts.name}??`,
         });
       } else {
-        return <A href="#">invalid-reference</A>;
+        return <A href="#" style="color: #ff0000;">??{opts.name}??</A>;
       }
     } else {
       return null;
