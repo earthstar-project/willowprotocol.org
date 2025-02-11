@@ -1317,8 +1317,8 @@ export const lcmux = (
                 <Li>
                   Initially, a <R n="resource_handle" /> is{" "}
                   <DefVariant
-                    defClass="fully-bound-dr"
-                    refClass="fully-bound-dr"
+                    defClass="lcmux-dr fully-bound-dr"
+                    refClass="lcmux-dr fully-bound-dr"
                     n="FullyBound"
                   />.
                 </Li>
@@ -1327,8 +1327,8 @@ export const lcmux = (
                   <R n="handle_free" /> a <R n="FullyBound" />{" "}
                   <R n="resource_handle" />, that peer marks it as{" "}
                   <DefVariant
-                    defClass="me-freed-dr"
-                    refClass="me-freed-dr"
+                    defClass="lcmux-dr me-freed-dr"
+                    refClass="lcmux-dr me-freed-dr"
                     n="MeFreed"
                   />.
                 </Li>
@@ -1337,8 +1337,8 @@ export const lcmux = (
                   <R n="handle_free" /> a <R n="FullyBound" />{" "}
                   <R n="resource_handle" />, that peer marks it as{" "}
                   <DefVariant
-                    defClass="you-freed-dr"
-                    refClass="you-freed-dr"
+                    defClass="lcmux-dr you-freed-dr"
+                    refClass="lcmux-dr you-freed-dr"
                     n="YouFreed"
                   />
                 </Li>
@@ -1347,8 +1347,8 @@ export const lcmux = (
                   <R n="handle_free">freeing</R>, a <R n="MeFreed" /> or{" "}
                   <R n="YouFreed" /> <R n="resource_handle" /> is{" "}
                   <DefVariant
-                    defClass="awaiting-deletion-dr"
-                    refClass="awaiting-deletion-dr"
+                    defClass="lcmux-dr awaiting-deletion-dr"
+                    refClass="lcmux-dr awaiting-deletion-dr"
                     n="AwaitingDeletion"
                   />.
                 </Li>
@@ -1359,8 +1359,8 @@ export const lcmux = (
                   <R n="AwaitingDeletion" /> in the future, the{" "}
                   <R n="resource_handle" /> is{" "}
                   <DefVariant
-                    defClass="fully-deleted-dr"
-                    refClass="fully-deleted-dr"
+                    defClass="lcmux-dr fully-deleted-dr"
+                    refClass="lcmux-dr fully-deleted-dr"
                     n="FullyDeleted"
                   />. This state typically requires no explicit representation
                   in memory, because the peer would actually release the
@@ -1460,8 +1460,8 @@ export const lcmux = (
                   optimistically, it starts out{" "}
                   <DefVariant
                     n="HopefullyBound"
-                    defClass="hopefully-bound-dr"
-                    refClass="hopefully-bound-dr"
+                    defClass="lcmux-dr hopefully-bound-dr"
+                    refClass="lcmux-dr hopefully-bound-dr"
                   />; sufficient <Rs n="guarantee" /> lead to a transition to
                   {" "}
                   <R n="FullyBound" />.
@@ -1472,8 +1472,8 @@ export const lcmux = (
                   that it itself had bound optimistically, the resulting state
                   is called{" "}
                   <DefVariant
-                    defClass="hopefully-me-freed-dr"
-                    refClass="hopefully-me-freed-dr"
+                    defClass="lcmux-dr hopefully-me-freed-dr"
+                    refClass="lcmux-dr hopefully-me-freed-dr"
                     n="HopefullyMeFreed"
                   />. Suffcient <Rs n="guarantee" /> lead to a transition to
                   {" "}
@@ -1485,8 +1485,8 @@ export const lcmux = (
                   indicates that the <R n="resource_handle" />{" "}
                   was never bound it the first place, it got{" "}
                   <DefVariant
-                    defClass="dropped-dr"
-                    refClass="dropped-dr"
+                    defClass="lcmux-dr dropped-dr"
+                    refClass="lcmux-dr dropped-dr"
                     n="Dropped"
                   />. Implementations probably do not need to represent this
                   variant explicitly.
