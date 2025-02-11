@@ -1,7 +1,10 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { P } from "macromania-html";
+import { Img, Li, Nav, P, Ul } from "macromania-html";
 import { Alj } from "../macros.tsx";
+import { ResolveAsset } from "macromania-assets";
+import { Marginale } from "macromania-marginalia";
+import { R } from "macromania-defref";
 
 export const specs = (
   <File name="index.html">
@@ -11,52 +14,79 @@ export const specs = (
       heading={"Specifications"}
     >
       <P>
-        <Alj inline>TODO</Alj>
+        <Alj>aaarg link colouring!</Alj>
+        <Marginale>
+          <Img
+            src={<ResolveAsset asset={["specs", "emblems.png"]} />}
+            alt={`An illustration of the four emblems of Willow’s specifications laid out somewhat like playing cards.`}
+          />
+        </Marginale>
+        Willow is a family of specifications:
       </P>
 
-      {
-        /*
-      marginale([
-      img(asset("specs/emblems.png"), "An illustration of the four emblems of Willow's specifications laid out somewhat like playing cards.")
-    ]),
+      <Ul>
+        <Li>
+          <R n="data_model">Data Model</R>: The fundamental data model, a system
+          for giving structured names to bytestrings.
+        </Li>
+        <Li>
+          <R n="meadowcap">Meadowcap</R>: A capability system for controlling
+          access to Willow data.
+        </Li>
+        <Li>
+          <R n="sync">Synchronisation</R>: A network protocol for efficiently
+          and privately synchronising Willow data.
+        </Li>
+        <Li>
+          <R n="sideloading">Sideloading</R>: A protocol for securely delivering
+          Willow data by whatever means possible.
+        </Li>
+      </Ul>
 
-    pinformative("Willow is a family of specifications:"),
+      <P>
+        These main specifications rely on several common concepts:
+      </P>
 
-    lis(
-      [link_name("data_model", "Data Model"), ": The fundamental data model, a system for giving structured names to bytestrings."],
-      [link_name("meadowcap", "Meadowcap"), ": A capability system for controlling access to Willow data."],
-      [link_name("sync", "Synchronisation"), ": A network protocol for efficiently and privately synchronising Willow data."],
-      [link_name("sideloading", "Sideloading"), ": A protocol for securely delivering Willow data by whatever means possible."]
-    ),
+      <Nav>
+        <Ul>
+          <Li>
+            <R n="grouping_entries">Grouping Entries</R>
+          </Li>
+          <Li>
+            <R n="encodings">Grouping Entries</R>
+          </Li>
+          <Li>
+            <R n="access_control">Access Control</R>
+          </Li>
+          <Li>
+            <R n="private_interest_intersection">
+              Private Interest Intersection
+            </R>
+          </Li>
+          <Li>
+            <R n="d3_range_based_set_reconciliation">
+              3d Range-Based Set Reconciliation
+            </R>
+          </Li>
+          <Li>
+            <R n="lcmux">Multiplexing and Flow Control</R>
+          </Li>
+        </Ul>
+      </Nav>
 
-    pinformative("These main specifications rely on several common concepts:"),
+      <P>
+        And until we build our own fancy cross-domain referencing system, this
+        site is the temporary home for:
+      </P>
 
-    nav(
-      lis(
-        link_name("grouping_entries", "Grouping Entries"),
-        link_name("encodings", "On Encodings"),
-        link_name("e2e", "Encrypting Entries"),
-        link_name("access_control", "Access Control"),
-        link_name("private_area_intersection", "Private Area Intersection"),
-        link_name("d3_range_based_set_reconciliation", "3d Range-Based Set Reconciliation"),
-        link_name("resource_control", "Multiplexing and Flow Control"),
-      ),
-    ),
-
-    pinformative("And until we build our own fancy cross-domain referencing system, this site is the temporary home for:"),
-
-    nav(
-      lis(
-        [link_name("es6_spec", "Earthstar"), ": a friendly set of parameters for the Willow protocol."]
-      )
-    ),
-
-    surpress_output(def_type("U64", "U64", ["The type of unsigned 64 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("2^64"), "."])),
-    surpress_output(def_type("U8", "U8", ["The type of unsigned 8 bit integers, that is, the type of natural numbers greater than or equal to ", code("0"), " and strictly less than ", code("256"), "."])),
-    surpress_output(def_type("Bool", "Bool", ["The type of the two truth values ", code("true"), " and ", code("false"), "."])),
-    surpress_output(def("iff", "iff", ["An abbreviation of ", link("if and only if", "https://en.wikipedia.org/wiki/If_and_only_if"), "."])),
-  ], */
-      }
+      <Nav>
+        <Ul>
+          <Li>
+            <R n="es6_spec">Earthstar</R>: a friendly set of parameters for the
+            Willow protocol.
+          </Li>
+        </Ul>
+      </Nav>
     </PageTemplate>
   </File>
 );

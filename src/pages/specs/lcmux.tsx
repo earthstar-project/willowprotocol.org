@@ -48,7 +48,7 @@ export const lcmux = (
     <File name="index.html">
       <PageTemplate
         htmlTitle="LCMUX"
-        headingId="LCMUX"
+        headingId="lcmux"
         heading={"LCMUX"}
         status="proposal"
         statusDate="24.01.2025"
