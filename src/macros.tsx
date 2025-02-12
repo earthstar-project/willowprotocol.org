@@ -446,7 +446,7 @@ export function MarginCaption(
 }
 
 /**
- * Like `Figcaption`, but it works in marginalia.
+ * A long aside that goes in the main block
  */
 export function AsideBlock(
   { children }: { children: Expressions },
@@ -457,3 +457,7 @@ export function AsideBlock(
     </Aside>
   );
 }
+
+/**
+ * A definition with a little icon preceding it.
+ */
