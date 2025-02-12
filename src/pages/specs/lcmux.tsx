@@ -14,6 +14,7 @@ import {
   Alj,
   Blue,
   Curly,
+  Gwil,
   NoWrap,
   Path,
   Purple,
@@ -1370,7 +1371,10 @@ export const lcmux = (
             </PreviewScope>
 
             <Figure>
-              <Alj>I feel like this drawing could be improved somehow.</Alj>
+              <Gwil>
+                We need to define what 'flush' means somewhere. Also, should we
+                define the starting state (pointing right hand)? Or nah?
+              </Gwil>
               <Img
                 src={
                   <ResolveAsset
@@ -1495,9 +1499,10 @@ export const lcmux = (
             </PreviewScope>
 
             <Figure>
-              <Alj>
-                I really feel like this drawing could be improved somehow.
-              </Alj>
+              <Gwil>
+                Receiver side image is in assets, just need to include it
+                someplace
+              </Gwil>
               <Img
                 clazz="wide"
                 src={
