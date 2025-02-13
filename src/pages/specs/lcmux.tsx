@@ -14,6 +14,7 @@ import {
   Alj,
   Blue,
   Curly,
+  Gwil,
   NoWrap,
   Path,
   Purple,
@@ -42,6 +43,7 @@ import { ResolveAsset } from "macromania-assets";
 import { M } from "macromania-katex";
 import { Loc, Pseudocode } from "macromania-pseudocode";
 import { DefVariant, SliceType, StructDef } from "macromania-rustic";
+import { StylesheetDependency } from "macromania-html-utils";
 
 export const lcmux = (
   <Dir name="lcmux">
@@ -54,6 +56,7 @@ export const lcmux = (
         statusDate="24.01.2025"
         toc
       >
+        <StylesheetDependency dep={["lcmux", "icon_defs.css"]} />
         <P>
           LCMUX (<B>L</B>ogical <B>C</B>hannel{" "}
           <B>Mu</B>ltiple<B>x</B>ing) is a transport protocol to allow
@@ -1314,25 +1317,41 @@ export const lcmux = (
               <Ul>
                 <Li>
                   Initially, a <R n="resource_handle" /> is{" "}
-                  <DefVariant n="FullyBound" />.
+                  <DefVariant
+                    defClass="lcmux-dr fully-bound-dr"
+                    refClass="lcmux-dr fully-bound-dr"
+                    n="FullyBound"
+                  />.
                 </Li>
                 <Li>
                   After a peer <Em>sends</Em> a message asking to{" "}
                   <R n="handle_free" /> a <R n="FullyBound" />{" "}
                   <R n="resource_handle" />, that peer marks it as{" "}
-                  <DefVariant n="MeFreed" />.
+                  <DefVariant
+                    defClass="lcmux-dr me-freed-dr"
+                    refClass="lcmux-dr me-freed-dr"
+                    n="MeFreed"
+                  />.
                 </Li>
                 <Li>
                   When a peer <Em>receives</Em> a message asking to{" "}
                   <R n="handle_free" /> a <R n="FullyBound" />{" "}
                   <R n="resource_handle" />, that peer marks it as{" "}
-                  <DefVariant n="YouFreed" />
+                  <DefVariant
+                    defClass="lcmux-dr you-freed-dr"
+                    refClass="lcmux-dr you-freed-dr"
+                    n="YouFreed"
+                  />
                 </Li>
                 <Li>
                   Once both peers have sent their messages for{" "}
                   <R n="handle_free">freeing</R>, a <R n="MeFreed" /> or{" "}
                   <R n="YouFreed" /> <R n="resource_handle" /> is{" "}
-                  <DefVariant n="AwaitingDeletion" />.
+                  <DefVariant
+                    defClass="lcmux-dr awaiting-deletion-dr"
+                    refClass="lcmux-dr awaiting-deletion-dr"
+                    n="AwaitingDeletion"
+                  />.
                 </Li>
                 <Li>
                   Once a peer knows for sure that it will not process any old
@@ -1340,18 +1359,27 @@ export const lcmux = (
                   {" "}
                   <R n="AwaitingDeletion" /> in the future, the{" "}
                   <R n="resource_handle" /> is{" "}
-                  <DefVariant n="FullyDeleted" />. This state typically requires
-                  no explicit representation in memory, because the peer would
-                  actually release the storage.
+                  <DefVariant
+                    defClass="lcmux-dr fully-deleted-dr"
+                    refClass="lcmux-dr fully-deleted-dr"
+                    n="FullyDeleted"
+                  />. This state typically requires no explicit representation
+                  in memory, because the peer would actually release the
+                  storage.
                 </Li>
               </Ul>
             </PreviewScope>
 
             <Figure>
-              <Alj>I feel like this drawing could be improved somehow.</Alj>
+              <Gwil>
+                We need to define what 'flush' means somewhere. Also, should we
+                define the starting state (pointing right hand)? Or nah?
+              </Gwil>
               <Img
                 src={
-                  <ResolveAsset asset={["lcmux", "handle_states_simple.png"]} />
+                  <ResolveAsset
+                    asset={["lcmux", "handles", "simple_graph.png"]}
+                  />
                 }
                 alt={`A state-transition diagram of the freeing process for data handles.`}
               />
@@ -1434,16 +1462,25 @@ export const lcmux = (
                 <Li>
                   When binding a <Rs n="resource_handle" />{" "}
                   optimistically, it starts out{" "}
-                  <DefVariant n="HopefullyBound" />; sufficient{" "}
-                  <Rs n="guarantee" /> lead to a transition to{" "}
+                  <DefVariant
+                    n="HopefullyBound"
+                    defClass="lcmux-dr hopefully-bound-dr"
+                    refClass="lcmux-dr hopefully-bound-dr"
+                  />; sufficient <Rs n="guarantee" /> lead to a transition to
+                  {" "}
                   <R n="FullyBound" />.
                 </Li>
                 <Li>
                   A peer can request <R n="handle_free">freeing</R> of a{" "}
                   <R n="resource_handle" />{" "}
                   that it itself had bound optimistically, the resulting state
-                  is called <DefVariant n="HopefullyMeFreed" />. Suffcient{" "}
-                  <Rs n="guarantee" /> lead to a transition to{" "}
+                  is called{" "}
+                  <DefVariant
+                    defClass="lcmux-dr hopefully-me-freed-dr"
+                    refClass="lcmux-dr hopefully-me-freed-dr"
+                    n="HopefullyMeFreed"
+                  />. Suffcient <Rs n="guarantee" /> lead to a transition to
+                  {" "}
                   <R n="MeFreed" />.
                 </Li>
                 <Li>
@@ -1451,17 +1488,27 @@ export const lcmux = (
                   <R n="HopefullyBound" /> or <R n="HopefullyMeFreed" />{" "}
                   indicates that the <R n="resource_handle" />{" "}
                   was never bound it the first place, it got{" "}
-                  <DefVariant n="Dropped" />. Implementations probably do not
-                  need to represent this variant explicitly.
+                  <DefVariant
+                    defClass="lcmux-dr dropped-dr"
+                    refClass="lcmux-dr dropped-dr"
+                    n="Dropped"
+                  />. Implementations probably do not need to represent this
+                  variant explicitly.
                 </Li>
               </Ul>
             </PreviewScope>
 
             <Figure>
-              <Alj>I feel like this drawing could be improved somehow.</Alj>
+              <Gwil>
+                Receiver side image is in assets, just need to include it
+                someplace
+              </Gwil>
               <Img
+                clazz="wide"
                 src={
-                  <ResolveAsset asset={["lcmux", "handle_states_full.png"]} />
+                  <ResolveAsset
+                    asset={["lcmux", "handles", "optimistic_graph_sender.png"]}
+                  />
                 }
                 alt={`The full state-transition diagram for optimistically bound data handles.`}
               />
