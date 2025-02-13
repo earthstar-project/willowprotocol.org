@@ -40,7 +40,8 @@ export const data_model = (
             alt={`A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`}
           />
         </P>
-{/* 
+        {
+          /*
         pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
 
 pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
@@ -75,18 +76,20 @@ figure(
 pinformative("This constitutes a full overview of the data model of Willow. Applications read and write payloads from and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
 
 pinformative( "Now we can ", em("almost"), " delve into the precise definition of these concepts."),
-*/}
+          */
+        }
 
         <Hsection n="willow_parameters" title="Parameters">
           <P>
             <Alj inline>TODO: introductory text</Alj>
           </P>
-{/* 
+          {
+            /*
           pinformative("Some questions in protocol design have no clear-cut answer. Should namespaces be identified via human-readable strings, or via the public keys of some digital signature scheme? That depends entirely on the use-case. To sidestep such questions, the Willow data model is ", em("generic"), " over certain choices of parameters. You can instantiate Willow to use strings as the identifiers of namespaces, or you could have it use 256 bit integers, or urls, or iris scans, etc."),
 
 pinformative("This makes Willow a higher-order protocol: you supply a set of specific choices for its parameters, and in return you get a concrete protocol that you can then use. If different systems instantiate Willow with non-equal parameters, the results will not be interoperable, even though both systems use Willow."),
-*/}
-
+            */
+          }
 
           <P>
             <Marginale>
@@ -274,6 +277,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
                   bytes.
                 </P>
               }
+              rs="Payloads"
             />.
           </P>
 
@@ -445,7 +449,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
                 <Path components={["ab"]} />.
               </Marginale>
               A <R n="Path" /> <DefValue n="prefix_s" r="s" /> is a{" "}
-              <Def n="path_prefix" r="prefix" rs="prefixes" /> of a{" "}
+              <Def n="path_prefix" r="path_prefix" rs="prefixes" /> of a{" "}
               <R n="Path" /> <DefValue n="prefix_t" r="t" /> if the first{" "}
               <Rs n="Component" /> of <R n="prefix_t" /> are exactly the{" "}
               <Rs n="Component" /> of{" "}
@@ -707,7 +711,8 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
           <P>
             <Alj inline>TODO</Alj>
           </P>
-{/* 
+          {
+            /*
           pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
 
       pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
@@ -723,8 +728,8 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
       pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
 
       pinformative("How can I contribute to Willow and support it? So glad you asked — we have prepared a collection of pointers ", link_name("projects_and_communities", "here"), "."),
-    */}
-
+    */
+          }
         </Hsection>
 
         <Img

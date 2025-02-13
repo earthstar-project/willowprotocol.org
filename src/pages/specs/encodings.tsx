@@ -1127,7 +1127,7 @@ export const encodings = (
                   <RelAccess field="PrivateAreaContextRel" />{" "}
                   <R n="area_include">includes</R> <ValName /> and{" "}
                   <RelAccess field="PrivateAreaContextPrivate" />{" "}
-                  <R n="pi_include">includes</R> to <RelName />
+                  <R n="pi_include_area">includes</R> to <RelName />
                 </>
               }
               preDefs={
