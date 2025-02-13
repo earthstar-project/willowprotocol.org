@@ -986,9 +986,7 @@ export const encodings = (
               }
               preDefs={
                 <P>
-                  Let <DefValue n="eppep_val_count" r="val_count" />{" "}
-                  be the number of components in <ValName />. Let{" "}
-                  <DefValue n="eppep_rel_count" r="rel_count" />{" "}
+                  Let{"  "}<DefValue n="eppep_rel_count" r="rel_count" />{" "}
                   be the number of components in{" "}
                   <RelAccess field="PrivatePathContextRel" />. Let{" "}
                   <DefValue n="eppep_private_count" r="private_count" />{" "}
@@ -1003,37 +1001,56 @@ export const encodings = (
                   condition={
                     <>
                       <Code>
+                        <R n="eppep_private_count" />
+                        {" <= "}
                         <R n="eppep_rel_count" />
-                        {" < "}
-                        <R n="eppep_private_count" />
                       </Code>
                     </>
                   }
-                >
-                  <C64Standalone notStandalone>
-                    <Code>
-                      min(<R n="eppep_val_count" />,{" "}
-                      <R n="eppep_private_count" />) - <R n="eppep_rel_count" />
-                    </Code>
-                  </C64Standalone>
-                </EncConditional>,
-                <EncConditional
-                  condition={
+                  otherwise={
                     <>
-                      <Code>
-                        <R n="eppep_val_count" />
-                        {" >= "}
-                        <R n="eppep_private_count" />
-                      </Code>
+                      The concatenation of the following bytestrings:
+
+                      <Encoding
+                        bitfields={[]}
+                        idPrefix="ppep_inner"
+                        contents={[
+                          <C64Standalone>
+                            the number of <Rs n="Component" />{" "}
+                            in the longest common <R n="path_prefix" /> of{" "}
+                            <ValName /> and{" "}
+                            <RelAccess field="PrivatePathContextPrivate" />
+                          </C64Standalone>,
+                          <EncConditional
+                            condition={
+                              <>
+                                <RelAccess field="PrivatePathContextPrivate" />
+                                {" "}
+                                is a <R n="path_prefix" /> of <ValName />
+                              </>
+                            }
+                          >
+                            <CodeFor
+                              notStandalone
+                              enc="EncodePathExtendsPath"
+                              relativeTo={
+                                <RelAccess field="PrivatePathContextPrivate" />
+                              }
+                            >
+                              <ValName />
+                            </CodeFor>
+                          </EncConditional>,
+                        ]}
+                      />
                     </>
                   }
                 >
-                  <CodeFor enc="EncodePathExtendsPath" notStandalone>
-                    the <R n="path_difference" /> from{" "}
-                    <RelAccess field="PrivatePathContextPrivate" /> to{" "}
-                    <ValName />, or the <R n="path_difference" /> from{" "}
-                    <RelAccess field="PrivatePathContextRel" /> to{" "}
-                    <ValName />, whichever is shorter
+                  <CodeFor
+                    notStandalone
+                    enc="EncodePathExtendsPath"
+                    relativeTo={<RelAccess field="PrivatePathContextRel" />}
+                  >
+                    <ValName />
                   </CodeFor>
                 </EncConditional>,
               ]}
@@ -1102,9 +1119,8 @@ export const encodings = (
                     commented: {
                       comment: (
                         <>
-                          The <R n="almost_include">almost containing</R> <R n="Area" />
-                          {" "}
-                          relative to which we encode.
+                          The <R n="almost_include">almost containing</R>{" "}
+                          <R n="Area" /> relative to which we encode.
                         </>
                       ),
                       dedicatedLine: true,

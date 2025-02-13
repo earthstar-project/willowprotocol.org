@@ -449,7 +449,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
                 <Path components={["ab"]} />.
               </Marginale>
               A <R n="Path" /> <DefValue n="prefix_s" r="s" /> is a{" "}
-              <Def n="path_prefix" r="path_prefix" rs="prefixes" /> of a{" "}
+              <Def n="path_prefix" r="prefix" rs="prefixes" /> of a{" "}
               <R n="Path" /> <DefValue n="prefix_t" r="t" /> if the first{" "}
               <Rs n="Component" /> of <R n="prefix_t" /> are exactly the{" "}
               <Rs n="Component" /> of{" "}
