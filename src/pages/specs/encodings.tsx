@@ -1174,7 +1174,7 @@ export const encodings = (
                 ),
                 bitfieldIff(
                   <Code>
-                    <ValAccess field="AreaSubspace" /> == <R n="range_open" />
+                    <ValAccess field="AreaSubspace" /> == <R n="area_any" />
                   </Code>,
                 ),
                 bitfieldIff(<R n="epaia_start_from_start" />),
