@@ -1143,24 +1143,39 @@ export const encodings = (
                   <RelAccess field="PrivateAreaContextRel" />{" "}
                   <R n="area_include">includes</R> <ValName /> and{" "}
                   <RelAccess field="PrivateAreaContextPrivate" />{" "}
-                  <R n="pi_include_area">includes</R> to <RelName />
+                  <R n="almost_include">almost includes</R>{" "}
+                  <RelAccess field="PrivateAreaContextRel" />
                 </>
               }
               preDefs={
-                <P>
-                  Let{" "}
-                  <DefValue n="epaia_start_from_start" r="start_from_start" />
-                  {" "}
-                  and <DefValue n="epaia_end_from_start" r="end_from_start" />
-                  {" "}
-                  be arbitrary <Rs n="Bool" />. If{" "}
-                  <AccessStruct field="TimeRangeEnd">
-                    <AccessStruct field="AreaTime">
-                      <RelAccess field="PrivateAreaContextRel" />
-                    </AccessStruct>
-                  </AccessStruct>{" "}
-                  is <R n="range_open" />, they must both be <Code>true</Code>.
-                </P>
+                <>
+                  <P>
+                    Let{" "}
+                    <DefValue n="epaia_start_from_start" r="start_from_start" />
+                    {" "}
+                    and <DefValue n="epaia_end_from_start" r="end_from_start" />
+                    {" "}
+                    be arbitrary <Rs n="Bool" />. If{" "}
+                    <AccessStruct field="TimeRangeEnd">
+                      <AccessStruct field="AreaTime">
+                        <RelAccess field="PrivateAreaContextRel" />
+                      </AccessStruct>
+                    </AccessStruct>{" "}
+                    is <R n="range_open" />, then
+                  </P>
+                  <Ul>
+                    <Li>
+                      <R n="epaia_start_from_start" /> must be{" "}
+                      <Code>true</Code>, and
+                    </Li>
+                    <Li>
+                      <R n="epaia_end_from_start" /> must be <Code>true</Code>
+                      {" "}
+                      if and only if <ValAccess field="TimeRangeEnd" /> is{" "}
+                      <R n="range_open" />.
+                    </Li>
+                  </Ul>
+                </>
               }
               shortRelToDescription={<R n="PrivateAreaContext" />}
               bitfields={[

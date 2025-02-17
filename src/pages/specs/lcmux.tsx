@@ -16,15 +16,19 @@ import {
   Curly,
   Gwil,
   NoWrap,
+  Orange,
   Path,
   Purple,
   Quotes,
+  SkyBlue,
   Vermillion,
 } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
+  A,
   B,
   Br,
+  Code,
   Em,
   Figcaption,
   Figure,
@@ -1172,8 +1176,8 @@ export const lcmux = (
           <P>
             <Marginale>
               While this section is not part of the LCMUX specification proper,
-              it does inform the requirements on useful LCMUX implementations,
-              particularly if they are to be useful for Willow.
+              it does inform implementation, particularly implementations to be
+              useful for Willow.
             </Marginale>
             In this section, we discuss how to implement a common special case
             of resource control on top of LCMUX: that of maintaining numeric
@@ -1217,8 +1221,8 @@ export const lcmux = (
           <P>
             Since both the <R n="handle_c" /> and the <R n="handle_s" />{" "}
             must keep track of all{" "}
-            <Rs n="resource_handle" />, they should both be able to remove
-            bindings. We call this operation{" "}
+            <Rs n="resource_handle" />, they should both be able to recover
+            resources by removing bindings. We call this operation{" "}
             <Def n="handle_free" r="free">freeing</Def> a{" "}
             <R n="resource_handle" />.
           </P>
@@ -1288,7 +1292,7 @@ export const lcmux = (
                 <Rs n="resource_handle" /> of the <R n="handle_type" />{" "}
                 in question). Once all these bytes have been processed,
                 releasing the data is safe. Alternatively, when moving data into
-                an LCMUX buffer, a peer can scan that data for references{" "}
+                an LCMUX buffer, a peer can scan that data for{" "}
                 <Rs n="resource_handle" />, and increment a reference count for
                 each{" "}
                 <R n="resource_handle" />. Processing such a message reduces the
@@ -1372,8 +1376,7 @@ export const lcmux = (
 
             <Figure>
               <Gwil>
-                We need to define what 'flush' means somewhere. Also, should we
-                define the starting state (pointing right hand)? Or nah?
+                We need to define what 'flush' means somewhere.
               </Gwil>
               <Img
                 src={
@@ -1384,8 +1387,17 @@ export const lcmux = (
                 alt={`A state-transition diagram of the freeing process for data handles.`}
               />
               <Figcaption>
-                The possible states of a <R n="resource_handle" /> while{" "}
-                <R n="handle_free">freeing</R> it.
+                The lifecycle of a{" "}
+                <R n="resource_handle" />, with state transitions mostly
+                triggered by the{" "}
+                <Vermillion>
+                  sending (<Code>!</Code>)
+                </Vermillion>{" "}
+                and{" "}
+                <SkyBlue>
+                  receiving (<Code>?</Code>)
+                </SkyBlue>{" "}
+                of messages.
               </Figcaption>
             </Figure>
           </Hsection>
@@ -1412,8 +1424,8 @@ export const lcmux = (
               binding <Rs n="resource_handle" />{" "}
               into a buffer makes little sense, since <Rs n="guarantee" />{" "}
               should correspond to actual <Rs n="resource_handle" />{" "}
-              storage space, not the space for buffering the instructions for
-              allocation{" "}
+              storage space, not the space for buffering merely{" "}
+              <Em>the instructions</Em> for allocation of{" "}
               <Rs n="resource_handle" />. LCMUX implementations should be
               flexible enough to immediately process these incoming messages,
               allocating <Rs n="resource_handle" />{" "}
@@ -1499,10 +1511,6 @@ export const lcmux = (
             </PreviewScope>
 
             <Figure>
-              <Gwil>
-                Receiver side image is in assets, just need to include it
-                someplace
-              </Gwil>
               <Img
                 clazz="wide"
                 src={
@@ -1513,8 +1521,24 @@ export const lcmux = (
                 alt={`The full state-transition diagram for optimistically bound data handles.`}
               />
               <Figcaption>
-                The possible states for optimistically bound{" "}
-                <Rs n="resource_handle" />.
+                The lifecycle of an optimistically bound{" "}
+                <R n="resource_handle" />, from the perspective of the{" "}
+                <R n="handle_c" />.{" "}
+                <A
+                  href={
+                    <ResolveAsset
+                      asset={[
+                        "lcmux",
+                        "handles",
+                        "optimistic_graph_receiver.png",
+                      ]}
+                    />
+                  }
+                >
+                  The server’s perspective
+                </A>{" "}
+                has identical states and transitions, except all sending and
+                receiving of messages is reversed.
               </Figcaption>
             </Figure>
 
@@ -1549,96 +1573,10 @@ export const lcmux = (
               optimistically, and then wait for acknowledging{" "}
               <Rs n="guarantee" /> (i.e., a transistion to the{" "}
               <R n="FullyBound" /> state) before actually working with the{" "}
-              <R n="resource_handle">handle</R>.
+              <R n="resource_handle">handles</R>.
             </P>
           </Hsection>
         </Hsection>
-        {
-          /*
-
-    pinformative("The main issue in maintaining <Rs n="resource_handle"/> is that of coordinating <R n="handle_free">freeing</R> over an asynchronous communication channel. Suppose one peer removes a handle-to-value binding from their local mapping, sends a message to inform the other peer, but that peer has concurrently sent some message that pertains to the <R n="resource_handle"/> in question. Everything breaks! Hence, <R n="handle_free">freeing</R> must be a three-step process:"),
-
-    ols(
-        ["one peer sends a message that proposes to ", r("handle_free"), " a <R n="resource_handle"/> (and, in doing so, that peer commits to not referring to that <R n="resource_handle">handle</R> in any of its future messages),"],
-        ["the other peer, upon receiving that proposal, marks the corresponding handle-to-value binding in its local mapping for ", sidenote("deletion", ["We explain below why the binding cannot be deleted immediately."]), " and sends a confirmation message,"],
-        ["the first peer, upon receiving the confirmation, can then also mark the handle-to-value binding in its local mapping for deletion."],
-    ),
-
-    pinformative("There is no need to use separate message types for proposals and confirmations of <R n="handle_free">freeing</R>: peers react to a proposal to ", r("handle_free"), " by sending their own proposal to ", r("handle_free"), " the same <R n="resource_handle"/>. Receiving a proposal to ", r("handle_free"), " a <R n="resource_handle"/> after having sent such a proposal oneself confirms that the handle-to-value binding can be removed from the local mapping. A nice side effect of this approach is that it gracefully handles concurrent proposals to ", r("handle_free"), " the same <R n="resource_handle"/> by both peers."),
-
-    pinformative("Why do the peers merely mark mappings for deletion rather than immediately removing them?  Because they might still buffer unprocessed messages for some <Rs n="logical_channel"/> that reference the <R n="resource_handle"/> being ", r("handle_free", "freed"), ". To deal with this, a peer can keep a counter with every <R n="resource_handle"/> that gets incremented whenever a message that references the <R n="resource_handle"/> is moved to a buffer. Whenever such a message has been fully processed, the counter is decremented again. The peer locally deletes a binding if it is marked for deletion while its counter is zero, or if its counter reaches zero after it has been marked for deletion."),
-    ]),
-
-    hsection("handles_resource_control", "Resource Control", [
-    pinformative("Adding handle-to-value bindings to local mappings requires space, so the <R n="handle_s"/> should have a way to throttle the <R n="handle_c"/>. We use a simple solution: for each <R n="handle_type"/>, the messages for ", r("handle_bind", "binding"), " new <Rs n="resource_handle"/> are sent over their own ", r("logical_channel"), ". Throttling that ", r("logical_channel"), " controls the number of <Rs n="resource_handle"/> that can be created."),
-
-    pinformative("Crucially, ", rs("guarantee"), " for the ", r("logical_channel"), " for issuing <Rs n="resource_handle"/> of some <R n="handle_type"/> must guarantee not only that the messages will be buffered, but that they will be processed and the <Rs n="resource_handle"/> will be ", r("handle_bind", "bound"), marginale([
-        "If bindings are to be stored in a complex data structure with a fragmented memory layout, the server must issue ", rs("guarantee"), " based on conservative approximations of memory usage."
-    ]), ". This ensures that the <R n="handle_c"/> knows which <Rs n="resource_handle"/> are safe to reference."),
-
-    pinformative("The <R n="handle_c"/> may send optimistic messages on such a ", r("logical_channel"), ". The <R n="handle_c"/> may even reference these optimistically ", r("handle_bind", "bound"), " <Rs n="resource_handle"/> in arbitrary other messages. When the <R n="handle_s"/> receives a message that references a <R n="resource_handle"/> that is greater than the greatest <R n="resource_handle"/> it has ", r("handle_bind", "bound"), " of that <R n="handle_type"/>, it must first check whether it has unprocessed messages for ", r("handle_bind", "binding"), " <Rs n="resource_handle"/> of this type, and process as many of them as possible."),
-
-    pinformative("If processing those messages ", rs("handle_bind"), " the <R n="resource_handle"/> in question, the <R n="handle_s"/> can then resume processing the optimistic reference to that <R n="resource_handle"/> as if nothing had happened. If, however, it then still has not ", r("handle_bind", "bound"), " the <R n="resource_handle"/> in question, then the message for ", r("handle_bind", "binding"), " the <R n="resource_handle"/> must have been dropped, and the <R n="handle_s"/> has already sent a ", r("StartedDropping"), " message, from which the <R n="handle_c"/> can infer that its optimistic reference to the <R n="resource_handle"/> could not be processed either. The <R n="handle_s"/> then simply drops the message without any further processing."),
-
-    ]),
-
-    hsection("handles_message_types", "Message Types", [
-    pinformative("The following pseudo-types summarise the messages for maintaining <Rs n="resource_handle"/>. The parameter ", def_parameter_type("H", "H", ["The type of different ", rs("handle_type"), "."]), " is a type with one value for each <R n="handle_type"/>. Each message pertains to exactly one <R n="handle_type"/>, specified by its ", code("handle_type"), " field. ", r("HandleBind"), " messages belong to <Rs n="logical_channel"/> determined by their ", code("handle_type"), " field, ", r("HandleFree"), " messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
-
-    pseudocode(
-        new Struct({
-        id: "HandleBind",
-        name: "BindHandle",
-        comment: [
-            "The <R n="handle_c"/> directs the <R n="handle_s"/> to <R n="handle_bind"/> the next unused numeric <R n="resource_handle"/> to the given value.",
-        ],
-        fields: [
-            {
-            id: "HandleBindValue",
-            comment: [
-                "An actual protocol probably wants to define dedicated message types for the ", code("Bind"), " messages of every <R n="handle_type"/>, each with their own associated type of values.",
-            ],
-            name: "value",
-            rhs: r("U64"),
-            },
-            {
-            id: "HandleBindType",
-            name: "handle_type",
-            rhs: r("H"),
-            },
-        ],
-        }),
-        new Struct({
-        id: "HandleFree",
-        name: "FreeHandle",
-        comment: [
-            "A peer asks the other peer to ", r("handle_free"), " a <R n="resource_handle"/>.",
-        ],
-        fields: [
-            {
-            id: "HandleFreeHandle",
-            name: "handle",
-            rhs: r("U64"),
-            },
-            {
-            id: "HandleFreeMine",
-            marginale: ["This is needed for symmetric protocols where peers act as both <R n="handle_c"/> and <R n="handle_s"/> simultaneously and <R n="handle_bind"/> <Rs n="resource_handle"/> to the same ", rs("handle_type"), "."],
-            comment: [
-                "Indicates whether the peer sending this message is the one who created the ", r("HandleFreeHandle"), " (", code("true"), ") or not (", code("false"), ").",
-            ],
-            name: "mine",
-            rhs: r("Bool"),
-            },
-            {
-            id: "HandleFreeType",
-            name: "handle_type",
-            rhs: r("H"),
-            },
-        ],
-        }),
-    ),
-    ]), */
-        }
       </PageTemplate>
     </File>
   </Dir>
