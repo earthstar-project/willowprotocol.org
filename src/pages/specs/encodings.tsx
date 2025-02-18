@@ -1169,7 +1169,7 @@ export const encodings = (
                       <Code>true</Code>, and
                     </Li>
                     <Li>
-                      <R n="epaia_end_from_start" /> must be <Code>true</Code>
+                      <R n="epaia_end_from_start" /> must be <Code>false</Code>
                       {" "}
                       if and only if <ValAccess field="TimeRangeEnd" /> is{" "}
                       <R n="range_open" />.
