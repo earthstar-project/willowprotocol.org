@@ -1415,6 +1415,10 @@ export const encodings = (
               }
               bitfields={[]}
               contents={[
+                <C64Standalone>
+                  the number of triplets in{" "}
+                  <ValAccess field="communal_cap_delegations" />
+                </C64Standalone>,
                 <EncIterator
                   val={
                     <>
@@ -1465,6 +1469,7 @@ export const encodings = (
                   }
                 >
                   <CodeFor
+                    notStandalone
                     enc="EncodePrivateAreaAlmostInArea"
                     relativeTo={
                       <>
@@ -1479,7 +1484,8 @@ export const encodings = (
                       </>
                     }
                   >
-                    <R n="enc_ccap_rel_area" />
+                    the final <R n="Area" /> in{" "}
+                    <ValAccess field="communal_cap_delegations" />
                   </CodeFor>
                 </EncConditional>,
                 <EncConditional
@@ -1490,7 +1496,7 @@ export const encodings = (
                     </>
                   }
                 >
-                  <CodeFor enc="encode_user_sig">
+                  <CodeFor enc="encode_user_sig" notStandalone>
                     the final <R n="UserSignature" /> in{" "}
                     <ValAccess field="communal_cap_delegations" />
                   </CodeFor>
@@ -1580,6 +1586,10 @@ export const encodings = (
               }
               bitfields={[]}
               contents={[
+                <C64Standalone>
+                  the number of triplets in{" "}
+                  <ValAccess field="owned_cap_delegations" />
+                </C64Standalone>,
                 <EncConditional
                   condition={
                     <>
@@ -1646,6 +1656,7 @@ export const encodings = (
                 >
                   <CodeFor
                     enc="EncodePrivateAreaAlmostInArea"
+                    notStandalone
                     relativeTo={
                       <>
                         <M>
@@ -1658,7 +1669,8 @@ export const encodings = (
                       </>
                     }
                   >
-                    <R n="enc_ocap_rel_area" />
+                    the final <R n="Area" /> in{" "}
+                    <ValAccess field="owned_cap_delegations" />
                   </CodeFor>
                 </EncConditional>,
                 <EncConditional
@@ -1669,13 +1681,36 @@ export const encodings = (
                     </>
                   }
                 >
-                  <CodeFor enc="encode_user_sig">
+                  <CodeFor enc="encode_user_sig" notStandalone>
                     the final <R n="UserSignature" /> in{" "}
                     <ValAccess field="owned_cap_delegations" />
                   </CodeFor>
                 </EncConditional>,
               ]}
             />
+          </Hsection>
+
+          <Hsection
+            n="enc_private_mc_capabilities"
+            title="Meadowcap Capability Encoding"
+            shortTitle="Meadowcap Capability"
+          >
+            <P>
+              We define a <R n="relative_encoding_relation" />{" "}
+              <DefType n="EncodeMcCapabilityRelativePrivateInterest" /> for{" "}
+              <R n="Capability" /> relative to any{" "}
+              <R n="PersonalPrivateInterest" /> such that the capability’s{" "}
+              <R n="capability_inner" /> can be encoded relatively to the{" "}
+              <R n="PersonalPrivateInterest" /> via{" "}
+              <R n="EncodeCommunalCapabilityRelativePrivateInterest" /> or{" "}
+              <R n="EncodeOwnedCapabilityRelativePrivateInterest" />, whichever
+              applies. The <Rs n="code" />{" "}
+              are simply those from these two relations; the{" "}
+              <R n="is_communal" /> function as applied to the <R n="pi_ns" />
+              {" "}
+              of the <R n="PersonalPrivateInterest" />{" "}
+              allows disambiguating how to decode.
+            </P>
           </Hsection>
 
           <Hsection
