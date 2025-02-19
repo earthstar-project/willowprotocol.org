@@ -45,7 +45,7 @@ export const willow_compared = (
             ),
 
             pinformative(
-                "Furthermore, Willow's names are meaningful and hierarchical. Hashing individual moves of an unfolding chess match yields completely unrelated hashes. In Willow, I can assign related names (", rs("Path"), ") to the moves: ", path("chess", "me_vs_alex", "move1"), ", ", path("chess", "me_vs_alex", "move2"), ", et cetera. The synchronisation API makes use of the hierarchy; I can requests all moves in this game (names starting with ", path("chess", "me_vs_alex"), "), or all chess games in total (names starting with ", path("chess"), ").",
+                "Furthermore, Willow's names are meaningful and hierarchical. Hashing individual moves of an unfolding chess match yields completely unrelated hashes. In Willow, I can assign related names (<Rs n="Path"/>) to the moves: ", path("chess", "me_vs_alex", "move1"), ", ", path("chess", "me_vs_alex", "move2"), ", et cetera. The synchronisation API makes use of the hierarchy; I can requests all moves in this game (names starting with ", path("chess", "me_vs_alex"), "), or all chess games in total (names starting with ", path("chess"), ").",
             ),
 
             pinformative(
@@ -99,11 +99,11 @@ export const willow_compared = (
 
         hsection("compare_nostr", "Nostr", [
             pinformative(
-                link("Nostr", "https://nostr.com/"), " appears to be quite similar to Willow at a cursory glance. Willow peers store and exchange sets of ", rs("Entry"), ", Nostr peers store and exchange sets of ", em("events"), ". Every ", r("Entry"), " has a ", r("entry_timestamp"), ", every event has a ", code("created_at"), " time. Every ", r("Entry"), " belongs to a single ", r("subspace"), ", every event belongs to a single ", code("pubkey"), ". Willow organises ", rs("Entry"), " by their ", rs("entry_path"), ", Nostr organises events by their ", code("tags"), "."
+                link("Nostr", "https://nostr.com/"), " appears to be quite similar to Willow at a cursory glance. Willow peers store and exchange sets of <Rs n="Entry"/>, Nostr peers store and exchange sets of ", em("events"), ". Every <R n="Entry"/> has a ", r("entry_timestamp"), ", every event has a ", code("created_at"), " time. Every <R n="Entry"/> belongs to a single <R n="subspace"/>, every event belongs to a single ", code("pubkey"), ". Willow organises <Rs n="Entry"/> by their ", rs("entry_path"), ", Nostr organises events by their ", code("tags"), "."
             ),
 
             pinformative(
-                "While ", rs("subspace"), " are more of a straightforward generalisation of public keys rather than a conceptual difference, the difference between paths and tags is significant. Paths allow ", rs("Entry"), " to overwrite each other, whereas tags do not. Nostr has no comparable concepts for mutability and deletion. This difference is a symptom of a significant conceptual difference between the protocols: Willow provides naming for data, Nostr does not. In Nostr, events are content-addressed — despite the superficial similarities, Nostr is ultimately closer to Scuttlebutt than to Willow.",
+                "While <Rs n="subspace"/> are more of a straightforward generalisation of public keys rather than a conceptual difference, the difference between paths and tags is significant. Paths allow <Rs n="Entry"/> to overwrite each other, whereas tags do not. Nostr has no comparable concepts for mutability and deletion. This difference is a symptom of a significant conceptual difference between the protocols: Willow provides naming for data, Nostr does not. In Nostr, events are content-addressed — despite the superficial similarities, Nostr is ultimately closer to Scuttlebutt than to Willow.",
             ),
 
             pinformative(
@@ -111,7 +111,7 @@ export const willow_compared = (
             ),
 
             pinformative(
-                "Furthermore, the Willow design takes great care to ensure that all necessary operations on Willow data are efficiently supported by appropriate data structures, whereas Nostr appears more happy to quickly get things working on smaller scales. To give an example, various ", r("Path"), " handling tasks can be tackled via ", link("radix trees", "https://en.wikipedia.org/wiki/Radix_tree"), ", whereas the exponential state space of arbitrary combinations of tags is much harder to tame. Similarly, Nostr was not designed with an efficient set reconciliation protocol in mind", marginale(["Although there is ", link("work", "https://github.com/hoytech/negentropy"), " to integrate a proper set reconciliation protocol."]), ", despite ultimately being a protocol for exchanging sets of events.",
+                "Furthermore, the Willow design takes great care to ensure that all necessary operations on Willow data are efficiently supported by appropriate data structures, whereas Nostr appears more happy to quickly get things working on smaller scales. To give an example, various <R n="Path"/> handling tasks can be tackled via ", link("radix trees", "https://en.wikipedia.org/wiki/Radix_tree"), ", whereas the exponential state space of arbitrary combinations of tags is much harder to tame. Similarly, Nostr was not designed with an efficient set reconciliation protocol in mind", marginale(["Although there is ", link("work", "https://github.com/hoytech/negentropy"), " to integrate a proper set reconciliation protocol."]), ", despite ultimately being a protocol for exchanging sets of events.",
             ),
         ]),
 
@@ -135,11 +135,11 @@ export const willow_compared = (
             ),
 
             pinformative(
-                "The story for end-to-end encryption is considerably more difficult for Willow than for content-addressed systems where you can simply use hashes of data that happens to be encrypted. ", rs("Path"), " allow for comparatively rich semantics for data organisation and partial syncing, even when end-to-end encrypted. This combination of strucure and end-to-end encryption is one we did not find in preexisting protocols.",
+                "The story for end-to-end encryption is considerably more difficult for Willow than for content-addressed systems where you can simply use hashes of data that happens to be encrypted. <Rs n="Path"/> allow for comparatively rich semantics for data organisation and partial syncing, even when end-to-end encrypted. This combination of strucure and end-to-end encryption is one we did not find in preexisting protocols.",
             ),
 
             pinformative(
-                "Ultimately, Willow takes on more complexity than many other protocols, but it also gives greater expressivity to its users. Organising ", rs("Entry"), " by ", rs("SubspaceId"), ", user-defined ", rs("Path"), ", and ", rs("Timestamp"), " is a choice motivated by maximising expressivity while still allowing for efficient (partial) sync, end-to-end encryption, and principled implementation techniques. All in all, we think it is pretty neat!",
+                "Ultimately, Willow takes on more complexity than many other protocols, but it also gives greater expressivity to its users. Organising <Rs n="Entry"/> by <Rs n="SubspaceId"/>, user-defined <Rs n="Path"/>, and <Rs n="Timestamp"/> is a choice motivated by maximising expressivity while still allowing for efficient (partial) sync, end-to-end encryption, and principled implementation techniques. All in all, we think it is pretty neat!",
             ),
         ]), */
         }

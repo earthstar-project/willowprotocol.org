@@ -1312,6 +1312,10 @@ export const lcmux = (
               can it release the data.
             </P>
 
+            <P>
+              To this end, every peer counts how many messages it sends that refer to any one <R n="resource_handle"/>. When a peer whishes to <R n="handle_free"/> a <R n="resource_handle">handle</R>, it includes its (then final) count with that message. Similarly, every peer counts how many messages it receives that pertain to any one <R n="resource_handle"/>. Only once that count matches the count in the <R n="handle_free">freeing message</R> does it release the bound data.
+            </P>
+
             <PreviewScope>
               <P>
                 Because it helps to have consistent terminology, we give
@@ -1563,7 +1567,13 @@ export const lcmux = (
                 }
               >
                 time
-              </Sidenote>.
+              </Sidenote>. This applies both to application-level messages and
+              to messages for <R n="handle_free">freeing</R>{" "}
+              an optimistically bound{" "}
+              <R n="resource_handle" />. The soundness of this approach depends
+              on handle creation messages to not be buffered, but to be
+              processed immediately, despite technically belonging to a{" "}
+              <R n="logical_channel" />.
             </P>
 
             <P>

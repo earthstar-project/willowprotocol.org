@@ -129,11 +129,11 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The type ", r("NamespaceId"), " is the type of ", rs("es6_namespace"), "."
+					"The type <R n="NamespaceId"/> is the type of ", rs("es6_namespace"), "."
 				),
 
 				pinformative(
-					"The type ", r("SubspaceId"), " is the type of ", rs("es6_identity"), "."
+					"The type <R n="SubspaceId"/> is the type of ", rs("es6_identity"), "."
 				),
 
 				pinformative(
@@ -306,7 +306,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The total order on ", r("SubspaceId"), " (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
+						"The total order on <R n="SubspaceId"/> (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
 					),
 
 					pinformative(
@@ -345,7 +345,7 @@ a04fc7...c37466...|91715a...f0eef3...|000000...  |000000...   |00`),
 			]),
 
 			hsection("es6_friendly_paths", "Friendly paths", [
-				pinformative("While Willow's ", rs("Path"), " are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
+				pinformative("While Willow's <Rs n="Path"/> are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
 					id: "es6_friendly_path",
 					singular: "friendly path",
 					plural: "friendly paths",

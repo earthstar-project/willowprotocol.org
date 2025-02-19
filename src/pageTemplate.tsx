@@ -13,7 +13,7 @@ import { Expression, Expressions } from "macromania";
 import { Dir, File } from "macromania-outfs";
 import { ConfigMarginalia, Marginale } from "macromania-marginalia";
 import { Counter } from "macromania-counters";
-import { BibScope } from "macromania-bib";
+import { Bibliography, BibScope } from "macromania-bib";
 import { Config } from "macromania-config";
 import { Html5 } from "macromania-html-utils";
 import {
@@ -58,6 +58,10 @@ export type PageTemplateProps = {
    * Whether to render a table of contents on this page.
    */
   toc?: boolean;
+  /**
+   * Render a bibliography?
+   */
+  bibliography?: boolean;
 };
 
 export function PageTemplate(
@@ -70,6 +74,7 @@ export function PageTemplate(
     status,
     statusDate,
     toc,
+    bibliography,
   }: PageTemplateProps & {
     children?: Expressions;
   },
@@ -161,6 +166,17 @@ export function PageTemplate(
                   )
                   : ""}
                 <exps x={children} />
+                {bibliography
+                  ? (
+                    <Hsection
+                      title="References"
+                      n={`${headingId}_bibliography`}
+                      noNumbering
+                    >
+                      <Bibliography />
+                    </Hsection>
+                  )
+                  : ""}
               </Hsection>
             </Main>
 

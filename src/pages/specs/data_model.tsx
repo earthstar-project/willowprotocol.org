@@ -715,7 +715,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
             /*
           pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
 
-      pinformative("How can we precisely delimit meaningful groups of ", rs("Entry"), ", for example, all recipes that Alex posted on their blog in the past three months? Grouping ", rs("Entry"), " always incurs a tradeoff between ", em("expressivity"), " (which sets of ", rs("Entry"), " can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its ", rs("Entry"), " of an arbitrary grouping). We present a carefully crafted selection of ways of grouping ", rs("Entry"), " ", link_name("grouping_entries", "here"), "."),
+      pinformative("How can we precisely delimit meaningful groups of <Rs n="Entry"/>, for example, all recipes that Alex posted on their blog in the past three months? Grouping <Rs n="Entry"/> always incurs a tradeoff between ", em("expressivity"), " (which sets of <Rs n="Entry"/> can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its <Rs n="Entry"/> of an arbitrary grouping). We present a carefully crafted selection of ways of grouping <Rs n="Entry"/> ", link_name("grouping_entries", "here"), "."),
 
       pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterised nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
 
@@ -723,9 +723,9 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
 
       pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronise data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
 
-      pinformative("How can we encrypt ", rs("Entry"), " while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
+      pinformative("How can we encrypt <Rs n="Entry"/> while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
 
-      pinformative("How can a database provide efficient access to ", rs("Entry"), "? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
+      pinformative("How can a database provide efficient access to <Rs n="Entry"/>? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
 
       pinformative("How can I contribute to Willow and support it? So glad you asked — we have prepared a collection of pointers ", link_name("projects_and_communities", "here"), "."),
     */

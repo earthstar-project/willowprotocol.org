@@ -31,22 +31,22 @@ export const rbsr = (
 
         {
           /*
-        pinformative("When two peers wish to synchronise data, they typically first exchange which ", rs("Area"), " in which ", rs("namespace"), " they are interested in. Intersecting these ", rs("Area"), " yields the sets of ", rs("Entry"), " for which they then need to bring each other up to speed. In this document, we present a strategy for doing so efficiently."),
+        pinformative("When two peers wish to synchronise data, they typically first exchange which ", rs("Area"), " in which <Rs n="namespace"/> they are interested in. Intersecting these ", rs("Area"), " yields the sets of <Rs n="Entry"/> for which they then need to bring each other up to speed. In this document, we present a strategy for doing so efficiently."),
 
-    pinformative("Given the ", rs("Entry"), " that the peers have available, there can be two cases that necessitate data exchange. First, one peer might have an ", r("Entry"), " that the other does not have, and second, the peers might hold nonequal parts of the ", r("Payload"), " of some common ", r("Entry"), "."),
+    pinformative("Given the <Rs n="Entry"/> that the peers have available, there can be two cases that necessitate data exchange. First, one peer might have an <R n="Entry"/> that the other does not have, and second, the peers might hold nonequal parts of the ", r("Payload"), " of some common <R n="Entry"/>."),
 
-    pinformative("As a first step to solving the problem, we simplify it. If ", rs("Entry"), " contained information about locally available ", r("Payload"), " bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronise ", rs("Entry"), " directly, but ", rs("LengthyEntry"), ":"),
+    pinformative("As a first step to solving the problem, we simplify it. If <Rs n="Entry"/> contained information about locally available ", r("Payload"), " bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronise <Rs n="Entry"/> directly, but ", rs("LengthyEntry"), ":"),
 
     pseudocode(
       new Struct({
         id: "LengthyEntry",
         plural: "LengthyEntries",
-        comment: ["An ", r("Entry"), " together with information about how much of its ", r("Payload"), " a peer holds."],
+        comment: ["An <R n="Entry"/> together with information about how much of its ", r("Payload"), " a peer holds."],
         fields: [
           {
             id: "lengthy_entry_entry",
             name: "entry",
-            comment: ["The ", r("Entry"), " in question."],
+            comment: ["The <R n="Entry"/> in question."],
             rhs: r("Entry"),
           },
           {
@@ -61,7 +61,7 @@ export const rbsr = (
 
     pinformative("The task of the two peers then becomes conceptually simple: they each have a set of ", rs("LengthyEntry"), ", and they need to inform each other about all ", rs("LengthyEntry"), " the other party does not have, that is, they each need to compute the union of their two sets. In the scientific literature, this problem is known as ", em("set "), sidenote(em("reconciliation"), [link(`Minsky, Yaron, Ari Trachtenberg, and Richard Zippel. "Set reconciliation with nearly optimal communication complexity." IEEE Transactions on Information Theory 49.9 (2003): 2213-2218.`, "https://ecommons.cornell.edu/server/api/core/bitstreams/c3fff828-cfb8-416a-a28b-8afa59dd2d73/content")]), "."),
 
-    pinformative("Once the two peers have reconciled their sets, they can filter out ", rs("Entry"), " that overwrite each other, and they can separately request any missing (suffixes of) ", rs("Payload"), ". Going forward, we thus concentrate on the set reconciliation part only."),
+    pinformative("Once the two peers have reconciled their sets, they can filter out <Rs n="Entry"/> that overwrite each other, and they can separately request any missing (suffixes of) ", rs("Payload"), ". Going forward, we thus concentrate on the set reconciliation part only."),
 
     pinformative("To perform set reconciliation, we adapt the approach of ", em("range-based set "), sidenote(em("reconciliation"), [link(`Meyer, Aljoscha. "Range-Based Set Reconciliation." 2023 42nd International Symposium on Reliable Distributed Systems (SRDS). IEEE, 2023.`, "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), "."]), "."),
 
@@ -69,14 +69,14 @@ export const rbsr = (
 
     figure(
       img(asset("3d_rbsr/fp_match.png"), `A glorified visualisation of equality: hashing the same objects yields the same fingerprints.`),
-      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce equal fingerprints for all their ", rs("Entry"), " in a given ", r("D3Range"), ".")
+      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce equal fingerprints for all their <Rs n="Entry"/> in a given ", r("D3Range"), ".")
     ),
 
     pinformative("If they do not match, there are two options. First, the peer can split its set in half and then initiate set reconciliation for each half concurrently (by transmitting its hashes for both halves). Second, if the set is sufficiently small, the peer can instead simply transmit its items in the set. The other peer responds to this with all other items that it held in the set, completing the process of reconciliation."),
 
     figure(
       img(asset("3d_rbsr/fp_nonmatching.png"), `A flow diagram that is already described in the caption.`),
-      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce non-equal fingerprints. ", purple("Alfie"), " splits the ", r("D3Range"), " in two, yielding a ", r("D3Range"), " ", r("d3_range_include", "including"), " ", rs("Entry"), " ", code("A"), " and ", code("B"), ", and another ", r("D3Range"), " ", r("d3_range_include", "including"), " ", code("C"), ", and sends these ", rs("D3Range"), " and their fingerprints to ", orange("Betty"), ". ", orange("Betty"), " produces a matching fingerprint for the first ", r("D3Range"), ". As the other, mismatched ", r("D3Range"), " includes so few ", rs("Entry"), ", ", orange("Betty"), " sends her ", rs("Entry"), " ", code("Q"), " and ", code("Y"), " to ", purple("Alfie"), ". In response, ", purple("Alfie"), " sends ", r("Entry"), " ", code("C"), " to ", orange("Betty"), ".")
+      figcaption(purple("Alfie"), " and ", orange("Betty"), " produce non-equal fingerprints. ", purple("Alfie"), " splits the ", r("D3Range"), " in two, yielding a ", r("D3Range"), " ", r("d3_range_include", "including"), " <Rs n="Entry"/> ", code("A"), " and ", code("B"), ", and another ", r("D3Range"), " ", r("d3_range_include", "including"), " ", code("C"), ", and sends these ", rs("D3Range"), " and their fingerprints to ", orange("Betty"), ". ", orange("Betty"), " produces a matching fingerprint for the first ", r("D3Range"), ". As the other, mismatched ", r("D3Range"), " includes so few <Rs n="Entry"/>, ", orange("Betty"), " sends her <Rs n="Entry"/> ", code("Q"), " and ", code("Y"), " to ", purple("Alfie"), ". In response, ", purple("Alfie"), " sends <R n="Entry"/> ", code("C"), " to ", orange("Betty"), ".")
     ),
 
     pinformative("Overall, the peers collaboratively drill down to the differences between their two sets in a logarithmic number of communication rounds, spending only little bandwidth on those regions of the original sets where they hold the same items. Note that peers can actually split sets into arbitrarily many subsets in each step. Splitting into more subsets per step decreases the total number of communication rounds."),
@@ -88,7 +88,7 @@ export const rbsr = (
 
     pinformative(def({id: "d3rbsr", singular: "3d range-based set reconciliation"}, "3d range-based set reconciliation", [
       def_fake({id: "d3rbsr", singular: "3d range-based set reconciliation"}), " is an algorithm for letting two peers compute the union of their ", rs("LengthyEntry"), " in some ", r("D3Range"), " by exchanging ", rs("D3RangeFingerprint"), " and ", rs("D3RangeEntrySet"), ".",
-    ]), " takes these ideas and applies them to Willow. The core design decision is to delimit sets of ", rs("LengthyEntry"), " via ", rs("D3Range"), ". When a peer splits its ", rs("D3Range"), ", it is crucial for overall efficiency to not split based on volume (for example, by splitting the ", rs("D3RangeTime"), " in half numerically)", ", but to split into subranges in which the peer holds roughly the same number of ", rs("Entry"), "."),
+    ]), " takes these ideas and applies them to Willow. The core design decision is to delimit sets of ", rs("LengthyEntry"), " via ", rs("D3Range"), ". When a peer splits its ", rs("D3Range"), ", it is crucial for overall efficiency to not split based on volume (for example, by splitting the ", rs("D3RangeTime"), " in half numerically)", ", but to split into subranges in which the peer holds roughly the same number of <Rs n="Entry"/>."),
 
     pinformative("Let ", def_type({id: "d3rbsr_fp", singular: "Fingerprint", plural: "Fingerprints"}), " denote the type of hashes of ", rs("LengthyEntry"), " that the peers exchange. Then the precise pieces of information that the peers need to exchange are the following:"),
 

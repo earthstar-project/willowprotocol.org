@@ -85,7 +85,7 @@ hsection(
                     name: 'willowjs_0_2_1', title: "willow-js released", pubDate: new Date(2024, 4, 6, 0)
                 },
                 [
-                    pinformative(link("willow-js", "https://github.com/earthstar-project/willow-js"), ", our own TypeScript implementation of the ", link_name("data_model", "Willow Data Model"), " and the ", link_name("sync", "Willow General Purpose Sync protocol"), " now conforms to these specifications as of May 6th, 2024. This module can be used to create, query, and sync ", rs("Entry"), " and their corresponding ", rs("Payload")," in ", rs("store"), " in the browser and Deno runtime."), pinformative("The source, documentation, and usage instructions can be found at the ", link("willow-js repository", "https://github.com/earthstar-project/willow-js"), ".")
+                    pinformative(link("willow-js", "https://github.com/earthstar-project/willow-js"), ", our own TypeScript implementation of the ", link_name("data_model", "Willow Data Model"), " and the ", link_name("sync", "Willow General Purpose Sync protocol"), " now conforms to these specifications as of May 6th, 2024. This module can be used to create, query, and sync <Rs n="Entry"/> and their corresponding ", rs("Payload")," in ", rs("store"), " in the browser and Deno runtime."), pinformative("The source, documentation, and usage instructions can be found at the ", link("willow-js repository", "https://github.com/earthstar-project/willow-js"), ".")
                 ]
             ),
             create_news_item(

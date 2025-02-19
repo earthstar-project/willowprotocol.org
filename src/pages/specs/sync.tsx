@@ -67,25 +67,25 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
             ]),
 
             hsection("sync_pai", {no_toc: true}, "Private Area Intersection", [
-                pinformative("The WGPS lets two peers determine which ", rs("namespace"), " and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronise. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
+                pinformative("The WGPS lets two peers determine which <Rs n="namespace"/> and ", rs("Area"), " therein they share an interest in, without leaking any data that only one of them wishes to synchronise. We explain the underlying ", link_name("private_area_intersection", "private area intersection protocol here"), "."),
             ]),
 
             hsection("sync_partial", {no_toc: true}, "Partial Synchronisation", [
                 pinformative("To synchronise data, peers specify any number of ", rs("AreaOfInterest"), marginale([
-                    "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the ", rs("AreaOfInterest"), " only on a best-effort basis. Imagine Betty has just transmitted her 100 newest ", rs("Entry"), " to Alfie, only to then receive an even newer ", r("Entry"), " from Gemma. Betty should forward that ", r("Entry"), " to Alfie, despite that putting her total number of transmissions above the limit of 100."
-                ]), " per ", r("namespace"), ". The ", r("area_empty", "non-empty"), " ", rs("aoi_intersection"), " of ", rs("AreaOfInterest"), " from both peers contain the ", rs("Entry"), " to synchronise."),
+                    "Note that peers need abide to the ", r("aoi_count"), " and ", r("aoi_size"), " limits of the <Rs n="AreaOfInterest"/> only on a best-effort basis. Imagine Betty has just transmitted her 100 newest <Rs n="Entry"/> to Alfie, only to then receive an even newer <R n="Entry"/> from Gemma. Betty should forward that <R n="Entry"/> to Alfie, despite that putting her total number of transmissions above the limit of 100."
+                ]), " per <R n="namespace"/>. The ", r("area_empty", "non-empty"), " <Rs n="aoi_intersection"/> of <Rs n="AreaOfInterest"/> from both peers contain the <Rs n="Entry"/> to synchronise."),
 
                 pinformative("The WGPS synchronises these ", rs("area_intersection"), " via ", r("d3rbsr"), ", a technique we ", link_name("d3_range_based_set_reconciliation", "explain in detail here"), "."),
             ]),
 
             hsection("sync_post_sync_forwarding", {no_toc: true}, "Post-Reconciliation Forwarding", [
-                pinformative("After performing ", r("d3rbsr", "set reconciliation"), ", peers might receive new ", rs("Entry"), " that fall into their shared ", rs("AreaOfInterest"), ". Hence, the WGPS allows peers to transmit ", rs("Entry"), " unsolicitedly."),
+                pinformative("After performing ", r("d3rbsr", "set reconciliation"), ", peers might receive new <Rs n="Entry"/> that fall into their shared <Rs n="AreaOfInterest"/>. Hence, the WGPS allows peers to transmit <Rs n="Entry"/> unsolicitedly."),
             ]),
 
             hsection("sync_payloads", {no_toc: true}, "Payload Transmission", [
-                pinformative("When a peer sends an ", r("Entry"), ", it can choose whether to immediately transmit the corresponding ", r("Payload"), " as well. Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of ", rs("aoi_intersection"), " between the peers’ ", rs("AreaOfInterest"), " can be quadratic in the number of ", rs("AreaOfInterest"), ", and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " for each ", r("aoi_intersection"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
+                pinformative("When a peer sends an <R n="Entry"/>, it can choose whether to immediately transmit the corresponding ", r("Payload"), " as well. Peers exchange ", sidenote("preferences", ["These preferences are not binding. The number of <Rs n="aoi_intersection"/> between the peers’ <Rs n="AreaOfInterest"/> can be quadratic in the number of <Rs n="AreaOfInterest"/>, and we do not want to mandate keeping a quadratic amount of state."]), " for eager or lazy ", r("Payload"), " transmission based on ", rs("entry_payload_length"), " for each ", r("aoi_intersection"), ". These preferences are expressive enough to implement the ", link("plumtree", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), " algorithm."),
 
-                pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary ", rs("Entry"), " (that they are allowed to access)."),
+                pinformative("Peers can further explicitly request the ", rs("Payload"), " of arbitrary <Rs n="Entry"/> (that they are allowed to access)."),
             ]),
 
             hsection("sync_payloads_transform", {no_toc: true}, "Payload Transformation", [
@@ -100,7 +100,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
         hsection("sync_parameters", "Parameters", [
             pinformative("The WGPS is generic over specific cryptographic primitives. In order to use it, one must first specify a full suite of instantiations of the ", link_name("willow_parameters", "parameters of the core Willow data model"), ". The WGPS further requires parameters for ", link_name("access_control", "access control"), ", ", link_name("private_area_intersection", "private area intersection"), ", and ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), "."),
 
-            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of ", rs("read_capability"), ", a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have a length of ", def_parameter_value("challenge_length"), " bytes, and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), " whose outputs have a length of ", def_parameter_value("challenge_hash_length"), " bytes."),
+            pinformative(link_name("access_control", "Access control"), " requires a type ", def_parameter_type({id: "ReadCapability", plural: "ReadCapabilities"}), " of <Rs n="read_capability"/>, a type ", def_parameter_type({id: "sync_receiver", singular: "Receiver"}), " of ", rs("access_receiver"), ", and a type ", def_parameter_type({ id: "sync_signature", singular: "SyncSignature"}), " of signatures issued by the ", rs("sync_receiver"), ". The ", rs("access_challenge"), " have a length of ", def_parameter_value("challenge_length"), " bytes, and the hash function used for the ", r("commitment_scheme"), " is a parameter ", def_parameter_fn("challenge_hash"), " whose outputs have a length of ", def_parameter_value("challenge_hash_length"), " bytes."),
 
             pinformative(link_name("private_area_intersection", "Private area intersection"), " requires a type ", def_parameter_type("PsiGroup"), " whose values are the members of a ", link("finite cyclic group suitable for key exchanges", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), ", a type ", def_parameter_type("PsiScalar", "PsiScalar"), " of scalars, and a function ", def_parameter_fn("psi_scalar_multiplication", "psi_scalar_multiplication"), " that computes scalar multiplication in the group. We require a function ", def_parameter_fn("hash_into_group"), " that hashes ", rs("fragment"), " into ", r("PsiGroup"), ". And finally, we require a type ", def_parameter_type({id: "SubspaceCapability", plural: "SubspaceCapabilities"}), " of ", rs("subspace_capability"), ", with a type ", def_parameter_type({id: "sync_subspace_receiver", singular: "SubspaceReceiver"}), " of ", rs("subspace_receiver"), ", and a type ", def_parameter_type({ id: "sync_subspace_signature", singular: "SyncSubspaceSignature"}), " of signatures issued by the ", rs("sync_subspace_receiver"), "."),
 
@@ -108,11 +108,11 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
             pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
                 "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type ", r("UserSignature"), ", which together yield a ", r("MeadowcapAuthorisationToken"), ".",
-            ]), " (which differs between any two ", rs("Entry"), "). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
+            ]), " (which differs between any two <Rs n="Entry"/>). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
 
             pinformative(link_name("sync_payloads_transform", "Payload transformation"), " requires a (not necessarily deterministic) algorithm ", def_parameter_fn("transform_payload"), " that converts a ", r("Payload"), " into another bytestring."),
 
-            pinformative("Finally, we require a ", r("NamespaceId"), " ", def_parameter_value({id: "sync_default_namespace_id", singular: "default_namespace_id"}), ", a ", r("SubspaceId"), " ", def_parameter_value({id: "sync_default_subspace_id", singular: "default_subspace_id"}), ", and a ", r("PayloadDigest"), " ", def_parameter_value({id: "sync_default_payload_digest", singular: "default_payload_digest"}), "."),
+            pinformative("Finally, we require a <R n="NamespaceId"/> ", def_parameter_value({id: "sync_default_namespace_id", singular: "default_namespace_id"}), ", a <R n="SubspaceId"/> ", def_parameter_value({id: "sync_default_subspace_id", singular: "default_subspace_id"}), ", and a ", r("PayloadDigest"), " ", def_parameter_value({id: "sync_default_payload_digest", singular: "default_payload_digest"}), "."),
         ]),
 
         hsection("sync_protocol", "Protocol", [
@@ -122,7 +122,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
             pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), "-byte integer ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness — they must both be unique across all protocol runs, and unpredictable."),
 
-            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "The ", r("peer_max_payload_size"), " limits when the other peer may include ", rs("Payload"), " directly when transmitting ", rs("Entry"), ": when an ", r("Entry"), "’s ", r("entry_payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", its ", r("Payload"), " may only be transmitted when explicitly requested."),
+            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "The ", r("peer_max_payload_size"), " limits when the other peer may include ", rs("Payload"), " directly when transmitting <Rs n="Entry"/>: when an <R n="Entry"/>’s ", r("entry_payload_length"), " is strictly greater than the ", r("peer_max_payload_size"), ", its ", r("Payload"), " may only be transmitted when explicitly requested."),
 
             pinformative("The next ", r("challenge_hash_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
 
@@ -144,11 +144,11 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         },
                         {
                             id: "CapabilityHandle",
-                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some ", rs("Entry"), "."],
+                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some <Rs n="Entry"/>."],
                         },
                         {
                             id: "AreaOfInterestHandle",
-                            comment: [R("resource_handle"), " for ", rs("AreaOfInterest"), " that peers wish to sync."],
+                            comment: [R("resource_handle"), " for <Rs n="AreaOfInterest"/> that peers wish to sync."],
                         },
                         {
                             id: "PayloadRequestHandle",
@@ -175,7 +175,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         },
                         {
                             id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting ", rs("Entry"), " and ", rs("Payload"), " outside of ", r("d3rbsr"), "."],
+                            comment: [R("logical_channel"), " for transmitting <Rs n="Entry"/> and ", rs("Payload"), " outside of ", r("d3rbsr"), "."],
                         },
                         {
                             id: "IntersectionChannel",
@@ -299,14 +299,14 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "PaiRequestSubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose ", r("NamespaceId"), " to request the ", r("SubspaceCapability"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
                         }),
                     ),
 
-                    pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the ", r("subspace"), " in question."),
+                    pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the <R n="subspace"/> in question."),
 
                     pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
 
@@ -347,7 +347,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                 ]),
 
                 hsection("sync_setup", "Setup", [
-                    pinformative("To transmit ", rs("Entry"), ", a peer first has to register ", rs("ReadCapability"), ", ", rs("AreaOfInterest"), ", and ", rs("StaticToken"), " with the other peer."),
+                    pinformative("To transmit <Rs n="Entry"/>, a peer first has to register ", rs("ReadCapability"), ", <Rs n="AreaOfInterest"/>, and ", rs("StaticToken"), " with the other peer."),
 
                     pseudocode(
                         new Struct({
@@ -364,7 +364,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "SetupBindReadCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest ", r("Path"), " in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
+                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -381,7 +381,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     pinformative(
                         marginale(["These requirements allow us to encode ", r("SetupBindReadCapability"), " messages more efficiently."]),
-                        "The ", r("SetupBindReadCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("SetupBindReadCapabilityCapability"), " with the longest ", r("Path"), " ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
+                        "The ", r("SetupBindReadCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("SetupBindReadCapabilityCapability"), " with the longest <R n="Path"/> ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
                     ),
 
                     pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
@@ -408,7 +408,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                     ),
 
                     pinformative(
-                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive ", rs("Entry"), " from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
+                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
                     ),
 
                     aside_block(
@@ -520,7 +520,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "ReconciliationAnnounceEntriesWillSort",
                                     name: "will_sort",
-                                    comment: ["Whether the sender promises to send the ", rs("Entry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by ", r("entry_subspace_id"), " first, ", r("entry_path"), " second."],
+                                    comment: ["Whether the sender promises to send the <Rs n="Entry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by ", r("entry_subspace_id"), " first, ", r("entry_path"), " second."],
                                     rhs: r("Bool"),
                                 },
                                 {
@@ -548,10 +548,10 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                     pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers begin transmission of their ", rs("LengthyEntry"), " in a ", r("D3Range"), ". Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
 
                     pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
-                        "Sorting the ", rs("Entry"), " allows the receiver to determine which of its own ", rs("Entry"), " it can omit from a reply in constant space. For unsorted ", rs("Entry"), ", peers that cannot allocate a linear amount of memory have to resort to possibly redundant ", r("Entry"), " transmissions to uphold the correctness of ", r("d3rbsr"), "."
+                        "Sorting the <Rs n="Entry"/> allows the receiver to determine which of its own <Rs n="Entry"/> it can omit from a reply in constant space. For unsorted <Rs n="Entry"/>, peers that cannot allocate a linear amount of memory have to resort to possibly redundant <R n="Entry"/> transmissions to uphold the correctness of ", r("d3rbsr"), "."
                     ]), " sorted in ascending order by ", r("entry_subspace_id"), " first, using the ", r("entry_path"), " as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all ", rs("Entry"), " announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent. The ", rs("Entry"), " are known to all have been sent if the ", r("ReconciliationAnnounceEntriesEmpty"), " has been set to ", code("true"), ", or once a ", r("ReconciliationTerminatePayload"), " message with the ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("true"), " has been sent."),
+                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all <Rs n="Entry"/> announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent. The <Rs n="Entry"/> are known to all have been sent if the ", r("ReconciliationAnnounceEntriesEmpty"), " has been set to ", code("true"), ", or once a ", r("ReconciliationTerminatePayload"), " message with the ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("true"), " has been sent."),
 
                     pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesEmpty"), " set to ", code("true"), " and ", r("ReconciliationAnnounceEntriesFlag"), " ", code("false"), ", to indicate to the other peer that reconciliation of the ", r("D3Range"), " has concluded successfully."),
 
@@ -587,7 +587,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         }),
                     ),
 
-                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit ", rs("Entry"), " as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " with its ", r("ReconciliationAnnounceEntriesEmpty"), " flag set to ", code("false"), ", or a ", r("ReconciliationTerminatePayload"), " with its ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("false"), ". The transmitted ", rs("Entry"), " must be ", r("d3_range_include", "included"), " in the ", r("D3Range"), " of the corresponding ", r("ReconciliationAnnounceEntries"), " message."),
+                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit <Rs n="Entry"/> as part of ", r("d3rbsr"), ". These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " with its ", r("ReconciliationAnnounceEntriesEmpty"), " flag set to ", code("false"), ", or a ", r("ReconciliationTerminatePayload"), " with its ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("false"), ". The transmitted <Rs n="Entry"/> must be ", r("d3_range_include", "included"), " in the ", r("D3Range"), " of the corresponding ", r("ReconciliationAnnounceEntries"), " message."),
 
                     pinformative("No ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " message may be sent after a ", r("ReconciliationSendEntry"), " message, until a sequence of zero or more ", r("ReconciliationSendPayload"), " messages followed by exactly one ", r("ReconciliationTerminatePayload"), " message has been sent. If the ", r("ReconciliationTerminatePayloadFinal"), " flag of the ", r("ReconciliationTerminatePayload"), " message is set to ", code("false"), ", then another ", r("ReconciliationSendEntry"), " message may be sent. Otherwise, another ", r("ReconciliationAnnounceEntries"), " message may be sent."),
 
@@ -616,9 +616,9 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     pinformative("The ", r("ReconciliationSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " ", rs("Payload"), "."),
 
-                    pinformative("Each ", r("ReconciliationSendPayload"), " message transmits a successive (starting at byte zero) part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the ", r("Entry"), " with the most recent ", r("ReconciliationSendEntry"), " message by the sender. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
+                    pinformative("Each ", r("ReconciliationSendPayload"), " message transmits a successive (starting at byte zero) part of the result of applying ", r("transform_payload"), " to the ", r("Payload"), " of the <R n="Entry"/> with the most recent ", r("ReconciliationSendEntry"), " message by the sender. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original ", r("Payload"), " from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
 
-                    pinformative("After sending a ", r("ReconciliationSendPayload"), " message, a peer may not send ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages until it has sent a ", r("ReconciliationTerminatePayload"), " message. ", r("ReconciliationSendPayload"), " messages must only be sent when there was a corresponding ", r("ReconciliationSendEntry"), " message that indicates which ", r("Entry"), " the payload chunk belongs to."),
+                    pinformative("After sending a ", r("ReconciliationSendPayload"), " message, a peer may not send ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages until it has sent a ", r("ReconciliationTerminatePayload"), " message. ", r("ReconciliationSendPayload"), " messages must only be sent when there was a corresponding ", r("ReconciliationSendEntry"), " message that indicates which <R n="Entry"/> the payload chunk belongs to."),
 
                     pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
 
@@ -637,15 +637,15 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         }),
                     ),
 
-                    pinformative("The ", r("ReconciliationTerminatePayload"), " messages let peers indicate that they will not send more payload bytes for the current ", r("Entry"), " as part of set reconciliation. This may be because the end of the ", r("Payload"), " has been reached, or simply because the peer chooses to not send any further bytes."),
+                    pinformative("The ", r("ReconciliationTerminatePayload"), " messages let peers indicate that they will not send more payload bytes for the current <R n="Entry"/> as part of set reconciliation. This may be because the end of the ", r("Payload"), " has been reached, or simply because the peer chooses to not send any further bytes."),
 
-                    pinformative("The ", r("ReconciliationTerminatePayloadFinal"), " flag announces whether more ", rs("Entry"), " will be sent as part of the current ", r("D3Range"), "."),
+                    pinformative("The ", r("ReconciliationTerminatePayloadFinal"), " flag announces whether more <Rs n="Entry"/> will be sent as part of the current ", r("D3Range"), "."),
 
                     pinformative(R("ReconciliationTerminatePayload"), " messages use the ", r("ReconciliationChannel"), "."),
                 ]),
 
                 hsection("sync_data", "Data", [
-                    pinformative("Outside of ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push ", rs("Entry"), " and ", rs("Payload"), " to each other, and they can request specific ", rs("Payload"), "."),
+                    pinformative("Outside of ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push <Rs n="Entry"/> and ", rs("Payload"), " to each other, and they can request specific ", rs("Payload"), "."),
 
                     pseudocode(
                         new Struct({
@@ -655,25 +655,25 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "DataSendEntryEntry",
                                     name: "entry",
-                                    comment: ["The ", r("Entry"), " to transmit."],
+                                    comment: ["The <R n="Entry"/> to transmit."],
                                     rhs: r("Entry"),
                                 },
                                 {
                                     id: "DataSendEntryStatic",
                                     name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), " ", r("handle_bind", "bound"), " to the ", r("StaticToken"), " of the ", r("Entry"), " to transmit."],
+                                    comment: ["A ", r("StaticTokenHandle"), " ", r("handle_bind", "bound"), " to the ", r("StaticToken"), " of the <R n="Entry"/> to transmit."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "DataSendEntryDynamic",
                                     name: "dynamic_token",
-                                    comment: ["The ", r("DynamicToken"), " of the ", r("Entry"), " to transmit."],
+                                    comment: ["The ", r("DynamicToken"), " of the <R n="Entry"/> to transmit."],
                                     rhs: r("DynamicToken"),
                                 },
                                 {
                                     id: "DataSendEntryOffset",
                                     name: "offset",
-                                    comment: ["The offset in the ", r("Payload"), " in bytes at which ", r("Payload"), " transmission will begin. If this is equal to the ", r("Entry"), "’s ", r("entry_payload_length"), ", the ", r("Payload"), " will not be transmitted."],
+                                    comment: ["The offset in the ", r("Payload"), " in bytes at which ", r("Payload"), " transmission will begin. If this is equal to the <R n="Entry"/>’s ", r("entry_payload_length"), ", the ", r("Payload"), " will not be transmitted."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -682,7 +682,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     pinformative("The ", r("DataSendEntry"), " messages let peers transmit ", rs("LengthyEntry"), " outside of ", r("d3rbsr"), ". They further set up later ", r("Payload"), " transmissions (via ", r("DataSendPayload"), " messages)."),
 
-                    pinformative("To map ", r("Payload"), " transmissions to ", rs("Entry"), ", each peer maintains a piece of state: an ", r("Entry"), " ", def_value("currently_received_entry"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving a ", r("DataSendEntry"), " message, a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), "."),
+                    pinformative("To map ", r("Payload"), " transmissions to <Rs n="Entry"/>, each peer maintains a piece of state: an <R n="Entry"/> ", def_value("currently_received_entry"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving a ", r("DataSendEntry"), " message, a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), "."),
 
                     pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."),
 
@@ -718,7 +718,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                     pseudocode(
                         new Struct({
                             id: "DataSetMetadata",
-                            comment: ["Express preferences for ", r("Payload"), " transfer in the intersection of two ", rs("AreaOfInterest"), "."],
+                            comment: ["Express preferences for ", r("Payload"), " transfer in the intersection of two <Rs n="AreaOfInterest"/>."],
                             fields: [
                                 {
                                     id: "DataSetMetadataSenderHandle",
@@ -742,19 +742,19 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         }),
                     ),
 
-                    pinformative("The ", r("DataSetMetadata"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two ", rs("AreaOfInterest"), ", or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
+                    pinformative("The ", r("DataSetMetadata"), " messages let peers express whether the other peer should eagerly push ", rs("Payload"), " from the intersection of two <Rs n="AreaOfInterest"/>, or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
 
                     pinformative(R("DataSetMetadata"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
 
                     pseudocode(
                         new Struct({
                             id: "DataBindPayloadRequest",
-                            comment: [R("handle_bind"), " an ", r("Entry"), " to a ", r("PayloadRequestHandle"), " and request transmission of its ", r("Payload"), " from an offset."],
+                            comment: [R("handle_bind"), " an <R n="Entry"/> to a ", r("PayloadRequestHandle"), " and request transmission of its ", r("Payload"), " from an offset."],
                             fields: [
                                 {
                                     id: "DataBindPayloadRequestEntry",
                                     name: "entry",
-                                    comment: ["The ", r("Entry"), " to request."],
+                                    comment: ["The <R n="Entry"/> to request."],
                                     rhs: r("Entry"),
                                 },
                                 {
@@ -766,7 +766,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "DataBindPayloadRequestCapability",
                                     name: "capability",
-                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " ", r("Entry"), "."],
+                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " <R n="Entry"/>."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -775,7 +775,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     pinformative([
                         marginale(["If the receiver of a ", r("DataBindPayloadRequest"), " does not have the requested ", r("Payload"), " and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("DataBindPayloadRequest"), " messages let peers explicitly request ", rs("Payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("DataBindPayloadRequestEntry"), " and ", r("DataBindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("Payload"), ", starting at the specified ", r("DataBindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_area"), " must ", r("area_include"), " the requested ", r("Entry"), ".",
+                        "The ", r("DataBindPayloadRequest"), " messages let peers explicitly request ", rs("Payload"), ", by binding a ", r("PayloadRequestHandle"), " to the specified ", r("DataBindPayloadRequestEntry"), " and ", r("DataBindPayloadRequestOffset"), ". The other peer is expected to then transmit the ", r("Payload"), ", starting at the specified ", r("DataBindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose ", r("granted_area"), " must ", r("area_include"), " the requested <R n="Entry"/>.",
                     ]),
 
                     pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
@@ -962,18 +962,18 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         ),
                         preview_scope(
                             marginale(["When using the ", r("Capability"), " type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known ", r("granted_namespace"), " and whose ", r("granted_area"), " is ", r("area_include_area", "included"), " in some known ", r("Area"), ".",
+                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known ", r("granted_namespace"), " and whose ", r("granted_area"), " is <R n="area_include_area">included</R> in some known ", r("Area"), ".",
                         ),
                         preview_scope(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
                         ),
                         preview_scope(
-                            marginale(["Used indirectly when encoding ", rs("Entry"), ", ", rs("Area"), ", and ", rs("D3Range"), "."]),
-                            "An ", r("encoding_function"), " for ", r("SubspaceId"), ".",
+                            marginale(["Used indirectly when encoding <Rs n="Entry"/>, ", rs("Area"), ", and ", rs("D3Range"), "."]),
+                            "An ", r("encoding_function"), " for <R n="SubspaceId"/>.",
                         ),
                         preview_scope(
                             marginale(["The total order makes ", rs("D3Range"), " meaningful, the least element and successors ensure that every ", r("Area"), " can be expressed as an equivalent ", r("D3Range"), "."]),
-                            "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on ", r("SubspaceId"), " with least element ", r("sync_default_subspace_id"), ", in which for every non-maximal ", r("SubspaceId"), " ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other ", r("SubspaceId"), " is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
+                            "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on <R n="SubspaceId"/> with least element ", r("sync_default_subspace_id"), ", in which for every non-maximal <R n="SubspaceId"/> ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other <R n="SubspaceId"/> is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
                         ),
                         preview_scope(
                             "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
@@ -1115,7 +1115,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
                             ]],
                             [[
-                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
+                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the <R n="NamespaceId"/> of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
                             ]],
                             [[
                                 code(function_call(r("encode_sync_subspace_signature"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilitySignature"))),
@@ -1127,7 +1127,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                 hsection("sync_encode_setup", "Setup", [
                     pinformative(
-                        "Let ", def_value({id: "enc_setup_read", singular: "m"}), " be a ", r("SetupBindReadCapability"), " message, let ", def_value({id: "enc_setup_read_granted_area", singular: "granted_area"}), " be the ", r("granted_area"), " of ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), ", let ", def_value({id: "enc_setup_read_frag", singular: "frag"}), " be the ", r("fragment"), " corresponding to ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", and let ", def_value({id: "enc_setup_read_pre", singular: "pre"}), " be the ", r("Path"), " of ", r("enc_setup_read_frag"), ".",
+                        "Let ", def_value({id: "enc_setup_read", singular: "m"}), " be a ", r("SetupBindReadCapability"), " message, let ", def_value({id: "enc_setup_read_granted_area", singular: "granted_area"}), " be the ", r("granted_area"), " of ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), ", let ", def_value({id: "enc_setup_read_frag", singular: "frag"}), " be the ", r("fragment"), " corresponding to ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", and let ", def_value({id: "enc_setup_read_pre", singular: "pre"}), " be the <R n="Path"/> of ", r("enc_setup_read_frag"), ".",
                     ),
 
                     pinformative("Define ", def_value({id: "enc_setup_read_outer", singular: "out"}), " as the ", r("Area"), " with", lis(
@@ -1163,7 +1163,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"))), "-byte integer",
                             ]],
                             [[
-                                code(function_call(r("encode_read_capability"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the ", r("NamespaceId"), " of ", r("enc_setup_read_frag"), ", and the known ", r("area_include_area", "including"), " ", r("Area"), " is ", r("enc_setup_read_outer"),
+                                code(function_call(r("encode_read_capability"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"))), " — the known ", r("granted_namespace"), " is the <R n="NamespaceId"/> of ", r("enc_setup_read_frag"), ", and the known ", r("area_include_area", "including"), " ", r("Area"), " is ", r("enc_setup_read_outer"),
                             ]],
                             [[
                                 code(function_call(r("encode_sync_signature"), field_access(r("enc_setup_read"), "SetupBindReadCapabilitySignature"))),
@@ -1206,7 +1206,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                     r("encode_area_in_area"),
                                     field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_area"),
                                     r("enc_setup_aoi_outer"),
-                                ), ", where ", def_value({id: "enc_setup_aoi_outer", singular: "out"}), " is the ", r("granted_area"), " of the ", r("read_capability"), " to which ", field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), " is ", r("handle_bind", "bound"),
+                                ), ", where ", def_value({id: "enc_setup_aoi_outer", singular: "out"}), " is the ", r("granted_area"), " of the <R n="read_capability"/> to which ", field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), " is ", r("handle_bind", "bound"),
                             ]],
                         ),
                         "If ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " != 0"), " or ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " != 0"), ", this is followed by the concatenation of:",
@@ -1254,7 +1254,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                 hsection("sync_encode_recon", "Reconciliation", [
                     pinformative(
-                        "Successive reconciliation messages often concern related ", rs("D3Range"), " and ", rs("Entry"), ". We exploit this for more efficient encodings by allowing to specify ", rs("D3Range"), " and ", rs("Entry"), " in relation to the previously sent one. To allow for this optimization, peers need to track the following pieces of state:",
+                        "Successive reconciliation messages often concern related ", rs("D3Range"), " and <Rs n="Entry"/>. We exploit this for more efficient encodings by allowing to specify ", rs("D3Range"), " and <Rs n="Entry"/> in relation to the previously sent one. To allow for this optimization, peers need to track the following pieces of state:",
 
                         lis(
                             [
@@ -1267,7 +1267,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), ". The initial value is ", code("0"), "."
                             ],
                             [
-                                "An ", r("Entry"), " ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the ", r("lengthy_entry_entry"), " of the message’s ", r("ReconciliationSendEntryEntry"), ". The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
+                                "An <R n="Entry"/> ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the ", r("lengthy_entry_entry"), " of the message’s ", r("ReconciliationSendEntryEntry"), ". The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
                             ],
                             [
                                 "A ", r("StaticTokenHandle"), " ", def_value({id: "sync_enc_prev_token", singular: "prev_token"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the message’s ", r("ReconciliationSendEntryStaticTokenHandle"), ". The initial value is ", code("0"), "."
@@ -1276,7 +1276,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                     ),
 
                     pinformative(
-                        "Given two ", rs("AreaOfInterestHandle"), " ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the ", r("D3Range"), " that ", rs("d3_range_include"), " the same ", rs("Entry"), " as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the ", rs("AreaOfInterest"), " to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are ", r("handle_bind", "bound"), "."
+                        "Given two ", rs("AreaOfInterestHandle"), " ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the ", r("D3Range"), " that ", rs("d3_range_include"), " the same <Rs n="Entry"/> as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the <Rs n="AreaOfInterest"/> to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are ", r("handle_bind", "bound"), "."
                     ),
 
                     hr(),
@@ -1655,7 +1655,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                 hsection("sync_encode_data", "Data", [
                     pinformative(
-                        "When encoding ", rs("Entry"), " for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the ", r("Entry"), " can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an ", r("Area"), ". Such an ", r("Area"), " ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the ", rs("Area"), " ", r("handle_bind", "bound"), " by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " ", r("handle_bind", "bound"), " by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " ", r("handle_bind", "bound"), " by the receiver of the encoded message.",
+                        "When encoding <Rs n="Entry"/> for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the <R n="Entry"/> can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an ", r("Area"), ". Such an ", r("Area"), " ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the ", rs("Area"), " ", r("handle_bind", "bound"), " by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " ", r("handle_bind", "bound"), " by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " ", r("handle_bind", "bound"), " by the receiver of the encoded message.",
                     ),
 
                     hr(),
@@ -2180,7 +2180,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                         ),
                     ),
                     pinformative(
-                        "And with that, we have all the pieces we need for secure, efficient synchronisation of ", rs("namespace"), ". Thanks for reading!"),
+                        "And with that, we have all the pieces we need for secure, efficient synchronisation of <Rs n="namespace"/>. Thanks for reading!"),
                     pinformative(
                         img(asset("sync/wgps_emblem.png"), `A WGPS emblem: A stylised drawing of satellite in the night sky, backlit by the full moon.`),
                     ),
