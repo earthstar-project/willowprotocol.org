@@ -28,6 +28,7 @@ import {
   DefValue,
   SliceType,
   StructDef,
+  Tuple,
   TupleType,
 } from "macromania-rustic";
 import { M } from "macromania-katex";
@@ -159,6 +160,24 @@ export const private_interest_intersection = (
             </Marginale>{" "}
             can easily be guessed, we do not try to hide information about them.
           </P>
+
+          <P>
+            In addition to withholding information from unauthorised peers, we
+            also wish to defend against{" "}
+            <AE href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
+              active eavesdroppers
+            </AE>. An active eavesdropper is an attacker who can read and modify
+            all transmissions by the two peers. There exist{" "}
+            <AE href="https://en.wikipedia.org/wiki/Key-agreement_protocol#Authentication">
+              well-known protections
+            </AE>{" "}
+            for settings where the two peers have prior knowledge about each
+            other before they start the connection, but we also want to be able
+            to enable sync between anonymous peers who do not know each other at
+            all. Hence, even after the other peer has proven to us that they
+            have access to some data, we still must be careful about what we
+            send (or rather, how we encrypt it).
+          </P>
         </Hsection>
 
         <Hsection n="sync_confidentiality_overview" title="Techniques Overview">
@@ -193,8 +212,7 @@ export const private_interest_intersection = (
           </P>
 
           <P>
-            The second bullet point requires a bit more elaboration; it serves
-            to defend against{" "}
+            The second bullet point serves to defend against{" "}
             <AE href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
               active eavesdroppers
             </AE>. At the start of the sync session, the two peers perform a
@@ -331,7 +349,7 @@ export const private_interest_intersection = (
           </AsideBlock>
 
           <P>
-            Before we go into the details of which data precisely to shash, we
+            Before we go into the details of which data precisely to hash, we
             want to point out that peers must use references to the common
             hashes instead of mentioning the underlying <Rs n="NamespaceId" />,
             {" "}
@@ -345,8 +363,481 @@ export const private_interest_intersection = (
         <Hsection n="sync_confidentiality_details" title="All the Details">
           <P>
             We now switch from the preceding informational style to a more
-            precise specification of how to sync Willow data with untrusted peers while keeping most
-            metadata confidential.
+            precise specification of how one can sync Willow data with untrusted
+            peers while keeping most metadata confidential.
+          </P>
+
+          <PreviewScope>
+            <P>
+              We shall assume that the connection between the two syncing peers
+              is established via a handshake. We refer to the two peers as the
+              {" "}
+              <Def n="pii_initiator" r="initiator" rs="initiators" /> and the
+              {" "}
+              <Def n="pii_responder" r="responder" rs="responders" />{" "}
+              respectively to break symmetry. We require the handshake to have
+              the following properties:<Marginale>
+                These properties are more or less the bread-and-butter
+                properties of authenticated Diffie-Hellman key exchanges; the
+                {" "}
+                <AE href="https://noiseprotocol.org/noise.html">
+                  noise framework XX handshake
+                </AE>, for example, fulfils them.
+              </Marginale>
+            </P>
+            <Ul>
+              <Li>
+                all communication over the connection after the handshake is
+                encrypted, using a symmetric key known two both participants of
+                the handshake,
+              </Li>
+              <Li>
+                the symmetric key depends to some degree on two inputs{" "}
+                <DefValue n="ini_pk" /> and{" "}
+                <DefValue n="res_pk" />, which are public keys submitted by the
+                {" "}
+                <R n="pii_initiator" /> and the <R n="pii_responder" />{" "}
+                respectively,
+              </Li>
+              <Li>
+                during the handshake, the peers prove to each other knowledge of
+                the respective secret keys for <R n="pii_initiator" /> and{" "}
+                <R n="pii_responder" />, and
+              </Li>
+              <Li>
+                the two peers arrive at a random bytestring<Marginale>
+                  In the noise framework, this corresponds to the{" "}
+                  <Code>GetHandshakeHash()</Code> function.
+                </Marginale>{" "}
+                <DefValue n="pii_rnd" r="rnd" />{" "}
+                which cannot be dictated by any one peer alone.
+              </Li>
+            </Ul>
+          </PreviewScope>
+
+          <P>
+            Peers must reject any <Rs n="read_capability" />{" "}
+            presented to them whose <R n="access_receiver" /> is not the{" "}
+            <R n="ini_pk" /> or <R n="res_pk" />{" "}
+            respectively. This ensures that the information they exchange can
+            only be decrypted by the receiver of the capabilities.
+          </P>
+
+          <PreviewScope>
+            <P>
+              The <R n="pii_rnd" /> bytestring{" "}
+              forms the basis for the two peers to salt their hashes. We define
+              {" "}
+              <DefValue n="pii_ini_salt" r="ini_salt" /> as equal to{" "}
+              <R n="pii_rnd" />, and <DefValue n="pii_res_salt" r="res_salt" />
+              {" "}
+              as the bytestring obtained by flipping every bit of{" "}
+              <R n="pii_rnd" />.
+            </P>
+          </PreviewScope>
+
+          <Hsection n="pii_private_interests" title="Private Interests">
+            <P>
+              Before we go into further details, we introduce some compact
+              terminology around the data we want to keep confidential
+              (<Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and{" "}
+              <Rs n="Path" />), starting by giving such triplets a name:
+            </P>
+
+            <Pseudocode n="pi_definition">
+              <StructDef
+                comment={
+                  <>
+                    Confidential data that relates to determining the{" "}
+                    <Rs n="AreaOfInterest" />{" "}
+                    that peers might be interested in synchronising.
+                  </>
+                }
+                id={["PrivateInterest", "PrivateInterest", "PrivateInterests"]}
+                fields={[
+                  [
+                    ["namespace_id", "pi_ns"],
+                    <R n="NamespaceId" />,
+                  ],
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          <R n="area_any" /> denotes interest in <Em>all</Em>
+                          {" "}
+                          <Rs n="subspace" /> of the <R n="namespace" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        ["subspace_id", "pi_ss"],
+                        <ChoiceType
+                          types={[<R n="SubspaceId" />, <R n="area_any" />]}
+                        />,
+                      ],
+                    },
+                  },
+                  [
+                    ["path", "pi_path"],
+                    <R n="Path" />,
+                  ],
+                ]}
+              />
+            </Pseudocode>
+
+            <PreviewScope>
+              <P>
+                Let <DefValue n="pi1" r="p1" /> and <DefValue n="pi2" r="p2" />
+                {" "}
+                be <Rs n="PrivateInterest" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say <R n="pi1" /> is{" "}
+                <Def n="pi_more_specific" r="more specific" /> than{" "}
+                <R n="pi2" /> if
+              </P>
+              <Ul>
+                <Li>
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="pi_ns">
+                      <R n="pi2" />
+                    </AccessStruct>
+                  </Code>, and
+                </Li>
+                <Li>
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi2" />
+                    </AccessStruct>{" "}
+                    == <R n="area_any" />
+                  </Code>{" "}
+                  or{" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="pi_ss">
+                      <R n="pi2" />
+                    </AccessStruct>
+                  </Code>, and
+                </Li>
+                <Li>
+                  <AccessStruct field="pi_path">
+                    <R n="pi1" />
+                  </AccessStruct>{" "}
+                  is an <R n="path_extension" /> of{" "}
+                  <AccessStruct field="pi_ss">
+                    <R n="pi2" />
+                  </AccessStruct>.
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" /> is{" "}
+                <Def n="pi_strictly_more_specific" r="strictly more specific" />
+                {" "}
+                than <R n="pi2" /> if <R n="pi1" /> is{" "}
+                <R n="pi_more_specific" /> than <R n="pi2" />{" "}
+                and they are not equal.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" /> is{" "}
+                <Def n="pi_less_specific" r="less specific" /> than{" "}
+                <R n="pi2" /> if <R n="pi2" /> is <R n="pi_more_specific" />
+                {" "}
+                than <R n="pi1" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
+                <Def n="pi_comparable" r="comparable" /> if <R n="pi1" /> is
+                {" "}
+                <R n="pi_more_specific" /> than <R n="pi2" />or <R n="pi2" /> is
+                {" "}
+                <R n="pi_more_specific" /> than <R n="pi1" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" />{" "}
+                <Def n="pi_include_entry" r="include">includes</Def> an{" "}
+                <R n="Entry" /> <DefValue n="pi_e" r="e" /> if
+              </P>
+              <Ul>
+                <Li>
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="entry_namespace_id">
+                      <R n="pi_e" />
+                    </AccessStruct>
+                  </Code>, and
+                </Li>
+                <Li>
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    == <R n="area_any" />
+                  </Code>{" "}
+                  or{" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="entry_subspace_id">
+                      <R n="pi_e" />
+                    </AccessStruct>
+                  </Code>, and
+                </Li>
+                <Li>
+                  <AccessStruct field="pi_path">
+                    <R n="pi1" />
+                  </AccessStruct>{" "}
+                  is a <R n="path_prefix" /> of{" "}
+                  <AccessStruct field="entry_path">
+                    <R n="pi_e" />
+                  </AccessStruct>.
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
+                <Def n="pi_disjoint" r="disjoint" /> there can be no{" "}
+                <R n="Entry" /> which is <R n="pi_include_entry">included</R>
+                {" "}
+                in both <R n="pi1" /> and <R n="pi2" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
+                <Def n="pi_awkward" r="awkward" /> if they are neither{" "}
+                <R n="pi_comparable" /> nor{" "}
+                <R n="pi_disjoint" />. This is the case if and only if one of
+                them has <R n="pi_ss" /> <R n="area_any" /> and a{" "}
+                <R n="pi_path" />{" "}
+                <DefValue n="pi_awkward_p" r="p" />, and the other has a
+                non-<R n="area_any" /> <R n="pi_ss" /> and a <R n="pi_path" />
+                {" "}
+                which is a strict <R n="path_prefix" /> of{" "}
+                <R n="pi_awkward_p" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say that <R n="pi1" />{" "}
+                <Def n="pi_include_area" r="include">includes</Def> an{" "}
+                <R n="Area" /> <DefValue n="pi_a" r="a" /> if
+              </P>
+              <Ul>
+                <Li>
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    == <R n="area_any" />
+                  </Code>{" "}
+                  or{" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <R n="pi1" />
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="AreaSubspace">
+                      <R n="pi_a" />
+                    </AccessStruct>
+                  </Code>, and
+                </Li>
+                <Li>
+                  <AccessStruct field="pi_path">
+                    <R n="pi1" />
+                  </AccessStruct>{" "}
+                  is a <R n="path_prefix" /> of{" "}
+                  <AccessStruct field="AreaPath">
+                    <R n="pi_a" />
+                  </AccessStruct>.
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                If <R n="pi1" /> has a <R n="pi_ss" /> that is not{" "}
+                <R n="area_any" />, then we call the <R n="PrivateInterest" />
+                {" "}
+                that is equal to <R n="pi1" /> except its <R n="pi_ss" /> is
+                {" "}
+                <R n="area_any" /> the <Def n="pi_relaxation" r="relaxation" />
+                {" "}
+                of <R n="pi1" />.
+              </P>
+            </PreviewScope>
+          </Hsection>
+
+          <Hsection n="pii_pii" title="Private Interest Intersection">
+            <PreviewScope>
+              <P>
+                Peers want to find the non-empty <Rs n="aoi_intersection" />
+                {" "}
+                of their{" "}
+                <Rs n="AreaOfInterest" />. We reduce this to first finding their
+                {" "}
+                <R n="pi_disjoint">non-disjoint</R>{" "}
+                <Rs n="PrivateInterest" />, and assume that <Rs n="TimeRange" />
+                {" "}
+                and <R n="AreaOfInterest" /> limits<Marginale>
+                  Combining confidential <R n="PrivateInterest" />{" "}
+                  information with limits and <Rs n="TimeRange" />{" "}
+                  in the clear might allow malicious peers to track
+                  correlations. We choose to err on the side of caution here.
+                </Marginale>{" "}
+                will be taken into consideration in a separate, later stage. The
+                challenge then becomes to find overlapping{" "}
+                <Rs n="PrivateInterest" />{" "}
+                by comparing only small numbers of salted hashes. We assume
+                there is a secure hash function <DefFunction n="pii_h" r="h" />
+                {" "}
+                that maps pairs of salts (bytestrings) and{" "}
+                <Rs n="PrivateInterest" /> to bytestrings of some fixed width.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                <Marginale>
+                  Explaining in advance how this solution came about is a bit
+                  difficult. So we are simply going to define it, and then argue
+                  that it is correct, without any real explanation. If that
+                  leaves you unhappy, you can at least take comfort in the fact
+                  that you did not have to <Em>come up</Em>{" "}
+                  with the solution yourself.
+                </Marginale>
+                For reasons that will become apparent later (spoiler:{" "}
+                <R n="pi_awkward" /> <Rs n="PrivateInterest" />{" "}
+                deserve their name), the peers exchange pairs of a salted hash
+                and a boolean each, according to the following rules:
+              </P>
+              <Ul>
+                <Li>
+                  For each <R n="PrivateInterest" />{" "}
+                  <DefValue n="pii_hashing_p0" r="p" /> with a <R n="pi_ss" />
+                  {" "}
+                  of <R n="area_any" />,
+                  <Ul>
+                    <Li>
+                      the <R n="pii_initiator" /> transmits the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
+                        <R n="pii_hashing_p0" />), true)
+                      </Code>, and
+                    </Li>
+                    <Li>
+                      the <R n="pii_responder" />
+                      <Marginale>
+                        Here and elsewhere, <R n="pii_responder" /> and{" "}
+                        <R n="pii_initiator" />{" "}
+                        send the same pairs, except they salt differently.
+                      </Marginale>{" "}
+                      <Alj>
+                        TODO: fix li widths and effects on marginale
+                        positioning.
+                      </Alj>
+                      transmits the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
+                        <R n="pii_hashing_p0" />), true)
+                      </Code>.
+                    </Li>
+                  </Ul>
+                </Li>
+                <Li>
+                  For each <R n="PrivateInterest" />{" "}
+                  <DefValue n="pii_hashing_p1" r="p" /> with a <R n="pi_ss" />
+                  {" "}
+                  that is not <R n="area_any" />, let{" "}
+                  <DefValue n="pii_hashing_p_relaxed" r="p_relaxed" />{" "}
+                  denote the <R n="pi_relaxation" /> of{" "}
+                  <R n="pii_hashing_p1" />. Then each peer transmits{" "}
+                  <Em>two</Em> pairs:
+                  <Ul>
+                    <Li>
+                      the <R n="pii_initiator" /> transmits the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
+                        <R n="pii_hashing_p1" />), true)
+                      </Code>{" "}
+                      and the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
+                        <R n="pii_hashing_p_relaxed" />), false)
+                      </Code>, and
+                    </Li>
+                    <Li>
+                      the <R n="pii_responder" /> transmits the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
+                        <R n="pii_hashing_p1" />), true)
+                      </Code>{" "}
+                      and the pair{" "}
+                      <Code>
+                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
+                        <R n="pii_hashing_p_relaxed" />), false)
+                      </Code>.
+                    </Li>
+                  </Ul>
+                </Li>
+                <Li>
+                  Peers that wish to hide how many of their{" "}
+                  <Rs n="PrivateInterest" /> have a <R n="pi_ss" /> of{" "}
+                  <R n="area_any" />{" "}
+                  can further send a pair of a random hash and the boolean{" "}
+                  <Code>false</Code> for each of their{" "}
+                  <Rs n="PrivateInterest" /> with a <R n="pi_ss" /> of{" "}
+                  <R n="area_any" />.
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <P>
+              The boolean, in other words, is <Code>true</Code>{" "}
+              if the hash corresponds to a <R n="PrivateInterest" />{" "}
+              that the sending peer is actually interested in, and{" "}
+              <Code>false</Code> if the hash corresponds merely to a{" "}
+              <R n="pi_relaxation" /> that must be sent for technical reasons.
+            </P>
+
+            <P>
+              Locally, each peer computes a greater number of hashes. TODO
+            </P>
+          </Hsection>
+
+          <Hr />
+          <P>
+            exchanging caps
           </P>
         </Hsection>
 
@@ -661,251 +1152,6 @@ export const private_interest_intersection = (
           information we disclose even to a peer who has read access to some
           certain data.
         </P>
-
-        <P>
-          <Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and <Rs n="Path" />
-          {" "}
-          do not only occur as part of authenticated{" "}
-          <Rs n="Entry" />, but they also inform which data two peers want to
-          sync in the first place. While two peers discover their common
-          interests, we do not want to leak any of these either. To simplify our
-          presentation, we introduce some definitions around these concepts,
-          starting with the notion of a <R n="PrivateInterest" />.
-        </P>
-
-        <Pseudocode n="pi_definition">
-          <StructDef
-            comment={
-              <>
-                Confidential data that relates to determining the{" "}
-                <Rs n="AreaOfInterest" />{" "}
-                that peers might be interested in synchronising.
-              </>
-            }
-            id={["PrivateInterest", "PrivateInterest", "PrivateInterests"]}
-            fields={[
-              [
-                ["namespace_id", "pi_ns"],
-                <R n="NamespaceId" />,
-              ],
-              {
-                commented: {
-                  comment: (
-                    <>
-                      <R n="area_any" /> denotes interest in <Em>all</Em>{" "}
-                      <Rs n="subspace" /> of the <R n="namespace" />.
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["subspace_id", "pi_ss"],
-                    <ChoiceType
-                      types={[<R n="SubspaceId" />, <R n="area_any" />]}
-                    />,
-                  ],
-                },
-              },
-              [
-                ["path", "pi_path"],
-                <R n="Path" />,
-              ],
-            ]}
-          />
-        </Pseudocode>
-
-        <PreviewScope>
-          <P>
-            Let <DefValue n="pi1" r="p1" /> and <DefValue n="pi2" r="p2" /> be
-            {" "}
-            <Rs n="PrivateInterest" />.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say <R n="pi1" /> is{" "}
-            <Def n="pi_more_specific" r="more specific" /> than <R n="pi2" /> if
-          </P>
-          <Ul>
-            <Li>
-              <Code>
-                <AccessStruct field="pi_ns">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                =={" "}
-                <AccessStruct field="pi_ns">
-                  <R n="pi2" />
-                </AccessStruct>
-              </Code>, and
-            </Li>
-            <Li>
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi2" />
-                </AccessStruct>{" "}
-                == <R n="area_any" />
-              </Code>{" "}
-              or{" "}
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                =={" "}
-                <AccessStruct field="pi_ss">
-                  <R n="pi2" />
-                </AccessStruct>
-              </Code>, and
-            </Li>
-            <Li>
-              <AccessStruct field="pi_path">
-                <R n="pi1" />
-              </AccessStruct>{" "}
-              is an <R n="path_extension" /> of{" "}
-              <AccessStruct field="pi_ss">
-                <R n="pi2" />
-              </AccessStruct>.
-            </Li>
-          </Ul>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" /> is{" "}
-            <Def n="pi_strictly_more_specific" r="strictly more specific" />
-            {" "}
-            than <R n="pi2" /> if <R n="pi1" /> is <R n="pi_more_specific" />
-            {" "}
-            than <R n="pi2" /> and they are not equal.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" /> is{" "}
-            <Def n="pi_less_specific" r="less specific" /> than <R n="pi2" /> if
-            {" "}
-            <R n="pi2" /> is <R n="pi_more_specific" /> than <R n="pi1" />.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
-            <Def n="pi_comparable" r="comparable" /> if <R n="pi1" /> is{" "}
-            <R n="pi_more_specific" /> than <R n="pi2" />or <R n="pi2" /> is
-            {" "}
-            <R n="pi_more_specific" /> than <R n="pi1" />.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" />{" "}
-            <Def n="pi_include_entry" r="include">includes</Def> an{" "}
-            <R n="Entry" /> <DefValue n="pi_e" r="e" /> if
-          </P>
-          <Ul>
-            <Li>
-              <Code>
-                <AccessStruct field="pi_ns">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                =={" "}
-                <AccessStruct field="entry_namespace_id">
-                  <R n="pi_e" />
-                </AccessStruct>
-              </Code>, and
-            </Li>
-            <Li>
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                == <R n="area_any" />
-              </Code>{" "}
-              or{" "}
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                =={" "}
-                <AccessStruct field="entry_subspace_id">
-                  <R n="pi_e" />
-                </AccessStruct>
-              </Code>, and
-            </Li>
-            <Li>
-              <AccessStruct field="pi_path">
-                <R n="pi1" />
-              </AccessStruct>{" "}
-              is a <R n="path_prefix" /> of{" "}
-              <AccessStruct field="entry_path">
-                <R n="pi_e" />
-              </AccessStruct>.
-            </Li>
-          </Ul>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
-            <Def n="pi_disjoint" r="disjoint" /> there can be no <R n="Entry" />
-            {" "}
-            which is <R n="pi_include_entry">included</R> in both <R n="pi1" />
-            {" "}
-            and <R n="pi2" />.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" /> and <R n="pi2" /> are{" "}
-            <Def n="pi_awkward" r="awkward" /> if they are neither{" "}
-            <R n="pi_comparable" /> nor{" "}
-            <R n="pi_disjoint" />. This is the case if and only if one of them
-            has <R n="pi_ss" /> <R n="area_any" /> and a <R n="pi_path" />{" "}
-            <DefValue n="pi_awkward_p" r="p" />, and the other has a
-            non-<R n="area_any" /> <R n="pi_ss" /> and a <R n="pi_path" />{" "}
-            which is a strict <R n="path_prefix" /> of <R n="pi_awkward_p" />.
-          </P>
-        </PreviewScope>
-
-        <PreviewScope>
-          <P>
-            We say that <R n="pi1" />{" "}
-            <Def n="pi_include_area" r="include">includes</Def> an{" "}
-            <R n="Area" /> <DefValue n="pi_a" r="a" /> if
-          </P>
-          <Ul>
-            <Li>
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                == <R n="area_any" />
-              </Code>{" "}
-              or{" "}
-              <Code>
-                <AccessStruct field="pi_ss">
-                  <R n="pi1" />
-                </AccessStruct>{" "}
-                =={" "}
-                <AccessStruct field="AreaSubspace">
-                  <R n="pi_a" />
-                </AccessStruct>
-              </Code>, and
-            </Li>
-            <Li>
-              <AccessStruct field="pi_path">
-                <R n="pi1" />
-              </AccessStruct>{" "}
-              is a <R n="path_prefix" /> of{" "}
-              <AccessStruct field="AreaPath">
-                <R n="pi_a" />
-              </AccessStruct>.
-            </Li>
-          </Ul>
-        </PreviewScope>
 
         <Hsection n="wgps_security_model" title="Security Model">
           <P>
