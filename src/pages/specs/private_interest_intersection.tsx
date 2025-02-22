@@ -1,14 +1,25 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, AsideBlock, Curly, NoWrap, Path } from "../../macros.tsx";
+import {
+  AE,
+  Alj,
+  AsideBlock,
+  Curly,
+  NoWrap,
+  Path,
+  Purple,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Blockquote,
   Code,
+  Details,
+  Div,
   Em,
   Hr,
   Img,
   Li,
   P,
+  Summary,
   Table,
   Tbody,
   Td,
@@ -34,6 +45,60 @@ import {
 import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
+import { Expression, Expressions } from "macromaniajsx/jsx-dev-runtime";
+
+function PiiExample(
+  {
+    children,
+    leftPath,
+    rightPath,
+    leftSs,
+    rightSs,
+    overlap,
+  }: {
+    children?: Expressions;
+    leftPath: Expression[];
+    rightPath: Expression[];
+    leftSs?: Expressions;
+    rightSs?: Expressions;
+    overlap?: boolean;
+  },
+): Expression {
+  return (
+    <Div clazz="piiExample">
+      <Div clazz="piiExampleLeft">
+        {leftSs === undefined ? <R n="area_any" /> : (
+          <Purple>
+            <exps x={leftSs} />
+          </Purple>
+        )}
+        <Path components={leftPath} />
+      </Div>
+      <Div clazz="piiExampleRight">
+        {rightSs === undefined ? <R n="area_any" /> : (
+          <Purple>
+            <exps x={rightSs} />
+          </Purple>
+        )}
+        <Path components={rightPath} />
+      </Div>
+      <Alj inline>TODO: visualise the example.</Alj>
+      <Div clazz="piiExampleCaption">
+        {overlap
+          ? (
+            <>
+              The <Rs n="PrivateInterest" /> are not <R n="pi_disjoint" />.
+            </>
+          )
+          : (
+            <>
+              The <Rs n="PrivateInterest" /> are <R n="pi_disjoint" />.
+            </>
+          )} <exps x={children} />
+      </Div>
+    </Div>
+  );
+}
 
 export const private_interest_intersection = (
   <Dir name="pii">
@@ -456,7 +521,7 @@ export const private_interest_intersection = (
                 id={["PrivateInterest", "PrivateInterest", "PrivateInterests"]}
                 fields={[
                   [
-                    ["namespace_id", "pi_ns"],
+                    ["namespace_id", "pi_ns", "namespace_ids"],
                     <R n="NamespaceId" />,
                   ],
                   {
@@ -470,7 +535,7 @@ export const private_interest_intersection = (
                       ),
                       dedicatedLine: true,
                       segment: [
-                        ["subspace_id", "pi_ss"],
+                        ["subspace_id", "pi_ss", "subspace_ids"],
                         <ChoiceType
                           types={[<R n="SubspaceId" />, <R n="area_any" />]}
                         />,
@@ -478,7 +543,7 @@ export const private_interest_intersection = (
                     },
                   },
                   [
-                    ["path", "pi_path"],
+                    ["path", "pi_path", "paths"],
                     <R n="Path" />,
                   ],
                 ]}
@@ -758,7 +823,7 @@ export const private_interest_intersection = (
                     <Li>
                       the <R n="pii_responder" />
                       <Marginale>
-                        Here and elsewhere, <R n="pii_responder" /> and{" "}
+                        Here and below, <R n="pii_responder" /> and{" "}
                         <R n="pii_initiator" />{" "}
                         send the same pairs, except they salt differently.
                       </Marginale>{" "}
@@ -831,8 +896,153 @@ export const private_interest_intersection = (
             </P>
 
             <P>
-              Locally, each peer computes a greater number of hashes. TODO
+              Each peer locally computes some further pairs of salted hashes and
+              booleans: the computations follow the same rules as for sending,
+              except that
             </P>
+            <Ul>
+              <Li>
+                the <R n="pii_initiator" /> now salts with{" "}
+                <R n="pii_res_salt" /> and the <R n="pii_responder" />{" "}
+                now salts with <R n="pii_ini_salt" />, and
+              </Li>
+              <Li>
+                whenever a peer computes the pair for a{" "}
+                <R n="PrivateInterest" />, it also computes the pairs for the
+                {" "}
+                <Rs n="PrivateInterest" /> obtained by replacing the{" "}
+                <R n="pi_path" /> of the original <R n="PrivateInterest" />{" "}
+                with any of its <Rs n="path_prefix" />{" "}
+                (for example, if I am interested in <R n="Path" />{" "}
+                <Path components={["blog", "recipies"]} /> in some{" "}
+                <R n="namespace" /> and{" "}
+                <R n="subspace" />, then I also compute the hashes for{" "}
+                <Path components={["blog"]} /> and the empty <R n="Path" />{" "}
+                for the same <R n="namespace" /> and <R n="subspace" />).
+              </Li>
+            </Ul>
+
+            <P>
+              Whenever a peer receives a hash-boolean pair, it compares it
+              against its locally computed pairs. If it locally computed a pair
+              with the same hash, and at least one of the two pairs has a
+              boolean value of{" "}
+              <Code>true</Code>, then the peer knows that there is an overlap
+              between its own <R n="PrivateInterest" />{" "}
+              that resulted in the matching pair and some{" "}
+              <R n="PrivateInterest" /> of the other peer. For each of its{" "}
+              <Rs n="PrivateInterest" />{" "}
+              that did not give rise to any matching pair, the peer knows it to
+              be <R n="pi_disjoint" /> from all <Rs n="PrivateInterest" />{" "}
+              of the other peer.
+              <Alj>
+                TODO <Code>details</Code> tag styling
+              </Alj>
+            </P>
+
+            <Details>
+              <Summary>
+                Examples and Proof Sketch
+              </Summary>
+
+              <P>
+                The following examples show which data the peers compute and
+                exchange in various situations. We assume the{" "}
+                <R n="NamespaceId" />{" "}
+                to always be equal for both peers (all involved hashes will
+                trivially be distinct for <Rs n="PrivateInterest" /> of distinct
+                {" "}
+                <Rs n="pi_ns" />) and omit them.
+              </P>
+
+              <P>
+                <Marginale>
+                  If you replace the concrete examples with the equivalence
+                  classes that they represent, you obtain a proof sketch for the
+                  correctness of this approach.
+                </Marginale>
+                The examples cover the nine different (up to symmetry)
+                combinations of how <Rs n="pi_ss" /> and <Rs n="pi_path" />{" "}
+                can related to each other (equal, non-equal, or{" "}
+                <R n="area_any" /> for <Rs n="pi_ss" />, <R n="path_prefix" />,
+                {" "}
+                <R n="path_extension" />, or <R n="path_related">unrelated</R>
+                {" "}
+                for <Rs n="pi_path" />).<Alj>TODO: example styling</Alj>
+              </P>
+
+              <PiiExample leftPath={["a"]} rightPath={["b"]}>
+                None of the hashes match.
+              </PiiExample>
+
+              <PiiExample leftPath={["a"]} rightPath={["a", "b"]} overlap>
+                The right peer detects an overlap.
+              </PiiExample>
+
+              <PiiExample leftPath={["a"]} rightPath={["b"]} rightSs="Gemma">
+                None of the hashes match.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
+                rightPath={["a", "b"]}
+                rightSs="Gemma"
+                overlap
+              >
+                The right peer detects an overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a", "b"]}
+                rightPath={["a"]}
+                rightSs="Gemma"
+                overlap
+              >
+                The left peer detects an overlap. This example represents the
+                case of <Rs n="pi_awkward" />{" "}
+                <Rs n="PrivateInterest" />; this is the onl case in which a
+                transmitted hash-boolean pair with a boolean of{" "}
+                <Code>false</Code> is involved in detecting an overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
+                leftSs="Gemma"
+                rightPath={["b"]}
+                rightSs="Gemma"
+              >
+                None of the hashes match.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
+                leftSs="Gemma"
+                rightPath={["a", "b"]}
+                rightSs="Gemma"
+                overlap
+              >
+                The right peer detects an overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
+                leftSs="Gemma"
+                rightPath={["b"]}
+                rightSs="Dalton"
+              >
+                None of the hashes match.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
+                leftSs="Gemma"
+                rightPath={["a", "b"]}
+                rightSs="Dalton"
+              >
+                The only matching hashes are <Em>both</Em>{" "}
+                accompanied by a boolean of <Code>false</Code>.
+              </PiiExample>
+            </Details>
           </Hsection>
 
           <Hr />

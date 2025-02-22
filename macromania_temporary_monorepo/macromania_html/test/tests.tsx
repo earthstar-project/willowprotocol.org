@@ -19,6 +19,7 @@ import {
   Data,
   Dd,
   Del,
+  Details,
   Dfn,
   Div,
   Dl,
@@ -69,6 +70,7 @@ import {
   Strong,
   Style,
   Sub,
+  Summary,
   Sup,
   Table,
   Tbody,
@@ -559,6 +561,22 @@ Deno.test("del", async () => {
     const ctx = new Context();
     const got = await ctx.evaluate(<Del datetime="foo"></Del>);
     assertEquals(got, `<del datetime="foo"></del>`);
+  })();
+});
+
+Deno.test("details", async () => {
+  await testGlobalNonVoid(Details, "details")();
+
+  await (async () => {
+    const ctx = new Context();
+    const got = await ctx.evaluate(<Details name="foo"></Details>);
+    assertEquals(got, `<details name="foo"></details>`);
+  })();
+
+  await (async () => {
+    const ctx = new Context();
+    const got = await ctx.evaluate(<Details open></Details>);
+    assertEquals(got, `<details open></details>`);
   })();
 });
 
@@ -1208,6 +1226,10 @@ Deno.test("style", async () => {
 
 Deno.test("sub", async () => {
   await testGlobalNonVoid(Sub, "sub")();
+});
+
+Deno.test("summary", async () => {
+  await testGlobalNonVoid(Summary, "summary")();
 });
 
 Deno.test("sup", async () => {
