@@ -1074,16 +1074,38 @@ export const encodings = (
                 of the first <R n="Area" /> to that of the second <R n="Area" />
                 {" "}
                 would make the first <R n="Area" /> <R n="area_include" />{" "}
-                the second <R n="Area" />.
+                the second <R n="Area" />, and the <Rs n="AreaSubspace" />{" "}
+                are either equal or one of them is <R n="area_any" />.
               </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                We say a <R n="PrivateInterest" />{" "}
+                <Def n="pi_amost_include" r="almost include">
+                  almost includes
+                </Def>{" "}
+                an <R n="Area" /> if
+              </P>
+              <Ul>
+                <Li>
+                  the <R n="pi_path" /> of the <R n="PrivateInterest" />{" "}
+                  relates to the <Rs n="AreaPath" /> of the <R n="Area" />, and
+                </Li>
+                <Li>
+                  the <R n="pi_ss" /> of the <R n="PrivateInterest" />{" "}
+                  is either equal to the <Rs n="AreaSubspace" /> of the{" "}
+                  <R n="Area" />, or one of them is <R n="area_any" />.
+                </Li>
+              </Ul>
             </PreviewScope>
             <P>
               Next, we build up to private <R n="Area" /> encoding: we encode an
               {" "}
               <R n="Area" /> that <R n="almost_include">almost includes</R>{" "}
               another <R n="Area" />, while keeping secret a{" "}
-              <R n="PrivateInterest" /> which almost includes both{" "}
-              <Rs n="Area" />.
+              <R n="PrivateInterest" /> that{" "}
+              <R n="pi_amost_include">almost includes</R> both <Rs n="Area" />.
             </P>
 
             <Pseudocode n="private_are_def">
@@ -1141,9 +1163,9 @@ export const encodings = (
                 <>
                   <R n="PrivateAreaContext" /> such that{" "}
                   <RelAccess field="PrivateAreaContextRel" />{" "}
-                  <R n="area_include">includes</R> <ValName /> and{" "}
+                  <R n="almost_include">almost includes</R> <ValName /> and{" "}
                   <RelAccess field="PrivateAreaContextPrivate" />{" "}
-                  <R n="almost_include">almost includes</R>{" "}
+                  <R n="pi_amost_include">almost includes</R>{" "}
                   <RelAccess field="PrivateAreaContextRel" />
                 </>
               }

@@ -478,7 +478,7 @@ export const grouping_entries = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["subspace_id", "AreaSubspace"],
+                      ["subspace_id", "AreaSubspace", "subspace_ids"],
                       <ChoiceType
                         types={[<R n="SubspaceId" />, <R n="area_any" />]}
                       />,
@@ -498,7 +498,7 @@ export const grouping_entries = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["path", "AreaPath"],
+                      ["path", "AreaPath", "paths"],
                       <R n="Path" />,
                     ],
                   },
@@ -516,7 +516,7 @@ export const grouping_entries = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["times", "AreaTime"],
+                      ["times", "AreaTime", "times"],
                       <R n="TimeRange" />,
                     ],
                   },

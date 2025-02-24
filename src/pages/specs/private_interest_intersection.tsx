@@ -18,6 +18,7 @@ import {
   Hr,
   Img,
   Li,
+  Ol,
   P,
   Summary,
   Table,
@@ -763,7 +764,11 @@ export const private_interest_intersection = (
             </PreviewScope>
           </Hsection>
 
-          <Hsection n="pii_pii" title="Private Interest Intersection">
+          <Hsection
+            n="pii_pii"
+            title="Private Interest Intersection"
+            shortTitle="Private Intersection"
+          >
             <PreviewScope>
               <P>
                 Peers want to find the non-empty <Rs n="aoi_intersection" />
@@ -1045,9 +1050,102 @@ export const private_interest_intersection = (
             </Details>
           </Hsection>
 
-          <Hr />
+          <Hsection n="pii_caps" title="Exchanging Capabilities">
+            <P>
+              The previous scheme ensures that whenever two{" "}
+              <Rs n="PrivateInterest" /> submitted by different peers are{" "}
+              <R n="pi_disjoint">not disjoint</R>, one peer becomes aware of
+              that fact. The next step is to let the peers exchange their
+              corresponding{" "}
+              <Rs n="read_capability" />. This requires some care, however,
+              since no information must be leaked if the other peer merely{" "}
+              <Em>knew</Em> or <Em>guessed</Em> a <R n="PrivateInterest" />{" "}
+              but does not have a <R n="read_capability" />{" "}
+              that certifies that the peer may learn information about
+              corresponding <Rs n="Area" />.
+            </P>
+
+            <P>
+              An example: Muriarty submits a <R n="PrivateInterest" /> with{" "}
+              <R n="pi_path" />{" "}
+              <Path components={["a"]} />, and Alfie detects an overlap with his
+              {" "}
+              <R n="PrivateInterest" /> of <R n="pi_path" />{" "}
+              <Path components={["a"]} /> (and the same <Rs n="pi_ns" /> and
+              {" "}
+              <R n="pi_ss" />). But Muriarty does not actually have a{" "}
+              <R n="read_capability" /> for and <R n="Area" /> with the{" "}
+              <R n="AreaPath" />{" "}
+              <Path components={["a"]} />. If Alfie simply transmitted his{" "}
+              <R n="read_capability" /> first, then Muriarty would learn that
+              {" "}
+              <Path components={["b"]} /> is a meaningful <R n="Path" />{" "}
+              suffix in an <R n="Area" />{" "}
+              in which he should not be able to learn anything.
+            </P>
+
+            <P>
+              In general, whenever there is an overlap in the two peer’s{" "}
+              <Rs n="PrivateInterest" />, one of three situations occurs:
+            </P>
+            <Ol>
+              <Li>
+                One of the <Rs n="PrivateInterest" /> is{" "}
+                <R n="pi_strictly_more_specific" />{" "}
+                than the other. The peer who has the <R n="pi_more_specific" />
+                {" "}
+                <R n="PrivateInterest" />{" "}
+                is the one to detect the overlap. This peer sends a message to
+                the other peer, requesting the <Rs n="read_capability" />{" "}
+                that certify read access to the <R n="Area" />{" "}
+                <R n="pi_include_area">included in</R> the{" "}
+                <R n="pi_more_specific">less specific</R>{" "}
+                <R n="PrivateInterest" />.
+              </Li>
+              <Li>
+                Both <Rs n="PrivateInterest" />{" "}
+                are equal. Both peers are able to detect this — the matching
+                hashes correspond to a <R n="PrivateInterest" /> with a{" "}
+                <R n="pi_path" />{" "}
+                in which they are themselves directly interested in. The{" "}
+                <R n="pii_initiator" /> sends its{" "}
+                <Rs n="read_capability" />, the <R n="pii_responder" />{" "}
+                does not send anything proactively.
+              </Li>
+              <Li>
+                The two <Rs n="PrivateInterest" /> are{" "}
+                <R n="pi_awkward" />. We discuss this case later and ignore it
+                for now.
+              </Li>
+            </Ol>
+
+            <P>
+              Upon receiving a request for <Rs n="read_capability" />{" "}
+              (case one) or being the <R n="pii_initiator" />{" "}
+              and detecting equal <Rs n="PrivateInterest" />{" "}
+              (case two), a peer sends its <Rs n="read_capability" /> whose{" "}
+              <Rs n="granted_area" /> are <R n="pi_include_area">included</R>
+              {" "}
+              in the <Rs n="PrivateInterest" />{" "}
+              in question. Upon receiving such a{" "}
+              <R n="read_capability" />, a peer answers with its own,{" "}
+              <R n="area_intersection">intersecting</R>{" "}
+              <Rs n="read_capability" />.
+            </P>
+
+            <P>
+              This scheme is obviously broken if peers can simply request <Rs n="read_capability" /> for <Em>arbitrary</Em> hashes. But we can prevent this by mandating that every request must contain the hash of the corresponding <R n="PrivateInterest"/> salted with the requester’s salt. So if the <R n="pii_initiator"/> requests <Rs n="read_capability" />, that request must contain the hash salted with <R n="pii_ini_salt"/>, and requests by the <R n="pii_responder"/> must contain the hash salted with <R n="pii_res_salt"/>. These salted hashes can only be produced by somebody who actually knows the <R n="PrivateInterest"/> in question.
+            </P>
+
+            <P>
+              mitm attacks
+            </P>
+          </Hsection>
+
           <P>
-            exchanging caps
+            <Alj inline>
+              resource handles. if low on resources, sort by ini_salted hash.
+            </Alj>
           </P>
         </Hsection>
 
