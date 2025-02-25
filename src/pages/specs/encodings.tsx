@@ -449,7 +449,7 @@ export const encodings = (
           <PreviewScope>
             <P>
               <Alj>
-                Fix colors and fonts in defs, refs, and math mode thereof.
+                How are the DefRef references inside math mode not coloured directly? How?
               </Alj>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}
               <DefValue n="c64_tw" r="tag_width" math={`tag\\_width`} />{" "}
@@ -889,9 +889,7 @@ export const encodings = (
         <Hsection n="enc_capabilities" title="Capabilities">
           <P>
             Encodings for <R n="meadowcap" /> and{" "}
-            <Rs n="McEnumerationCapability" />.<Alj>
-              fix Meadowcap link color
-            </Alj>
+            <Rs n="McEnumerationCapability" />.
             <Alj>TODO add hsections to make for a useful TOC</Alj>
           </P>
 

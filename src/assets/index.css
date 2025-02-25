@@ -114,6 +114,11 @@ h5,
 h6 {
   padding-top: 0.5em;
   margin-bottom: 0.5em;
+
+  >a[data-ref].hsection {
+    color: var(--nearly-black);
+    text-decoration: none;
+  }
 }
 
 p {
@@ -193,12 +198,15 @@ p.introductory {
 
 a {
   transition: 100ms all;
-  color: var(--dark-green);
-  text-decoration: underline;
 }
 
 a:hover {
   color: var(--green)
+}
+
+a.external {
+  color: var(--dark-green);
+  text-decoration: underline;
 }
 
 a.external:after {
@@ -218,13 +226,18 @@ a[aria-disabled=true]:hover {
   color: grey;
 }
 
-a.hsection {
-  color: var(--nearly-black);
-  text-decoration: none;
-}
-
 a[data-ref] {
   color: var(--nearly-black);
+}
+
+a[data-ref].hsection {
+  color: var(--dark-green);
+  text-decoration: underline;
+}
+
+a[data-ref].hsection:hover {
+  color: var(--green);
+  text-decoration: underline;
 }
 
 dfn {
@@ -354,11 +367,6 @@ main {
 
 main nav ul li:has(> a) {
   list-style-type: none;
-
-  >a[data-ref] {
-    color: var(--dark-green);
-    text-decoration: underline;
-  }
 }
 
 main nav ul li:has(> a):after {

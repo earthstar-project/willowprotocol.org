@@ -14,7 +14,6 @@ export const specs = (
       heading={"Specifications"}
     >
       <P>
-        <Alj>aaarg link colouring!</Alj>
         <Marginale>
           <Img
             src={<ResolveAsset asset={["specs", "emblems.png"]} />}
