@@ -1,7 +1,7 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Img, Li, P, Ul } from "macromania-html";
+import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -16,6 +16,7 @@ import {
 import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
+import { Rsb } from "macromania-defref";
 
 export const data_model = (
   <Dir name="data-model">
@@ -28,68 +29,172 @@ export const data_model = (
         toc
       >
         <P>
-          <Alj inline>TODO: introductory text</Alj>
+          Willow is a system for giving meaningful, hierarchical names to
+          arbitrary sequences of bytes (called{" "}
+          <Em>payloads</Em>), not unlike a filesystem. For example, you might
+          give the name <Path components={["blog", "idea", "1"]} />{" "}
+          to the bytestring <Code>Dear reader, I've got a great idea</Code>.
+        </P>
 
-          Here is an example Path macro usage:{" "}
-          <Path components={["blog", "idea", "1"]} />.
+        <P>
+          You also give the name <Path components={["blog", "idea", "2"]} />
+          {" "}
+          to the bytestring <Code>(watch this space)</Code>.
+        </P>
 
-          And an example image:
-
+        <Figure>
           <Img
             src={<ResolveAsset asset={["data_model", "paths.png"]} />}
             alt={`A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`}
           />
+        </Figure>
+
+        <P>
+          A little later you overwrite the existing entry at path{" "}
+          <Path components={["blog", "idea", "2"]} /> with{" "}
+          <Code>I've made a mistake</Code>. Willow tracks the timestamp of each
+          assignment, and the new entry overwrites the old one.
         </P>
-        {
-          /*
-        pinformative("Willow is a system for giving meaningful, hierarchical names to arbitrary sequences of bytes (called ", em("payloads"), "), not unlike a filesystem. For example, you might give the name ", path("blog", "idea", "1"), " to the bytestring ", code("Dear reader, I've got a great idea"), "."),
 
-pinformative("You also give the name ", path("blog", "idea", "2"), " to the bytestring ", code("(watch this space)"), "."),
+        <Figure>
+          <Img
+            src={<ResolveAsset asset={["data_model", "timestamps.png"]} />}
+            alt={`The same visualization of paths as before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.`}
+          />
+        </Figure>
 
-figure(img(asset("data_model/paths.png"), `A (one-dimensional) list containing the two paths "blog/idea/1" and "blog/idea/2", with a stylised file next to each path. Idea 1 shows a lightbulb, idea 2 shows a deeply smug expression.`)),
+        <P>
+          That night you decide it would be best if everyone forgot about the
+          whole thing. By writing a new entry at{" "}
+          <Path components={["blog", "idea"]} />, our previous entries are
+          deleted. Think of it as overwriting a directory in a file system with
+          an empty file. We call this mechanism{" "}
+          <Def
+            n="prefix_pruning"
+            r="prefix pruning"
+            preview={
+              <P>
+                <Def fake n="prefix_pruning">Prefix pruning</Def>{" "}
+                refers to the fact that an <R n="Entry" /> can overwrite other
+                {" "}
+                <Rs n="Entry" /> of equal <Rs n="entry_namespaceid" /> and{" "}
+                <Rs n="entry_subspace_id" /> whose <Rs n="entry_path" /> are
+                {" "}
+                <Rs n="path_extension" /> of the first <R n="Entry" />. In a
+                {" "}
+                <Quotes>normal</Quotes>{" "}
+                key-value store, you would expect that the <Rs n="entry_path" />
+                {" "}
+                would have to be <Em>equal</Em> as well.
+              </P>
+            }
+          />.
+        </P>
 
-pinformative("A little later you overwrite the existing entry at path ", path("blog", "idea", "2"), " with ", code("I've made a mistake"), ". Willow tracks the timestamp of each assignment, and the new entry overwrites the old one."),
+        <Figure>
+          <Img
+            src={<ResolveAsset asset={["data_model", "prefix_pruning.png"]} />}
+            alt={`The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylised file whistling in a totally inconspicuous way.`}
+          />
+          <Figcaption>
+            The entries <Em>prefixed</Em> by{" "}
+            <Path components={["blog", "idea"]} />{" "}
+            are deleted by a newer entry at that prefix.
+          </Figcaption>
+        </Figure>
 
-figure(img(asset("data_model/timestamps.png"), "The same visualization of paths as before, but now with second dimension, a time axis. The smug-faced file disappears in the first time step, being replaced by a sweating face at a second timestep.")),
+        <P>
+          Things would be rather chaotic if everyone wrote to the same blog.
+          Instead, entries live in separate <Em>subspaces</Em>{" "}
+          — intuitively, each user writes to their own, separate universe of
+          data. Willow allows for various ways of controlling who gets to write
+          to which subspace, from simple per-user access control to
+          sophisticated capability systems.
+        </P>
 
-pinformative("That night you decide it would be best if everyone forgot about the whole thing. By writing a new entry at ", path("blog", "idea"), ", our previous entries are deleted. Think of it as overwriting a directory in a file system with an empty file. We call this mechanism ", def({id: "prefix_pruning", singular: "prefix pruning"}), "."),
+        <Figure>
+          <Img
+            src={<ResolveAsset asset={["data_model", "subspaces.png"]} />}
+            alt={`Stylised files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves to the viewer, good vibes all around.`}
+          />
+          <Figcaption>
+            The three dimensions of Willow’s data model: paths, timestamps, and
+            subspaces.
+          </Figcaption>
+        </Figure>
 
-figure(
-  img(asset("data_model/prefix_pruning.png"), `The same visualization as before, but both paths and files got deleted by adding the third path "blog/idea" with a stylised file whistling in a totally inconspicuous way.`),
-  figcaption("The entries ", em("prefixed"), " by ", path('blog', 'idea'), " are deleted by a newer entry at that prefix.")
-),
+        <P>
+          Willow further allows the aggregation of subspaces into completely
+          independent{" "}
+          <Em>namespaces</Em>. Data from a public wiki should live in a separate
+          namespace than data from a photo-sharing application for my family.
+          Some namespaces should allow anyone to set up subspaces within them,
+          others might require authorisation from a trusted manager. Willow
+          offers a flexible mechanism for using different policies on a
+          per-namespace basis.
+        </P>
 
-pinformative("Things would be rather chaotic if everyone wrote to the same blog. Instead, entries live in separate ", em("subspaces"), " — intuitively, each user writes to their own, separate universe of data. Willow allows for various ways of controlling who gets to write to which subspace, from simple per-user access control to sophisticated capability systems."),
+        <Figure>
+          <Img
+            src={<ResolveAsset asset={["data_model", "namespaces.png"]} />}
+            alt={`Three simplified three-dimensional visualisations of namespaces, each shaded in a different color. One is labeled "family", one "wiki", and one "project".`}
+          />
+          <Figcaption>
+            Three completely independent namespaces.
+          </Figcaption>
+        </Figure>
 
-figure(
-  img(asset("data_model/subspaces.png"), `Stylised files with friendly icons arranged in a now three-dimensional space. Adding to the path and time dimensions of the preceeding drawings, a depth dimension shows three different people to signify different subspaces. They look happy, one waves to the viewer, good vibes all around.`),
-  figcaption("The three dimensions of Willow’s data model: paths, timestamps, and subspaces.")
-),
+        <P>
+          This constitutes a full overview of the data model of Willow.
+          Applications read and write payloads from and to subspaces, addressing
+          via hierarchical paths. Willow tracks timestamps of write operations,
+          newer writes replace older writes in the manner of a traditional file
+          system. These data collections live in namespaces; read and write
+          access to both namespaces and subspaces can be controlled through a
+          variety of policies.
+        </P>
 
-pinformative("Willow further allows the aggregation of subspaces into completely independent ", em("namespaces"), ". Data from a public wiki should live in a separate namespace than data from a photo-sharing application for my family. Some namespaces should allow anyone to set up subspaces within them, others might require authorisation from a trusted manager. Willow offers a flexible mechanism for using different policies on a per-namespace basis."),
-
-figure(
-  img(asset("data_model/namespaces.png"), `Three simplified three-dimensional visualisations of namespaces, each shaded in a different color. One is labeled "family", one "wiki", and one "project".`),
-  figcaption("Three completely independent namespaces.")
-),
-
-pinformative("This constitutes a full overview of the data model of Willow. Applications read and write payloads from and to subspaces, addressing via hierarchical paths. Willow tracks timestamps of write operations, newer writes replace older writes in the manner of a traditional file system. These data collections live in namespaces; read and write access to both namespaces and subspaces can be controlled through a variety of policies."),
-
-pinformative( "Now we can ", em("almost"), " delve into the precise definition of these concepts."),
-          */
-        }
+        <P>
+          Now we can <Em>almost</Em>{" "}
+          ", em("almost"), " delve into the precise definition of these
+          concepts.
+        </P>
 
         <Hsection n="willow_parameters" title="Parameters">
           <P>
-            <Alj inline>TODO: introductory text</Alj>
+            Some questions in protocol design have no clear-cut answer. Should
+            namespaces be identified via human-readable strings, or via the
+            public keys of some digital signature scheme? That depends entirely
+            on the use-case. To sidestep such questions, the Willow data model
+            is <Em>generic</Em>{" "}
+            over certain choices of parameters. You can instantiate Willow to
+            use strings as the identifiers of namespaces, or you could have it
+            use 256 bit integers, or urls, or iris scans, etc.
           </P>
-          {
-            /*
-          pinformative("Some questions in protocol design have no clear-cut answer. Should namespaces be identified via human-readable strings, or via the public keys of some digital signature scheme? That depends entirely on the use-case. To sidestep such questions, the Willow data model is ", em("generic"), " over certain choices of parameters. You can instantiate Willow to use strings as the identifiers of namespaces, or you could have it use 256 bit integers, or urls, or iris scans, etc."),
 
-pinformative("This makes Willow a higher-order protocol: you supply a set of specific choices for its parameters, and in return you get a concrete protocol that you can then use. If different systems instantiate Willow with non-equal parameters, the results will not be interoperable, even though both systems use Willow."),
-            */
-          }
+          <P>
+            This makes Willow a{" "}
+            <Sidenote
+              note={
+                <>
+                  You might call Willow a{" "}
+                  <AE href="https://en.wikipedia.org/wiki/Kind_(type_theory)">
+                    higher-kinded
+                  </AE>{" "}
+                  protocol, if you don’t mind being called a <Em>huge nerd</Em>
+                  {" "}
+                  in return.
+                </>
+              }
+            >
+              blueprint
+            </Sidenote>{" "}
+            for concrete protocols: you supply a set of specific choices for its
+            parameters, and in return you get a concrete protocol that you can
+            then use. If different systems instantiate Willow with non-equal
+            parameters, the results will not be interoperable, even though both
+            systems use Willow.
+          </P>
 
           <P>
             <Marginale>
@@ -373,14 +478,16 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
                   commented: {
                     comment: (
                       <>
-                        The claimed creation time of the <R n="Entry" />.
-                        <Marginale>
-                          <Alj inline>TODO fix rendering</Alj>
+                        <P>
+                          The claimed creation time of the <R n="Entry" />.
+                        </P>
+
+                        <P>
                           Wall-clock timestamps may come as a surprise. We are
                           cognisant of their limitations, and use them anyway.
                           To learn why, please see{" "}
                           <R n="timestamps_really">Timestamps, really?</R>
-                        </Marginale>
+                        </P>
                       </>
                     ),
                     dedicatedLine: true,
@@ -435,8 +542,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
               <R n="AuthorisationToken" />. An{" "}
               <DefType n="AuthorisedEntry" rs="AuthorisedEntries" /> is a{" "}
               <R n="PossiblyAuthorisedEntry" /> for which{" "}
-              <R n="is_authorised_write" /> returns{" "}
-              <Code>true</Code>.<Alj>TODO better inline code tag styling</Alj>
+              <R n="is_authorised_write" /> returns <Code>true</Code>.
             </P>
           </PreviewScope>
 
@@ -463,9 +569,8 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
               {" "}
               whose concatenation to <R n="prefix_s" /> yields{" "}
               <R n="prefix_t" />. Any two <Rs n="Path" /> are{" "}
-              <Def n="path_related" r="related" /> is one is a <R n="prefix" />
-              {" "}
-              of the other.
+              <Def n="path_related" r="related" /> is one is a{" "}
+              <R n="path_prefix" /> of the other.
             </P>
           </PreviewScope>
 
@@ -569,8 +674,8 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
 
           <PreviewScope>
             <P>
-              A <Def n="store" /> is a set of <Rs n="AuthorisedEntry" />{" "}
-              such that
+              A <Def n="store" rs="stores" /> is a set of{" "}
+              <Rs n="AuthorisedEntry" /> such that
             </P>
             <Ul>
               <Li>
@@ -580,12 +685,7 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
               <Li>
                 there are no two of its <Rs n="Entry" />{" "}
                 <DefValue n="store_old" r="old" /> and{" "}
-                <DefValue n="store_new" r="new" />
-                <Alj>
-                  TODO proper fonts for defined values (and other kinds of
-                  defined entities as well).
-                </Alj>{" "}
-                such that
+                <DefValue n="store_new" r="new" /> such that
                 <Ul>
                   <Li>
                     <NoWrap>
@@ -690,8 +790,28 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
           <PreviewScope>
             <P>
               A <Def n="namespace" rs="namespaces" /> is the{" "}
-              <R n="store_join" /> over <Sidenote note={<></>}>all</Sidenote>
-              {" "}
+              <R n="store_join" /> over{" "}
+              <Sidenote
+                note={
+                  <>
+                    No matter in which order and groupings the <Rs n="store" />
+                    {" "}
+                    are{" "}
+                    <R n="store_join">joined</R>, the result is always the same.
+                    {" "}
+                    <Rsb n="store" /> form a{" "}
+                    <AE href="https://en.wikipedia.org/wiki/Semilattice">
+                      join semi-lattice
+                    </AE>{" "}
+                    (also known as a{" "}
+                    <AE href="https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type#State-based_CRDTs">
+                      state-based CRDT
+                    </AE>) under the <R n="store_join" /> operation.
+                  </>
+                }
+              >
+                all
+              </Sidenote>{" "}
               <Rs n="store" /> in existence of a given{" "}
               <R n="NamespaceId" />. This concept only makes sense as an
               abstract notion, since no participant in a distributed system can
@@ -709,27 +829,71 @@ pinformative("This makes Willow a higher-order protocol: you supply a set of spe
 
         <Hsection n="data_further" title="Further Reading">
           <P>
-            <Alj inline>TODO</Alj>
+            The Willow data model stays fairly compact by deliberately
+            sidestepping some rather important questions. In this section, we
+            point to our answers for the most important ones.
           </P>
-          {
-            /*
-          pinformative("The Willow data model stays fairly compact by deliberately sidestepping some rather important questions. In this section, we point to our answers for the most important ones."),
 
-      pinformative("How can we precisely delimit meaningful groups of <Rs n="Entry"/>, for example, all recipes that Alex posted on their blog in the past three months? Grouping <Rs n="Entry"/> always incurs a tradeoff between ", em("expressivity"), " (which sets of <Rs n="Entry"/> can be characterised) and ", em("efficiency"), " (how quickly a database can retrieve all its <Rs n="Entry"/> of an arbitrary grouping). We present a carefully crafted selection of ways of grouping <Rs n="Entry"/> ", link_name("grouping_entries", "here"), "."),
+          <P>
+            How can we precisely delimit meaningful groups of{" "}
+            <Rs n="Entry" />, for example, all recipes that Alfie posted on
+            their blog in the past three months? Grouping <Rs n="Entry" />{" "}
+            always incurs a tradeoff between <Em>expressivity</Em>{" "}
+            (which sets of <Rs n="Entry" /> can be characterised) and{" "}
+            <Em>efficiency</Em> (how quickly a database can retrieve all its
+            {" "}
+            <Rs n="Entry" />{" "}
+            of an arbitrary grouping). We present a carefully crafted selection
+            of ways of grouping <Rs n="Entry" />{" "}
+            <R n="grouping_entries">here</R>.
+          </P>
 
-      pinformative("How should we encode the concepts of Willow for storage or network transmission? Due to the parameterised nature of Willow, there can be no overarching answer, but we cover some recurring aspects of the question ", link_name("encodings", "here"), "."),
+          <P>
+            How should we encode the concepts of Willow for storage or network
+            transmission? Due to the parameterised nature of Willow, there can
+            be no overarching answer, but we cover some recurring aspects of the
+            question <R n="encodings">here</R>.
+          </P>
 
-      pinformative("How should we select the ", r("AuthorisationToken"), " and ", r("is_authorised_write"), " parameters? Different deployments of Willow will have different needs. We provide ", link_name("meadowcap", "Meadowcap"), ", a capability-based solution that should be suitable for most use-cases."),
+          <P>
+            How should we select the <R n="AuthorisationToken" /> and{" "}
+            <R n="is_authorised_write" />{" "}
+            parameters? Different deployments of Willow will have different
+            needs. We provide{" "}
+            <R n="meadowcap">Meadowcap</R>, a capability-based solution that
+            should be suitable for most use-cases.
+          </P>
 
-      pinformative("How do we efficiently and securely compute ", rs("store_join"), " over a network to synchronise data between peers? Again, different settings require different answers, but we provide the ", link_name("sync", "Willow General Purpose Sync"), " protocol as a well-engineered, privacy-preserving solution that should be applicable to a wide range of scenarios."),
+          <P>
+            How do we efficiently and securely compute <Rs n="store_join" />
+            {" "}
+            over a network to synchronise data between peers? Again, different
+            settings require different answers, but we provide the{" "}
+            <R n="sync">Willow General Purpose Sync</R>{" "}
+            protocol as a well-engineered, privacy-preserving solution that
+            should be applicable to a wide range of scenarios.
+          </P>
 
-      pinformative("How can we encrypt <Rs n="Entry"/> while retaining the semantics of the original, unencrypted data? This question lies at the heart of end-to-end encryption for Willow, and we discuss our findings ", link_name("e2e", "here"), "."),
+          <P>
+            How can we encrypt <Rs n="Entry" />{" "}
+            while retaining the semantics of the original, unencrypted data?
+            This question lies at the heart of end-to-end encryption for Willow,
+            and we discuss our findings <R n="e2e">here</R>.
+          </P>
 
-      pinformative("How can a database provide efficient access to <Rs n="Entry"/>? We give an introduction to the types of queries that a data store for Willow should support, and present some data structures for supporting them efficiently ", link_name("d3storage", "here"), "."),
+          <P>
+            How can a database provide efficient access to{" "}
+            <Rs n="Entry" />? We give an introduction to the types of queries
+            that a data store for Willow should support, and present some data
+            structures for supporting them efficiently{" "}
+            <R n="d3storage">here</R>.
+          </P>
 
-      pinformative("How can I contribute to Willow and support it? So glad you asked — we have prepared a collection of pointers ", link_name("projects_and_communities", "here"), "."),
-    */
-          }
+          <P>
+            How can I contribute to Willow and support it? So glad you asked —
+            we have prepared a collection of pointers{" "}
+            <R n="projects_and_communities">here</R>.
+          </P>
         </Hsection>
 
         <Img

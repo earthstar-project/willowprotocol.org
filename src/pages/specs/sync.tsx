@@ -108,7 +108,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
             pinformative("To efficiently transmit ", rs("AuthorisationToken"), ", we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many ", rs("AuthorisationToken"), "), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
                 "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type <R n="UserSignature"/>, which together yield a ", r("MeadowcapAuthorisationToken"), ".",
-            ]), " (which differs between any two <Rs n="Entry"/>). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between ", r("AuthorisationToken"), " and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the ", r("is_authorised_write"), " function."),
+            ]), " (which differs between any two <Rs n="Entry"/>). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between <R n="AuthorisationToken"/> and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the <R n="is_authorised_write"/> function."),
 
             pinformative(link_name("sync_payloads_transform", "Payload transformation"), " requires a (not necessarily deterministic) algorithm ", def_parameter_fn("transform_payload"), " that converts a ", r("Payload"), " into another bytestring."),
 
@@ -574,13 +574,13 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "ReconciliationSendEntryStaticTokenHandle",
                                     name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that is ", r("handle_bind", "bound"), " to the static part of the ", r("ReconciliationSendEntryEntry"), "’s ", r("AuthorisationToken"), "."],
+                                    comment: ["A ", r("StaticTokenHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that is ", r("handle_bind", "bound"), " to the static part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "ReconciliationSendEntryDynamicToken",
                                     name: "dynamic_token",
-                                    comment: ["The dynamic part of the ", r("ReconciliationSendEntryEntry"), "’s ", r("AuthorisationToken"), "."],
+                                    comment: ["The dynamic part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
                                     rhs: r("DynamicToken"),
                                 },
                             ],

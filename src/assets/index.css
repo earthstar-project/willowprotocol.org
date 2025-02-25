@@ -107,6 +107,13 @@ strong {
   font-weight: normal;
 }
 
+code:not(.pseudocode) {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 0.12em;
+  border-radius: 10%;
+  word-break: break-word;
+}
+
 h1,
 h2,
 h3,

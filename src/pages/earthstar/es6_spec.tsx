@@ -148,7 +148,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The type ", r("AuthorisationToken"), " and the ", r("is_authorised_write"), " function are ", link_name("mc_writing_entries", "determined by Meadowcap"), ", whose instantiation we describe in the ", link_name("es6_meadowcap", "next section"), "."
+					"The type <R n="AuthorisationToken"/> and the <R n="is_authorised_write"/> function are ", link_name("mc_writing_entries", "determined by Meadowcap"), ", whose instantiation we describe in the ", link_name("es6_meadowcap", "next section"), "."
 				),
 			]),
 

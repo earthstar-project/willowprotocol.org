@@ -85,7 +85,7 @@ export const timestamps_really = (
         hsection("timestamps_meadowcap", "Timestamps in Meadowcap", [
             marginale("Meadowcap is a security component. There will be no happy-case reasoning here, only adversarially chosen timestamps."),
 
-            pinformative("Willow allows write-access control via the ", r("is_authorised_write"), " function, which receives a full <R n="Entry"/> as input — including its ", r("entry_timestamp"), ". ", link_name("meadowcap", "Meadowcap"), " (the recommended access-control system for Willow) allows to incorporate ", rs("entry_timestamp"), " into access control. In the following, we discuss issues of timestamps with respect to Meadowcap. We assume familiarity with (the introduction of) the ", link_name("meadowcap", "Meadowcap specification"), "."),
+            pinformative("Willow allows write-access control via the <R n="is_authorised_write"/> function, which receives a full <R n="Entry"/> as input — including its ", r("entry_timestamp"), ". ", link_name("meadowcap", "Meadowcap"), " (the recommended access-control system for Willow) allows to incorporate ", rs("entry_timestamp"), " into access control. In the following, we discuss issues of timestamps with respect to Meadowcap. We assume familiarity with (the introduction of) the ", link_name("meadowcap", "Meadowcap specification"), "."),
 
             pinformative("When a Meadowcap capability restricts <R n="Entry"/> creation based on timestamps, this has ", em("absolutely nothing"), " to do with the (physical) time at which <Rs n="Entry"/> are ", em("created"), ". It merely restricts which times can be ", em("claimed"), " as the ", rs("entry_timestamp"), " of <Rs n="Entry"/>."),
 

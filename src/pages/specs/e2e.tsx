@@ -34,7 +34,7 @@ export const e2e = (
           /*
 pinformative("Willow has no built-in mechanisms for encrypting data. Still, it would be nice if peers (say, an always-on server in the cloud) could facilitate data exchange without being privy to the data they share. While it is straightforward to encrypt payloads, that still leaves the relays to learn about <Rs n="Entry"/>, that is, all the metadata. In this document, we examine how we can protect this metadata."),
 
-pinformative("Unfortunately, we cannot simply encrypt all the fields of <Rs n="Entry"/>, because peers need to access this data to determine which <Rs n="Entry"/> overwrite which others. More precisely, peers need the ability to compute ", rs("store_join"), " of ", rs("store"), ". These well-defined concepts give us precise limits on which properties of which metadata we have to preserve, and which properties we can vigorously scramble."),
+pinformative("Unfortunately, we cannot simply encrypt all the fields of <Rs n="Entry"/>, because peers need to access this data to determine which <Rs n="Entry"/> overwrite which others. More precisely, peers need the ability to compute <Rs n="store_join"/> of ", rs("store"), ". These well-defined concepts give us precise limits on which properties of which metadata we have to preserve, and which properties we can vigorously scramble."),
 
 pinformative("Typically, you would use symmetric encryption to achieve confidentiality — the core data model can provide authenticity via ", rs("AuthorisationToken"), " already. As for the granularity at which to use different keys, we consider three relevant options: a key per <R n="namespace"/>, a key per <R n="subspace"/>, or a key per combination of <R n="subspace"/> and ", sidenote(r("Path"), ["We describe a system based on key derivation for each successive <R n="Path"/> ", r("Component"), " in ", link_name("e2e_paths", "the section on encrypting paths"), "."]), "."),
 
@@ -47,7 +47,7 @@ hsection("e2e_payloads", "Payload Digest and Length", [
 ]),
 
 hsection("e2e_timestamps", "Timestamp", [
-  pinformative("Computing ", rs("store_join"), " of ", rs("store"), " necessitates comparing <Rs n="Timestamp"/> numerically. This does not mesh well with encryption; encrypted data is supposed to be indistinguishable from random data, but preserving relative ordering is very much non-random. Hence, we begrudingly accept that Willow deals in plaintext <Rs n="Timestamp"/> only."),
+  pinformative("Computing <Rs n="store_join"/> of ", rs("store"), " necessitates comparing <Rs n="Timestamp"/> numerically. This does not mesh well with encryption; encrypted data is supposed to be indistinguishable from random data, but preserving relative ordering is very much non-random. Hence, we begrudingly accept that Willow deals in plaintext <Rs n="Timestamp"/> only."),
 
   pinformative("The privacy-conscious user might still choose to obscure their <Rs n="Timestamp"/>, as <Rs n="Timestamp"/> need not reflect actual creation time after all. One option could be to downgrade the resolution to individual days, in order to obscure timezones", marginale(["There is some prior art on obfuscating timestamps ", link("with git", "https://github.com/EMPRI-DEVOPS/git-privacy"), "."]), ". When writing to a <R n="subspace"/> from a single device only, one could even use <Rs n="Timestamp"/> as a logical counter by incrementing the ", r("entry_timestamp"), " of each successive <R n="Entry"/> by one, fully preserving the deletion semantics of accurate ", rs("entry_timestamp"), " while completely obscuring physical time."),
 
@@ -95,7 +95,7 @@ hsection("e2e_paths", "Path", [
 ]),
 
 hsection("e2e_auth", "AuthorisationToken", [
-  pinformative("Peers store and exchange not only <Rs n="Entry"/> but ", rs("AuthorisedEntry"), ". Whether ", rs("AuthorisationToken"), " can be meaningfully encrypted depends on the choice of ", r("is_authorised_write"), ", and should be taken into account when designing and using these parameters. ", link_name("meadowcap", "Meadowcap"), " ", rs("Capability"), " cannot be encrypted, as this would remove the ability of peers without access to the decryption keys to verify the <Rs n="dss_signature"/>."),
+  pinformative("Peers store and exchange not only <Rs n="Entry"/> but ", rs("AuthorisedEntry"), ". Whether ", rs("AuthorisationToken"), " can be meaningfully encrypted depends on the choice of <R n="is_authorised_write"/>, and should be taken into account when designing and using these parameters. ", link_name("meadowcap", "Meadowcap"), " ", rs("Capability"), " cannot be encrypted, as this would remove the ability of peers without access to the decryption keys to verify the <Rs n="dss_signature"/>."),
 ]), */
         }
       </PageTemplate>
