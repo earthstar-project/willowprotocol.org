@@ -211,7 +211,6 @@ export const encodings = (
 
           <PreviewScope>
             <P>
-              <Alj>TODO: fix font selection in Math post punctuation</Alj>
               Let{" "}
               <M>
                 <DefType n="relencrel_ss" r="S" />
@@ -449,7 +448,9 @@ export const encodings = (
           <PreviewScope>
             <P>
               <Alj>
-                How are the DefRef references inside math mode not coloured directly? How?
+                How are the DefRef references inside math mode not coloured
+                directly? How? (When fixing this, also consider hover colouring.
+                No change is ok, but bright green is not.)
               </Alj>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}
               <DefValue n="c64_tw" r="tag_width" math={`tag\\_width`} />{" "}

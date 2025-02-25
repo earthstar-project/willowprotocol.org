@@ -44,6 +44,7 @@ Entrypoint for the main stylesheet.
   --color-comment-fn: #544000;
 
   --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  --font-body: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
 }
 
 .orange,
@@ -98,7 +99,7 @@ body,
 body,
 .normal_text,
 code .aside {
-  font-family: 'Iowan Old Style', 'Palatino Linotype', 'URW Palladio L', P052, serif;
+  font-family: var(--font-body);
 }
 
 strong {
