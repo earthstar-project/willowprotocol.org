@@ -889,7 +889,9 @@ export const encodings = (
         <Hsection n="enc_capabilities" title="Capabilities">
           <P>
             Encodings for <R n="meadowcap" /> and{" "}
-            <Rs n="McSubspaceCapability" />.<Alj>fix Meadowcap link color</Alj>
+            <Rs n="McEnumerationCapability" />.<Alj>
+              fix Meadowcap link color
+            </Alj>
             <Alj>TODO add hsections to make for a useful TOC</Alj>
           </P>
 
@@ -911,6 +913,34 @@ export const encodings = (
             <R n="private_interest_intersection" /> parts of the{" "}
             <R n="sync">WGPS</R>.
           </P>
+
+          <P>
+            The private encodings of <R n="meadowcap">Meadowcap</R>{" "}
+            <Rs n="read_capability" /> are relative to the combination of a{" "}
+            <R n="PrivateInterest" /> and the <R n="dss_pk" /> of the{" "}
+            <R n="access_receiver" />. We call this combination a{" "}
+            <R n="PersonalPrivateInterest" />:
+          </P>
+
+          <Pseudocode n="ppi_definition">
+            <StructDef
+              id={[
+                "PersonalPrivateInterest",
+                "PersonalPrivateInterest",
+                "PersonalPrivateInterests",
+              ]}
+              fields={[
+                [
+                  ["private_interest", "ppi_pi"],
+                  <R n="PrivateInterest" />,
+                ],
+                [
+                  ["user_key", "ppi_user"],
+                  <R n="UserPublicKey" />,
+                ],
+              ]}
+            />
+          </Pseudocode>
 
           <Hsection
             n="enc_private_paths"
@@ -1075,7 +1105,7 @@ export const encodings = (
                 {" "}
                 would make the first <R n="Area" /> <R n="area_include" />{" "}
                 the second <R n="Area" />, and the <Rs n="AreaSubspace" />{" "}
-                are either equal or one of them is <R n="area_any" />.
+                are either equal or one of them is <R n="ss_any" />.
               </P>
             </PreviewScope>
 
@@ -1095,7 +1125,7 @@ export const encodings = (
                 <Li>
                   the <R n="pi_ss" /> of the <R n="PrivateInterest" />{" "}
                   is either equal to the <Rs n="AreaSubspace" /> of the{" "}
-                  <R n="Area" />, or one of them is <R n="area_any" />.
+                  <R n="Area" />, or one of them is <R n="ss_any" />.
                 </Li>
               </Ul>
             </PreviewScope>
@@ -1211,7 +1241,7 @@ export const encodings = (
                 ),
                 bitfieldIff(
                   <Code>
-                    <ValAccess field="AreaSubspace" /> == <R n="area_any" />
+                    <ValAccess field="AreaSubspace" /> == <R n="ss_any" />
                   </Code>,
                 ),
                 bitfieldIff(<R n="epaia_start_from_start" />),
@@ -1374,7 +1404,7 @@ export const encodings = (
                     {" "}
                     <Rs n="PersonalPrivateInterest" /> with{" "}
                     <Code>
-                      <R n="pi_ss" /> == <R n="area_any" />
+                      <R n="pi_ss" /> == <R n="ss_any" />
                     </Code>{" "}
                     are never needed.
                   </Marginale>
@@ -1390,7 +1420,7 @@ export const encodings = (
                     <AccessStruct field="pi_ns">
                       <RelAccess field="ppi_pi" />
                     </AccessStruct>{" "}
-                    == <ValAccess field="subspace_cap_namespace" />
+                    == <ValAccess field="enumcap_namespace" />
                   </Code>, and such that the <R n="AreaPath" /> of the{" "}
                   <R n="communal_cap_granted_area" /> of <ValName /> is a{" "}
                   <R n="path_prefix" /> of{" "}
@@ -1551,7 +1581,7 @@ export const encodings = (
                     <AccessStruct field="pi_ns">
                       <RelAccess field="ppi_pi" />
                     </AccessStruct>{" "}
-                    == <ValAccess field="subspace_cap_namespace" />
+                    == <ValAccess field="enumcap_namespace" />
                   </Code>, whose{" "}
                   <AccessStruct field="pi_ss">
                     <RelAccess field="ppi_pi" />
@@ -1601,9 +1631,9 @@ export const encodings = (
                       <RelAccess field="PrivateAreaContextPrivate" />
                     </AccessStruct>
                   </AccessStruct>{" "}
-                  if that is not <R n="area_any" />, or the <R n="full_area" />
+                  if that is not <R n="ss_any" />, or the <R n="full_area" />
                   {" "}
-                  if it <Em>is</Em> <R n="area_any" />.
+                  if it <Em>is</Em> <R n="ss_any" />.
                 </P>
               }
               bitfields={[]}
@@ -1736,13 +1766,13 @@ export const encodings = (
           </Hsection>
 
           <Hsection
-            n="enc_private_subspace_capabilities"
-            title="Subspace Capability Encoding"
-            shortTitle="Subspace Capability"
+            n="enc_private_enumeration_capabilities"
+            title="Enumeration Capability Encoding"
+            shortTitle="Enumeration Capability"
           >
             <EncodingRelationRelativeTemplate
-              n="EncodeMcSubspaceCapabilityRelativePrivateInterest"
-              valType={<R n="McSubspaceCapability" />}
+              n="EncodeMcEnumerationCapabilityRelativePrivateInterest"
+              valType={<R n="McEnumerationCapability" />}
               relToDescription={
                 <>
                   <R n="PersonalPrivateInterest" /> with{" "}
@@ -1750,14 +1780,14 @@ export const encodings = (
                     <AccessStruct field="pi_ss">
                       <RelAccess field="ppi_pi" />
                     </AccessStruct>{" "}
-                    == <R n="area_any" />
+                    == <R n="ss_any" />
                   </Code>{" "}
                   and{" "}
                   <Code>
                     <AccessStruct field="pi_ns">
                       <RelAccess field="ppi_pi" />
                     </AccessStruct>{" "}
-                    == <ValAccess field="subspace_cap_namespace" />
+                    == <ValAccess field="enumcap_namespace" />
                   </Code>
                 </>
               }
@@ -1768,25 +1798,25 @@ export const encodings = (
                   8,
                   <>
                     the number of pairs in{" "}
-                    <ValAccess field="subspace_cap_delegations" />
+                    <ValAccess field="enumcap_delegations" />
                   </>,
                 ),
               ]}
               contents={[
                 <C64Encoding id="delegation_count" />,
                 <CodeFor enc="encode_namespace_sig">
-                  <ValAccess field="subspace_cap_initial_authorisation" />
+                  <ValAccess field="enumcap_initial_authorisation" />
                 </CodeFor>,
                 <EncConditional
                   condition={
                     <>
                       the number of pairs in{" "}
-                      <ValAccess field="subspace_cap_delegations" /> is nonzero
+                      <ValAccess field="enumcap_delegations" /> is nonzero
                     </>
                   }
                 >
                   <CodeFor enc="encode_user_pk" notStandalone>
-                    <ValAccess field="subspace_cap_user" />
+                    <ValAccess field="enumcap_user" />
                   </CodeFor>
                 </EncConditional>,
                 <EncIterator
@@ -1801,7 +1831,7 @@ export const encodings = (
                       />
                     </>
                   }
-                  iter={<ValAccess field="subspace_cap_delegations" />}
+                  iter={<ValAccess field="enumcap_delegations" />}
                   skipLast
                 >
                   <Alj inline>
@@ -1824,13 +1854,13 @@ export const encodings = (
                   condition={
                     <>
                       the number of pairs in{" "}
-                      <ValAccess field="subspace_cap_delegations" /> is nonzero
+                      <ValAccess field="enumcap_delegations" /> is nonzero
                     </>
                   }
                 >
                   <CodeFor enc="encode_user_pk" notStandalone>
                     the final <R n="UserSignature" /> in{" "}
-                    <ValAccess field="subspace_cap_delegations" />
+                    <ValAccess field="enumcap_delegations" />
                   </CodeFor>
                 </EncConditional>,
               ]}

@@ -60,10 +60,9 @@ export const misc_definitions = (
 
         <PreviewScope>
           <P>
-            The value <DefVariant n="area_any" r="any" /> signals that an{" "}
-            <R n="Area" /> <R n="area_include">includes</R> <Rs n="Entry" />
-            {" "}
-            with arbitrary <Rs n="entry_subspace_id" />.
+            The value <DefVariant n="ss_any" r="any" />{" "}
+            signals that not any specific <R n="SubspaceId" />{" "}
+            is meant, but any arbitrary one works.
           </P>
         </PreviewScope>
 

@@ -58,7 +58,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The type of ", rs("dss_signature"), " is the same as for ed25519, but the signing algorithm differs: to ", r("dss_sign"), " a bytestring ", def_value({id: "cinn_b", singular: "b"}), ", compute the ed25519 signature over the concatenation of the following strings:", lis(
+						"The type of <Rs n="dss_signature"/> is the same as for ed25519, but the signing algorithm differs: to ", r("dss_sign"), " a bytestring ", def_value({id: "cinn_b", singular: "b"}), ", compute the ed25519 signature over the concatenation of the following strings:", lis(
 							["The ", r("cinn_shortname"), ", encoded as ascii,"],
 							["If ", code(r("cinn_min"), " < ", r("cinn_max")), " the byte ", code("0x00"), ", otherwise the empty string, and"],
 							[r("cinn_b"), "."],
@@ -170,7 +170,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The ", r("encode_user_pk"), " function is ", r("encode_cinn_pk"), "."
+					"The <R n="encode_user_pk"/> function is ", r("encode_cinn_pk"), "."
 				),
 
 				pinformative(
@@ -233,7 +233,7 @@ export const es6_spec = (
 					)),
 
 					pinformative(
-						"The type ", r("SubspaceCapability"), " is the type of ", rs("McSubspaceCapability"), " for our instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
+						"The type ", r("SubspaceCapability"), " is the type of <Rs n="McEnumerationCapability"/> for our instantiation of Meadowcap. So in particular, the type ", r("sync_subspace_receiver"), " is that of ", rs("es6_identity"), ", and the type ", r("sync_subspace_signature"), " is that of ", r("user_signature_scheme"), " signatures."
 					),
 				]),
 
@@ -290,7 +290,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the ", r("subspace_cap_namespace"), "."
+						"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the <R n="enumcap_namespace"/>."
 					),
 
 					pinformative(

@@ -47,6 +47,7 @@ import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Expression, Expressions } from "macromaniajsx/jsx-dev-runtime";
+import { CodeFor, Encoding } from "../../encoding_macros.tsx";
 
 function PiiExample(
   {
@@ -68,7 +69,7 @@ function PiiExample(
   return (
     <Div clazz="piiExample" style="padding: 1rem;">
       <Div clazz="piiExampleLeft">
-        {leftSs === undefined ? <R n="area_any" /> : (
+        {leftSs === undefined ? <R n="ss_any" /> : (
           <Purple>
             <exps x={leftSs} />
           </Purple>
@@ -76,7 +77,7 @@ function PiiExample(
         <Path components={leftPath} />
       </Div>
       <Div clazz="piiExampleRight">
-        {rightSs === undefined ? <R n="area_any" /> : (
+        {rightSs === undefined ? <R n="ss_any" /> : (
           <Purple>
             <exps x={rightSs} />
           </Purple>
@@ -327,9 +328,7 @@ export const private_interest_intersection = (
           <P>
             The first bullet point should be straightforward: no requested data
             is explicitly handed over, unless the sync partner demonstrates that
-            it was granted read access. We describe mechanisms for enforcing
-            {" "}
-            <R n="access_control">read access control here</R>.
+            it was granted read access.
           </P>
 
           <P>
@@ -584,8 +583,7 @@ export const private_interest_intersection = (
                     commented: {
                       comment: (
                         <>
-                          <R n="area_any" /> denotes interest in <Em>all</Em>
-                          {" "}
+                          <R n="ss_any" /> denotes interest in <Em>all</Em>{" "}
                           <Rs n="subspace" /> of the <R n="namespace" />.
                         </>
                       ),
@@ -593,7 +591,7 @@ export const private_interest_intersection = (
                       segment: [
                         ["subspace_id", "pi_ss", "subspace_ids"],
                         <ChoiceType
-                          types={[<R n="SubspaceId" />, <R n="area_any" />]}
+                          types={[<R n="SubspaceId" />, <R n="ss_any" />]}
                         />,
                       ],
                     },
@@ -637,7 +635,7 @@ export const private_interest_intersection = (
                     <AccessStruct field="pi_ss">
                       <R n="pi2" />
                     </AccessStruct>{" "}
-                    == <R n="area_any" />
+                    == <R n="ss_any" />
                   </Code>{" "}
                   or{" "}
                   <Code>
@@ -717,7 +715,7 @@ export const private_interest_intersection = (
                     <AccessStruct field="pi_ss">
                       <R n="pi1" />
                     </AccessStruct>{" "}
-                    == <R n="area_any" />
+                    == <R n="ss_any" />
                   </Code>{" "}
                   or{" "}
                   <Code>
@@ -758,10 +756,10 @@ export const private_interest_intersection = (
                 <Def n="pi_awkward" r="awkward" /> if they are neither{" "}
                 <R n="pi_comparable" /> nor{" "}
                 <R n="pi_disjoint" />. This is the case if and only if one of
-                them has <R n="pi_ss" /> <R n="area_any" /> and a{" "}
+                them has <R n="pi_ss" /> <R n="ss_any" /> and a{" "}
                 <R n="pi_path" />{" "}
                 <DefValue n="pi_awkward_p" r="p" />, and the other has a
-                non-<R n="area_any" /> <R n="pi_ss" /> and a <R n="pi_path" />
+                non-<R n="ss_any" /> <R n="pi_ss" /> and a <R n="pi_path" />
                 {" "}
                 which is a strict <R n="path_prefix" /> of{" "}
                 <R n="pi_awkward_p" />.
@@ -780,7 +778,7 @@ export const private_interest_intersection = (
                     <AccessStruct field="pi_ss">
                       <R n="pi1" />
                     </AccessStruct>{" "}
-                    == <R n="area_any" />
+                    == <R n="ss_any" />
                   </Code>{" "}
                   or{" "}
                   <Code>
@@ -808,13 +806,13 @@ export const private_interest_intersection = (
             <PreviewScope>
               <P>
                 If <R n="pi1" /> has a <R n="pi_ss" /> that is not{" "}
-                <R n="area_any" />, then we call the <R n="PrivateInterest" />
+                <R n="ss_any" />, then we call the <R n="PrivateInterest" />
                 {" "}
                 that is equal to <R n="pi1" /> except its <R n="pi_ss" /> is
                 {" "}
-                <R n="area_any" /> the <Def n="pi_relaxation" r="relaxation" />
+                <R n="ss_any" /> the <Def n="pi_relaxation" r="relaxation" /> of
                 {" "}
-                of <R n="pi1" />.
+                <R n="pi1" />.
               </P>
             </PreviewScope>
           </Hsection>
@@ -871,7 +869,7 @@ export const private_interest_intersection = (
                   For each <R n="PrivateInterest" />{" "}
                   <DefValue n="pii_hashing_p0" r="p" /> with a <R n="pi_ss" />
                   {" "}
-                  of <R n="area_any" />,
+                  of <R n="ss_any" />,
                   <Ul>
                     <Li>
                       the <R n="pii_initiator" /> transmits the pair{" "}
@@ -903,7 +901,7 @@ export const private_interest_intersection = (
                   For each <R n="PrivateInterest" />{" "}
                   <DefValue n="pii_hashing_p1" r="p" /> with a <R n="pi_ss" />
                   {" "}
-                  that is not <R n="area_any" />, let{" "}
+                  that is not <R n="ss_any" />, let{" "}
                   <DefValue n="pii_hashing_p_relaxed" r="p_relaxed" />{" "}
                   denote the <R n="pi_relaxation" /> of{" "}
                   <R n="pii_hashing_p1" />. Then each peer transmits{" "}
@@ -938,11 +936,11 @@ export const private_interest_intersection = (
                 <Li>
                   Peers that wish to hide how many of their{" "}
                   <Rs n="PrivateInterest" /> have a <R n="pi_ss" /> of{" "}
-                  <R n="area_any" />{" "}
+                  <R n="ss_any" />{" "}
                   can further send a pair of a random hash and the boolean{" "}
                   <Code>false</Code> for each of their{" "}
                   <Rs n="PrivateInterest" /> with a <R n="pi_ss" /> of{" "}
-                  <R n="area_any" />.
+                  <R n="ss_any" />.
                 </Li>
               </Ul>
             </PreviewScope>
@@ -1023,9 +1021,9 @@ export const private_interest_intersection = (
                 </Marginale>
                 The examples cover the nine different (up to symmetry)
                 combinations of how <Rs n="pi_ss" /> and <Rs n="pi_path" />{" "}
-                can related to each other (equal, non-equal, or{" "}
-                <R n="area_any" /> for <Rs n="pi_ss" />, <R n="path_prefix" />,
+                can related to each other (equal, non-equal, or <R n="ss_any" />
                 {" "}
+                for <Rs n="pi_ss" />, <R n="path_prefix" />,{" "}
                 <R n="path_extension" />, or <R n="path_related">unrelated</R>
                 {" "}
                 for <Rs n="pi_path" />).<Alj>TODO: example styling</Alj>
@@ -1365,7 +1363,9 @@ export const private_interest_intersection = (
                     {" "}
                     <R n="mc_enumeration_cap">end of this document</R>, and a
                     suitable, confidentiality-preserving{" "}
-                    <R n="enc_private_subspace_capabilities">encoding here</R>.
+                    <R n="enc_private_enumeration_capabilities">
+                      encoding here
+                    </R>.
                   </>
                 }
               >
@@ -1389,339 +1389,17 @@ export const private_interest_intersection = (
               is thus the salted hash over the <R n="PrivateInterest" />{" "}
               that was submitted by the other peer, except its <R n="pi_ss" />
               {" "}
-              is replaced with <R n="area_any" />.
-              <Alj>
-                TODO this shouldn't be `area_any` actually, but a generic `any`
-                value.
-              </Alj>
+              is replaced with <R n="ss_any" />.
             </P>
-
-            {
-              /*
-            pinformative("To solve this standoff, we employ a second type of unforgeable token, that lets Betty prove that she has access to the full <R n="subspace"/> at ", em("some"), " <R n="Path"/>, without specifying that <R n="Path"/> explicitly. Alfie can request this token (by transmitting the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " of his <R n="read_capability"/>), Betty can then prove that she is indeed authorised to know about arbitrary <Rs n="SubspaceId"/> in this <R n="namespace"/>, and Alfie can then send (and authenticate) his <R n="read_capability"/>, to which Betty replies with her own, proper <R n="read_capability"/>."),
-
-      pinformative("We call these unforgeable tokens ", def({id: "subspace_capability", singular: "subspace capability", plural: "subspace capabilities"}, "subspace capabilities"), ". Whenever a peer is granted a ", r("capability_complete"), " <R n="read_capability"/> of non-empty ", r("AreaPath"), ", it should also be granted a corresponding ", r("subspace_capability"), ". Each ", r("subspace_capability"), " must have a single ", def({ id: "subspace_receiver", singular: "receiver" }), " (a <R n="dss_pk"/> of some <R n="signature_scheme"/>), and a single ", def({ id: "subspace_granted_namespace", singular: "granted namespace" }), " (a <R n="NamespaceId"/>). The ", r("subspace_receiver"), " can authenticate itself by signing a collaboratively selected nonce."),
-
-    ]),
-
-    hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
-      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, <Rs n="read_capability"/> for all <Rs n="subspace"/> of a <R n="namespace"/> can only exist in ", rs("owned_namespace"), "."),
-
-      pseudocode(
-        new Struct({
-            id: "McSubspaceCapability",
-            name: "McSubspaceCapability",
-            plural: "McSubspaceCapabilities",
-            comment: ["A capability that certifies read access to arbitrary <Rs n="SubspaceId"/> at some unspecified <R n="Path"/>."],
-            fields: [
-                {
-                    id: "subspace_cap_namespace",
-                    name: "namespace_key",
-                    comment: ["The <R n="namespace"/> for which this grants access."],
-                    rhs: r("NamespacePublicKey"),
-                },
-                {
-                    id: "subspace_cap_user",
-                    name: "user_key",
-                    comment: [
-                      pinformative("The user ", em("to whom"), " this grants access."),
-                    ],
-                    rhs: r("UserPublicKey"),
-                },
-                {
-                    id: "subspace_cap_initial_authorisation",
-                    name: "initial_authorisation",
-                    comment: [
-                      pinformative("Authorisation of the ", r("subspace_cap_user"), " by the ", r("subspace_cap_namespace"), "."),
-                    ],
-                    rhs: r("NamespaceSignature"),
-                },
-                {
-                    id: "subspace_cap_delegations",
-                    name: "delegations",
-                    comment: ["Successive authorisations of new ", rs("UserPublicKey"), "."],
-                    rhs: pseudo_array(pseudo_tuple(r("UserPublicKey"), r("UserSignature"))),
-                },
-            ],
-        }),
-      ),
-
-      pinformative("The ", r("subspace_cap_receiver"), " of a ", r("McSubspaceCapability"), " is the user to whom it grants access. Formally, the ", def({id: "subspace_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("subspace_cap_delegations"), ", or the ", r("subspace_cap_user"), " if the ", r("subspace_cap_delegations"), " are empty."),
-
-      pinformative("The ", r("subspace_cap_granted_namespace"), " of a ", r("McSubspaceCapability"), " is the <R n="namespace"/> for which it certifies access to all <Rs n="subspace"/>. Formally, the ", def({id: "subspace_cap_granted_namespace", singular: "granted namespace"}), " of a ", r("McSubspaceCapability"), " is its ", r("subspace_cap_namespace"), "."),
-
-      pinformative(R("subspace_cap_valid", "Validity"), " governs how ", rs("McSubspaceCapability"), " can be delegated. We define ", def({id: "subspace_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("McSubspaceCapability"), " is ", def_fake("subspace_cap_valid", "valid"), " if its ", r("subspace_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), "."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("subspace_cap_delegations"), "."),
-
-      pinformative("A ", r("McSubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
-
-      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), " be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
-
-      pinformative("Then ", r("subspace_cap_defvalid"), " is ", r("subspace_cap_valid"), " if ", r("subspace_prev_cap"), " is ", r("subspace_cap_valid"), ", and ", r("subspace_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("subspace_prev_receiver"), " over the bytestring ", def_value({id: "subspace_handover", singular: "handover"}), ", which is defined as follows:"),
-
-      lis(
-        [
-          "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
-          lis(
-            [code(function_call(r("encode_namespace_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
-            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
-          ),
-        ],
-        [
-          preview_scope("Otherwise, let ", def_value({id: "subspace_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last pair of ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), "."), " Then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
-          lis(
-            [code(function_call(r("encode_user_sig"), r("subspace_prev_signature"))), "."],
-            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
-          ),
-        ],
-      ),
-       */
-            }
           </Hsection>
         </Hsection>
 
-        {
-          /*
-
-
-    hsection("private_equality_testing", "Private Equality Testing", [
-      pinformative(
-        "We start by considering ", def({id: "private_equality_testing_def", singular: "private equality testing"}), ": two peers — Alfie and Betty — who hold a single item each wish to determine whether they hold the same item, without revealing any information about their item in case of inequality. Before giving the precise mathematical formulation, we describe the solution by way of analogy.",
-      ),
-
-      marginale_inlineable(img(asset("psi/psi_paint.png"), `A comic visualising private equality testing with one column for each peer. The peers start with two buckets of colour each, a data colour (same for both) and a secret colour (unique for each) per peer. Each peer mixes their two colours, yielding a completely new, unique colour per peer. The peers exchange these new colours, and then each mix their secret colour into what they received. This yields the same colour for both peers! They verify so by exchanging the resulting colours, and then happily toast with their buckets of equally coloured content.`)),
-
-      pinformative(
-        "Imagine the items were ", em("colours"), ". Assume colours can easily be mixed with other colours, but unmixing a given colour into its components is impossible. The following procedure then solves the problem:",
-      ),
-
-      lis(
-        [preview_scope(
-          "Alfie and Betty each start with a data colour ", def_value("data_A"), " and ", def_value("data_B"), " respectively.",
-        )],
-        [preview_scope(
-          "Alfie and Betty each randomly select a secret colour ", def_value("secret_A"), " and ", def_value("secret_B"), " respectively.",
-        )],
-        [
-          "They each mix their data colour with their secret colour and send the result to the other person (", code(function_call("mix", r("data_A"), r("secret_A"))), " and ", code(function_call("mix", r("data_B"), r("secret_B"))), ").",
-        ],
-        [
-          "Upon receiving a mixture, they mix their own secret into it, remember the result and also send it to the other person (", code(function_call("mix", function_call("mix", r("data_B"), r("secret_B")), r("secret_A"))), " and ", code(function_call("mix", function_call("mix", r("data_A"), r("secret_A")), r("secret_B"))), ").",
-        ],
-      ),
-
-      pinformative(
-        "If both peers receive the same colour they remembered, then they started with the same data colour, and otherwise they did not. Because unmixing colours is impossible and mixing with a randomly chosen secret colour essentially yields a new random-looking colour, the peers cannot learn anything about each other’s colours in case of ", sidenote("inequality", [
-          "Neither can any eavesdropper learn about the data colours. The procedure is highly related to a ", link("Diffie–Hellman key exchange", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange"), " for that reason, and we have borrowed the colour metaphor from its wikipedia page.",
-        ]),
-        ".",
-      ),
-
-      div({style: "clear: right;"}), // this is only temporary, or is it?
-
-      pinformative(
-        marginale([
-          "Note that the colour analogy is not fully accurate: data colours correspond to group members but secret colours correspond to scalars, which are of a different type than group members.",
-        ]),
-        "Leaving the world of analogy, the actual cryptographic primitives we use are ", link("finite cyclic groups", "https://en.wikipedia.org/wiki/Diffie%E2%80%93Hellman_key_exchange#Generalisation_to_finite_cyclic_groups"), " — such as the ", link("X25519 elliptic curve", "https://en.wikipedia.org/wiki/Curve25519"), " — equipped with a way of serialising group members for transport and with a way of generating pseudo-random group members from the items to test for equality.",
-      ),
-
-      pinformative(
-        marginale([
-          "Do not worry if the mathy description here does not fully make sense to you. We give it for completeness’ sake, but you can grasp the underlying concepts without being familiar with groups and cryptography.",
-        ]),
-        "Let ", def_type({id: "psi_Items", singular: "Items", plural: "Items"}), " be the set of items for which we want to be able to privately test for equality. Let ", def_type({id: "psi_G", singular: "G"}), " be a ", link("finite cyclic group", "https://en.wikipedia.org/wiki/Cyclic_group"), " with a well-known ", link("generator", "https://en.wikipedia.org/wiki/Generating_set_of_a_group"), " ", def_value({id: "psi_g", singular: "g"}), " and group operation ", def_fn({id: "psi_times", singular: "*"}), ", and let ", def_fn({id: "psi_item_to_group", singular: "item_to_group", math: "item\\_to\\_group"}), " be a hash function from ", r("psi_Items"), " into ", r("psi_G"), ".",
-      ),
-
-      pinformative(
-        "Now, let ", def({id: "psi_Alfie", singular: "Alfie"}), " be a peer that holds some item ",
-        $([def_value$({id: "psi_ialpha", math: "i_{\\alpha}"}), ` \\in `, r$("psi_Items")]),
-        " and let ", def({id: "psi_Betty", singular: "Betty"}), " be a peer that holds some item ",
-        $([def_value$({id: "psi_ibeta", math: "i_{\\beta}"}), ` \\in `, r$("psi_Items")], "."),
-        " Define ",
-        $([def_value$({id: "psi_dalpha", math: "d_{\\alpha}"}), " := ", r$("psi_item_to_group"), "(", r$("psi_ialpha"), ")"]),
-        " and ",
-        $([def_value$({id: "psi_dbeta", math: "d_{\\beta}"}), " := ", r$("psi_item_to_group"), "(", r$("psi_ibeta"), ")"]),
-      ),
-
-      pinformative(
-        "To privately test for equality of ", $(r$("psi_ialpha")), " and ", $comma(r$("psi_ibeta")),
-        " ", r("psi_Alfie"), " and ", r("psi_Betty"), " each randomly select scalars (natural numbers) ",
-        $(def_value$({id: "psi_salpha", math: "s_{\\alpha}"})),
-        " and ",
-        $(def_value$({id: "psi_sbeta", math: "s_{\\beta}"})),
-        " respectively. ", R("psi_Alfie"), " then transmits ",
-        $([r$("psi_dalpha"), "^{", r$("psi_salpha"), "}"]),
-        marginale([$(["x^n := x * x * \\ldots * x"]), " (", $("n"), " times)"]),
-        " and ", r("psi_Betty"), " transmits ",
-        $dot([r$("psi_dbeta"), "^{", r$("psi_sbeta"), "}"]),
-      ),
-
-      pinformative(
-        "After receiving these messages, ", r("psi_Alfie"), " answers with ",
-        $comma([r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}"]),
-        marginale([
-          "They can compute these because ",
-          $dot("x^{n \\cdot m} = {(x^n)}^m"),
-        ]),
-        " and ", r("psi_Betty"), " answers with ",
-        $dot([r$("psi_dalpha"), "^{", r$("psi_salpha"), " \\cdot ", r$("psi_sbeta"), "}"]),
-      ),
-
-      pinformative(
-        "If ", r("psi_G"), " was chosen so that accidental (or maliciously crafted) collisions are unlikely (or infeasible), then ",
-        $([r$("psi_ialpha"), " = ", r$("psi_ibeta")]),
-        " if and only if ",
-        $dot([
-          r$("psi_dalpha"), "^{", r$("psi_salpha"), " \\cdot ", r$("psi_sbeta"), "}",
-          "=",
-          r$("psi_dbeta"), "^{", r$("psi_sbeta"), " \\cdot ", r$("psi_salpha"), "}",
-        ]),
-        marginale(["Because ", $dot("x^{n \\cdot m} = x^{m \\cdot n}")]),
-      ),
-    ]),
-
-    hsection("psi_actual", "Private Set Intersection", [
-      pinformative(
-        "We can generalise the equality test to computing set intersection by essentially sending the same information but for multiple items at once.", marginale(["This technique for private set intersection is due to ", link("Huberman, Franklin, and Hogg", "https://dl.acm.org/doi/pdf/10.1145/336992.337012"), "."]), " We return to the analogy of colours again, before giving the mathematically precise formulation.",
-      ),
-
-      pinformative(
-        "Suppose Alfie and Betty start with ", em("sets"), " of data colours. They independently (and arbitrarily) number their data colours as ", code(def_value("data_A_0"), ", ", def_value("data_A_1"), ", ..."), " and ", code(def_value("data_B_0"), ", ", def_value("data_B_1"), ", ..."), " respectively.",
-      ),
-
-      pinformative(
-        "Alfie and Betty still choose only a single random secret (", r("secret_A"), " and ", r("secret_B"), " respectively), and they send the results of mixing each of their data colours with their secret colour individually (",
-        code("{0: ", function_call("mix", r("data_A_0"), r("secret_A")), ", ", function_call("mix", r("data_A_1"), r("secret_A")), ", ...", "}"),
-        " and ",
-        code("{0: ", function_call("mix", r("data_B_0"), r("secret_B")), ", ", function_call("mix", r("data_B_1"), r("secret_B")), ", ...", "}"),
-        ").",
-      ),
-
-      pinformative(
-        "For each numbered colour mix they receive, they reply by adding their own secret, keeping the numbering identical.",
-      ),
-
-      pinformative(
-        "Any colour that occurs both in the final set of colours they sent and in the final set of colours they received corresponds to a shared data colour, and the numbering tells each of them which of the original colours are shared. But for any other colour, they cannot reconstruct the corresponding original data colour of the other peer.",
-      ),
-
-      pinformative(
-        "In the formal setting, let ", def({id: "psi_Alfie2", singular: "Alfie"}), " and ", def({id: "psi_Betty2", singular: "Betty"}), " hold sequences of ", rs("psi_Items"), " ",
-        $(["(", def_value$({id: "psi_ia0", math: "i\\alpha_0"}), ", ", def_value$({id: "psi_ia1", math: "i\\alpha_1"}), ", \\ldots)"]),
-        " and ",
-        $(["(", def_value$({id: "psi_ib0", math: "i\\beta_0"}), ", ", def_value$({id: "psi_ib1", math: "i\\beta_1"}), ", \\ldots)"]),
-        " that hash to sequences of group members ",
-        $(["(", def_value$({id: "psi_da0", math: "d\\alpha_0"}), ", ", def_value$({id: "psi_da1", math: "d\\alpha_1"}), ", \\ldots)"]),
-        " and ",
-        $(["(", def_value$({id: "psi_db0", math: "d\\beta_0"}), ", ", def_value$({id: "psi_db1", math: "d\\beta_1"}), ", \\ldots)"]),
-        " respectively, and let them choose random scalars ",
-        $(def_value$({id: "psi_sa", math: "s_{\\alpha}"})),
-        " and ",
-        $(def_value$({id: "psi_sb", math: "s_{\\beta}"})),
-        " again.",
-      ),
-
-      pinformative(
-        R("psi_Alfie2"), " then transmits ",
-        $comma(["({", r$("psi_da0"), "}^{", r$("psi_sa"), "}, {", r$("psi_da1"), "}^{", r$("psi_sa"), "}, \\ldots)"]),
-        " and ", r("psi_Betty2"), " transmits ",
-        $dot(["({", r$("psi_db0"), "}^{", r$("psi_sb"), "}, {", r$("psi_db1"), "}^{", r$("psi_sb"), "}, \\ldots)"]),
-      ),
-
-      pinformative(
-        "After receiving these messages, ", r("psi_Alfie2"), " answers with ",
-        $comma(["({", r$("psi_db0"), "}^{", r$("psi_sb"), " \\cdot ", r$("psi_sa"), "}, {", r$("psi_db1"), "}^{", r$("psi_sb"), " \\cdot ", r$("psi_sa"), "}, \\ldots)"]),
-        " and ", r("psi_Betty2"), " answers with ",
-        $dot(["({", r$("psi_da0"), "}^{", r$("psi_sa"), " \\cdot ", r$("psi_sb"), "}, {", r$("psi_da1"), "}^{", r$("psi_sa"), " \\cdot ", r$("psi_sb"), "}, \\ldots)"]),
-      ),
-
-      pinformative(
-        "For all ", $("i, j \\in \\N"), " such that ",
-        $comma("{d\\alpha_i}^{s_\\alpha \\cdot s_\\beta} = {d\\beta_j}^{s_\\beta \\cdot s_\\alpha}"),
-        " ", r("psi_Alfie2"), " learns that item ", $("i\\alpha_i"), " is in the intersection, and ", r("psi_Betty2"), " learns that item ", $("i\\beta_j"), " is in the intersection.",
-        ),
-      ]),
-
-      hsection("psi_dynamic", "Dynamic Sets", [
-        pinformative(
-          "The algorithm as described so far requires Alfie and Betty to fully know their sets in advance. For the ", r("WGPS"), ", we want to allow for dynamically changing sets — both because peers might learn about new <Rs n="namespace"/> dynamically, and because they might not have enough resources to store group members for the full sets in memory at the same time.",
-        ),
-
-        pinformative(
-          "We can overcome this limitation with a small change: rather than sending monolithic messages containing lists of group members, we send individual group members together with small numeric identifiers. These identifiers can be used to map responses to the original group members. In particular, we use ", rs("resource_handle"), " for this purpose.",
-        ),
-      ]),
-
-    hsection("pai_approach", "Private Syncing", [
-      pinformative("We now have the necessary tools to describe how two peers can exchange <Rs n="read_capability"/> for their sync interests in a privacy-preserving manner. To recapitulate, we consider two peers — Alfie and Betty — who each hold a set of <Rs n="read_capability"/>. They wish to determine the ", rs("area_intersection"), " of their <Rs n="granted_area"/> without leaking any <Rs n="NamespaceId"/>, <Rs n="SubspaceId"/> or <Rs n="Path"/> that are not covered by the other peer’s <Rs n="read_capability"/>. We now reduce this problem to that of private set intersection."),
-
-      pinformative(
-        marginale("We have to introduce a bit of terminology first. Trust us that it will be useful, and also trust us that all attempts to avoid these definitions resulted in unreadable messes."),
-        "A <R n="read_capability"/> is called ", def({id: "capability_complete", singular: "complete"}), " if the ", r("AreaSubspace"), " of its <R n="granted_area"/> is ", r("area_any"), ", and it is called ", def({id: "capability_selective", singular: "selective"}), " otherwise."   ,
-      ),
-
-      preview_scope(
-        p("The ", def({id: "fragment", singular: "fragment"}, "fragments"), " of a ", r("capability_complete"), " <R n="read_capability"/> of <R n="granted_area"/> ", def_value({id: "complete_fragment_area", singular: "area"}), " and <R n="granted_namespace"/> ", def_value({id: "complete_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("complete_fragment_namespace"), ", ", r("complete_fragment_prefix"), ")"), ", such that ", def_value({id: "complete_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), marginale([
-          "The ", rs("path_prefix"), " of ", path("foo", "bar"), " are the empty <R n="Path"/>, ", path("foo"), ", and ", path("foo", "bar"), " itself.",
-        ]), " of ", field_access(r("complete_fragment_area"), "AreaPath"), "."),
-
-        p("The ", rs("fragment"), " of a ", r("capability_selective"), " <R n="read_capability"/> of <R n="granted_area"/> ", def_value({id: "selective_fragment_area", singular: "area"}), " and <R n="granted_namespace"/> ", def_value({id: "selective_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("selective_fragment_namespace"), ", ", r("selective_fragment_prefix"), ")"), " and the triplets ",  code("(", r("selective_fragment_namespace"), ", ", field_access(r("selective_fragment_area"), "AreaSubspace"), ", ", r("selective_fragment_prefix"), ")"), ", such that ", def_value({id: "selective_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), " of ", field_access(r("selective_fragment_area"), "AreaPath"), ". The pairs are called ", def({id: "fragment_secondary", singular: "secondary"}), " ", rs("fragment"), ", all other ", rs("fragment"), " (including those of ", r("capability_complete"), " <Rs n="read_capability"/>) are called ", def({id: "fragment_primary", singular: "primary"}), " ", rs("fragment"), "."),
-
-        p("A ", r("fragment"), " whose <R n="Path"/> is the empty <R n="Path"/> is called a ", def({id: "fragment_least_specific", singular: "least-specific"}), " ", r("fragment"), ". A ", r("fragment"), " whose <R n="Path"/> is the ", r("AreaPath"), " of the <R n="granted_area"/> of its originating <R n="read_capability"/> is called a ", def({id: "fragment_most_specific", singular: "most-specific"}), " ", r("fragment"), "."),
-      ),
-
-      pinformative("To privately exchange <Rs n="read_capability"/>, Alfie and Betty perform private set intersection with the sets of ", rs("fragment"), " of all their <Rs n="read_capability"/>. Additionally, they transmit for each group member they send whether it corresponds to a ", r("fragment_primary"), " or ", r("fragment_secondary"), " ", r("fragment"), ". The peers can then detect nonempty intersections between their <Rs n="read_capability"/> by checking whether their ", r("fragment_most_specific"), " ", rs("fragment"), " are in the intersection. More precisely, we need to consider three cases:"),
-
-      pinformative("If the ", r("fragment_most_specific"), " ", r("fragment"), " of a peer’s ", r("capability_complete"), " <R n="read_capability"/> is in the intersection, then the peer can safely send (and authenticate) the <R n="read_capability"/> without leaking any information. Together with the <R n="read_capability"/>, the peer should also transmit the ", r("fragment"), ". The other peer can then safely reply with all its <Rs n="read_capability"/> whose ", rs("fragment"), " include the transmitted ", r("fragment"), "."),
-
-      pinformative("The same holds when the ", r("fragment_primary"), " ", r("fragment_most_specific"), " ", r("fragment"), " of a peer’s ", r("capability_selective"), " <R n="read_capability"/> is in the intersection."),
-
-      pinformative("Things are more complicated, however, when the ", r("fragment_secondary"), " ", r("fragment_most_specific"), " ", r("fragment"), " of a peer’s ", r("capability_selective"), " <R n="read_capability"/> is in the intersection, but the corresponding ", r("fragment"), " of the other peer is a ", r("fragment_primary"), " ", sidenote(r("fragment"), [
-        "If ", em("both"), " peers’ ", rs("fragment"), " were ", r("fragment_secondary"), ", but their corresponding ", r("fragment_primary"), " ", rs("fragment"), " were not in the intersection, then the <Rs n="read_capability"/> simply would not overlap — the peers would request equal <Rs n="Path"/> in distinct <Rs n="subspace"/>.",
-      ]), ". To better understand this case, consider an example:"),
-
-      pinformative("Suppose, in some <R n="namespace"/>, Alfie is interested in the <Rs n="Entry"/> at arbitrary ", rs("entry_path"), " with ", r("entry_subspace_id"), " ", code("@gemmas_stuff"), ". Betty, in the same <R n="namespace"/>, is interested in the <Rs n="Entry"/> whose ", r("entry_path"), " is prefixed by ", path("chess"), ", regardless of their ", r("entry_subspace_id"), ". Then Alfie’s ", r("fragment_secondary"), " ", r("fragment_most_specific"), " ", r("fragment"), " is in the intersection, but his ", r("fragment_primary"), " ", r("fragment_most_specific"), " ", r("fragment"), " is not (and neither is Betty’s ", r("fragment_most_specific"), " ", r("fragment"), ")."),
-
-      pinformative("It might be tempting for Alfie to transmit his <R n="read_capability"/>, but unfortunately, Betty might have fabricated her ", rs("fragment"), ". In this case, Betty would learn about the existance of ", code("@gemmas_stuff"), ", violating our privacy objectives. Alfie could prompt Betty to present ", em("her"), " <R n="read_capability"/> first, instead. But Betty then faces the same problem: Alfie could have fabricated his ", rs("fragment"), ", and he would illegitimately learn about the ", path("chess"), " <R n="Path"/> in that case."),
-
-
-    ]), */
-        }
-
-        <Hr />
-
-        <P>
-          <Alj>TODO rewrite given its new position</Alj>
-          Data synchronisation via the <R n="sync">WGPS</R>{" "}
-          faces a dilemma: on the one hand, we want to opportunistically
-          synchronise data with as many peers as we can, on the other hand, we
-          want to preserve confidentiality of all data that is guarded by{" "}
-          <R n="access_control">access control</R>. This document presents in
-          detail how we balance those needs.
-        </P>
-
-        <P>
-          Data confidentiality goes much further than withholding{" "}
-          <Rs n="Payload" />. We need to protect <Rs n="NamespaceId" />,{" "}
-          <Rs n="SubspaceId" />, and{" "}
-          <Rs n="Path" />. To make things more difficult, we want to keep these
-          confidential even when an{" "}
-          <AE href="https://en.wikipedia.org/wiki/Man-in-the-middle_attack">
-            active eavesdropper
-          </AE>{" "}
-          listens in on a sync connection. We want to allow for synchronisation
-          with anonymous peers, but we cannot protect against active
-          eavesdropping in those sessions. Hence, we need to be careful which
-          information we disclose even to a peer who has read access to some
-          certain data.
-        </P>
-
-        <Hsection n="wgps_security_model" title="Security Model">
+        <Hsection n="pii_security_model" title="Security Properties">
           <P>
-            We can now lay out out the security model of the WGPS: which data
-            does the WGPS expose in which scenarios? We do not have formal
-            proofs for any of these claims, these are merely our design goals
-            (which we believe to have achieved).
+            We now lay out out the security model of this approach: which data
+            gets exposed in which scenarios? We do not have formal proofs for
+            any of these claims, these are merely our design goals (which we
+            believe to have achieved).
           </P>
 
           <P>
@@ -1732,7 +1410,7 @@ export const private_interest_intersection = (
             communication channel.
           </P>
 
-          <Hsection n="wgps_threat_model" title="Threat Model">
+          <Hsection n="pii_threat_model" title="Threat Model">
             <P>
               We consider two primary scenarios:
             </P>
@@ -1980,25 +1658,24 @@ export const private_interest_intersection = (
                               <AccessStruct field="pi_ss">
                                 <R n="ppi_m_pa" />
                               </AccessStruct>{" "}
-                              == <R n="area_any" />
+                              == <R n="ss_any" />
                             </Code>, Muriarty learns Alfie’s{" "}
-                            <R n="subspace_capability" /> for the{" "}
+                            <R n="enumeration_capability" /> for the{" "}
                             <R n="namespace" />.
                           </Li>
                           <Li>
                             Otherwise:
                             <Ul>
                               <Li>
-                                If Muriarty has a <R n="subspace_capability" />
-                                {" "}
-                                for the{" "}
+                                If Muriarty has an{" "}
+                                <R n="enumeration_capability" /> for the{" "}
                                 <R n="namespace" />, he learns all information
                                 of <R n="l1" /> and below pertaining to{" "}
                                 <R n="ppi_m_pa" />.
                               </Li>
                               <Li>
-                                If Muriarty does not have a{" "}
-                                <R n="subspace_capability" /> for the{" "}
+                                If Muriarty does not have an{" "}
+                                <R n="enumeration_capability" /> for the{" "}
                                 <R n="namespace" />, he learns that{" "}
                                 <R n="ppi_m_pa" />{" "}
                                 exists, but nothing more about it.
@@ -2061,138 +1738,243 @@ export const private_interest_intersection = (
           </Hsection>
         </Hsection>
 
-        <Pseudocode n="ppi_definition">
-          <StructDef
-            comment={
-              <>
-                TODO
-              </>
-            }
-            id={[
-              "PersonalPrivateInterest",
-              "PersonalPrivateInterest",
-              "PersonalPrivateInterests",
-            ]}
-            fields={[
-              {
-                commented: {
-                  comment: (
-                    <>
-                      TODO
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["private_interest", "ppi_pi"],
-                    <R n="PrivateInterest" />,
-                  ],
-                },
-              },
-              {
-                commented: {
-                  comment: (
-                    <>
-                      TODO
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["user_key", "ppi_user"],
-                    <R n="UserPublicKey" />,
-                  ],
-                },
-              },
-            ]}
-          />
-        </Pseudocode>
+        <Hsection
+          n="mc_enumeration_cap"
+          title="Meadowcap Enumeration Capabilities"
+        >
+          <P>
+            We conclude by presenting a datatype that implements{" "}
+            <Rs n="enumeration_capability" />, nicely complementing{" "}
+            <R n="meadowcap">Meadowcap</R>. Note that in Meadowcap,{" "}
+            <Rs n="read_capability" /> for all <Rs n="subspace" /> of a{" "}
+            <R n="namespace" /> can only exist in <Rs n="owned_namespace" />.
+          </P>
 
-        <Pseudocode n="mc_subspace_cap_def">
-          <StructDef
-            comment={
-              <>
-                A capability that certifies read access to arbitrary{" "}
-                <Rs n="SubspaceId" /> at some unspecified <R n="Path" />.
-              </>
-            }
-            id={[
-              "McSubspaceCapability",
-              "McSubspaceCapability",
-              "McSubspaceCapabilities",
-            ]}
-            fields={[
-              {
-                commented: {
-                  comment: (
-                    <>
-                      The <R n="namespace" /> for which this grants access.
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["namespace_key", "subspace_cap_namespace"],
-                    <R n="NamespacePublicKey" />,
-                  ],
-                },
-              },
-              {
-                commented: {
-                  comment: (
-                    <>
-                      The user to whom this initially grants access (the
-                      starting point for any further{" "}
-                      <R n="subspace_cap_delegations" />).
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["user_key", "subspace_cap_user"],
-                    <R n="UserPublicKey" />,
-                  ],
-                },
-              },
-              {
-                commented: {
-                  comment: (
-                    <>
-                      Authorisation of the <R n="subspace_cap_user" /> by the
-                      {" "}
-                      <R n="subspace_cap_namespace" />.
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    [
-                      "initial_authorisation",
-                      "subspace_cap_initial_authorisation",
+          <Pseudocode n="mc_enumcap_def">
+            <StructDef
+              comment={
+                <>
+                  A capability that certifies read access to arbitrary{" "}
+                  <Rs n="SubspaceId" /> at some unspecified <R n="Path" />.
+                </>
+              }
+              id={[
+                "McEnumerationCapability",
+                "McEnumerationCapability",
+                "McEnumerationCapabilities",
+              ]}
+              fields={[
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        The <R n="namespace" /> for which this grants access.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["namespace_key", "enumcap_namespace"],
+                      <R n="NamespacePublicKey" />,
                     ],
-                    <R n="NamespaceSignature" />,
-                  ],
+                  },
                 },
-              },
-              {
-                commented: {
-                  comment: (
-                    <>
-                      Successive authorisations of new <Rs n="UserPublicKey" />.
-                    </>
-                  ),
-                  dedicatedLine: true,
-                  segment: [
-                    ["delegations", "subspace_cap_delegations"],
-                    <SliceType>
-                      <TupleType
-                        types={[
-                          <R n="UserPublicKey" />,
-                          <R n="UserSignature" />,
-                        ]}
-                      />
-                    </SliceType>,
-                  ],
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        The user to whom this initially grants access (the
+                        starting point for any further{" "}
+                        <R n="enumcap_delegations" />).
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["user_key", "enumcap_user"],
+                      <R n="UserPublicKey" />,
+                    ],
+                  },
                 },
-              },
-            ]}
-          />
-        </Pseudocode>
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        Authorisation of the <R n="enumcap_user" /> by the{" "}
+                        <R n="enumcap_namespace" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "initial_authorisation",
+                        "enumcap_initial_authorisation",
+                      ],
+                      <R n="NamespaceSignature" />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        Successive authorisations of new{" "}
+                        <Rs n="UserPublicKey" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["delegations", "enumcap_delegations"],
+                      <SliceType>
+                        <TupleType
+                          types={[
+                            <R n="UserPublicKey" />,
+                            <R n="UserSignature" />,
+                          ]}
+                        />
+                      </SliceType>,
+                    ],
+                  },
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <P>
+            The <R n="enumeration_receiver" /> of a{" "}
+            <R n="McEnumerationCapability" />{"  "}is the final{" "}
+            <R n="UserPublicKey" /> in the <R n="enumcap_delegations" />, or the
+            {" "}
+            <R n="enumcap_user" /> if the <R n="enumcap_delegations" />{" "}
+            are empty.
+          </P>
+
+          <P>
+            The <R n="enumeration_granted_namespace" /> of a{" "}
+            <R n="McEnumerationCapability" /> is its{" "}
+            <R n="enumcap_namespace" />.
+          </P>
+
+          <P>
+            <R n="enumeration_cap_valid">Validity</R> governs how{" "}
+            <Rs n="McEnumerationCapability" /> can be delegated. We define{" "}
+            <Def
+              n="enumeration_cap_valid"
+              r="valid"
+              preview={
+                <>
+                  <P>
+                    A <R n="McEnumerationCapability" /> is{" "}
+                    <Def fake n="enumeration_cap_valid">valid</Def> if its{" "}
+                    <R n="enumcap_delegations" /> form a correct chain of{" "}
+                    <Rs n="dss_signature" /> over <Rs n="UserPublicKey" />.
+                  </P>
+                  <P>
+                    For the formal definition, click the reference, the proper
+                    definition does not fit into a tooltip.
+                  </P>
+                </>
+              }
+            >
+              validity
+            </Def>{" "}
+            based on the number of <R n="enumcap_delegations" />:
+          </P>
+
+          <P>
+            A <R n="McEnumerationCapability" /> with zero{" "}
+            <R n="enumcap_delegations" /> is <R n="enumeration_cap_valid" /> if
+            {" "}
+            <R n="enumcap_initial_authorisation" /> is a{" "}
+            <R n="NamespaceSignature" /> issued by the{" "}
+            <R n="enumcap_namespace" /> over the byte{" "}
+            <Code>0x02</Code>, followed by the <R n="enumcap_user" />{" "}
+            (encoded via <R n="encode_user_pk" />).
+          </P>
+
+          <P>
+            For a <Rs n="McEnumerationCapability" />{" "}
+            <DefValue n="enumcap_defvalid" r="cap" /> with more than zero{" "}
+            <R n="enumcap_delegations" />, let{" "}
+            <Code>
+              (<DefValue n="enumcap_new_user" r="new_user" />,{" "}
+              <DefValue n="enumcap_new_signature" r="new_signature" />)
+            </Code>{" "}
+            be the final pair of{" "}
+            <AccessStruct field="enumcap_delegations">
+              <R n="enumcap_defvalid" />
+            </AccessStruct>, and let{" "}
+            <DefValue n="enumcap_prev_cap" r="prev_cap" /> be the{" "}
+            <R n="McEnumerationCapability" />{" "}
+            obtained by removing the last pair from{" "}
+            <AccessStruct field="enumcap_delegations">
+              <R n="enumcap_defvalid" />
+            </AccessStruct>. Denote the <R n="enumeration_receiver" /> of{" "}
+            <R n="enumcap_prev_cap" /> as{" "}
+            <DefValue n="enumcap_prev_receiver" r="prev_receiver" />.
+          </P>
+
+          <P>
+            Then <R n="enumcap_defvalid" /> is <R n="enumeration_cap_valid" />
+            {" "}
+            if <R n="enumcap_prev_cap" /> is{" "}
+            <R n="enumeration_cap_valid" />, and <R n="enumcap_new_signature" />
+            {" "}
+            is a <R n="UserSignature" /> issued by the{" "}
+            <R n="enumcap_prev_receiver" /> over the bytestring{" "}
+            <Def n="enumcap_handover" r="handover" />, which is defined as
+            follows:
+          </P>
+
+          <Ul>
+            <Li>
+              If{" "}
+              <AccessStruct field="enumcap_delegations">
+                <R n="enumcap_prev_cap" />
+              </AccessStruct>{" "}
+              is empty, then <R n="enumcap_handover" />{" "}
+              is the concatenation of the following bytestrings:
+
+              <Encoding
+                standalone
+                idPrefix="enumcap_handover1"
+                bitfields={[]}
+                contents={[
+                  <CodeFor enc="encode_namespace_sig" isFunction>
+                    <AccessStruct field="enumcap_initial_authorisation">
+                      <R n="enumcap_prev_cap" />
+                    </AccessStruct>
+                  </CodeFor>,
+                  <CodeFor enc="encode_user_pk" isFunction>
+                    <R n="enumcap_new_user" />
+                  </CodeFor>,
+                ]}
+              />
+            </Li>
+            <Li>
+              Otherwise, let{" "}
+              <DefValue n="enumcap_prev_signature" r="prev_signature" /> be the
+              {" "}
+              <R n="UserSignature" /> in the last pair of{" "}
+              <AccessStruct field="enumcap_delegations">
+                <R n="enumcap_prev_cap" />
+              </AccessStruct>. Then <R n="enumcap_handover" />{" "}
+              is the concatenation of the following bytestrings:
+
+              <Encoding
+                standalone
+                idPrefix="enumcap_handover2"
+                bitfields={[]}
+                contents={[
+                  <CodeFor enc="encode_user_sig" isFunction>
+                    <R n="enumcap_prev_signature" />
+                  </CodeFor>,
+                  <CodeFor enc="encode_user_pk" isFunction>
+                    <R n="enumcap_new_user" />
+                  </CodeFor>,
+                ]}
+              />
+            </Li>
+          </Ul>
+        </Hsection>
       </PageTemplate>
     </File>
   </Dir>

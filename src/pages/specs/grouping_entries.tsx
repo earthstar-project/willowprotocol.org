@@ -473,14 +473,14 @@ export const grouping_entries = (
                         To be <R n="area_include">included</R> in this{" "}
                         <R n="Area" />, an <R n="Entry" />’s{" "}
                         <R n="entry_subspace_id" /> must be equal to the{" "}
-                        <R n="AreaSubspace" />, unless it is <R n="area_any" />.
+                        <R n="AreaSubspace" />, unless it is <R n="ss_any" />.
                       </>
                     ),
                     dedicatedLine: true,
                     segment: [
                       ["subspace_id", "AreaSubspace", "subspace_ids"],
                       <ChoiceType
-                        types={[<R n="SubspaceId" />, <R n="area_any" />]}
+                        types={[<R n="SubspaceId" />, <R n="ss_any" />]}
                       />,
                     ],
                   },
@@ -538,7 +538,7 @@ export const grouping_entries = (
                   <AccessStruct field="AreaSubspace">
                     <R n="area_include_a" />
                   </AccessStruct>{" "}
-                  == <R n="area_any" /> or{" "}
+                  == <R n="ss_any" /> or{" "}
                   <AccessStruct field="AreaSubspace">
                     <R n="area_include_a" />
                   </AccessStruct>{" "}
@@ -593,7 +593,7 @@ export const grouping_entries = (
           <PreviewScope>
             <P>
               The <Def n="full_area" r="full area" /> is the <R n="Area" />{" "}
-              whose <R n="AreaSubspace" /> is <R n="area_any" />, whose{" "}
+              whose <R n="AreaSubspace" /> is <R n="ss_any" />, whose{" "}
               <R n="AreaPath" /> is the empty <R n="Path" />, and whose{" "}
               <R n="AreaTime" /> is the <R n="open_range">open</R>{" "}
               <R n="TimeRange" /> with <R n="TimeRangeStart" />{" "}
@@ -647,7 +647,7 @@ export const grouping_entries = (
                 <AccessStruct field="AreaSubspace">
                   <R n="area_inter_a1" />
                 </AccessStruct>{" "}
-                is not <R n="area_any" />, or{" "}
+                is not <R n="ss_any" />, or{" "}
                 <AccessStruct field="AreaSubspace">
                   <R n="area_inter_a2" />
                 </AccessStruct>{" "}

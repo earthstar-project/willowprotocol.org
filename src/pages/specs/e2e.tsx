@@ -95,7 +95,7 @@ hsection("e2e_paths", "Path", [
 ]),
 
 hsection("e2e_auth", "AuthorisationToken", [
-  pinformative("Peers store and exchange not only <Rs n="Entry"/> but ", rs("AuthorisedEntry"), ". Whether ", rs("AuthorisationToken"), " can be meaningfully encrypted depends on the choice of ", r("is_authorised_write"), ", and should be taken into account when designing and using these parameters. ", link_name("meadowcap", "Meadowcap"), " ", rs("Capability"), " cannot be encrypted, as this would remove the ability of peers without access to the decryption keys to verify the ", rs("dss_signature"), "."),
+  pinformative("Peers store and exchange not only <Rs n="Entry"/> but ", rs("AuthorisedEntry"), ". Whether ", rs("AuthorisationToken"), " can be meaningfully encrypted depends on the choice of ", r("is_authorised_write"), ", and should be taken into account when designing and using these parameters. ", link_name("meadowcap", "Meadowcap"), " ", rs("Capability"), " cannot be encrypted, as this would remove the ability of peers without access to the decryption keys to verify the <Rs n="dss_signature"/>."),
 ]), */
         }
       </PageTemplate>
