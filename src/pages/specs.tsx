@@ -59,9 +59,6 @@ export const specs = (
             <R n="e2e">Encrypting Entries</R>
           </Li>
           <Li>
-            <R n="access_control">Access Control</R>
-          </Li>
-          <Li>
             <R n="private_interest_intersection">
               Private Interest Intersection
             </R>

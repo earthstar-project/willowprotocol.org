@@ -66,7 +66,7 @@ function PiiExample(
   },
 ): Expression {
   return (
-    <Div clazz="piiExample">
+    <Div clazz="piiExample" style="padding: 1rem;">
       <Div clazz="piiExampleLeft">
         {leftSs === undefined ? <R n="area_any" /> : (
           <Purple>
@@ -112,25 +112,80 @@ export const private_interest_intersection = (
         bibliography
       >
         <P>
-          In order to synchronise data, peers must inform each other about which
-          data they are interested in. If done openly, this would let peers
-          learn about details such as <Rs n="NamespaceId" />,{" "}
-          <Rs n="SubspaceId" />, or <Rs n="Path" />{" "}
-          that they have no business knowing about. In this document, we
-          describe a technique that does not leak this information, even in
-          realistic adversarial settings.
+          This document details a mechanism for implementing capability-enforced
+          read-access-control when synchronising data between two Willow peers.
+          This is more complex than simply defining a type of read access
+          capabilities and then exchanging those in the open, because such a
+          process would leak information such as <Rs n="NamespaceId" />,{" "}
+          <Rs n="SubspaceId" />, and <Rs n="Path" />{" "}
+          to peers without read-access. We describe a more sophisticated
+          technique that does not leak such information, even in realistic
+          adversarial settings.
         </P>
 
         <Hsection n="pii_goals" title="Setting and Goals">
           <P>
-            We consider the setting where two peers wish to synchronise some
-            data that is subject to{" "}
-            <R n="access_control">read access control via capabilities</R>. More
-            precisely, they want to specify pairs of <Rs n="namespace" /> and
+            We want to allow peers to specify pairs of <Rs n="namespace" /> and
             {" "}
             <Rs n="AreaOfInterest" />, and then synchronise the{" "}
-            <Rs n="aoi_intersection" />.<Alj>private interests?</Alj>
+            <Rs n="aoi_intersection" />. Furthermore, a peer should only be
+            given access to information for which it can prove that the original
+            author allows them to access it. To this end, we start by defining
+            the notion of a <R n="read_capability" />.
           </P>
+
+          <PreviewScope>
+            <P>
+              A{" "}
+              <Def
+                n="read_capability"
+                r="read capability"
+                rs="read capabilities"
+              />{" "}
+              is an unforgeable token that grants read access to some data to
+              the holder of some secret key. More formally, a{" "}
+              <R n="read_capability" />{" "}
+              must be a piece of data for which three types of semantics are
+              defined:<Marginale>
+                <R n="meadowcap">
+                  Meadowcap, our bespoke capability system for Willow, just so
+                  happens to provide these semantics with its{" "}
+                  <Rs n="Capability" /> of <R n="cap_mode" />{" "}
+                  <R n="access_read" />.
+                </R>
+              </Marginale>
+            </P>
+            <Ul>
+              <Li>
+                each <R n="read_capability" /> must have a single{" "}
+                <Def n="access_receiver" r="receiver" rs="receivers" /> (a{" "}
+                <R n="dss_pk" /> of some <R n="signature_scheme" />),
+              </Li>
+              <Li>
+                it must have a single{" "}
+                <Def n="granted_area" r="granted area" rs="granted areas" /> (an
+                {" "}
+                <R n="Area" />), and
+              </Li>
+              <Li>
+                it must have a single{" "}
+                <Def
+                  n="granted_namespace"
+                  r="granted namespace"
+                  rs="granted namespaces"
+                />{" "}
+                (a <R n="NamespaceId" />).
+              </Li>
+            </Ul>
+
+            <P>
+              Access control can then be implemented by answering only requests
+              for <Rs n="Entry" /> in the <R n="granted_namespace" /> and{" "}
+              <R n="granted_area" /> of some <R n="read_capability" /> whose
+              {" "}
+              <R n="access_receiver" /> is the peer in question.
+            </P>
+          </PreviewScope>
 
           <P>
             The simplemost solution consists in the peers openly exchanging{" "}
@@ -253,9 +308,9 @@ export const private_interest_intersection = (
           </P>
           <Ul>
             <Li>
-              peers demand a proof that their sync partner is the receiver of a
-              {" "}
-              <R n="read_capability" /> before handing over data,
+              peers demand a proof that their sync partner is the{" "}
+              <R n="access_receiver" /> of a <R n="read_capability" />{" "}
+              before handing over data,
             </Li>
             <Li>
               communication sessions are encrypted such that they can only be
@@ -1134,19 +1189,294 @@ export const private_interest_intersection = (
             </P>
 
             <P>
-              This scheme is obviously broken if peers can simply request <Rs n="read_capability" /> for <Em>arbitrary</Em> hashes. But we can prevent this by mandating that every request must contain the hash of the corresponding <R n="PrivateInterest"/> salted with the requester’s salt. So if the <R n="pii_initiator"/> requests <Rs n="read_capability" />, that request must contain the hash salted with <R n="pii_ini_salt"/>, and requests by the <R n="pii_responder"/> must contain the hash salted with <R n="pii_res_salt"/>. These salted hashes can only be produced by somebody who actually knows the <R n="PrivateInterest"/> in question.
+              This scheme is obviously broken if peers can simply request{" "}
+              <Rs n="read_capability" /> for <Em>arbitrary</Em>{" "}
+              hashes. But we can prevent this by mandating that every request
+              contains a{" "}
+              <Def
+                n="request_authentication"
+                r="request authentication"
+                rs="request authentications"
+              />{" "}
+              in the form of the hash of the corresponding{" "}
+              <R n="PrivateInterest" />{" "}
+              salted with the requester’s salt. So if the{" "}
+              <R n="pii_initiator" /> requests{" "}
+              <Rs n="read_capability" />, that request must contain the hash
+              salted with <R n="pii_ini_salt" />, and requests by the{" "}
+              <R n="pii_responder" /> must contain the hash salted with{" "}
+              <R n="pii_res_salt" />. These salted hashes can only be produced
+              by somebody who actually knows the <R n="PrivateInterest" />{" "}
+              in question.
             </P>
 
             <P>
-              mitm attacks
+              Naively transmitting <Rs n="read_capability" />{" "}
+              would allow an active eavesdropper to learn the information in the
+              capabilities. Hence, the transmission of the capabilities must
+              omit all sensitive information. This is possible because the two
+              peers a have a shared context — the{" "}
+              <R n="pi_more_specific">less specific</R> of the{" "}
+              <R n="pi_disjoint">non-disjoint</R> <Rs n="PrivateInterest" />
+              {" "}
+              — whose information can be omitted from the capability encoding.
+              We provide a{" "}
+              <Sidenote
+                note={
+                  <>
+                    Our encoding also includes the well-known{" "}
+                    <R n="access_receiver" />{" "}
+                    in the shared context, in the form of a{" "}
+                    <R n="PersonalPrivateInterest" />. This is simply an
+                    optimisation to shave off a few more bytes, not a critical
+                    security feature. Things work out quite nicely here:
+                    omitting the shared information not only secures
+                    confidentiality, but also means transmitting fewer bytes.
+                  </>
+                }
+              >
+                <R n="enc_private_mc_capabilities">suitable encoding</R>
+              </Sidenote>{" "}
+              for{" "}
+              <R n="Capability">Meadowcap capabilities</R>, users of different
+              capability systems need to define their own encodings.
+            </P>
+
+            <P>
+              Note that peers need to store a potentially unbounded number of
+              hash-boolean pairs that they receive, but they do not have an
+              unbounded amount of memory. In the <R n="sync">WGPS</R>, we employ
+              {" "}
+              <R n="lcmux">LCMUX</R> and the notion of{" "}
+              <Rs n="resource_handle" />{" "}
+              to deal with this problem. When resource limits are communicated
+              and enofreced, how should peers select which{" "}
+              <Rs n="PrivateInterest" /> they submit?
+            </P>
+
+            <P>
+              Imagine two peers, with the exact same 400{" "}
+              <Rs n="PrivateInterest" />, but they can each submit only 20 into
+              the private intersection process due to resource limits. If they
+              each selected 20 of their interests at random, they would likely
+              part ways thinking they don't share any common interests. If they
+              both sorted their <Rs n="PrivateInterest" />{" "}
+              (say, lexicographically according to some agreed-upon encoding)
+              and transmitted the first 20 ones, then observers might be able to
+              reconstruct some information about their interests.
+            </P>
+
+            <P>
+              As a solution, both peers should send the{" "}
+              <Rs n="PrivateInterest" /> whose hashes, salted with{" "}
+              <R n="pii_ini_salt" />, are their numerically least hashes. This
+              way, the sorting order is an independent, random permutation in
+              each session, yet peers with large overlaps in their{" "}
+              <Rs n="PrivateInterest" /> are likely to detect that overlap.
             </P>
           </Hsection>
 
-          <P>
-            <Alj inline>
-              resource handles. if low on resources, sort by ini_salted hash.
-            </Alj>
-          </P>
+          <Hsection
+            n="dealing_with_awkwardness"
+            title="Dealing With Awkwardness"
+            shortTitle="Awkwardness"
+          >
+            <P>
+              The exchange of <Rs n="read_capability" />{" "}
+              that we have described so far works for pairs of{" "}
+              <Rs n="PrivateInterest" /> where one is <R n="pi_more_specific" />
+              {" "}
+              than the other. This is not the case for <R n="pi_awkward" />{" "}
+              pairs, however. The peer who detects the overlap cannot send its
+              own <R n="read_capability" />{" "}
+              for the same reason as in all other cases: the <R n="Path" />{" "}
+              is an <R n="path_extension" /> of the <R n="Path" />{" "}
+              that the other peer knows about, so it must not be transmitted
+              blindly. But the other peer cannot send its{" "}
+              <R n="read_capability" /> either, because it contains a{" "}
+              <R n="SubspaceId" /> that must not be disclosed blindly.
+            </P>
+
+            <P>
+              To resolve this standoff, we allow the peer who detected the
+              overlap to prove that it is allowed to learn about arbitrary{" "}
+              <Rs n="SubspaceId" /> that are in use in some{" "}
+              <R n="namespace" />, without leaking any specific{" "}
+              <Rs n="Path" />. To this end, we introduce a separate kind of
+              capability: the <R n="enumeration_capability" />.
+            </P>
+
+            <PreviewScope>
+              <P>
+                An{" "}
+                <Def
+                  n="enumeration_capability"
+                  r="enumeration capability"
+                  rs="enumeration capabilities"
+                />{" "}
+                is an unforgeable token with two types of semantics:
+              </P>
+              <Ul>
+                <Li>
+                  each <R n="enumeration_capability" /> must have a single{" "}
+                  <Def n="enumeration_receiver" r="receiver" rs="receivers" />
+                  {" "}
+                  (a <R n="dss_pk" /> of some <R n="signature_scheme" />),
+                </Li>
+                <Li>
+                  it must have a single{" "}
+                  <Def
+                    n="enumeration_granted_namespace"
+                    r="granted namespace"
+                    rs="granted namespaces"
+                  />{" "}
+                  (a <R n="NamespaceId" />).
+                </Li>
+              </Ul>
+            </PreviewScope>
+
+            <P>
+              Whenever some entity is granted a{" "}
+              <R n="read_capability" />, it should{" "}
+              <Sidenote
+                note={
+                  <>
+                    This is not necessary if the <R n="read_capability" />{" "}
+                    is of a form that makes it impossible to be part of an{" "}
+                    <R n="pi_awkward" /> pair.
+                  </>
+                }
+              >
+                also
+              </Sidenote>{" "}
+              be granted an <R n="enumeration_capability" /> with the same{" "}
+              <R n="enumeration_receiver" />. When, during sync, a peer detects
+              an <R n="pi_awkward" /> pair, it attaches to its request for a
+              {" "}
+              <R n="read_capability" /> its <R n="enumeration_capability" />
+              {" "}
+              for the <R n="namespace" />{" "}
+              in question, using an encoding that omits all sensitive{" "}
+              <Sidenote
+                note={
+                  <>
+                    We provide a{" "}
+                    <R n="meadowcap">Meadowcap</R>-like capability type at the
+                    {" "}
+                    <R n="mc_enumeration_cap">end of this document</R>, and a
+                    suitable, confidentiality-preserving{" "}
+                    <R n="enc_private_subspace_capabilities">encoding here</R>.
+                  </>
+                }
+              >
+                information
+              </Sidenote>. The other peer replies to the request only if the
+              {" "}
+              <R n="enumeration_receiver" /> matches the <R n="ini_pk" /> or the
+              {" "}
+              <R n="res_pk" /> (depending on role) and the{" "}
+              <R n="enumeration_granted_namespace" /> matches the{" "}
+              <R n="pi_ns" /> of the <R n="PrivateInterest" />.
+            </P>
+
+            <P>
+              Since the requester does not know the <R n="pi_ss" />{" "}
+              of the other peer’s <R n="PrivateInterest" />{" "}
+              in this case, the requester cannot provide the correctly salted
+              hash of the other’s <R n="PrivateInterest" /> as a{" "}
+              <R n="request_authentication" />. For <R n="pi_awkward" />{" "}
+              pairs, the <R n="request_authentication" />{" "}
+              is thus the salted hash over the <R n="PrivateInterest" />{" "}
+              that was submitted by the other peer, except its <R n="pi_ss" />
+              {" "}
+              is replaced with <R n="area_any" />.
+              <Alj>
+                TODO this shouldn't be `area_any` actually, but a generic `any`
+                value.
+              </Alj>
+            </P>
+
+            {
+              /*
+            pinformative("To solve this standoff, we employ a second type of unforgeable token, that lets Betty prove that she has access to the full <R n="subspace"/> at ", em("some"), " <R n="Path"/>, without specifying that <R n="Path"/> explicitly. Alfie can request this token (by transmitting the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " of his <R n="read_capability"/>), Betty can then prove that she is indeed authorised to know about arbitrary <Rs n="SubspaceId"/> in this <R n="namespace"/>, and Alfie can then send (and authenticate) his <R n="read_capability"/>, to which Betty replies with her own, proper <R n="read_capability"/>."),
+
+      pinformative("We call these unforgeable tokens ", def({id: "subspace_capability", singular: "subspace capability", plural: "subspace capabilities"}, "subspace capabilities"), ". Whenever a peer is granted a ", r("capability_complete"), " <R n="read_capability"/> of non-empty ", r("AreaPath"), ", it should also be granted a corresponding ", r("subspace_capability"), ". Each ", r("subspace_capability"), " must have a single ", def({ id: "subspace_receiver", singular: "receiver" }), " (a <R n="dss_pk"/> of some <R n="signature_scheme"/>), and a single ", def({ id: "subspace_granted_namespace", singular: "granted namespace" }), " (a <R n="NamespaceId"/>). The ", r("subspace_receiver"), " can authenticate itself by signing a collaboratively selected nonce."),
+
+    ]),
+
+    hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
+      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, <Rs n="read_capability"/> for all <Rs n="subspace"/> of a <R n="namespace"/> can only exist in ", rs("owned_namespace"), "."),
+
+      pseudocode(
+        new Struct({
+            id: "McSubspaceCapability",
+            name: "McSubspaceCapability",
+            plural: "McSubspaceCapabilities",
+            comment: ["A capability that certifies read access to arbitrary <Rs n="SubspaceId"/> at some unspecified <R n="Path"/>."],
+            fields: [
+                {
+                    id: "subspace_cap_namespace",
+                    name: "namespace_key",
+                    comment: ["The <R n="namespace"/> for which this grants access."],
+                    rhs: r("NamespacePublicKey"),
+                },
+                {
+                    id: "subspace_cap_user",
+                    name: "user_key",
+                    comment: [
+                      pinformative("The user ", em("to whom"), " this grants access."),
+                    ],
+                    rhs: r("UserPublicKey"),
+                },
+                {
+                    id: "subspace_cap_initial_authorisation",
+                    name: "initial_authorisation",
+                    comment: [
+                      pinformative("Authorisation of the ", r("subspace_cap_user"), " by the ", r("subspace_cap_namespace"), "."),
+                    ],
+                    rhs: r("NamespaceSignature"),
+                },
+                {
+                    id: "subspace_cap_delegations",
+                    name: "delegations",
+                    comment: ["Successive authorisations of new ", rs("UserPublicKey"), "."],
+                    rhs: pseudo_array(pseudo_tuple(r("UserPublicKey"), r("UserSignature"))),
+                },
+            ],
+        }),
+      ),
+
+      pinformative("The ", r("subspace_cap_receiver"), " of a ", r("McSubspaceCapability"), " is the user to whom it grants access. Formally, the ", def({id: "subspace_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("subspace_cap_delegations"), ", or the ", r("subspace_cap_user"), " if the ", r("subspace_cap_delegations"), " are empty."),
+
+      pinformative("The ", r("subspace_cap_granted_namespace"), " of a ", r("McSubspaceCapability"), " is the <R n="namespace"/> for which it certifies access to all <Rs n="subspace"/>. Formally, the ", def({id: "subspace_cap_granted_namespace", singular: "granted namespace"}), " of a ", r("McSubspaceCapability"), " is its ", r("subspace_cap_namespace"), "."),
+
+      pinformative(R("subspace_cap_valid", "Validity"), " governs how ", rs("McSubspaceCapability"), " can be delegated. We define ", def({id: "subspace_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("McSubspaceCapability"), " is ", def_fake("subspace_cap_valid", "valid"), " if its ", r("subspace_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), "."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("subspace_cap_delegations"), "."),
+
+      pinformative("A ", r("McSubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
+
+      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), " be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
+
+      pinformative("Then ", r("subspace_cap_defvalid"), " is ", r("subspace_cap_valid"), " if ", r("subspace_prev_cap"), " is ", r("subspace_cap_valid"), ", and ", r("subspace_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("subspace_prev_receiver"), " over the bytestring ", def_value({id: "subspace_handover", singular: "handover"}), ", which is defined as follows:"),
+
+      lis(
+        [
+          "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            [code(function_call(r("encode_namespace_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
+          ),
+        ],
+        [
+          preview_scope("Otherwise, let ", def_value({id: "subspace_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last pair of ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), "."), " Then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
+          lis(
+            [code(function_call(r("encode_user_sig"), r("subspace_prev_signature"))), "."],
+            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
+          ),
+        ],
+      ),
+       */
+            }
+          </Hsection>
         </Hsection>
 
         {
@@ -1327,17 +1657,17 @@ export const private_interest_intersection = (
 
       pinformative(
         marginale("We have to introduce a bit of terminology first. Trust us that it will be useful, and also trust us that all attempts to avoid these definitions resulted in unreadable messes."),
-        "A <R n="read_capability"/> is called ", def({id: "capability_complete", singular: "complete"}), " if the ", r("AreaSubspace"), " of its ", r("granted_area"), " is ", r("area_any"), ", and it is called ", def({id: "capability_selective", singular: "selective"}), " otherwise."   ,
+        "A <R n="read_capability"/> is called ", def({id: "capability_complete", singular: "complete"}), " if the ", r("AreaSubspace"), " of its <R n="granted_area"/> is ", r("area_any"), ", and it is called ", def({id: "capability_selective", singular: "selective"}), " otherwise."   ,
       ),
 
       preview_scope(
-        p("The ", def({id: "fragment", singular: "fragment"}, "fragments"), " of a ", r("capability_complete"), " <R n="read_capability"/> of ", r("granted_area"), " ", def_value({id: "complete_fragment_area", singular: "area"}), " and ", r("granted_namespace"), " ", def_value({id: "complete_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("complete_fragment_namespace"), ", ", r("complete_fragment_prefix"), ")"), ", such that ", def_value({id: "complete_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), marginale([
+        p("The ", def({id: "fragment", singular: "fragment"}, "fragments"), " of a ", r("capability_complete"), " <R n="read_capability"/> of <R n="granted_area"/> ", def_value({id: "complete_fragment_area", singular: "area"}), " and <R n="granted_namespace"/> ", def_value({id: "complete_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("complete_fragment_namespace"), ", ", r("complete_fragment_prefix"), ")"), ", such that ", def_value({id: "complete_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), marginale([
           "The ", rs("path_prefix"), " of ", path("foo", "bar"), " are the empty <R n="Path"/>, ", path("foo"), ", and ", path("foo", "bar"), " itself.",
         ]), " of ", field_access(r("complete_fragment_area"), "AreaPath"), "."),
 
-        p("The ", rs("fragment"), " of a ", r("capability_selective"), " <R n="read_capability"/> of ", r("granted_area"), " ", def_value({id: "selective_fragment_area", singular: "area"}), " and ", r("granted_namespace"), " ", def_value({id: "selective_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("selective_fragment_namespace"), ", ", r("selective_fragment_prefix"), ")"), " and the triplets ",  code("(", r("selective_fragment_namespace"), ", ", field_access(r("selective_fragment_area"), "AreaSubspace"), ", ", r("selective_fragment_prefix"), ")"), ", such that ", def_value({id: "selective_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), " of ", field_access(r("selective_fragment_area"), "AreaPath"), ". The pairs are called ", def({id: "fragment_secondary", singular: "secondary"}), " ", rs("fragment"), ", all other ", rs("fragment"), " (including those of ", r("capability_complete"), " <Rs n="read_capability"/>) are called ", def({id: "fragment_primary", singular: "primary"}), " ", rs("fragment"), "."),
+        p("The ", rs("fragment"), " of a ", r("capability_selective"), " <R n="read_capability"/> of <R n="granted_area"/> ", def_value({id: "selective_fragment_area", singular: "area"}), " and <R n="granted_namespace"/> ", def_value({id: "selective_fragment_namespace", singular: "namespace"}), " are the pairs ", code("(", r("selective_fragment_namespace"), ", ", r("selective_fragment_prefix"), ")"), " and the triplets ",  code("(", r("selective_fragment_namespace"), ", ", field_access(r("selective_fragment_area"), "AreaSubspace"), ", ", r("selective_fragment_prefix"), ")"), ", such that ", def_value({id: "selective_fragment_prefix", singular: "pre"}), " is a ", r("path_prefix"), " of ", field_access(r("selective_fragment_area"), "AreaPath"), ". The pairs are called ", def({id: "fragment_secondary", singular: "secondary"}), " ", rs("fragment"), ", all other ", rs("fragment"), " (including those of ", r("capability_complete"), " <Rs n="read_capability"/>) are called ", def({id: "fragment_primary", singular: "primary"}), " ", rs("fragment"), "."),
 
-        p("A ", r("fragment"), " whose <R n="Path"/> is the empty <R n="Path"/> is called a ", def({id: "fragment_least_specific", singular: "least-specific"}), " ", r("fragment"), ". A ", r("fragment"), " whose <R n="Path"/> is the ", r("AreaPath"), " of the ", r("granted_area"), " of its originating <R n="read_capability"/> is called a ", def({id: "fragment_most_specific", singular: "most-specific"}), " ", r("fragment"), "."),
+        p("A ", r("fragment"), " whose <R n="Path"/> is the empty <R n="Path"/> is called a ", def({id: "fragment_least_specific", singular: "least-specific"}), " ", r("fragment"), ". A ", r("fragment"), " whose <R n="Path"/> is the ", r("AreaPath"), " of the <R n="granted_area"/> of its originating <R n="read_capability"/> is called a ", def({id: "fragment_most_specific", singular: "most-specific"}), " ", r("fragment"), "."),
       ),
 
       pinformative("To privately exchange <Rs n="read_capability"/>, Alfie and Betty perform private set intersection with the sets of ", rs("fragment"), " of all their <Rs n="read_capability"/>. Additionally, they transmit for each group member they send whether it corresponds to a ", r("fragment_primary"), " or ", r("fragment_secondary"), " ", r("fragment"), ". The peers can then detect nonempty intersections between their <Rs n="read_capability"/> by checking whether their ", r("fragment_most_specific"), " ", rs("fragment"), " are in the intersection. More precisely, we need to consider three cases:"),
@@ -1354,82 +1684,7 @@ export const private_interest_intersection = (
 
       pinformative("It might be tempting for Alfie to transmit his <R n="read_capability"/>, but unfortunately, Betty might have fabricated her ", rs("fragment"), ". In this case, Betty would learn about the existance of ", code("@gemmas_stuff"), ", violating our privacy objectives. Alfie could prompt Betty to present ", em("her"), " <R n="read_capability"/> first, instead. But Betty then faces the same problem: Alfie could have fabricated his ", rs("fragment"), ", and he would illegitimately learn about the ", path("chess"), " <R n="Path"/> in that case."),
 
-      pinformative("To solve this standoff, we employ a second type of unforgeable token, that lets Betty prove that she has access to the full <R n="subspace"/> at ", em("some"), " <R n="Path"/>, without specifying that <R n="Path"/> explicitly. Alfie can request this token (by transmitting the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " of his <R n="read_capability"/>), Betty can then prove that she is indeed authorised to know about arbitrary <Rs n="SubspaceId"/> in this <R n="namespace"/>, and Alfie can then send (and authenticate) his <R n="read_capability"/>, to which Betty replies with her own, proper <R n="read_capability"/>."),
 
-      pinformative("We call these unforgeable tokens ", def({id: "subspace_capability", singular: "subspace capability", plural: "subspace capabilities"}, "subspace capabilities"), ". Whenever a peer is granted a ", r("capability_complete"), " <R n="read_capability"/> of non-empty ", r("AreaPath"), ", it should also be granted a corresponding ", r("subspace_capability"), ". Each ", r("subspace_capability"), " must have a single ", def({ id: "subspace_receiver", singular: "receiver" }), " (a ", r("dss_pk"), " of some ", r("signature_scheme"), "), and a single ", def({ id: "subspace_granted_namespace", singular: "granted namespace" }), " (a <R n="NamespaceId"/>). The ", r("subspace_receiver"), " can authenticate itself by signing a collaboratively selected nonce."),
-
-    ]),
-
-    hsection("subspace_capabilities_meadowcap", "Subspace Capabilities and Meadowcap", [
-      pinformative("We conclude by presenting a datatype that implements ", rs("subspace_capability"), ", nicely complementing ", link_name("meadowcap", "Meadowcap"), ". Note that in Meadowcap, <Rs n="read_capability"/> for all <Rs n="subspace"/> of a <R n="namespace"/> can only exist in ", rs("owned_namespace"), "."),
-
-      pseudocode(
-        new Struct({
-            id: "McSubspaceCapability",
-            name: "McSubspaceCapability",
-            plural: "McSubspaceCapabilities",
-            comment: ["A capability that certifies read access to arbitrary <Rs n="SubspaceId"/> at some unspecified <R n="Path"/>."],
-            fields: [
-                {
-                    id: "subspace_cap_namespace",
-                    name: "namespace_key",
-                    comment: ["The <R n="namespace"/> for which this grants access."],
-                    rhs: r("NamespacePublicKey"),
-                },
-                {
-                    id: "subspace_cap_user",
-                    name: "user_key",
-                    comment: [
-                      pinformative("The user ", em("to whom"), " this grants access."),
-                    ],
-                    rhs: r("UserPublicKey"),
-                },
-                {
-                    id: "subspace_cap_initial_authorisation",
-                    name: "initial_authorisation",
-                    comment: [
-                      pinformative("Authorisation of the ", r("subspace_cap_user"), " by the ", r("subspace_cap_namespace"), "."),
-                    ],
-                    rhs: r("NamespaceSignature"),
-                },
-                {
-                    id: "subspace_cap_delegations",
-                    name: "delegations",
-                    comment: ["Successive authorisations of new ", rs("UserPublicKey"), "."],
-                    rhs: pseudo_array(pseudo_tuple(r("UserPublicKey"), r("UserSignature"))),
-                },
-            ],
-        }),
-      ),
-
-      pinformative("The ", r("subspace_cap_receiver"), " of a ", r("McSubspaceCapability"), " is the user to whom it grants access. Formally, the ", def({id: "subspace_cap_receiver", singular: "receiver"}), " is the final ", r("UserPublicKey"), " in the ", r("subspace_cap_delegations"), ", or the ", r("subspace_cap_user"), " if the ", r("subspace_cap_delegations"), " are empty."),
-
-      pinformative("The ", r("subspace_cap_granted_namespace"), " of a ", r("McSubspaceCapability"), " is the <R n="namespace"/> for which it certifies access to all <Rs n="subspace"/>. Formally, the ", def({id: "subspace_cap_granted_namespace", singular: "granted namespace"}), " of a ", r("McSubspaceCapability"), " is its ", r("subspace_cap_namespace"), "."),
-
-      pinformative(R("subspace_cap_valid", "Validity"), " governs how ", rs("McSubspaceCapability"), " can be delegated. We define ", def({id: "subspace_cap_valid", singular: "valid"}, "validity", [pinformative("A ", r("McSubspaceCapability"), " is ", def_fake("subspace_cap_valid", "valid"), " if its ", r("subspace_cap_delegations"), " form a correct chain of ", rs("dss_signature"), " over ", rs("UserPublicKey"), "."), pinformative("For the formal definition, click the reference, the proper definition does not fit into a tooltip.")]), " based on the number of ", r("subspace_cap_delegations"), "."),
-
-      pinformative("A ", r("McSubspaceCapability"), " with zero ", r("subspace_cap_delegations"), " is ", r("subspace_cap_valid"), " if ", r("subspace_cap_initial_authorisation"), " is a ", r("NamespaceSignature"), " issued by the ", r("subspace_cap_namespace"), " over the byte ", code("0x02"), ", followed by the ", r("subspace_cap_user"), " (encoded via ", r("encode_user_pk"), ")."),
-
-      pinformative("For a ", rs("McSubspaceCapability"), " ", def_value({id: "subspace_cap_defvalid", singular: "cap"}), " with more than zero ", r("subspace_cap_delegations"), ", let ", code("(", def_value({id: "subspace_new_user", singular: "new_user"}), ", ", def_value({id: "subspace_new_signature", singular: "new_signature"}), ")"), " be the final pair of ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ", and let ", def_value({id: "subspace_prev_cap", singular: "prev_cap"}), " be the ", r("McSubspaceCapability"), " obtained by removing the last pair from ", field_access(r("subspace_cap_defvalid"), "subspace_cap_delegations"), ". Denote the  ", r("subspace_cap_receiver"), " of ", r("subspace_prev_cap"), " as ", def_value({id: "subspace_prev_receiver", singular: "prev_receiver"}), "."),
-
-      pinformative("Then ", r("subspace_cap_defvalid"), " is ", r("subspace_cap_valid"), " if ", r("subspace_prev_cap"), " is ", r("subspace_cap_valid"), ", and ", r("subspace_new_signature"), " is a ", r("UserSignature"), " issued by the ", r("subspace_prev_receiver"), " over the bytestring ", def_value({id: "subspace_handover", singular: "handover"}), ", which is defined as follows:"),
-
-      lis(
-        [
-          "If ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), " is empty, then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
-          lis(
-            [code(function_call(r("encode_namespace_sig"), field_access(r("subspace_prev_cap"), "subspace_cap_initial_authorisation"))), "."],
-            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
-          ),
-        ],
-        [
-          preview_scope("Otherwise, let ", def_value({id: "subspace_prev_signature", singular: "prev_signature"}), " be the ", r("UserSignature"), " in the last pair of ", field_access(r("subspace_prev_cap"), "subspace_cap_delegations"), "."), " Then ", r("subspace_handover"), " is the concatenation of the following bytestrings:",
-          lis(
-            [code(function_call(r("encode_user_sig"), r("subspace_prev_signature"))), "."],
-            [code(function_call(r("encode_user_pk"), r("subspace_new_user"))), "."],
-          ),
-        ],
-      ),
     ]), */
         }
 

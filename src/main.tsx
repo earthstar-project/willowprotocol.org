@@ -7,7 +7,6 @@ import { specs } from "./pages/specs.tsx";
 import { data_model } from "./pages/specs/data_model.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
-import { access_control } from "./pages/specs/access_control.tsx";
 import { sync } from "./pages/specs/sync.tsx";
 import { sideloading } from "./pages/specs/sideloading.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
@@ -118,7 +117,6 @@ const exp = (
           <Dir name="specs">
             {specs}
             {data_model}
-            {access_control}
             {e2e}
             {meadowcap}
             {encodings}

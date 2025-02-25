@@ -50,11 +50,11 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", def("cinn25519"), " ", r("signature_scheme"), " of a given ", def_parameter_value({id: "cinn_min", singular: "min_length"}), " and ", def_parameter_value({id: "cinn_max", singular: "max_length"}), " (both are natural numbers, with ", code(r("cinn_min"), " <= ", r("cinn_max")), ") — also written as ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> — is a signature scheme based off ", link("ed25519", "https://ed25519.cr.yp.to/"), ".",
+						"The ", def("cinn25519"), " <R n="signature_scheme"/> of a given ", def_parameter_value({id: "cinn_min", singular: "min_length"}), " and ", def_parameter_value({id: "cinn_max", singular: "max_length"}), " (both are natural numbers, with ", code(r("cinn_min"), " <= ", r("cinn_max")), ") — also written as ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> — is a signature scheme based off ", link("ed25519", "https://ed25519.cr.yp.to/"), ".",
 					),
 
 					pinformative(
-						"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def({id: "cinn_shortname", singular: "shortname"}), ". A ", r("correspond", "corresponding"), " ", r("dss_pk"), " is a pair of a ", r("correspond", "corresponding"), " ed25519 public key (called the ", def({id: "cinn_pk_pk", singular: "underlying public key"}), ") and the same ", r("cinn_shortname"), ".",
+						"A ", r("dss_sk"), " of ", r("cinn25519"), "<", r("cinn_min"), ", ", r("cinn_max"), "> is a pair of an ed25519 secret key, called the ", def({id: "cinn_sksk", singular: "underlying secret key"}), ", and a sequence of at least ", r("cinn_min"), " and at most ", r("cinn_max"), " characters from the ASCII ranges ", code("0x30"), " to ", code("0x39"), " inclusive (", code("0123456789"), ") and ", code("0x61"), " to ", code("0x7a"), " inclusive (", code("abcdefghijklmnopqrstuvwxyz"), ") that does not start with a numeric character, called the ", def({id: "cinn_shortname", singular: "shortname"}), ". A ", r("correspond", "corresponding"), " <R n="dss_pk"/> is a pair of a ", r("correspond", "corresponding"), " ed25519 public key (called the ", def({id: "cinn_pk_pk", singular: "underlying public key"}), ") and the same ", r("cinn_shortname"), ".",
 					),
 
 					pinformative(
