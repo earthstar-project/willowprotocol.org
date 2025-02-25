@@ -42,7 +42,7 @@ Entrypoint for the main stylesheet.
   --color-comment-member: #356a41;
   --color-comment-symbol: #446993;
   --color-comment-fn: #544000;
-  
+
   --font-mono: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
 }
 
@@ -143,7 +143,8 @@ aside.long {
   margin: 2em 0;
 }
 
-figcaption, .margincaption {
+figcaption,
+.margincaption {
   font-size: 1rem;
 }
 
@@ -687,6 +688,7 @@ li.tocVisible>a,
 
 .csl-bib-body {
   margin: 0.5rem 0;
+  font-size: 0.9em;
 
   a {
     text-decoration: none;
@@ -701,7 +703,7 @@ a.bib {
   }
 
   .bibCitation {
-    color: var(--nearly-black);
+    color: rgb(112, 132, 132);
   }
 }
 
@@ -719,7 +721,7 @@ a.bib {
 .bibBlurb {
   text-indent: initial;
   margin-top: 1em;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   background-color: #eeeeee;
   border-radius: 2px;
   padding: 2px;

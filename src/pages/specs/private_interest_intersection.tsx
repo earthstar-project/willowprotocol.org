@@ -418,9 +418,6 @@ export const private_interest_intersection = (
               mistake. A fairly representative example{" "}
               <Bib item="freedman2016efficient"></Bib>:
               <Alj>More obvious blockquote styling</Alj>
-              <Alj>
-                Citation styling, paper preview styling, bibliography styling(?)
-              </Alj>
             </P>
 
             <Blockquote>
