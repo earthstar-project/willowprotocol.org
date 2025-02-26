@@ -1,10 +1,13 @@
 import { Curly, NoWrap, Path } from "../../macros.tsx";
 import {
+  ArbitraryBitsAreZero,
+  Bitfield,
   bitfieldIff,
   C64Encoding,
   C64Standalone,
   c64Tag,
   ChooseMaximal,
+  ChooseMinimal,
   CodeFor,
   EncConditional,
   Encoding,
@@ -916,6 +919,182 @@ export const encodings = (
               }}
             />
           </Hsection>
+
+          <Hsection n="area_encodings" title="Area Encoding" shortTitle="area">
+            <EncodingRelationRelativeTemplate
+              n="EncodeAreaInArea"
+              valType={<R n="Area" />}
+              relToDescription={
+                <>
+                  <R n="Area" /> that <R n="area_include">includes</R>{" "}
+                  the other one
+                </>
+              }
+              preDefs={
+                <>
+                  <P>
+                    Let{" "}
+                    <DefValue n="aia_start_from_start" r="start_from_start" />
+                    {" "}
+                    and <DefValue n="aia_end_from_start" r="end_from_start" />
+                    {" "}
+                    be arbitrary <Rs n="Bool" />. If{" "}
+                    <AccessStruct field="TimeRangeEnd">
+                      <RelAccess field="AreaTime" />
+                    </AccessStruct>{" "}
+                    is <R n="range_open" />, then
+                  </P>
+                  <Ul>
+                    <Li>
+                      <R n="aia_start_from_start" /> must be{" "}
+                      <Code>true</Code>, and
+                    </Li>
+                    <Li>
+                      <R n="aia_end_from_start" /> must be <Code>false</Code>
+                      {" "}
+                      if and only if{" "}
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      is <R n="range_open" />.
+                    </Li>
+                  </Ul>
+                </>
+              }
+              shortRelToDescription={<R n="Area" />}
+              bitfields={[
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="AreaSubspace" /> !={" "}
+                    <RelAccess field="AreaSubspace" />
+                  </Code>,
+                ),
+                bitfieldIff(
+                  <Code>
+                    <AccessStruct field="TimeRangeEnd">
+                      <ValAccess field="AreaTime" />
+                    </AccessStruct>{" "}
+                    == <R n="range_open" />
+                  </Code>,
+                ),
+                bitfieldIff(<R n="aia_start_from_start" />),
+                bitfieldIff(<R n="aia_end_from_start" />),
+                c64Tag(
+                  "start_diff",
+                  2,
+                  <>
+                    either{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeStart">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <RelAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (if <R n="aia_start_from_start" />), or{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <RelAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (otherwise)
+                  </>,
+                ),
+                c64Tag(
+                  "end_diff",
+                  2,
+                  <>
+                    either{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                      -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <RelAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (if <R n="aia_end_from_start" />), or{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <RelAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      -{" "}
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    (otherwise). If{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>, these two bits can be set arbitrarily instead
+                  </>,
+                ),
+              ]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <ValAccess field="AreaSubspace" /> !={" "}
+                        <RelAccess field="AreaSubspace" />
+                      </Code>
+                    </>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    <ValAccess field="AreaSubspace" />
+                  </CodeFor>
+                </EncConditional>,
+                <C64Encoding id="start_diff" />,
+                <>
+                  <C64Encoding id="end_diff" noDot />, or the empty string if
+                  {" "}
+                  <Code>
+                    <AccessStruct field="TimeRangeEnd">
+                      <ValAccess field="AreaTime" />
+                    </AccessStruct>{" "}
+                    == <R n="range_open" />
+                  </Code>.
+                </>,
+                <CodeFor
+                  enc="EncodePathExtendsPath"
+                  relativeTo={<RelAccess field="AreaPath" />}
+                >
+                  <ValAccess field="AreaPath" />
+                </CodeFor>,
+              ]}
+              canonic={{
+                n: "encode_area_in_area",
+                how: [
+                  <MinTags />,
+                  <ArbitraryBitsAreZero />,
+                  <CanonicSubencodings />,
+                  <>
+                    choosing <R n="aia_start_from_start" />{" "}
+                    such that the value whose tag is given in bits 4, 5 is
+                    minimal (in case of a tie, choose{" "}
+                    <R n="aia_start_from_start" /> as <Code>false</Code>)
+                  </>,
+                  <>
+                    choosing <R n="aia_end_from_start" />{" "}
+                    such that the value whose tag is given in bits 6, 7, if any,
+                    is minimal (in case of a tie, choose{" "}
+                    <R n="aia_end_from_start" /> as <Code>false</Code>)
+                  </>,
+                ],
+              }}
+            />
+          </Hsection>
         </Hsection>
 
         <Hsection n="enc_capabilities" title="Capabilities">
@@ -1160,7 +1339,7 @@ export const encodings = (
               </Ul>
             </PreviewScope>
             <P>
-              Next, we build up to private <R n="Area" /> encoding: we encode an
+              Now, we can define a private <R n="Area" /> encoding: we encode an
               {" "}
               <R n="Area" /> that <R n="almost_include">almost includes</R>{" "}
               another <R n="Area" />, while keeping secret a{" "}
@@ -1168,7 +1347,7 @@ export const encodings = (
               <R n="pi_amost_include">almost includes</R> both <Rs n="Area" />.
             </P>
 
-            <Pseudocode n="private_are_def">
+            <Pseudocode n="private_area_def">
               <StructDef
                 comment={
                   <>
@@ -1253,8 +1432,11 @@ export const encodings = (
                     <Li>
                       <R n="epaia_end_from_start" /> must be <Code>false</Code>
                       {" "}
-                      if and only if <ValAccess field="TimeRangeEnd" /> is{" "}
-                      <R n="range_open" />.
+                      if and only if{" "}
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      is <R n="range_open" />.
                     </Li>
                   </Ul>
                 </>

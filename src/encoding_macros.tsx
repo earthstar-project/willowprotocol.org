@@ -804,6 +804,17 @@ export function ChooseMinimal({ n }: { n: string }): Expression {
 }
 
 /**
+ * The standard phrase for indicating that all arbitrary bits must be set to zero.
+ */
+export function ArbitraryBitsAreZero(): Expression {
+  return (
+    <>
+      setting all arbitrary bits to zero
+    </>
+  );
+}
+
+/**
  * Creates an encoding content that is a corresponding c64 encoding for a c64 tag at a given bitfield id.
  */
 export function C64Encoding(
