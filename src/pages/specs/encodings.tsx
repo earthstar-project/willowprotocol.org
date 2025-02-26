@@ -637,7 +637,7 @@ export const encodings = (
               <Li>
                 an <R n="encoding_function" />{" "}
                 <DefFunction n="encode_payload_digest" /> for{" "}
-                <R n="PayloadDigestd" />.
+                <R n="PayloadDigest" />.
               </Li>
             </Ul>
           </PreviewScope>
@@ -1746,22 +1746,27 @@ export const encodings = (
             title="Meadowcap Capability Encoding"
             shortTitle="Meadowcap Capability"
           >
-            <P>
-              We define a <R n="relative_encoding_relation" />{" "}
-              <DefType n="EncodeMcCapabilityRelativePrivateInterest" /> for{" "}
-              <R n="Capability" /> relative to any{" "}
-              <R n="PersonalPrivateInterest" /> such that the capability’s{" "}
-              <R n="capability_inner" /> can be encoded relatively to the{" "}
-              <R n="PersonalPrivateInterest" /> via{" "}
-              <R n="EncodeCommunalCapabilityRelativePrivateInterest" /> or{" "}
-              <R n="EncodeOwnedCapabilityRelativePrivateInterest" />, whichever
-              applies. The <Rs n="code" />{" "}
-              are simply those from these two relations; the{" "}
-              <R n="is_communal" /> function as applied to the <R n="pi_ns" />
-              {" "}
-              of the <R n="PersonalPrivateInterest" />{" "}
-              allows disambiguating how to decode.
-            </P>
+            <PreviewScope>
+              <P>
+                We define a <R n="relative_encoding_relation" />{" "}
+                <DefType n="EncodeMcCapabilityRelativePrivateInterest" /> for
+                {" "}
+                <R n="Capability" /> relative to any{" "}
+                <R n="PersonalPrivateInterest" /> such that the capability’s
+                {" "}
+                <R n="capability_inner" /> can be encoded relatively to the{" "}
+                <R n="PersonalPrivateInterest" /> via{" "}
+                <R n="EncodeCommunalCapabilityRelativePrivateInterest" /> or
+                {" "}
+                <R n="EncodeOwnedCapabilityRelativePrivateInterest" />,
+                whichever applies. The <Rs n="code" />{" "}
+                are simply those from these two relations; the{" "}
+                <R n="is_communal" /> function as applied to the <R n="pi_ns" />
+                {" "}
+                of the <R n="PersonalPrivateInterest" />{" "}
+                allows disambiguating how to decode.
+              </P>
+            </PreviewScope>
           </Hsection>
 
           <Hsection

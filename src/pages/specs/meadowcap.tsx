@@ -204,10 +204,8 @@ export const meadowcap = (
           <P>
             Hence, Meadowcap allows to <Em>restrict</Em>{" "}
             capabilities, turning them into less powerful ones. Restrictions can
-            limit access by{" "}
-            <R n="entry_subspace_id" />, by <R n="entry_path"/>, and/or by
-            {" "}
-            <R n="entry_timestamp" />.
+            limit access by <R n="entry_subspace_id" />, by{" "}
+            <R n="entry_path" />, and/or by <R n="entry_timestamp" />.
           </P>
 
           <AsideBlock>
@@ -385,6 +383,7 @@ export const meadowcap = (
               />. The <Rs n="dss_pk" /> have type{" "}
               <DefType
                 n="NamespacePublicKey"
+                rs="NamespacePublicKeys"
                 preview={
                   <P>
                     A protocol parameter of Meadowcap, the type of{" "}
@@ -395,6 +394,7 @@ export const meadowcap = (
               />, and the <Rs n="dss_signature" /> have type{" "}
               <DefType
                 n="NamespaceSignature"
+                rs="NamespaceSignatures"
                 preview={
                   <P>
                     A protocol parameter of Meadowcap, the type of{" "}
@@ -489,6 +489,7 @@ export const meadowcap = (
               />. The <Rs n="dss_pk" /> have type{" "}
               <DefType
                 n="UserPublicKey"
+                rs="UserPublicKeys"
                 preview={
                   <P>
                     A protocol parameter of Meadowcap, the type of{" "}
@@ -498,6 +499,7 @@ export const meadowcap = (
               />, and the <Rs n="dss_signature" /> have type{" "}
               <DefType
                 n="UserSignature"
+                rs="UserSignatures"
                 preview={
                   <P>
                     A protocol parameter of Meadowcap, the type of{" "}
@@ -1172,7 +1174,7 @@ export const meadowcap = (
                   <>
                     <P>
                       An <R n="OwnedCapability" /> is{" "}
-                      <Def n="owned_cap_valud" fake>valid</Def> if its{" "}
+                      <Def n="owned_cap_valid" fake>valid</Def> if its{" "}
                       <R n="owned_cap_delegations" /> form a correct chain of
                       {" "}
                       <Rs n="dss_signature" /> over{" "}
@@ -1429,7 +1431,7 @@ export const meadowcap = (
                   <AccessStruct field="capability_inner">
                     <R n="cap_cap" />
                   </AccessStruct>{" "}
-                  is a <R n="communal_cap_valid" /> <R n="Communalcapability" />
+                  is a <R n="communal_cap_valid" /> <R n="CommunalCapability" />
                   {" "}
                   and{" "}
                   <Code>
@@ -1631,8 +1633,9 @@ export const meadowcap = (
 
             <P>
               We describe the details in a capability-system-agnostic way{" "}
-              <R n="access_control">here</R>. To use Meadowcap for this
-              approach, simply choose the type of <R n="cap_valid" />{" "}
+              <R n="private_interest_intersection">here</R>. To use Meadowcap
+              for this approach, simply choose the type of <R n="cap_valid" />
+              {" "}
               <Rs n="Capability" /> with <R n="cap_mode" />{" "}
               <R n="access_read" /> as the <Rs n="read_capability" />.
             </P>

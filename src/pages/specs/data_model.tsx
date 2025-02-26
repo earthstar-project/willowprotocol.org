@@ -77,7 +77,7 @@ export const data_model = (
                 <Def fake n="prefix_pruning">Prefix pruning</Def>{" "}
                 refers to the fact that an <R n="Entry" /> can overwrite other
                 {" "}
-                <Rs n="Entry" /> of equal <Rs n="entry_namespaceid" /> and{" "}
+                <Rs n="Entry" /> of equal <Rs n="entry_namespace_id" /> and{" "}
                 <Rs n="entry_subspace_id" /> whose <Rs n="entry_path" /> are
                 {" "}
                 <Rs n="path_extension" /> of the first <R n="Entry" />. In a
@@ -285,6 +285,7 @@ export const data_model = (
               type{" "}
               <DefType
                 n="PayloadDigest"
+                rs="PayloadDigests"
                 preview={
                   <P>
                     A protocol parameter of Willow, the totally ordered type of
@@ -327,6 +328,7 @@ export const data_model = (
               A type{" "}
               <DefType
                 n="AuthorisationToken"
+                rs="AuthorisationTokens"
                 preview={
                   <P>
                     A protocol parameter of Willow, required to define{" "}
@@ -441,7 +443,7 @@ export const data_model = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["namespace_id", "entry_namespace_id"],
+                      ["namespace_id", "entry_namespace_id", "namespace_ids"],
                       <R n="NamespaceId" />,
                     ],
                   },
@@ -457,7 +459,7 @@ export const data_model = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["subspace_id", "entry_subspace_id"],
+                      ["subspace_id", "entry_subspace_id", "subspace_ids"],
                       <R n="SubspaceId" />,
                     ],
                   },
@@ -471,7 +473,7 @@ export const data_model = (
                       </>
                     ),
                     dedicatedLine: true,
-                    segment: [["path", "entry_path"], <R n="Path" />],
+                    segment: [["path", "entry_path", "paths"], <R n="Path" />],
                   },
                 },
                 {
@@ -492,7 +494,7 @@ export const data_model = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["timestamp", "entry_timestamp"],
+                      ["timestamp", "entry_timestamp", "timestamps"],
                       <R n="Timestamp" />,
                     ],
                   },
@@ -506,7 +508,11 @@ export const data_model = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["payload_length", "entry_payload_length"],
+                      [
+                        "payload_length",
+                        "entry_payload_length",
+                        "payload_lengths",
+                      ],
                       <R n="U64" />,
                     ],
                   },
@@ -522,7 +528,11 @@ export const data_model = (
                     ),
                     dedicatedLine: true,
                     segment: [
-                      ["payload_digest", "entry_payload_digest"],
+                      [
+                        "payload_digest",
+                        "entry_payload_digest",
+                        "payload_digests",
+                      ],
                       <R n="PayloadDigest" />,
                     ],
                   },

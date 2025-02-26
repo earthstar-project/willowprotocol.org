@@ -106,9 +106,9 @@ export const private_interest_intersection = (
   <Dir name="pii">
     <File name="index.html">
       <PageTemplate
-        htmlTitle="WGPS Confidentiality"
+        htmlTitle="Read Access and Confidentiality"
         headingId="private_interest_intersection"
-        heading={"WGPS Confidentiality"}
+        heading={"Read Access and Confidentiality"}
         toc
         bibliography
       >
@@ -149,11 +149,11 @@ export const private_interest_intersection = (
               must be a piece of data for which three types of semantics are
               defined:<Marginale>
                 <R n="meadowcap">
-                  Meadowcap, our bespoke capability system for Willow, just so
-                  happens to provide these semantics with its{" "}
-                  <Rs n="Capability" /> of <R n="cap_mode" />{" "}
-                  <R n="access_read" />.
-                </R>
+                  Meadowcap
+                </R>, our bespoke capability system for Willow, just so happens
+                to provide these semantics with its <Rs n="Capability" /> of
+                {" "}
+                <R n="cap_mode" /> <R n="access_read" />.
               </Marginale>
             </P>
             <Ul>
@@ -1054,7 +1054,7 @@ export const private_interest_intersection = (
                 overlap
               >
                 The left peer detects an overlap. This example represents the
-                case of <Rs n="pi_awkward" />{" "}
+                case of <R n="pi_awkward" />{" "}
                 <Rs n="PrivateInterest" />; this is the onl case in which a
                 transmitted hash-boolean pair with a boolean of{" "}
                 <Code>false</Code> is involved in detecting an overlap.
@@ -1183,27 +1183,30 @@ export const private_interest_intersection = (
               <Rs n="read_capability" />.
             </P>
 
-            <P>
-              This scheme is obviously broken if peers can simply request{" "}
-              <Rs n="read_capability" /> for <Em>arbitrary</Em>{" "}
-              hashes. But we can prevent this by mandating that every request
-              contains a{" "}
-              <Def
-                n="request_authentication"
-                r="request authentication"
-                rs="request authentications"
-              />{" "}
-              in the form of the hash of the corresponding{" "}
-              <R n="PrivateInterest" />{" "}
-              salted with the requester’s salt. So if the{" "}
-              <R n="pii_initiator" /> requests{" "}
-              <Rs n="read_capability" />, that request must contain the hash
-              salted with <R n="pii_ini_salt" />, and requests by the{" "}
-              <R n="pii_responder" /> must contain the hash salted with{" "}
-              <R n="pii_res_salt" />. These salted hashes can only be produced
-              by somebody who actually knows the <R n="PrivateInterest" />{" "}
-              in question.
-            </P>
+            <PreviewScope>
+              <P>
+                This scheme is obviously broken if peers can simply request{" "}
+                <Rs n="read_capability" /> for <Em>arbitrary</Em>{" "}
+                hashes. But we can prevent this by mandating that every request
+                contains a{" "}
+                <Def
+                  n="request_authentication"
+                  r="request authentication"
+                  rs="request authentications"
+                />{" "}
+                in the form of the hash of the corresponding{" "}
+                <R n="PrivateInterest" />{" "}
+                salted with the requester’s salt. So if the{" "}
+                <R n="pii_initiator" /> requests{" "}
+                <Rs n="read_capability" />, that request must contain the hash
+                salted with <R n="pii_ini_salt" />, and requests by the{" "}
+                <R n="pii_responder" /> must contain the hash salted with{" "}
+                <R n="pii_res_salt" />. These salted hashes can only be produced
+                by somebody who actually knows the <R n="PrivateInterest" />
+                {" "}
+                in question.
+              </P>
+            </PreviewScope>
 
             <P>
               Naively transmitting <Rs n="read_capability" />{" "}
@@ -1887,90 +1890,93 @@ export const private_interest_intersection = (
             (encoded via <R n="encode_user_pk" />).
           </P>
 
-          <P>
-            For a <Rs n="McEnumerationCapability" />{" "}
-            <DefValue n="enumcap_defvalid" r="cap" /> with more than zero{" "}
-            <R n="enumcap_delegations" />, let{" "}
-            <Code>
-              (<DefValue n="enumcap_new_user" r="new_user" />,{" "}
-              <DefValue n="enumcap_new_signature" r="new_signature" />)
-            </Code>{" "}
-            be the final pair of{" "}
-            <AccessStruct field="enumcap_delegations">
-              <R n="enumcap_defvalid" />
-            </AccessStruct>, and let{" "}
-            <DefValue n="enumcap_prev_cap" r="prev_cap" /> be the{" "}
-            <R n="McEnumerationCapability" />{" "}
-            obtained by removing the last pair from{" "}
-            <AccessStruct field="enumcap_delegations">
-              <R n="enumcap_defvalid" />
-            </AccessStruct>. Denote the <R n="enumeration_receiver" /> of{" "}
-            <R n="enumcap_prev_cap" /> as{" "}
-            <DefValue n="enumcap_prev_receiver" r="prev_receiver" />.
-          </P>
-
-          <P>
-            Then <R n="enumcap_defvalid" /> is <R n="enumeration_cap_valid" />
-            {" "}
-            if <R n="enumcap_prev_cap" /> is{" "}
-            <R n="enumeration_cap_valid" />, and <R n="enumcap_new_signature" />
-            {" "}
-            is a <R n="UserSignature" /> issued by the{" "}
-            <R n="enumcap_prev_receiver" /> over the bytestring{" "}
-            <Def n="enumcap_handover" r="handover" />, which is defined as
-            follows:
-          </P>
-
-          <Ul>
-            <Li>
-              If{" "}
+          <PreviewScope>
+            <P>
+              For a <Rs n="McEnumerationCapability" />{" "}
+              <DefValue n="enumcap_defvalid" r="cap" /> with more than zero{" "}
+              <R n="enumcap_delegations" />, let{" "}
+              <Code>
+                (<DefValue n="enumcap_new_user" r="new_user" />,{" "}
+                <DefValue n="enumcap_new_signature" r="new_signature" />)
+              </Code>{" "}
+              be the final pair of{" "}
               <AccessStruct field="enumcap_delegations">
-                <R n="enumcap_prev_cap" />
-              </AccessStruct>{" "}
-              is empty, then <R n="enumcap_handover" />{" "}
-              is the concatenation of the following bytestrings:
+                <R n="enumcap_defvalid" />
+              </AccessStruct>, and let{" "}
+              <DefValue n="enumcap_prev_cap" r="prev_cap" /> be the{" "}
+              <R n="McEnumerationCapability" />{" "}
+              obtained by removing the last pair from{" "}
+              <AccessStruct field="enumcap_delegations">
+                <R n="enumcap_defvalid" />
+              </AccessStruct>. Denote the <R n="enumeration_receiver" /> of{" "}
+              <R n="enumcap_prev_cap" /> as{" "}
+              <DefValue n="enumcap_prev_receiver" r="prev_receiver" />.
+            </P>
+          </PreviewScope>
 
-              <Encoding
-                standalone
-                idPrefix="enumcap_handover1"
-                bitfields={[]}
-                contents={[
-                  <CodeFor enc="encode_namespace_sig" isFunction>
-                    <AccessStruct field="enumcap_initial_authorisation">
-                      <R n="enumcap_prev_cap" />
-                    </AccessStruct>
-                  </CodeFor>,
-                  <CodeFor enc="encode_user_pk" isFunction>
-                    <R n="enumcap_new_user" />
-                  </CodeFor>,
-                ]}
-              />
-            </Li>
-            <Li>
-              Otherwise, let{" "}
-              <DefValue n="enumcap_prev_signature" r="prev_signature" /> be the
+          <PreviewScope>
+            <P>
+              Then <R n="enumcap_defvalid" /> is <R n="enumeration_cap_valid" />
               {" "}
-              <R n="UserSignature" /> in the last pair of{" "}
-              <AccessStruct field="enumcap_delegations">
-                <R n="enumcap_prev_cap" />
-              </AccessStruct>. Then <R n="enumcap_handover" />{" "}
-              is the concatenation of the following bytestrings:
+              if <R n="enumcap_prev_cap" /> is{" "}
+              <R n="enumeration_cap_valid" />, and{" "}
+              <R n="enumcap_new_signature" /> is a <R n="UserSignature" />{" "}
+              issued by the <R n="enumcap_prev_receiver" /> over the bytestring
+              {" "}
+              <Def n="enumcap_handover" r="handover" />, which is defined as
+              follows:
+            </P>
 
-              <Encoding
-                standalone
-                idPrefix="enumcap_handover2"
-                bitfields={[]}
-                contents={[
-                  <CodeFor enc="encode_user_sig" isFunction>
-                    <R n="enumcap_prev_signature" />
-                  </CodeFor>,
-                  <CodeFor enc="encode_user_pk" isFunction>
-                    <R n="enumcap_new_user" />
-                  </CodeFor>,
-                ]}
-              />
-            </Li>
-          </Ul>
+            <Ul>
+              <Li>
+                If{" "}
+                <AccessStruct field="enumcap_delegations">
+                  <R n="enumcap_prev_cap" />
+                </AccessStruct>{" "}
+                is empty, then <R n="enumcap_handover" />{" "}
+                is the concatenation of the following bytestrings:
+
+                <Encoding
+                  standalone
+                  idPrefix="enumcap_handover1"
+                  bitfields={[]}
+                  contents={[
+                    <CodeFor enc="encode_namespace_sig" isFunction>
+                      <AccessStruct field="enumcap_initial_authorisation">
+                        <R n="enumcap_prev_cap" />
+                      </AccessStruct>
+                    </CodeFor>,
+                    <CodeFor enc="encode_user_pk" isFunction>
+                      <R n="enumcap_new_user" />
+                    </CodeFor>,
+                  ]}
+                />
+              </Li>
+              <Li>
+                Otherwise, let{" "}
+                <DefValue n="enumcap_prev_signature" r="prev_signature" />{" "}
+                be the <R n="UserSignature" /> in the last pair of{" "}
+                <AccessStruct field="enumcap_delegations">
+                  <R n="enumcap_prev_cap" />
+                </AccessStruct>. Then <R n="enumcap_handover" />{" "}
+                is the concatenation of the following bytestrings:
+
+                <Encoding
+                  standalone
+                  idPrefix="enumcap_handover2"
+                  bitfields={[]}
+                  contents={[
+                    <CodeFor enc="encode_user_sig" isFunction>
+                      <R n="enumcap_prev_signature" />
+                    </CodeFor>,
+                    <CodeFor enc="encode_user_pk" isFunction>
+                      <R n="enumcap_new_user" />
+                    </CodeFor>,
+                  ]}
+                />
+              </Li>
+            </Ul>
+          </PreviewScope>
         </Hsection>
       </PageTemplate>
     </File>

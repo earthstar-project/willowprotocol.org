@@ -146,11 +146,12 @@ export function Encoding(
     >
       <impure
         fun={(ctx) => {
-          if (bitfields.reduce((acc, cur) => acc + cur.count, 0) % 8 === 0) {
+          if (bitfields.reduce((acc, cur) => acc + cur.count, 0) % 8 !== 0) {
             l.warn(
               ctx,
               "An encoding defines a number of bitfields not divisible by eight.",
             );
+            l.at(ctx);
           }
 
           const templateState = getTemplateState(ctx);
@@ -390,19 +391,22 @@ export function EncodingRelationTemplate(
           )}
       </PreviewScope>
 
-      <Encoding
-        idPrefix={n}
-        bitfields={bitfields}
-        contents={contents}
-      />
+      <PreviewScope>
+        <Encoding
+          idPrefix={n}
+          bitfields={bitfields}
+          contents={contents}
+        />
 
-      {canonic === undefined ? "" : (
-        <P>
-          We define the <R n="encoding_function" />{" "}
-          <DefFunction n={canonic.n} /> as the <R n="canonic" /> subset of{" "}
-          <R n={n} /> obtained by <How how={canonic.how} />
-        </P>
-      )}
+        {canonic === undefined ? "" : (
+          <P>
+            We define the <R n="encoding_function" />{" "}
+            <DefFunction n={canonic.n} /> as the <R n="canonic" /> subset of
+            {" "}
+            <R n={n} /> obtained by <How how={canonic.how} />
+          </P>
+        )}
+      </PreviewScope>
     </TemplateLifecycle>
   );
 }
@@ -506,19 +510,22 @@ export function EncodingRelationRelativeTemplate(
           )}
       </PreviewScope>
 
-      <Encoding
-        idPrefix={n}
-        bitfields={bitfields}
-        contents={contents}
-      />
+      <PreviewScope>
+        <Encoding
+          idPrefix={n}
+          bitfields={bitfields}
+          contents={contents}
+        />
 
-      {canonic === undefined ? "" : (
-        <P>
-          We define the <R n="relative_encoding_function" />{" "}
-          <DefFunction n={canonic.n} /> as the <R n="canonic" /> subset of{" "}
-          <R n={n} /> obtained by <How how={canonic.how} />
-        </P>
-      )}
+        {canonic === undefined ? "" : (
+          <P>
+            We define the <R n="relative_encoding_function" />{" "}
+            <DefFunction n={canonic.n} /> as the <R n="canonic" /> subset of
+            {" "}
+            <R n={n} /> obtained by <How how={canonic.how} />
+          </P>
+        )}
+      </PreviewScope>
     </TemplateLifecycle>
   );
 }

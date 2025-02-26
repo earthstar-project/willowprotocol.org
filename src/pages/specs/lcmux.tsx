@@ -1218,14 +1218,16 @@ export const lcmux = (
             </P>
           </PreviewScope>
 
-          <P>
-            Since both the <R n="handle_c" /> and the <R n="handle_s" />{" "}
-            must keep track of all{" "}
-            <Rs n="resource_handle" />, they should both be able to recover
-            resources by removing bindings. We call this operation{" "}
-            <Def n="handle_free" r="free">freeing</Def> a{" "}
-            <R n="resource_handle" />.
-          </P>
+          <PreviewScope>
+            <P>
+              Since both the <R n="handle_c" /> and the <R n="handle_s" />{" "}
+              must keep track of all{" "}
+              <Rs n="resource_handle" />, they should both be able to recover
+              resources by removing bindings. We call this operation{" "}
+              <Def n="handle_free" r="free">freeing</Def> a{" "}
+              <R n="resource_handle" />.
+            </P>
+          </PreviewScope>
 
           <P>
             Note that we only discuss <Rs n="resource_handle" />{" "}
@@ -1313,7 +1315,16 @@ export const lcmux = (
             </P>
 
             <P>
-              To this end, every peer counts how many messages it sends that refer to any one <R n="resource_handle"/>. When a peer whishes to <R n="handle_free"/> a <R n="resource_handle">handle</R>, it includes its (then final) count with that message. Similarly, every peer counts how many messages it receives that pertain to any one <R n="resource_handle"/>. Only once that count matches the count in the <R n="handle_free">freeing message</R> does it release the bound data.
+              To this end, every peer counts how many messages it sends that
+              refer to any one <R n="resource_handle" />. When a peer whishes to
+              {" "}
+              <R n="handle_free" /> a{" "}
+              <R n="resource_handle">handle</R>, it includes its (then final)
+              count with that message. Similarly, every peer counts how many
+              messages it receives that pertain to any one{" "}
+              <R n="resource_handle" />. Only once that count matches the count
+              in the <R n="handle_free">freeing message</R>{" "}
+              does it release the bound data.
             </P>
 
             <PreviewScope>
