@@ -879,9 +879,40 @@ export const encodings = (
               canonic={{
                 n: "path_extends_path",
                 how: [
-                  <MinTags />,
                   <CanonicSubencodings />,
                 ],
+              }}
+            />
+          </Hsection>
+
+          <Hsection n="enc_entry" title="Entry Encoding" shortTitle="entry">
+            <EncodingRelationTemplate
+              n="EncodeEntry"
+              valType={<R n="Entry" />}
+              bitfields={[]}
+              contents={[
+                <CodeFor isFunction enc="encode_namespace_id">
+                  <ValAccess field="entry_namespace_id" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_subspace_id">
+                  <ValAccess field="entry_subspace_id" />
+                </CodeFor>,
+                <CodeFor enc="EncodePath">
+                  <ValAccess field="entry_path" />
+                </CodeFor>,
+                <C64Standalone>
+                  <ValAccess field="entry_timestamp" />
+                </C64Standalone>,
+                <C64Standalone>
+                  <ValAccess field="entry_payload_length" />
+                </C64Standalone>,
+                <CodeFor isFunction enc="encode_payload_digest">
+                  <ValAccess field="entry_payload_digest" />
+                </CodeFor>,
+              ]}
+              canonic={{
+                n: "encode_entry",
+                how: [<MinTags />, <CanonicSubencodings />],
               }}
             />
           </Hsection>
