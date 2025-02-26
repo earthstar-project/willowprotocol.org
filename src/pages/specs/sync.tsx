@@ -520,7 +520,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
                                 {
                                     id: "ReconciliationAnnounceEntriesWillSort",
                                     name: "will_sort",
-                                    comment: ["Whether the sender promises to send the <Rs n="Entry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by ", r("entry_subspace_id"), " first, <R n="entry_path"/> second."],
+                                    comment: ["Whether the sender promises to send the <Rs n="Entry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by <R n="entry_subspace_id"/> first, <R n="entry_path"/> second."],
                                     rhs: r("Bool"),
                                 },
                                 {
@@ -549,7 +549,7 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     pinformative("Actual transmission of the ", rs("LengthyEntry"), " in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
                         "Sorting the <Rs n="Entry"/> allows the receiver to determine which of its own <Rs n="Entry"/> it can omit from a reply in constant space. For unsorted <Rs n="Entry"/>, peers that cannot allocate a linear amount of memory have to resort to possibly redundant <R n="Entry"/> transmissions to uphold the correctness of ", r("d3rbsr"), "."
-                    ]), " sorted in ascending order by ", r("entry_subspace_id"), " first, using the <R n="entry_path"/> as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
+                    ]), " sorted in ascending order by <R n="entry_subspace_id"/> first, using the <R n="entry_path"/> as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
 
                     pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all <Rs n="Entry"/> announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent. The <Rs n="Entry"/> are known to all have been sent if the ", r("ReconciliationAnnounceEntriesEmpty"), " has been set to ", code("true"), ", or once a ", r("ReconciliationTerminatePayload"), " message with the ", r("ReconciliationTerminatePayloadFinal"), " flag set to ", code("true"), " has been sent."),
 
