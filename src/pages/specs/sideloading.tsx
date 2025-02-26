@@ -38,7 +38,7 @@ export const sideloading = (
 			id: 'drop',
 			singular: 'drop',
 			plural: 'drops',
-		}, 'drops'), ", arbitrary sets of <Rs n="Entry"/> and ", rs("Payload"), " compiled into a single bytestring. A ", r('drop'), " can then be treated as a kind of static ", r("store"), " which can be ", r("store_join", "joined"), " with any other ", r("store"), " as per the ", link_name("data_model", "Willow Data Model.")),
+		}, 'drops'), ", arbitrary sets of <Rs n="Entry"/> and <Rs n="Payload"/> compiled into a single bytestring. A ", r('drop'), " can then be treated as a kind of static ", r("store"), " which can be ", r("store_join", "joined"), " with any other ", r("store"), " as per the ", link_name("data_model", "Willow Data Model.")),
 		preview_scope(
 			pinformative(rs("drop", "Drops"), " are then shared via the informal ad-hoc infrastructure we refer to as the ", def("sidenet", "Sidenet"), ":", marginale([
 				"In contrast with ", link("sneakernets", "https://en.wikipedia.org/wiki/Sneakernet"), " which only use physically transported storage devices, the ", r('sidenet'), " also includes the internet and other established networks."
@@ -103,7 +103,7 @@ export const sideloading = (
 						[ " where ", r("side_encoded_token"), " is the result of ", code(function_call(r("sideload_encode_token"), [r("side_pauthorised"), ".1"])), ", and"],
 						[
 							marginale(["Partial payloads are not permitted as they cannot be verified by the ", link_name("data_model", "Willow Data Model"), "."]),
-							 r("side_payload"), " is the complete ", r("Payload"), " of ", r("side_pauthorised"), "." ]
+							 r("side_payload"), " is the complete <R n="Payload"/> of ", r("side_pauthorised"), "." ]
 					)],
 				),
 				pinformative("Finally, let ", def_value({id: "side_drop", singular: "drop"}), " be the result of", code(function_call(r("encrypt"), r("side_contents"))), ".")),

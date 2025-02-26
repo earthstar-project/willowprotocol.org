@@ -205,7 +205,7 @@ export const meadowcap = (
             Hence, Meadowcap allows to <Em>restrict</Em>{" "}
             capabilities, turning them into less powerful ones. Restrictions can
             limit access by{" "}
-            <R n="entry_subspace_id" />, by ", r("entry_path"), ", and/or by
+            <R n="entry_subspace_id" />, by <R n="entry_path"/>, and/or by
             {" "}
             <R n="entry_timestamp" />.
           </P>

@@ -99,7 +99,7 @@ export const willow_compared = (
 
         hsection("compare_nostr", "Nostr", [
             pinformative(
-                link("Nostr", "https://nostr.com/"), " appears to be quite similar to Willow at a cursory glance. Willow peers store and exchange sets of <Rs n="Entry"/>, Nostr peers store and exchange sets of ", em("events"), ". Every <R n="Entry"/> has a ", r("entry_timestamp"), ", every event has a ", code("created_at"), " time. Every <R n="Entry"/> belongs to a single <R n="subspace"/>, every event belongs to a single ", code("pubkey"), ". Willow organises <Rs n="Entry"/> by their ", rs("entry_path"), ", Nostr organises events by their ", code("tags"), "."
+                link("Nostr", "https://nostr.com/"), " appears to be quite similar to Willow at a cursory glance. Willow peers store and exchange sets of <Rs n="Entry"/>, Nostr peers store and exchange sets of ", em("events"), ". Every <R n="Entry"/> has a <R n="entry_timestamp"/>, every event has a ", code("created_at"), " time. Every <R n="Entry"/> belongs to a single <R n="subspace"/>, every event belongs to a single ", code("pubkey"), ". Willow organises <Rs n="Entry"/> by their <Rs n="entry_path"/>, Nostr organises events by their ", code("tags"), "."
             ),
 
             pinformative(

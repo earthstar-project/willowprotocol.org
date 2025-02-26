@@ -33,15 +33,15 @@ export const rbsr = (
           /*
         pinformative("When two peers wish to synchronise data, they typically first exchange which ", rs("Area"), " in which <Rs n="namespace"/> they are interested in. Intersecting these ", rs("Area"), " yields the sets of <Rs n="Entry"/> for which they then need to bring each other up to speed. In this document, we present a strategy for doing so efficiently."),
 
-    pinformative("Given the <Rs n="Entry"/> that the peers have available, there can be two cases that necessitate data exchange. First, one peer might have an <R n="Entry"/> that the other does not have, and second, the peers might hold nonequal parts of the ", r("Payload"), " of some common <R n="Entry"/>."),
+    pinformative("Given the <Rs n="Entry"/> that the peers have available, there can be two cases that necessitate data exchange. First, one peer might have an <R n="Entry"/> that the other does not have, and second, the peers might hold nonequal parts of the <R n="Payload"/> of some common <R n="Entry"/>."),
 
-    pinformative("As a first step to solving the problem, we simplify it. If <Rs n="Entry"/> contained information about locally available ", r("Payload"), " bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronise <Rs n="Entry"/> directly, but ", rs("LengthyEntry"), ":"),
+    pinformative("As a first step to solving the problem, we simplify it. If <Rs n="Entry"/> contained information about locally available <R n="Payload"/> bytes, then both cases would merge into a single case: one peer might have a datum that the other lacks. Hence, we do not synchronise <Rs n="Entry"/> directly, but ", rs("LengthyEntry"), ":"),
 
     pseudocode(
       new Struct({
         id: "LengthyEntry",
         plural: "LengthyEntries",
-        comment: ["An <R n="Entry"/> together with information about how much of its ", r("Payload"), " a peer holds."],
+        comment: ["An <R n="Entry"/> together with information about how much of its <R n="Payload"/> a peer holds."],
         fields: [
           {
             id: "lengthy_entry_entry",
@@ -52,7 +52,7 @@ export const rbsr = (
           {
             id: "lengthy_entry_available",
             name: "available",
-            comment: ["The number of consecutive bytes from the start of the ", r("lengthy_entry_entry"), "’s ", r("Payload"), " that the peer holds."],
+            comment: ["The number of consecutive bytes from the start of the ", r("lengthy_entry_entry"), "’s <R n="Payload"/> that the peer holds."],
             rhs: r("U64"),
           },
         ],
@@ -61,7 +61,7 @@ export const rbsr = (
 
     pinformative("The task of the two peers then becomes conceptually simple: they each have a set of ", rs("LengthyEntry"), ", and they need to inform each other about all ", rs("LengthyEntry"), " the other party does not have, that is, they each need to compute the union of their two sets. In the scientific literature, this problem is known as ", em("set "), sidenote(em("reconciliation"), [link(`Minsky, Yaron, Ari Trachtenberg, and Richard Zippel. "Set reconciliation with nearly optimal communication complexity." IEEE Transactions on Information Theory 49.9 (2003): 2213-2218.`, "https://ecommons.cornell.edu/server/api/core/bitstreams/c3fff828-cfb8-416a-a28b-8afa59dd2d73/content")]), "."),
 
-    pinformative("Once the two peers have reconciled their sets, they can filter out <Rs n="Entry"/> that overwrite each other, and they can separately request any missing (suffixes of) ", rs("Payload"), ". Going forward, we thus concentrate on the set reconciliation part only."),
+    pinformative("Once the two peers have reconciled their sets, they can filter out <Rs n="Entry"/> that overwrite each other, and they can separately request any missing (suffixes of) <Rs n="Payload"/>. Going forward, we thus concentrate on the set reconciliation part only."),
 
     pinformative("To perform set reconciliation, we adapt the approach of ", em("range-based set "), sidenote(em("reconciliation"), [link(`Meyer, Aljoscha. "Range-Based Set Reconciliation." 2023 42nd International Symposium on Reliable Distributed Systems (SRDS). IEEE, 2023.`, "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), "."]), "."),
 
@@ -157,7 +157,7 @@ export const rbsr = (
     hsection("d3rbsr_parameters", "Fingerprinting", [
       pinformative(R("d3rbsr"), " requires the ability to hash arbitrary sets of ", rs("LengthyEntry"), " into values of some type ", r("d3rbsr_fp"), ". To quickly compute ", rs("d3rbsr_fp"), ", it helps if the ", r("d3rbsr_fp"), " for a ", r("D3Range"), " can be assembled from precomputed ", rs("d3rbsr_fp"), " of other, smaller ", rs("D3Range"), ". For this reason, we define the fingerprinting function in terms of some building blocks: ", rs("LengthyEntry"), " are mapped into a set ", def_type({id: "d3rbsr_prefp", singular: "PreFingerprint"}), " with a function that satisfies certain algebraic properties that allow for incremental computation, and ", rs("d3rbsr_prefp"), " are then converted", marginale(["The split into ", rs("d3rbsr_prefp"), " and ", rs("d3rbsr_fp"), " allows for compression: the ", rs("d3rbsr_prefp"), " might be efficient to compute but rather large, so you would not want to exchange them over the network. Converting a ", r("d3rbsr_prefp"), " into a ", r("d3rbsr_fp"), " can be as simple as hashing it with a typical, secure hash function, thus preserving collision resistance but yielding smaller final fingerprints."]), " into the final ", r("d3rbsr_fp"), "."),
 
-      pinformative("First, we require a function ", def_parameter_fn({id: "d3rbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("d3rbsr_prefp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", ", r("entry_path"), ", ", r("entry_timestamp"), ", ", r("entry_payload_digest"), ", ", r("entry_payload_length"), ", or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("d3rbsr_prefp"), "."),
+      pinformative("First, we require a function ", def_parameter_fn({id: "d3rbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual ", rs("LengthyEntry"), " into the set ", r("d3rbsr_prefp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", ", r("entry_subspace_id"), ", <R n="entry_path"/>, <R n="entry_timestamp"/>, <R n="entry_payload_digest"/>, <R n="entry_payload_length"/>, or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("d3rbsr_prefp"), "."),
 
       pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearise three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "d3rbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("d3rbsr_prefp"), " to a single new ", r("d3rbsr_prefp"), ". The ", r("d3rbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "d3rbsr_neutral", singular: "fingerprint_neutral"}), "."),
 

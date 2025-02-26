@@ -416,7 +416,7 @@ export const private_interest_intersection = (
               might be irritated at this point. The literature is full of papers
               that point out the exchange of (salted) hashes as a rookie
               mistake. A fairly representative example{" "}
-              <Bib item="freedman2016efficient"></Bib>:
+              <Bib item="freedman2016efficient" />:
               <Alj>More obvious blockquote styling</Alj>
             </P>
 

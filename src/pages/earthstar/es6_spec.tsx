@@ -137,7 +137,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The ", r("max_component_length"), " is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
+					"The <R n="max_component_length"/> is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
 
 				pinformative(
 					"The type ", r("PayloadDigest"), " is the type of unsigned 256-bit integers, the total order we use is the numeric one."
@@ -182,7 +182,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The choices for the Meadowcap ", r("mc_max_component_length"), ", ", r("mc_max_component_count"), ", and ", r("mc_max_path_length"), " are the same as those for the data model ", r("max_component_length"), ", ", r("max_component_count"), ", and ", r("max_path_length"), "."
+					"The choices for the Meadowcap ", r("mc_max_component_length"), ", ", r("mc_max_component_count"), ", and ", r("mc_max_path_length"), " are the same as those for the data model <R n="max_component_length"/>, ", r("max_component_count"), ", and ", r("max_path_length"), "."
 				),
 
 				pinformative(
@@ -195,7 +195,7 @@ export const es6_spec = (
 
 				hsection("es6_wgps_access_control", "Access Control", [
 					pinformative(
-						"The type ", r("ReadCapability"), " is the type of ", rs("Capability"), " — as instantiated above — with an ", r("cap_mode"), " of ", r("access_read"), ". Consequently, the type ", r("sync_receiver"), " is ", r("es6_identity"), ", and the type ", r("sync_signature"), " is that of ", r("cinn25519"), "<4, 4> signatures."
+						"The type ", r("ReadCapability"), " is the type of <Rs n="Capability"/> — as instantiated above — with an ", r("cap_mode"), " of ", r("access_read"), ". Consequently, the type ", r("sync_receiver"), " is ", r("es6_identity"), ", and the type ", r("sync_signature"), " is that of ", r("cinn25519"), "<4, 4> signatures."
 					),
 
 					pinformative("The ", r("challenge_length"), " is 16 (yielding 128 bit for each ", r("access_challenge"), ")."),
@@ -262,11 +262,11 @@ export const es6_spec = (
 
 				hsection("es6_wgps_other", "Other Parameters", [
 					pinformative(
-						"The decomposition of ", rs("AuthorisationToken"), " into ", r("StaticToken"), " and ", r("DynamicToken"), " is as recommended for Meadowcap in the WGPS: ", r("StaticToken"), " is the type ", r("Capability"), ", and ", r("DynamicToken"), " is the type of ", r("user_signature_scheme"), " signatures."
+						"The decomposition of <Rs n="AuthorisationToken"/> into ", r("StaticToken"), " and ", r("DynamicToken"), " is as recommended for Meadowcap in the WGPS: ", r("StaticToken"), " is the type ", r("Capability"), ", and ", r("DynamicToken"), " is the type of ", r("user_signature_scheme"), " signatures."
 					),
 
 					pinformative(
-						"The ", r("transform_payload"), " algorithm deterministically maps each ", r("Payload"), " to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding the first eight bytes of the combined encoding (which would encode the length)."
+						"The ", r("transform_payload"), " algorithm deterministically maps each <R n="Payload"/> to its ", link("Bao Combined Encoding", "https://github.com/oconnor663/bao/blob/master/docs/spec.md#combined-encoding-format"), ", excluding the first eight bytes of the combined encoding (which would encode the length)."
 					),
 
 					pinformative(
