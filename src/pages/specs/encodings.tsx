@@ -1416,27 +1416,45 @@ export const encodings = (
                     {" "}
                     and <DefValue n="epaia_end_from_start" r="end_from_start" />
                     {" "}
-                    be arbitrary <Rs n="Bool" />. If{" "}
-                    <AccessStruct field="TimeRangeEnd">
-                      <AccessStruct field="AreaTime">
-                        <RelAccess field="PrivateAreaContextRel" />
-                      </AccessStruct>
-                    </AccessStruct>{" "}
-                    is <R n="range_open" />, then
+                    be{" "}
+                    <Rs n="Bool" />, defined according to certain restrictions:
                   </P>
                   <Ul>
                     <Li>
-                      <R n="epaia_start_from_start" /> must be{" "}
-                      <Code>true</Code>, and
+                      If{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <AccessStruct field="AreaTime">
+                            <RelAccess field="PrivateAreaContextRel" />
+                          </AccessStruct>
+                        </AccessStruct>{" "}
+                        == <R n="range_open" />
+                      </Code>, then
+
+                      <Ul>
+                        <Li>
+                          <R n="epaia_start_from_start" /> must be{" "}
+                          <Code>true</Code>, and
+                        </Li>
+                        <Li>
+                          <R n="epaia_end_from_start" /> must be{" "}
+                          <Code>false</Code> if and only if{" "}
+                          <AccessStruct field="TimeRangeEnd">
+                            <ValAccess field="AreaTime" />
+                          </AccessStruct>{" "}
+                          is <R n="range_open" />.
+                        </Li>
+                      </Ul>
                     </Li>
                     <Li>
-                      <R n="epaia_end_from_start" /> must be <Code>false</Code>
-                      {" "}
-                      if and only if{" "}
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>{" "}
-                      is <R n="range_open" />.
+                      Otherwise (<Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <AccessStruct field="AreaTime">
+                            <RelAccess field="PrivateAreaContextRel" />
+                          </AccessStruct>
+                        </AccessStruct>{" "}
+                        != <R n="range_open" />
+                      </Code>), they can be set arbitrarily.
                     </Li>
                   </Ul>
                 </>

@@ -951,38 +951,38 @@ pinformative("The ", link_name("data_model", "Willow data model"), " specifies h
 
                     lis(
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_group_member"}), " for ", r("PsiGroup"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_group_member"}), " for ", r("PsiGroup"), ".",
                         ),
                         preview_scope(
                             marginale(["When using the <R n="McEnumerationCapability"/> type, you can use ", r("encode_mc_subspace_capability"), ", but omitting the encoding of the <R n="enumcap_namespace"/>."]),
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_subspace_capability"}), " for ", rs("SubspaceCapability"), " of known ", r("subspace_granted_namespace"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_subspace_capability"}), " for ", rs("SubspaceCapability"), " of known ", r("subspace_granted_namespace"), ".",
                         ),
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
                         ),
                         preview_scope(
                             marginale(["When using the ", r("Capability"), " type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known <R n="granted_namespace"/> and whose <R n="granted_area"/> is <R n="area_include_area">included</R> in some known <R n="Area"/>.",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known <R n="granted_namespace"/> and whose <R n="granted_area"/> is <R n="area_include_area">included</R> in some known <R n="Area"/>.",
                         ),
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
                         ),
                         preview_scope(
                             marginale(["Used indirectly when encoding <Rs n="Entry"/>, ", rs("Area"), ", and ", rs("D3Range"), "."]),
-                            "An ", r("encoding_function"), " for <R n="SubspaceId"/>.",
+                            "An <R n="encoding_function"/> for <R n="SubspaceId"/>.",
                         ),
                         preview_scope(
                             marginale(["The total order makes ", rs("D3Range"), " meaningful, the least element and successors ensure that every <R n="Area"/> can be expressed as an equivalent ", r("D3Range"), "."]),
                             "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on <R n="SubspaceId"/> with least element ", r("sync_default_subspace_id"), ", in which for every non-maximal <R n="SubspaceId"/> ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other <R n="SubspaceId"/> is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
                         ),
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
                         ),
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_dynamic_token"}), " for ", r("DynamicToken"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_dynamic_token"}), " for ", r("DynamicToken"), ".",
                         ),
                         preview_scope(
-                            "An ", r("encoding_function"), " ", def_parameter_fn({id: "encode_fingerprint"}), " for ", r("Fingerprint"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_fingerprint"}), " for ", r("Fingerprint"), ".",
                         ),
                     ),
 

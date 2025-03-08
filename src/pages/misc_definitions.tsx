@@ -1,9 +1,9 @@
 import { Dir, File } from "macromania-outfs";
-import { Code, Em, Hr, P } from "macromania-html";
+import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { PageTemplate } from "../pageTemplate.tsx";
 import { AE, Curly, Green, Orange, Quotes, SkyBlue } from "../macros.tsx";
 import { PreviewScope } from "macromania-previews";
-import { DefType, DefVariant } from "macromania-rustic";
+import { DefFunction, DefType, DefValue, DefVariant } from "macromania-rustic";
 import { M } from "macromania-katex";
 import { Def, R, Rs } from "macromania-defref";
 import { Hsection } from "macromania-hsection";
@@ -41,6 +41,54 @@ export const misc_definitions = (
             </M>{" "}
             (exclusive).
           </P>
+        </PreviewScope>
+
+        <PreviewScope>
+          <P>
+            We define{" "}
+            <Code>
+              <DefFunction n="default_entry" />(<DefValue
+                n="default_entry_ns"
+                r="default_namespace_id"
+              />, <DefValue n="default_entry_ss" r="default_subspace_id" />,
+              {" "}
+              <DefValue n="default_entry_digest" r="default_digest" />)
+            </Code>{" "}
+            to denote the <R n="Entry" /> with the following members:
+          </P>
+          <Ul>
+            <Li>
+              <Code>
+                <R n="entry_namespace_id" /> = <R n="default_entry_ns" />
+              </Code>,
+            </Li>
+            <Li>
+              <Code>
+                <R n="entry_subspace_id" /> = <R n="default_entry_ss" />
+              </Code>,
+            </Li>
+            <Li>
+              <Code>
+                <R n="entry_path" />
+              </Code>{" "}
+              is the empty <R n="Path" />,
+            </Li>
+            <Li>
+              <Code>
+                <R n="entry_timestamp" /> = 0
+              </Code>,
+            </Li>
+            <Li>
+              <Code>
+                <R n="entry_payload_length" /> = 0
+              </Code>, and
+            </Li>
+            <Li>
+              <Code>
+                <R n="entry_payload_digest" /> = <R n="default_entry_digest" />
+              </Code>.
+            </Li>
+          </Ul>
         </PreviewScope>
 
         <PreviewScope>
