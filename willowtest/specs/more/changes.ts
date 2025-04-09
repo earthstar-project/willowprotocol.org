@@ -30,10 +30,20 @@ export const changes: Expression = site_template({
 			lis(
 				create_news_item(
 					{
+					name: 'april_25_crates', title: "Rust persistent data store released", pubDate: new Date(2025, 3, 9)		
+					},
+					[
+						pinformative("We have released a new crate which implements a persistent Willow data ", r("store"), ". The source can be found at ", link("the willow-rs repository", "https://github.com/earthstar-project/willow-rs"), ", and complete documentation can be found at ", link("docs.rs", "https://docs.rs/willow-store-simple-sled/0.1.0/willow_store_simple_sled/"), "."),
+						pinformative("In addition, we have also released a new crate with recommended parameters for the ", link_name("data_model", "Willow Data Model"), " and ", link_name("meadowcap", "Meadowcap"), ". We are referring to this set of recommend parameters as ", em("Willowʼ25"), " and will have more information available on this site soon. In the meantime, you can read documentation for the new crate over at ", link("docs.rs", "https://docs.rs/willow_25/0.1.0/willow_25/")),
+						pinformative("Finally, we have published 0.2.0 versions for the ", link("willow-data-model", "https://docs.rs/willow-data-model/0.2.0/willow_data_model/"), " and ", link("meadowcap", "https://docs.rs/meadowcap/0.2.0/meadowcap/"), " crates with many new improvments, including a new ", link(code("Store"), "https://docs.rs/willow-data-model/0.2.0/willow_data_model/trait.Store.html"), " trait which can be used to implement Willow-compatible data storage.")
+					]
+				),
+				create_news_item(
+					{
 						name: 'meadowcap_rs_0_1_0', title: "Rust implementation of Meadowcap released", pubDate: new Date(2024, 7, 10)
 					},
 					[ 
-					pinformative("Our own ", em("Rust"), " implementation of ", link_name("meadowcap", "Meadowcap"), " now conforms to the specification as of August 10th, 2024. The source, can be found at ", link("the willow-rs repository", "https://github.com/earthstar-project/willow-rs"), ", and complete documentation can be found at ", link("docs.rs", "https://docs.rs/meadowcap/0.1.0/meadowcap/"), ".")
+					pinformative("Our own ", em("Rust"), " implementation of ", link_name("meadowcap", "Meadowcap"), " now conforms to the specification as of August 10th, 2024. The source can be found at ", link("the willow-rs repository", "https://github.com/earthstar-project/willow-rs"), ", and complete documentation can be found at ", link("docs.rs", "https://docs.rs/meadowcap/0.1.0/meadowcap/"), ".")
 					],
 				),
 				create_news_item(
