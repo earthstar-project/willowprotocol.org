@@ -26,8 +26,10 @@ export const projects_and_communities: Expression = site_template(
 					
 					pinformative("We are currently working on ", link("Rust implementations of the Willow specifications", "https://github.com/earthstar-project/willow-rs"), ", with our work funded by ", link("NGI Core", "https://nlnet.nl/core/"), ". As the time of writing, we have released the following crates:"),
 					lis(
-						link("willow-data-model", "https://docs.rs/willow-data-model/0.1.0/willow_data_model/"),
-						link("meadowcap", "https://docs.rs/meadowcap/0.1.0/meadowcap/")
+						link("willow-data-model", "https://docs.rs/willow-data-model/0.2.0/willow_data_model/"),
+						link("meadowcap", "https://docs.rs/meadowcap/0.2.0/meadowcap/"),
+						link("willow_25", "https://docs.rs/willow_25/0.1.0/willow_25/"),
+						link("willow-store-simple-sled", "https://docs.rs/willow-store-simple-sled/0.1.0/willow_store_simple_sled/")
 					),
 				]),
 				
