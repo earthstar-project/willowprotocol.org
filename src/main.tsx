@@ -115,13 +115,7 @@ const exp = (
             return (
               <>
                 <File name="todos.html">
-                  {/* <PageTemplate
-                    htmlTitle="TODO Notes"
-                    headingId="todo_notes"
-                    heading={"TODO Notes"}
-                  > */}
-                    <RenderAllWips />
-                  {/* </PageTemplate> */}
+                  <RenderAllWips />
                 </File>
                 {evaled}
               </>

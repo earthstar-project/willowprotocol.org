@@ -178,7 +178,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The ", r("is_communal"), " function maps a ", r("es6_namespace"), " to ", code("true"), " if and only if the least significant bit of its ", r("cinn_pk_pk"), " is ", code("0"), "."
+					"The ", r("is_communal"), " function maps a ", r("es6_namespace"), " to <Code>true</Code> if and only if the least significant bit of its ", r("cinn_pk_pk"), " is ", code("0"), "."
 				),
 
 				pinformative(
@@ -243,10 +243,10 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("fingerprint_singleton"), " function encodes a ", r("LengthyEntry"), " using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
+						"The ", r("fingerprint_singleton"), " function encodes a <R n="LengthyEntry"/> using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
 					),
 
-					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a ", r("LengthyEntry"), " ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
+					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a <R n="LengthyEntry"/> ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
 						[encode_two_bit_int(field_access(r("es6_le"), "lengthy_entry_available")),],
 						[function_call(r("encode_entry"), field_access(r("es6_le"), "lengthy_entry_entry")), "."],
 					)),
