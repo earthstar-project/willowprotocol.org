@@ -255,8 +255,8 @@ export const rbsr = (
           <Rs n="D3Range" />, it is crucial for overall efficiency to not split
           based on volume (for example, by splitting the <Rs n="D3RangeTime" />
           {" "}
-          in half numerically)", ", but to split into subranges in which the
-          peer holds roughly the same number of <Rs n="Entry" />.
+          in half numerically), but to split into subranges in which the peer
+          holds roughly the same number of <Rs n="Entry" />.
         </P>
 
         <P>
