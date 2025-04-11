@@ -39,10 +39,10 @@ export const threedstorage = (
         pinformative("The difficult part in storing any kind of data is to enable efficient access and manipulation. The patterns of data access that a Willow implementation needs to support are primarily determined by two factors: how do applications access the data, and how do several data stores sync their contents?"),
 
         pinformative("The bare minimum functionality that a Willow database has to provide to applications is the creation of new <Rs n="Entry"/>, and retrieval of <Rs n="Payload"/> by <R n="Entry"/>. The ", link_name("grouping_entries", "three-dimensionality"), " of Willow suggests a natural way for applications to access data in bulk: by querying for all <Rs n="Entry"/> in an ", sidenote(r("Area"), [
-            "Queries for ", rs("D3Range"), " are not particularly meaningful in the face of end-to-end encrypted data; we recommend to always use ", rs("Area"), " in human-facing components such as programming APIs.",
+            "Queries for <Rs n="D3Range"/> are not particularly meaningful in the face of end-to-end encrypted data; we recommend to always use <Rs n="Area"/> in human-facing components such as programming APIs.",
         ]), "."),
 
-        pinformative("As for the requirements of syncing, we shall use the ", link_name("sync", "WGPS"), " as a (somewhat demanding) baseline. The WGPS needs to compute ", rs("Fingerprint"), " for arbitrary ", rs("D3Range"), ", to split arbitrary ", rs("D3Range"), " into multiple, roughly equally-sized subranges, and to constrain ", rs("Area"), " to a number of newest <Rs n="Entry"/> (to work with <Rs n="AreaOfInterest"/>)."),
+        pinformative("As for the requirements of syncing, we shall use the ", link_name("sync", "WGPS"), " as a (somewhat demanding) baseline. The WGPS needs to compute ", rs("Fingerprint"), " for arbitrary <Rs n="D3Range"/>, to split arbitrary <Rs n="D3Range"/> into multiple, roughly equally-sized subranges, and to constrain <Rs n="Area"/> to a number of newest <Rs n="Entry"/> (to work with <Rs n="AreaOfInterest"/>)."),
 
         pinformative("This gives us a fairly compact feature set, revolving around spatially constrained access to a three-dimensional arrangement of <Rs n="Entry"/>."),
     ]),
@@ -72,7 +72,7 @@ export const threedstorage = (
             ],
         ),
 
-        pinformative("All of these data structures are tree-based, so they can readily be adapted to store the ", rs("Fingerprint"), " of the items of each subtree in every tree node, hence allowing for efficient ", r("Fingerprint"), " computation. Similarly, storing the total number of items in each node allows for efficiently working with <Rs n="AreaOfInterest"/>, and can guide the splitting of ", rs("D3Range"), " for set reconciliation. Adopting the corresponding one-dimensional algorithms to the multidimensional tree structures is far from trivial, but ultimately doable. At the end of the day, a Willow implementation will thus rise and fall with the quality of its three-dimensional range queries."),
+        pinformative("All of these data structures are tree-based, so they can readily be adapted to store the ", rs("Fingerprint"), " of the items of each subtree in every tree node, hence allowing for efficient ", r("Fingerprint"), " computation. Similarly, storing the total number of items in each node allows for efficiently working with <Rs n="AreaOfInterest"/>, and can guide the splitting of <Rs n="D3Range"/> for set reconciliation. Adopting the corresponding one-dimensional algorithms to the multidimensional tree structures is far from trivial, but ultimately doable. At the end of the day, a Willow implementation will thus rise and fall with the quality of its three-dimensional range queries."),
 
         pinformative("Engineering a three-dimensional data store is no easy feat, but the existence of numerous production-quality systems for working with multidimensional data shows that it is feasible. The whole design of Willow rests on this assumption, as well as on the assumption that three-dimensional data organisation suffices for building useful applications. While knowing full well that most contemporary peer-to-peer projects settle for more simple and less expressive data models, we believe that Willow hits a sweet(er) spot between expressivity and implementability."),
     ]),

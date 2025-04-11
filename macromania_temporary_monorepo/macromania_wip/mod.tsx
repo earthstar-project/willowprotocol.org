@@ -20,6 +20,8 @@ import {
   Expressions,
 } from "./deps.ts";
 
+import { A, addName, hrefToName, Li, Ul } from "../mod.tsx";
+
 const l = createLogger("LoggerWip");
 const ConfigMacro = l.ConfigMacro;
 export { ConfigMacro as LoggerWip };
@@ -29,11 +31,16 @@ type State = {
    * Did we already print a warning that there are WIP annotations being rendered?
    */
   didWarnAlready: boolean;
+  nextId: number;
+  // maps numeric todo ids to the fully rendered todo
+  renderedTodos: Map<number, string>;
 };
 
 const [getState, setState] = createSubstate<State>(
   () => ({
     didWarnAlready: false,
+    nextId: 0,
+    renderedTodos: new Map(),
   }),
 );
 
@@ -115,25 +122,41 @@ export function Wip(
           l.at(ctx);
           state.didWarnAlready = true;
         }
+        state.nextId += 1;
 
         // Render the annotation.
         const clazz: string[] = [];
         if (inline) {
           clazz.push("inline");
         }
+
+        const theId = id(state.nextId);
+        addName(ctx, theId);
+
         const ret = (
-          <Span
-            clazz={clazz}
-            style={
-              <>
-                font-family: var(--font-mono); font-size: 0.85em; color:{" "}
-                <exps x={fg} />; background-color: <exps x={bg} />;
-                {inline ? "margin: 0 0.1em;" : ""};padding: 0.2em 0.1em;border-radius: 4px;box-decoration-break: clone;
-              </>
-            }
+          <map
+            fun={(evaled, _ctx) => {
+              state.renderedTodos.set(state.nextId, evaled);
+              return evaled;
+            }}
           >
-            {wrap(ctx, <exps x={children} />)}
-          </Span>
+            (
+            <Span
+              clazz={clazz}
+              id={theId}
+              style={
+                <>
+                  font-family: var(--font-mono); font-size: 0.85em; color:{" "}
+                  <exps x={fg} />; background-color: <exps x={bg} />;
+                  {inline ? "margin: 0 0.1em;" : ""};padding: 0.2em
+                  0.1em;border-radius: 4px;box-decoration-break: clone;
+                </>
+              }
+            >
+              {wrap(ctx, <exps x={children} />)}
+            </Span>
+            )
+          </map>
         );
 
         if (inline) {
@@ -144,4 +167,36 @@ export function Wip(
       }}
     />
   );
+}
+
+/**
+ * Renders a list of all WIP notes created up to this point.
+ */
+export function RenderAllWips(): Expression {
+  return (
+    <impure
+      fun={(ctx) => {
+        const state = getState(ctx);
+
+        const lis: Expression[] = [];
+        state.renderedTodos.forEach((rendered, numId) => {
+          lis.push(
+            <Li>
+              <A href={hrefToName(ctx, id(numId))!}>{rendered}</A>
+            </Li>,
+          );
+        });
+
+        return (
+          <Ul>
+            <exps x={lis} />
+          </Ul>
+        );
+      }}
+    />
+  );
+}
+
+function id(numId: number): string {
+  return `todo${numId}gkengkeagrn`;
 }

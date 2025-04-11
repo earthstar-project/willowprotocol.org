@@ -69,7 +69,7 @@ export const willow_compared = (
             pinformative(
                 "A hash chain of data cryptographically authenticates that authors never ", sidenote("produce", [
                     "Or, more precisely, it ensures that such misbehavior can be detected efficiently and arbitrarily long after the fact."
-                ]), " differing extensions of the same log. In itself, this can be a ", link("laudable feature", "https://en.wikipedia.org/wiki/Certificate_Transparency"), ", but it precludes the option of concurrent writes from multiple devices. With ", r("d3rbsr"), ", Willow can achieve efficient data synchronisation without the need to restrict updates to a linear sequence. We do not need to enforce linearity to keep sync complexity manageable, so we opt for effortless multi-writer support instead.",
+                ]), " differing extensions of the same log. In itself, this can be a ", link("laudable feature", "https://en.wikipedia.org/wiki/Certificate_Transparency"), ", but it precludes the option of concurrent writes from multiple devices. With <R n="d3rbsr"/>, Willow can achieve efficient data synchronisation without the need to restrict updates to a linear sequence. We do not need to enforce linearity to keep sync complexity manageable, so we opt for effortless multi-writer support instead.",
             ),
 
             pinformative(

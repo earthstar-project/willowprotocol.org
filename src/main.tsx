@@ -34,6 +34,8 @@ import { Dir, File } from "macromania-outfs";
 import { ServerRoot } from "macromania-webserverroot";
 import { Assets } from "macromania-assets";
 import { Div } from "macromania-html";
+import { PageTemplate } from "./pageTemplate.tsx";
+import { RenderAllWips } from "macromania-wip";
 
 const ctx = new Context();
 
@@ -106,43 +108,64 @@ const exp = (
           {/* See https://github.com/worm-blossom/macromania-assets */}
           <Assets input={["src", "assets"]} assets={{}} />
         </Dir>
-        <PreviewScopePushWrapper
-          wrapper={(_ctx, preview) => {
-            return <Div id="wrapContent">{preview}</Div>;
+        <map
+          fun={(evaled, _ctx) => {
+            // Not really mapping anything here, just ensuring that printing the list of all remaining todos is done after all todos have been evaluated.
+
+            return (
+              <>
+                <File name="todos.html">
+                  {/* <PageTemplate
+                    htmlTitle="TODO Notes"
+                    headingId="todo_notes"
+                    heading={"TODO Notes"}
+                  > */}
+                    <RenderAllWips />
+                  {/* </PageTemplate> */}
+                </File>
+                {evaled}
+              </>
+            );
           }}
         >
-          {index}
-          {misc_definitions}
+          <PreviewScopePushWrapper
+            wrapper={(_ctx, preview) => {
+              return <Div id="wrapContent">{preview}</Div>;
+            }}
+          >
+            {index}
+            {misc_definitions}
 
-          <Dir name="specs">
-            {specs}
-            {data_model}
-            {e2e}
-            {meadowcap}
-            {encodings}
-            {sideloading}
-            {sync}
-            {rbsr}
-            {lcmux}
-            {grouping_entries}
-            {private_interest_intersection}
-          </Dir>
+            <Dir name="specs">
+              {specs}
+              {data_model}
+              {e2e}
+              {meadowcap}
+              {encodings}
+              {sideloading}
+              {sync}
+              {rbsr}
+              {lcmux}
+              {grouping_entries}
+              {private_interest_intersection}
+            </Dir>
 
-          <Dir name="more">
-            {more}
-            {threedstorage}
-            {about_us}
-            {changes}
-            {willow_compared}
-            {projects_and_communities}
-            {timestamps_really}
-            {why_willow}
-          </Dir>
+            <Dir name="more">
+              {more}
+              {threedstorage}
+              {about_us}
+              {changes}
+              {willow_compared}
+              {projects_and_communities}
+              {timestamps_really}
+              {why_willow}
+            </Dir>
 
-          <Dir name="earthstar">
-            {es6_spec}
-          </Dir>
-        </PreviewScopePushWrapper>
+            <Dir name="earthstar">
+              {es6_spec}
+            </Dir>
+          </PreviewScopePushWrapper>
+        </map>
       </ServerRoot>
     </Dir>
   </Config>

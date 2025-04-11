@@ -312,4 +312,97 @@ export const bib: BibItemDeclaration[] = [
       </>
     ),
   },
+  {
+    item: `@inproceedings{leitao2007epidemic,
+  title={Epidemic broadcast trees},
+  author={Leitao, Joao and Pereira, Jose and Rodrigues, Luis},
+  booktitle={2007 26th IEEE International Symposium on Reliable Distributed Systems (SRDS 2007)},
+  pages={301--310},
+  year={2007},
+  organization={IEEE}
+}
+`,
+    asset: ["references", "leitao2007epidemic.pdf"],
+    blurb: (
+      <>
+        <P>
+          There is an inherent trade-off between epidemic and deterministic
+          tree-based broadcast primitives. Tree-based approaches have a small
+          message complexity in steady-state but are very fragile in the
+          presence of faults. Gossip, or epidemic, protocols have a higher
+          message complexity but also offer much higher resilience.
+        </P>
+        <P>
+          This paper proposes an integrated broadcast scheme that combines both
+          approaches. We use a low cost scheme to build and maintain broadcast
+          trees embedded on a gossip-based overlay. The protocol sends the
+          message payload preferably via tree branches but uses the remaining
+          links of the gossip overlay for fast recovery and expedite tree
+          healing. Experimental evaluation presented in the paper shows that our
+          new strategy has a low overhead and that is able to support large
+          number of faults while maintaining a high reliability.
+        </P>
+      </>
+    ),
+  },
+  {
+    item: `@article{minsky2003set,
+  title={Set reconciliation with nearly optimal communication complexity},
+  author={Minsky, Yaron and Trachtenberg, Ari and Zippel, Richard},
+  journal={IEEE Transactions on Information Theory},
+  volume={49},
+  number={9},
+  pages={2213--2218},
+  year={2003},
+  publisher={IEEE}
+}
+`,
+    asset: ["references", "minsky2003set.pdf"],
+    blurb: (
+      <>
+        <P>
+          We consider the problem of efficiently reconciling two similar sets
+          held by different hosts while minimizing the communication complexity,
+          which we call the set reconciliation problem. We describe an approach
+          to set reconciliation based on a polynomial encoding of sets. The
+          resulting protocols exhibit tractable computational complexity and
+          nearly optimal communication complexity when the sets being reconciled
+          are sparse. Also, these protocols can be adapted to work over a
+          broadcast channel, allowing many clients to reconcile with one host
+          based on a single broadcast, even if each client is missing a
+          different subset.
+        </P>
+      </>
+    ),
+  },
+  {
+    item: `@inproceedings{meyer2023range,
+  title={Range-Based Set Reconciliation},
+  author={Meyer, Aljoscha},
+  booktitle={2023 42nd International Symposium on Reliable Distributed Systems (SRDS)},
+  pages={59--69},
+  year={2023},
+  organization={IEEE}
+}
+
+`,
+    asset: ["references", "meyer2023range.pdf"],
+    blurb: (
+      <>
+        <P>
+          Range-based set reconciliation is a simple approach to efficiently
+          computing the union of two sets over a network, based on recursively
+          partitioning the sets and comparing fingerprints of the partitions to
+          probabilistically detect whether a partition requires further work.
+          Whereas prior presentations of this approach focus on specific
+          fingerprinting schemes for specific use-cases, we give a more generic
+          description and analysis in the broader context of set reconciliation.
+          Precisely capturing the design space for fingerprinting schemes allows
+          us to survey for cryptographically secure schemes. Furthermore, we
+          reduce the time complexity of local computations by a logarithmic
+          factor compared to previous publications.
+        </P>
+      </>
+    ),
+  },
 ];

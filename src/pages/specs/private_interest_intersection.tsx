@@ -1248,7 +1248,7 @@ export const private_interest_intersection = (
               <R n="lcmux">LCMUX</R> and the notion of{" "}
               <Rs n="resource_handle" />{" "}
               to deal with this problem. When resource limits are communicated
-              and enofreced, how should peers select which{" "}
+              and enforeced, how should peers select which{" "}
               <Rs n="PrivateInterest" /> they submit?
             </P>
 
