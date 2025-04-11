@@ -140,7 +140,7 @@ export const es6_spec = (
 					"The <R n="max_component_length"/> is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
 
 				pinformative(
-					"The type ", r("PayloadDigest"), " is the type of unsigned 256-bit integers, the total order we use is the numeric one."
+					"The type <R n="PayloadDigest"/> is the type of unsigned 256-bit integers, the total order we use is the numeric one."
 				),
 
 				pinformative(
@@ -262,7 +262,7 @@ export const es6_spec = (
 
 				hsection("es6_wgps_other", "Other Parameters", [
 					pinformative(
-						"The decomposition of <Rs n="AuthorisationToken"/> into ", r("StaticToken"), " and ", r("DynamicToken"), " is as recommended for Meadowcap in the WGPS: ", r("StaticToken"), " is the type ", r("Capability"), ", and ", r("DynamicToken"), " is the type of ", r("user_signature_scheme"), " signatures."
+						"The decomposition of <Rs n="AuthorisationToken"/> into <R n="StaticToken"/> and <R n="DynamicToken"/> is as recommended for Meadowcap in the WGPS: <R n="StaticToken"/> is the type <R n="Capability"/>, and <R n="DynamicToken"/> is the type of ", r("user_signature_scheme"), " signatures."
 					),
 
 					pinformative(
@@ -314,7 +314,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_dynamic_token"), " function maps each <R n="DynamicToken"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(

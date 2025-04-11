@@ -259,17 +259,19 @@ export const rbsr = (
           holds roughly the same number of <Rs n="Entry" />.
         </P>
 
-        <P>
-          Let <DefType n="d3rbsr_fp" r="Fingerprint" rs="Fingerprints" />{" "}
-          denote the type of hashes of <Rs n="LengthyEntry" />{" "}
-          that the peers exchange. Then the precise pieces of information that
-          the peers need to exchange are the following:
-          <Alj>
-            The styling of alternating line colours feels a bit weird,
-            especially with the pretty thin empty line of code between the two
-            structs.
-          </Alj>
-        </P>
+        <PreviewScope>
+          <P>
+            Let <DefType n="d3rbsr_fp" r="Fingerprint" rs="Fingerprints" />{" "}
+            denote the type of hashes of <Rs n="LengthyEntry" />{" "}
+            that the peers exchange. Then the precise pieces of information that
+            the peers need to exchange are the following:
+            <Alj>
+              The styling of alternating line colours feels a bit weird,
+              especially with the pretty thin empty line of code between the two
+              structs.
+            </Alj>
+          </P>
+        </PreviewScope>
 
         <Pseudocode n="rbsr_message_defs">
           <StructDef

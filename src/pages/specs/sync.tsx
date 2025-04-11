@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -11,6 +11,7 @@ import {
   DefFunction,
   DefType,
   DefValue,
+  Enum,
   StructDef,
 } from "macromania-rustic";
 import { M } from "macromania-katex";
@@ -239,14 +240,7 @@ export const sync = (
             the{" "}
             <R n="willow_parameters">
               parameters of the core Willow data model
-            </R>. The WGPS further requires parameters for{" "}
-            <R n="private_interest_intersection">
-              private interest intersection
-            </R>{" "}
-            and{" "}
-            <R n="d3_range_based_set_reconciliation">
-              3d range-based set reconciliation
-            </R>.
+            </R>, as well as the following parameters:
           </P>
 
           <PreviewScope>
@@ -270,125 +264,424 @@ export const sync = (
               handshake and encryption of the communication channel are out of
               scope of the WGPS, but the <R n="ini_pk" /> and <R n="res_pk" />
               {" "}
-              must be of type{" "}
-              <R n="sync_receiver" />.<Alj>
+              must be of type <R n="sync_receiver" />.<Alj>
                 TODO: link to our recommended handshake and encryption document
                 here.
               </Alj>
             </P>
+          </PreviewScope>
 
+          <PreviewScope>
             <P>
-                TODO Port rbsr docs, then continue here
+              <R n="d3_range_based_set_reconciliation">
+                3d range-based set reconciliation
+              </R>{" "}
+              requires a type <DefType n="Fingerprint" rs="Fingerprints" />{" "}
+              of hashes of <Rs n="LengthyEntry" /> (i.e., of{" "}
+              <Rs n="d3rbsr_fp" />).
             </P>
           </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              To efficiently transmit{" "}
+              <Rs n="AuthorisationToken" />, we decompose them into two parts:
+              the <DefType n="StaticToken" rs="StaticTokens" />{" "}
+              (which might be shared between many{" "}
+              <Rs n="AuthorisationToken" />), and the{" "}
+              <DefType n="DynamicToken" rs="DynamicTokens" />
+              <Marginale>
+                In Meadowcap, for example, <R n="StaticToken" /> is the type
+                {" "}
+                <R n="Capability" /> and <R n="DynamicToken" /> is the type{" "}
+                <R n="UserSignature" />, which together yield a{" "}
+                <R n="MeadowcapAuthorisationToken" />.
+              </Marginale>{" "}
+              (which differs between any two{" "}
+              <Rs n="Entry" />). Formally, we require that there is an{" "}
+              <AE href="https://en.wikipedia.org/wiki/Isomorphism">
+                isomorphism
+              </AE>{" "}
+              between <R n="AuthorisationToken" /> and pairs of a{" "}
+              <R n="StaticToken" /> and a <R n="DynamicToken" />{" "}
+              with respect to the <R n="is_authorised_write" /> function.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We specify the requirements for{" "}
+              <R n="sync_verified_streaming">payload transformations</R>{" "}
+              in a rather abstract way: there must be a{" "}
+              <Sidenote
+                note={
+                  <>
+                    A function in the mathematical sense, you would not actually
+                    implement the transformation in this form.
+                  </>
+                }
+              >
+                function
+              </Sidenote>{" "}
+              <DefFunction n="transform_payload" /> that maps a{" "}
+              <R n="Payload" /> into a sequence of up to{" "}
+              <M>
+                2^<Curly>64</Curly> - 1
+              </M>{" "}
+              bytestrings.<Marginale>
+                To give an example of how this construction maps to verifiable
+                streaming: <R n="transform_payload" /> could map a{" "}
+                <R n="Payload" /> to a{" "}
+                <AE href="https://worm-blossom.github.io/bab/#baseline">
+                  Bab baseline verifiable stream
+                </AE>.
+              </Marginale>{" "}
+              Peers exchange concatenations of those transformed payloads
+              instead of actual payloads, and can request each payload
+              transmission to start at any of the transformed bytestrings.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              Finally, we require a <R n="NamespaceId" />{" "}
+              <DefValue
+                n="sync_default_namespace_id"
+                r="default_namespace_id"
+              />, a <R n="SubspaceId" />{" "}
+              <DefValue n="sync_default_subspace_id" r="default_subspace_id" />,
+              and a <R n="PayloadDigest" />{" "}
+              <DefValue
+                n="sync_default_payload_digest"
+                r="default_payload_digest"
+              />.
+            </P>
+          </PreviewScope>
+        </Hsection>
+
+        <Hsection n="sync_protocol" title="Protocol">
+          <P>
+            The protocol is mostly message-based, with the exception of the
+            first few bytes of communication. To break symmetry, we refer to the
+            peer that initiated the synchronisation session as{" "}
+            <Def
+              n="alfie"
+              r="Alfie"
+              preview={
+                <>
+                  <P>
+                    <Def fake n="alfie">Alfie</Def>{" "}
+                    refers to the peer that initiated a WGPS synchronisation
+                    session. We use this terminology to break symmetry in the
+                    protocol.
+                  </P>
+                </>
+              }
+            />, and the other peer as{" "}
+            <Def
+              n="betty"
+              r="Betty"
+              preview={
+                <>
+                  <P>
+                    <Def fake n="betty">Betty</Def>{" "}
+                    refers to the peer that accepted a WGPS synchronisation
+                    session. We use this terminology to break symmetry in the
+                    protocol.
+                  </P>
+                </>
+              }
+            />.
+          </P>
+
+          <P>
+            Peers might receive invalid messages, both syntactically (i.e.,
+            invalid encodings) and semantically (i.e., logically inconsistent
+            messages). In both cases, the peer to detect this behaviour must
+            abort the sync session. We indicate such situations by writing that
+            something{" "}
+            <Quotes>is an error</Quotes>. Any message that refers to a fully
+            freed resource handle is an error. More generally, whenever we state
+            that a message must fulfil some criteria, but a peer receives a
+            message that does not fulfil these criteria, that is an error.
+          </P>
+
+          <PreviewScope>
+            <P>
+              The first byte each peer sends must be a natural number{" "}
+              <M post=".">x {`\\`}leq 64</M> This sets the{" "}
+              <DefValue n="peer_max_payload_size" r="maximum payload size" />
+              {" "}
+              of that peer to <M post=".">2^x</M> The{" "}
+              <R n="peer_max_payload_size" />{" "}
+              limits when the other peer may include <Rs n="Payload" />{" "}
+              directly when transmitting <Rs n="Entry" />: when an{" "}
+              <R n="Entry" />’s <R n="entry_payload_length" />{" "}
+              is strictly greater than the <R n="peer_max_payload_size" />, its
+              {" "}
+              <R n="Payload" />{" "}
+              may only be transmitted when explicitly requested.
+            </P>
+          </PreviewScope>
+
+          <P>
+            After this initial transmissions, the protocol becomes a purely
+            message-based protocol. There are several kinds of messages, which
+            the peers create, encode as byte strings, and transmit mostly
+            independently from each other.
+          </P>
+
+          <P>
+            The messages make use of the following <Rs n="resource_handle" />:
+          </P>
+
+          <Pseudocode n="sync_handle_defs">
+            <Enum
+              comment={
+                <>
+                  The different <Rs n="resource_handle" /> employed by the{" "}
+                  <R n="wgps" />.
+                </>
+              }
+              id={[
+                "HandleType",
+                "HandleType",
+                "HandleTypes",
+              ]}
+              variants={[
+                {
+                  tuple: true,
+                  id: [
+                    "IntersectionHandle",
+                    "IntersectionHandle",
+                    "IntersectionHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" />{" "}
+                      for the hash-boolean pairs transmitted during{" "}
+                      <R n="pii_pii">private interest intersection</R>.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "CapabilityHandle",
+                    "CapabilityHandle",
+                    "CapabilityHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" /> for <Rs n="ReadCapability" />
+                      {" "}
+                      that certify access to some <Rs n="Entry" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "AreaOfInterestHandle",
+                    "AreaOfInterestHandle",
+                    "AreaOfInterestHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" /> for <Rs n="AreaOfInterest" />
+                      {" "}
+                      that peers wish to sync.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "PayloadRequestHandle",
+                    "PayloadRequestHandle",
+                    "PayloadRequestHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" /> that controls the matching from
+                      {" "}
+                      <R n="Payload" /> transmissions to <R n="Payload" />{" "}
+                      requests.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "StaticTokenHandle",
+                    "StaticTokenHandle",
+                    "StaticTokenHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" />{" "}
+                      for ", rs("StaticToken"), " that peers need to transmit.
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <P>
+            The messages are divided across the following{" "}
+            <Rs n="logical_channel" />:
+          </P>
+
+          <Pseudocode n="sync_channel_defs">
+            <Enum
+              comment={
+                <>
+                  The different <Rs n="logical_channel" /> employed by the{" "}
+                  <R n="wgps" />.
+                </>
+              }
+              id={[
+                "LogicalChannel",
+                "LogicalChannel",
+                "LogicalChannels",
+              ]}
+              variants={[
+                {
+                  tuple: true,
+                  id: [
+                    "ReconciliationChannel",
+                    "ReconciliationChannel",
+                    "ReconciliationChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for performing{" "}
+                      <R n="d3rbsr" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "DataChannel",
+                    "DataChannel",
+                    "DataChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for transmitting{" "}
+                      <Rs n="Entry" /> and <Rs n="Payload" /> outside of{" "}
+                      <R n="d3rbsr" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "IntersectionChannel",
+                    "IntersectionChannel",
+                    "IntersectionChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="IntersectionHandle" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "CapabilityChannel",
+                    "CapabilityChannel",
+                    "CapabilityChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="CapabilityHandle" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "AreaOfInterestChannel",
+                    "AreaOfInterestChannel",
+                    "AreaOfInterestChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="AreaOfInterestHandle" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "PayloadRequestChannel",
+                    "PayloadRequestChannel",
+                    "PayloadRequestChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="PayloadRequestHandle" />.
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "StaticTokenChannel",
+                    "StaticTokenChannel",
+                    "StaticTokenChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="StaticTokenHandle" />.
+                    </>
+                  ),
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <P>
+            <Alj>
+              Move this into the general handle spec?
+            </Alj>
+            These <Rs n="logical_channel" />{" "}
+            are not fully logically independent: messages on some channels refer
+            to <Rs n="resource_handle" /> <R n="handle_bind">bound</R>{" "}
+            on other channels. Whenever a message references a handle from
+            another channel, but that handle has not yet been bound, processing
+            of that message must be halted until all buffered messages in the
+            channel for that kind of handle have been processed, or until the
+            handle has been bound, whichever comes first.
+          </P>
+
+          <Hsection n="sync_messages" title="Messages">
+            <P>
+              <Alj inline>TODO</Alj>
+            </P>
+          </Hsection>
         </Hsection>
 
         {
           /*
 
-            pinformative(link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " requires a type ", def_parameter_type("Fingerprint"), " of hashes of <Rs n="LengthyEntry"/>, a type ", def_parameter_type("PreFingerprint"), " and a (probabilistically) injective function ", def_parameter_fn("fingerprint_finalise"), " from ", r("PreFingerprint"), " into ", r("Fingerprint"), ", a hash function ", def_parameter_fn("fingerprint_singleton"), " from <Rs n="LengthyEntry"/> into ", r("PreFingerprint"), " for computing the ", rs("PreFingerprint"), " of singleton <R n="LengthyEntry"/> sets, an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), ", ", link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), " ", link("binary operation", "https://en.wikipedia.org/wiki/Binary_operation"), " ", def_parameter_fn("fingerprint_combine"), " on ", r("PreFingerprint"), " for computing the ", rs("PreFingerprint"), " of larger <R n="LengthyEntry"/> sets, and a value ", def_parameter_value("fingerprint_neutral"), " of type ", r("PreFingerprint"), " that is a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " for ", r("fingerprint_combine"), " for serving as the ", r("PreFingerprint"), " of the empty set."),
-
-            pinformative("To efficiently transmit <Rs n="AuthorisationToken"/>, we decompose them into two parts: the ", def_parameter_type({id: "StaticToken", singular: "StaticToken"}), " (which might be shared between many <Rs n="AuthorisationToken"/>), and the ", def_parameter_type({id: "DynamicToken", singular: "DynamicToken"}), marginale([
-                "In Meadowcap, for example, ", r("StaticToken"), " is the type ", r("Capability"), " and ", r("DynamicToken"), " is the type <R n="UserSignature"/>, which together yield a ", r("MeadowcapAuthorisationToken"), ".",
-            ]), " (which differs between any two <Rs n="Entry"/>). Formally, we require that there is an ", link("isomorphism", "https://en.wikipedia.org/wiki/Isomorphism"), " between <R n="AuthorisationToken"/> and pairs of a ", r("StaticToken"), " and a ", r("DynamicToken"), " with respect to the <R n="is_authorised_write"/> function."),
-
-            pinformative(link_name("sync_payloads_transform", "Payload transformation"), " requires a (not necessarily deterministic) algorithm ", def_parameter_fn("transform_payload"), " that converts a <R n="Payload"/> into another bytestring."),
-
-            pinformative("Finally, we require a <R n="NamespaceId"/> ", def_parameter_value({id: "sync_default_namespace_id", singular: "default_namespace_id"}), ", a <R n="SubspaceId"/> ", def_parameter_value({id: "sync_default_subspace_id", singular: "default_subspace_id"}), ", and a ", r("PayloadDigest"), " ", def_parameter_value({id: "sync_default_payload_digest", singular: "default_payload_digest"}), "."),
-        ]),
-
-        hsection("sync_protocol", "Protocol", [
-            pinformative("The protocol is mostly message-based, with the exception of the first few bytes of communication. To break symmetry, we refer to the peer that initiated the synchronisation session as ", def({id: "alfie", singular: "Alfie"}, "Alfie", [def_fake("alfie", "Alfie"), " refers to the peer that initiated a WGPS synchronisation session. We use this terminology to break symmetry in the protocol."]), ", and the other peer as ", def({id: "betty", singular: "Betty"}, "Betty", [def_fake("betty", "Betty"), " refers to the peer that accepted a WGPS synchronisation session. We use this terminology to break symmetry in the protocol."]), "."),
-
-            pinformative("Peers might receive invalid messages, both syntactically (i.e., invalid encodings) and semantically (i.e., logically inconsistent messages). In both cases, the peer to detect this behaviour must abort the sync session. We indicate such situations by writing that something ", quotes("is an error"), ". Any message that refers to a fully freed resource handle is an error. More generally, whenever we state that a message must fulfil some criteria, but a peer receives a message that does not fulfil these criteria, that is an error."),
-
-            pinformative("Before any communication, each peer locally and independently generates some random data: a ", r("challenge_length"), "-byte integer ", def_value("nonce"), ", and a random value ", def_value("scalar"), " of type ", r("PsiScalar"), ". Both are used for cryptographic purposes and must thus use high-quality sources of randomness — they must both be unique across all protocol runs, and unpredictable."),
-
-            pinformative("The first byte each peer sends must be a natural number ", $dot("x \\leq 64"), " This sets the ", def_value({id: "peer_max_payload_size", singular: "maximum payload size"}), " of that peer to", $dot("2^x"), "The ", r("peer_max_payload_size"), " limits when the other peer may include <Rs n="Payload"/> directly when transmitting <Rs n="Entry"/>: when an <R n="Entry"/>’s <R n="entry_payload_length"/> is strictly greater than the ", r("peer_max_payload_size"), ", its <R n="Payload"/> may only be transmitted when explicitly requested."),
-
-            pinformative("The next ", r("challenge_hash_length"), " bytes a peer sends are the ", r("challenge_hash"), " of ", r("nonce"), "; we call the bytes that a peer received this way its ", def_value("received_commitment"), "."),
-
-            pinformative("After those initial transmissions, the protocol becomes a purely message-based protocol. There are several kinds of messages, which the peers create, encode as byte strings, and transmit mostly independently from each other."),
-
-            pinformative("The messages make use of the following <Rs n="resource_handle"/>:"),
-
-            pseudocode(
-                new SimpleEnum({
-                    id: "HandleType",
-                    comment: ["The different <Rs n="resource_handle"/> employed by the ", r("WGPS"), "."],
-                    variants: [
-                        {
-                            id: "IntersectionHandle",
-                            comment: [R("resource_handle"), " for the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". More precisely, an ", r("IntersectionHandle"), " stores a ", r("PsiGroup"), " member together with one of two possible states", ": ", lis(
-                                [def_value({id: "psi_state_pending", singular: "pending"}, "pending", ["The ", def_fake_value("psi_state_pending", "pending"), " state indicates that the stored ", r("PsiGroup"), " member has been submitted for ", link_name("private_area_intersection", "private area intersection"), ", but the other peer has yet to reply with the result of multiplying its ", r("scalar"), "."]), " (waiting for the other peer to perform scalar multiplication),"],
-                                [def_value({id: "psi_state_completed", singular: "completed"}, "completed", ["The ", def_fake_value("psi_state_completed", "completed"), " state indicates that the stored ", r("PsiGroup"), " member is the result of both peers multiplying their ", r("scalar"), " with the initial ", r("PsiGroup"), " member."]), " (both peers performed scalar multiplication)."],
-                            )],
-                        },
-                        {
-                            id: "CapabilityHandle",
-                            comment: [R("resource_handle"), " for ", rs("ReadCapability"), " that certify access to some <Rs n="Entry"/>."],
-                        },
-                        {
-                            id: "AreaOfInterestHandle",
-                            comment: [R("resource_handle"), " for <Rs n="AreaOfInterest"/> that peers wish to sync."],
-                        },
-                        {
-                            id: "PayloadRequestHandle",
-                            comment: [R("resource_handle"), " that controls the matching from <R n="Payload"/> transmissions to <R n="Payload"/> requests."],
-                        },
-                        {
-                            id: "StaticTokenHandle",
-                            comment: [R("resource_handle"), " for ", rs("StaticToken"), " that peers need to transmit."],
-                        },
-                    ],
-                }),
-            ),
-
-            pinformative("The messages are divided across the following <Rs n="logical_channel"/>:"),
-
-            pseudocode(
-                new SimpleEnum({
-                    id: "LogicalChannel",
-                    comment: ["The different <Rs n="logical_channel"/> employed by the ", r("WGPS"), "."],
-                    variants: [
-                        {
-                            id: "ReconciliationChannel",
-                            comment: [R("logical_channel"), " for performing <R n="d3rbsr"/>."],
-                        },
-                        {
-                            id: "DataChannel",
-                            comment: [R("logical_channel"), " for transmitting <Rs n="Entry"/> and <Rs n="Payload"/> outside of <R n="d3rbsr"/>."],
-                        },
-                        {
-                            id: "IntersectionChannel",
-                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("IntersectionHandle"), "."],
-                        },
-                        {
-                            id: "CapabilityChannel",
-                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("CapabilityHandle"), "."],
-                        },
-                        {
-                            id: "AreaOfInterestChannel",
-                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("AreaOfInterestHandle"), "."],
-                        },
-                        {
-                            id: "PayloadRequestChannel",
-                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("PayloadRequestHandle"), "."],
-                        },
-                        {
-                            id: "StaticTokenChannel",
-                            comment: [R("logical_channel"), " for controlling the ", r("handle_bind", "binding"), " of new ", rs("StaticTokenHandle"), "."],
-                        },
-                    ],
-                }),
-            ),
-
-            pinformative(
-                "These <Rs n="logical_channel"/> are not fully logically independent: messages on some channels refer to <Rs n="resource_handle"/> ", r("handle_bind", "bound"), " on other channels. Whenever a message references a handle from another channel, but that handle has not yet been bound, processing of that message must be halted until all buffered messages in the channel for that kind of handle have been processed, or until the handle has been bound, whichever comes first.",
-            ),
 
             hsection("sync_messages", "Messages", [
-                pinformative("We now define the different kinds of messages. When we do not mention the ", r("logical_channel"), " that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any ", r("logical_channel"), "."),
+                pinformative("We now define the different kinds of messages. When we do not mention the <R n="logical_channel"/> that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any <R n="logical_channel"/>."),
 
                 hsection("sync_commitment", "Commitment Scheme", [
                     pinformative("The WGPS enforces ", link_name("access_control", "access control"), " by making peers prove ownership of ", rs("dss_sk"), " by signing a nonce determined via a ", r("commitment_scheme"), ". Peers transmit the ", r("challenge_hash"), " of their committed data in the first few bytes of the protocol, the ", r("CommitmentReveal"), " message then allows them to conclude the ", r("commitment_scheme"), ":"),
@@ -470,7 +763,7 @@ export const sync = (
                         "The ", r("PaiReplyFragment"), " messages let peers complete the information exchange regarding a single ", r("fragment"), " submitted to private set intersection in the ", link_name("private_area_intersection", "private area intersection"), " process.",
                     ]),
 
-                    pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
+                    pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
 
                     pseudocode(
                         new Struct({
@@ -481,7 +774,7 @@ export const sync = (
                                 {
                                     id: "PaiRequestSubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
+                                    comment: ["The ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -501,7 +794,7 @@ export const sync = (
                                 {
                                     id: "PaiReplySubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("PaiRequestSubspaceCapabilityHandle"), " of the ", r("PaiRequestSubspaceCapability"), " message that this answers (hence, an ", r("IntersectionHandle"), " ", r("handle_bind", "bound"), " by the ", em("receiver"), " of this message)."],
+                                    comment: ["The ", r("PaiRequestSubspaceCapabilityHandle"), " of the ", r("PaiRequestSubspaceCapability"), " message that this answers (hence, an ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the ", em("receiver"), " of this message)."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -529,7 +822,7 @@ export const sync = (
                 ]),
 
                 hsection("sync_setup", "Setup", [
-                    pinformative("To transmit <Rs n="Entry"/>, a peer first has to register ", rs("ReadCapability"), ", <Rs n="AreaOfInterest"/>, and ", rs("StaticToken"), " with the other peer."),
+                    pinformative("To transmit <Rs n="Entry"/>, a peer first has to register <Rs n="ReadCapability"/>, <Rs n="AreaOfInterest"/>, and ", rs("StaticToken"), " with the other peer."),
 
                     pseudocode(
                         new Struct({
@@ -546,7 +839,7 @@ export const sync = (
                                 {
                                     id: "SetupBindReadCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), ", ", r("handle_bind", "bound"), " by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
+                                    comment: ["The ", r("IntersectionHandle"), ", <R n="handle_bind">bound</R> by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -563,7 +856,7 @@ export const sync = (
 
                     pinformative(
                         marginale(["These requirements allow us to encode ", r("SetupBindReadCapability"), " messages more efficiently."]),
-                        "The ", r("SetupBindReadCapabilityHandle"), " must be ", r("handle_bind", "bound"), " to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("SetupBindReadCapabilityCapability"), " with the longest <R n="Path"/> ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
+                        "The ", r("SetupBindReadCapabilityHandle"), " must be <R n="handle_bind">bound</R> to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("SetupBindReadCapabilityCapability"), " with the longest <R n="Path"/> ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
                     ),
 
                     pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
@@ -582,7 +875,7 @@ export const sync = (
                                 {
                                     id: "SetupBindAreaOfInterestCapability",
                                     name: "authorisation",
-                                    comment: ["A ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message", apo, "s ", r("SetupBindAreaOfInterestAOI"), "."],
+                                    comment: ["A ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message", apo, "s ", r("SetupBindAreaOfInterestAOI"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -590,7 +883,7 @@ export const sync = (
                     ),
 
                     pinformative(
-                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " ", r("handle_bind", "bound"), " by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
+                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
                     ),
 
                     aside_block(
@@ -600,25 +893,25 @@ export const sync = (
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
 
                     pinformative(
-                        "Let ", def_value({id: "handle2ns_handle", singular: "handle"}), " be an ", r("AreaOfInterestHandle"), ". We then define ", code(function_call(def_fn({id: "handle_to_namespace_id"}), r("handle2ns_handle"))), " to denote the <R n="granted_namespace"/> of the ", r("ReadCapability"), " whose ", r("CapabilityHandle"), " is the ", r("SetupBindAreaOfInterestCapability"), " of the ", r("SetupBindAreaOfInterest"), " that ", r("handle_bind", "bound"), " ", r("handle2ns_handle"), ".",
+                        "Let ", def_value({id: "handle2ns_handle", singular: "handle"}), " be an ", r("AreaOfInterestHandle"), ". We then define ", code(function_call(def_fn({id: "handle_to_namespace_id"}), r("handle2ns_handle"))), " to denote the <R n="granted_namespace"/> of the ", r("ReadCapability"), " whose ", r("CapabilityHandle"), " is the ", r("SetupBindAreaOfInterestCapability"), " of the ", r("SetupBindAreaOfInterest"), " that <R n="handle_bind">bound</R> ", r("handle2ns_handle"), ".",
                     ),
 
                     pseudocode(
                         new Struct({
                             id: "SetupBindStaticToken",
-                            comment: [R("handle_bind"), " a ", r("StaticToken"), " to a ", r("StaticTokenHandle"), "."],
+                            comment: [R("handle_bind"), " a <R n="StaticToken"/> to a ", r("StaticTokenHandle"), "."],
                             fields: [
                                 {
                                     id: "SetupBindStaticTokenToken",
                                     name: "static_token",
-                                    comment: ["The ", r("StaticToken"), " to bind."],
+                                    comment: ["The <R n="StaticToken"/> to bind."],
                                     rhs: r("StaticToken"),
                                 },
                             ],
                         }),
                     ),
 
-                    pinformative("The ", r("SetupBindStaticToken"), " messages let peers ", r("handle_bind"), " ", rs("StaticToken"), ". Transmission of <Rs n="AuthorisedEntry"/> in other messages refers to ", rs("StaticTokenHandle"), " rather than transmitting ", rs("StaticToken"), " verbatim."),
+                    pinformative("The ", r("SetupBindStaticToken"), " messages let peers ", r("handle_bind"), " ", rs("StaticToken"), ". Transmission of <Rs n="AuthorisedEntry"/> in other messages refers to <Rs n="StaticTokenHandle"/> rather than transmitting ", rs("StaticToken"), " verbatim."),
 
                     pinformative(R("SetupBindStaticToken"), " messages use the ", r("StaticTokenChannel"), "."),
                 ]),
@@ -648,13 +941,13 @@ export const sync = (
                                 {
                                     id: "ReconciliationSendFingerprintSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "ReconciliationSendFingerprintReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -667,7 +960,7 @@ export const sync = (
                         }),
                     ),
 
-                    pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress <R n="d3rbsr"/>. Each ", r("ReconciliationSendFingerprint"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers; this upholds read access control."),
+                    pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress <R n="d3rbsr"/>. Each ", r("ReconciliationSendFingerprint"), " message must contain <Rs n="AreaOfInterestHandle"/> issued by both peers; this upholds read access control."),
 
                     pinformative("In order to inform each other whenever they fully cover a <R n="D3Range"/> during reconciliation, each peer tracks two numbers: ", def_value("my_range_counter"), " and ", def_value("your_range_counter"), ". Both are initialised to zero. Whenever a peer ", em("sends"), " either a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesFlag"), " set to <Code>true</Code> or a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("my_range_counter"), ". Whenever it ", em("receives"), " either a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesFlag"), " set to <Code>true</Code> or a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("your_range_counter"), ". When a messages causes one of these values to be incremented, we call ", sidenote("the", ["Both peers assign the same values to the same messages."]), " value ", em("before"), " incrementation the message's ", def("range_count"), "."),
 
@@ -708,13 +1001,13 @@ export const sync = (
                                 {
                                     id: "ReconciliationAnnounceEntriesSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "ReconciliationAnnounceEntriesReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -727,7 +1020,7 @@ export const sync = (
                         }),
                     ),
 
-                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers begin transmission of their <Rs n="LengthyEntry"/> in a <R n="D3Range"/>. Each ", r("ReconciliationAnnounceEntries"), " message must contain ", rs("AreaOfInterestHandle"), " issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
+                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers begin transmission of their <Rs n="LengthyEntry"/> in a <R n="D3Range"/>. Each ", r("ReconciliationAnnounceEntries"), " message must contain <Rs n="AreaOfInterestHandle"/> issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
 
                     pinformative("Actual transmission of the <Rs n="LengthyEntry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
                         "Sorting the <Rs n="Entry"/> allows the receiver to determine which of its own <Rs n="Entry"/> it can omit from a reply in constant space. For unsorted <Rs n="Entry"/>, peers that cannot allocate a linear amount of memory have to resort to possibly redundant <R n="Entry"/> transmissions to uphold the correctness of <R n="d3rbsr"/>."
@@ -756,7 +1049,7 @@ export const sync = (
                                 {
                                     id: "ReconciliationSendEntryStaticTokenHandle",
                                     name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message, that is ", r("handle_bind", "bound"), " to the static part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
+                                    comment: ["A ", r("StaticTokenHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that is <R n="handle_bind">bound</R> to the static part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -843,13 +1136,13 @@ export const sync = (
                                 {
                                     id: "DataSendEntryStatic",
                                     name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), " ", r("handle_bind", "bound"), " to the ", r("StaticToken"), " of the <R n="Entry"/> to transmit."],
+                                    comment: ["A ", r("StaticTokenHandle"), " <R n="handle_bind">bound</R> to the <R n="StaticToken"/> of the <R n="Entry"/> to transmit."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "DataSendEntryDynamic",
                                     name: "dynamic_token",
-                                    comment: ["The ", r("DynamicToken"), " of the <R n="Entry"/> to transmit."],
+                                    comment: ["The <R n="DynamicToken"/> of the <R n="Entry"/> to transmit."],
                                     rhs: r("DynamicToken"),
                                 },
                                 {
@@ -905,13 +1198,13 @@ export const sync = (
                                 {
                                     id: "DataSetMetadataSenderHandle",
                                     name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the sender of this message."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message."],
                                     rhs: r("U64"),
                                 },
                                 {
                                     id: "DataSetMetadataReceiverHandle",
                                     name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", ", r("handle_bind", "bound"), " by the receiver of this message."],
+                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -948,7 +1241,7 @@ export const sync = (
                                 {
                                     id: "DataBindPayloadRequestCapability",
                                     name: "capability",
-                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " ", r("handle_bind", "bound"), " by the sender that grants them read access to the ", r("handle_bind", "bound"), " <R n="Entry"/>."],
+                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " <R n="handle_bind">bound</R> by the sender that grants them read access to the <R n="handle_bind">bound</R> <R n="Entry"/>."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -977,7 +1270,7 @@ export const sync = (
                         }),
                     ),
 
-                    pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested <R n="Payload"/>. More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " value to that to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is ", r("handle_bind", "bound"), "."),
+                    pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested <R n="Payload"/>. More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " value to that to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is <R n="handle_bind">bound</R>."),
 
                     pinformative(R("DataReplyPayload"), " messages use the ", r("DataChannel"), "."),
                 ]),
@@ -1039,7 +1332,7 @@ export const sync = (
                         new Struct({
                             id: "ControlLimitSending",
                             comment: [
-                              "Promise to the other peer an upper bound on the number of bytes of messages that you will send on some ", r("logical_channel"), ".",
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will send on some <R n="logical_channel"/>.",
                             ],
                             fields: [
                               {
@@ -1058,7 +1351,7 @@ export const sync = (
                           new Struct({
                             id: "ControlLimitReceiving",
                             comment: [
-                              "Promise to the other peer an upper bound on the number of bytes of messages that you will still receive on some ", r("logical_channel"), ".",
+                              "Promise to the other peer an upper bound on the number of bytes of messages that you will still receive on some <R n="logical_channel"/>.",
                             ],
                             fields: [
                               {
@@ -1076,7 +1369,7 @@ export const sync = (
 
                         new Struct({
                             id: "ControlAnnounceDropping",
-                            comment: ["Notify the other peer that you have started dropping messages and will continue to do so until you receives a ", r("ControlApologise"), " message. Note that you must send any outstanding ", rs("guarantee"), " of the ", r("logical_channel"), " before sending a ", r("ControlAnnounceDropping"), " message."],
+                            comment: ["Notify the other peer that you have started dropping messages and will continue to do so until you receives a ", r("ControlApologise"), " message. Note that you must send any outstanding ", rs("guarantee"), " of the <R n="logical_channel"/> before sending a ", r("ControlAnnounceDropping"), " message."],
                             fields: [
                                 {
                                     id: "ControlAnnounceDroppingChannel",
@@ -1088,7 +1381,7 @@ export const sync = (
 
                         new Struct({
                             id: "ControlApologise",
-                            comment: ["Notify the other peer that it can stop dropping messages of this ", r("logical_channel"), "."],
+                            comment: ["Notify the other peer that it can stop dropping messages of this <R n="logical_channel"/>."],
                             fields: [
                                 {
                                     id: "ControlApologiseChannel",
@@ -1143,8 +1436,8 @@ export const sync = (
                             "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
                         ),
                         preview_scope(
-                            marginale(["When using the ", r("Capability"), " type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_read_capability"}), " for ", rs("ReadCapability"), " of known <R n="granted_namespace"/> and whose <R n="granted_area"/> is <R n="area_include_area">included</R> in some known <R n="Area"/>.",
+                            marginale(["When using the <R n="Capability"/> type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_read_capability"}), " for <Rs n="ReadCapability"/> of known <R n="granted_namespace"/> and whose <R n="granted_area"/> is <R n="area_include_area">included</R> in some known <R n="Area"/>.",
                         ),
                         preview_scope(
                             "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
@@ -1158,10 +1451,10 @@ export const sync = (
                             "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on <R n="SubspaceId"/> with least element ", r("sync_default_subspace_id"), ", in which for every non-maximal <R n="SubspaceId"/> ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other <R n="SubspaceId"/> is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
                         ),
                         preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_static_token"}), " for ", r("StaticToken"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_static_token"}), " for <R n="StaticToken"/>.",
                         ),
                         preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_dynamic_token"}), " for ", r("DynamicToken"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_dynamic_token"}), " for <R n="DynamicToken"/>.",
                         ),
                         preview_scope(
                             "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_fingerprint"}), " for ", r("Fingerprint"), ".",
@@ -1458,7 +1751,7 @@ export const sync = (
                     ),
 
                     pinformative(
-                        "Given two ", rs("AreaOfInterestHandle"), " ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the <R n="D3Range"/> that ", rs("d3_range_include"), " the same <Rs n="Entry"/> as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the <Rs n="AreaOfInterest"/> to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are ", r("handle_bind", "bound"), "."
+                        "Given two <Rs n="AreaOfInterestHandle"/> ", def_value({id: "aoi2range1", singular: "aoi1"}), " and ", def_value({id: "aoi2range2", singular: "aoi2"}), ", we define ", code(function_call(def_fn({id: "aoi_handles_to_3drange"}), r("aoi2range1"), r("aoi2range2"))), " as the <R n="D3Range"/> that ", rs("d3_range_include"), " the same <Rs n="Entry"/> as the ", r("area_intersection"), " of the ", rs("aoi_area"), " of the <Rs n="AreaOfInterest"/> to which ", r("aoi2range1"), " and ", r("aoi2range2"), " are <R n="handle_bind">bound</R>."
                     ),
 
                     hr(),
@@ -1837,7 +2130,7 @@ export const sync = (
 
                 hsection("sync_encode_data", "Data", [
                     pinformative(
-                        "When encoding <Rs n="Entry"/> for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the <R n="Entry"/> can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an <R n="Area"/>. Such an <R n="Area"/> ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the <Rs n="Area"/> ", r("handle_bind", "bound"), " by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " ", r("handle_bind", "bound"), " by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " ", r("handle_bind", "bound"), " by the receiver of the encoded message.",
+                        "When encoding <Rs n="Entry"/> for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the <R n="Entry"/> can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an <R n="Area"/>. Such an <R n="Area"/> ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the <Rs n="Area"/> <R n="handle_bind">bound</R> by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " <R n="handle_bind">bound</R> by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " <R n="handle_bind">bound</R> by the receiver of the encoded message.",
                     ),
 
                     hr(),

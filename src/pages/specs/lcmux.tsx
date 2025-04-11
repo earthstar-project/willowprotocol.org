@@ -1284,25 +1284,6 @@ export const lcmux = (
             </P>
 
             <P>
-              <Marginale>
-                When Alfie receives a message from Betty that she wants to free
-                a{" "}
-                <R n="resource_handle" />, he can note how many bytes are
-                currently buffered on all <Rs n="logical_channel" />{" "}
-                (easy optimisation: only consider those whose{" "}
-                <Rs n="channel_message" /> can legally reference{" "}
-                <Rs n="resource_handle" /> of the <R n="handle_type" />{" "}
-                in question). Once all these bytes have been processed,
-                releasing the data is safe. Alternatively, when moving data into
-                an LCMUX buffer, a peer can scan that data for{" "}
-                <Rs n="resource_handle" />, and increment a reference count for
-                each{" "}
-                <R n="resource_handle" />. Processing such a message reduces the
-                reference count; a reference count of zero allows for releasing
-                the data. This approach allows for more timely data release, but
-                requires prior knowledge of the <Rs n="channel_message" />{" "}
-                in question.
-              </Marginale>
               When a peer has both sent <Em>and</Em> received a message to{" "}
               <R n="handle_free" /> a <R n="resource_handle" />, it{" "}
               <Em>still cannot</Em>{" "}
