@@ -140,7 +140,6 @@ export function Wip(
               return evaled;
             }}
           >
-            (
             <Span
               clazz={clazz}
               id={theId}
@@ -155,7 +154,6 @@ export function Wip(
             >
               {wrap(ctx, <exps x={children} />)}
             </Span>
-            )
           </map>
         );
 
