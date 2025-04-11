@@ -1,0 +1,272 @@
+/*
+macromania_pseudocode
+*/
+
+:root {
+    --pseudo-fg-muted: #808080;
+    --pseudo-fg-slightly-muted: #454545;
+    --rb0: #344cb7;
+    --rb1: #819331;
+    --rb2: #7b3814;
+    --kw: #20689b;
+    /* based off solarized-blue, but desaturated */
+    --kw2: #843515;
+    /* based off solarized-red, but desaturated */
+}
+
+code.pseudocode {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+
+    text-align: left;
+    font-size: 0.85rem;
+    justify-self: start;
+
+    margin: var(--default-spacing) 0;
+
+    div {
+        display: inline-block;
+    }
+
+    >.locGutter {
+        text-align: right;
+        padding-left: 0.2em;
+        color: var(--pseudo-fg-muted);
+        transition: color 0.3s ease-in-out;
+        user-select: none;
+
+        >.lineNumber {
+            >a {
+                text-decoration: none;
+            }
+        }
+
+        >.fold {
+            width: 1.2em;
+            text-align: center;
+            opacity: 0%;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        >.doesFold {
+            cursor: pointer;
+        }
+    }
+
+    >.locGutter:hover {
+        color: var(--pseudo-fg-slightly-muted);
+    }
+
+    >.locContent {
+        line-height: 1.5em;
+        display: inline-grid;
+        grid-template-columns: auto minmax(10ch, 1fr);
+        
+        >div {
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+        }
+
+        >div:first-child {
+            >.indent {
+                width: 2ch;
+                border-left: solid 1px var(--pseudo-fg-muted);
+                height: 100%;
+                user-select: none;
+            }
+        }
+
+        >div:only-child {
+            grid-column-start: 1;
+            grid-column-end: 3;
+        }
+
+        >div.comment,
+        >div.lineComment {
+            border-left: dotted var(--pseudo-fg-muted) 2px;
+            color: var(--pseudo-fg-slightly-muted);
+            padding-left: calc(1ch - 2px);
+   
+            font-family: --var(font-mono)
+
+            p:first-child {
+                margin-top: 0;
+            }
+
+            p:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+        >div.comment {
+            margin-left: 1ch;
+        }
+
+        .inlineComment {
+            border-left: dotted var(--pseudo-fg-muted) 2px;
+            border-right: dotted var(--pseudo-fg-muted) 2px;
+            padding-left: calc(1ch - 2px);
+            padding-right: calc(1ch - 2px);
+            font-family: --var(font-mono)
+
+            color: var(--pseudo-fg-slightly-muted);
+        }
+    }
+
+    >.locContent:not(:has(div:nth-child(2))) {
+        grid-template-columns: auto;
+    }
+
+    background-color: rgba(0, 0, 0, 0.01);
+
+    > :is(div:nth-child(4n + 1), div:nth-child(4n + 2)) {
+        background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    > :is(.locGutter, .locContent).isFolded {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    >.locGutter.isFolded {
+        border-left: solid 2px var(--pseudo-fg-slightly-muted);
+    }
+
+    >.locContent {
+        padding-right: 0.2em;
+    }
+
+    >.locContent .unfoldButton {
+        cursor: pointer;
+        color: solid 3px var(--pseudo-fg-slightly-muted);
+        padding-left: 0.2em;
+        font-weight: bold;
+    }
+
+    >.locContent.isUnfolded .unfoldButton {
+        display: none;
+    }
+
+    [data-hl][data-preview-anchor] {
+        padding: 0;
+    }
+
+    dfn {
+        font-style: normal;
+    }
+}
+
+code.pseudocode:is(.dedent1, .dedent2)>.locContent {
+    >div:first-child {
+        >.indent:first-child {
+            display: none;
+        }
+    }
+}
+
+code.pseudocode.dedent2>.locContent {
+    >div:first-child {
+        >.indent:nth-child(2) {
+            display: none;
+        }
+    }
+}
+
+code.pseudocode.noLineNumbers>.locGutter>.lineNumber {
+    display: none;
+}
+
+:is(code.pseudocode.hoveredGutter>.locGutter.isUnfolded, code.pseudocode>.locGutter.isFolded) .doesFold {
+    opacity: 100%;
+}
+
+code .deemph {
+    color: var(--pseudo-fg-muted);
+}
+
+.pseudocode .rb0 {
+    color: var(--rb0);
+}
+
+.pseudocode .rb1 {
+    color: var(--rb1);
+}
+
+.pseudocode .rb2 {
+    color: var(--rb2);
+}
+
+.pseudocode .kw {
+    color: var(--kw);
+}
+
+.pseudocode .kw2 {
+    color: var(--kw2);
+}
+
+/*
+macromania_rustic
+*/
+
+:root {
+    /* Solarized https://ethanschoonover.com/solarized/ */
+    /* But darkened and desaturized. */
+    --sol-yellow: #8c6d0c;
+    --sol-orange: #843515;
+    --sol-red: #952725;
+    --sol-magenta: #8e2c5c;
+    --sol-violet: #4a4e8e;
+    --sol-blue: #20689b;
+    --sol-cyan: #206f69;
+    --sol-green: #657307;
+    /* --sol-yellow: #b58900;
+    --sol-orange: #cb4b16;
+    --sol-red: #dc322f;
+    --sol-magenta: #d33682;
+    --sol-violet: #6c71c4;
+    --sol-blue: #268bd2;
+    --sol-cyan: #2aa198;
+    --sol-green: #859900;
+    --sol-yellow: #8c6d0c; */
+}
+
+
+.pseudocode [data-hl][data-preview-anchor]:is(.rustic) {
+    text-decoration: none;
+}
+
+.rustic {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+.pseudocode .rustic {
+    font-size: 0.9rem;
+}
+
+.rustic.value {
+    color: var(--sol-orange);
+}
+
+.rustic.type {
+    color: var(--sol-violet);
+}
+
+.rustic.function {
+    color: var(--sol-green);
+}
+
+.rustic.field {
+    color: var(--sol-magenta);
+}
+
+.rustic.variant {
+    color: var(--sol-yellow);
+}
+
+.rustic.interface {
+    color: var(--sol-cyan);
+}
+
+.rustic.typeArg {
+    color: var(--sol-red);
+}
