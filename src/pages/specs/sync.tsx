@@ -655,20 +655,6 @@ export const sync = (
             />
           </Pseudocode>
 
-          <P>
-            <Alj>
-              Move this into the general handle spec?
-            </Alj>
-            These <Rs n="logical_channel" />{" "}
-            are not fully logically independent: messages on some channels refer
-            to <Rs n="resource_handle" /> <R n="handle_bind">bound</R>{" "}
-            on other channels. Whenever a message references a handle from
-            another channel, but that handle has not yet been bound, processing
-            of that message must be halted until all buffered messages in the
-            channel for that kind of handle have been processed, or until the
-            handle has been bound, whichever comes first.
-          </P>
-
           <Hsection n="sync_messages" title="Messages">
             <P>
               <Alj inline>TODO</Alj>
