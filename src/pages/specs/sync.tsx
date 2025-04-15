@@ -486,21 +486,6 @@ export const sync = (
                 {
                   tuple: true,
                   id: [
-                    "AreaOfInterestHandle",
-                    "AreaOfInterestHandle",
-                    "AreaOfInterestHandles",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="resource_handle" /> for <Rs n="AreaOfInterest" />
-                      {" "}
-                      that peers wish to sync.
-                    </>
-                  ),
-                },
-                {
-                  tuple: true,
-                  id: [
                     "PayloadRequestHandle",
                     "PayloadRequestHandle",
                     "PayloadRequestHandles",
@@ -607,21 +592,6 @@ export const sync = (
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
                       <Rs n="CapabilityHandle" />.
-                    </>
-                  ),
-                },
-                {
-                  tuple: true,
-                  id: [
-                    "AreaOfInterestChannel",
-                    "AreaOfInterestChannel",
-                    "AreaOfInterestChannels",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="logical_channel" /> for controlling the{" "}
-                      <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="AreaOfInterestHandle" />.
                     </>
                   ),
                 },
@@ -784,8 +754,8 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" /> (bound by the
-                              {" "}
+                              The <R n="IntersectionHandle" />{" "}
+                              (<R n="handle_bind">bound</R> by the{" "}
                               <Em>sender</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
@@ -810,8 +780,8 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" /> (bound by the
-                              {" "}
+                              The <R n="IntersectionHandle" />{" "}
+                              (<R n="handle_bind">bound</R> by the{" "}
                               <Em>receiver</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
@@ -893,11 +863,194 @@ export const sync = (
                 </P>
               </Hsection>
 
+              <Hsection
+                n="sync_msg_PiiBindReadCapability"
+                title={<Code>PiiBindReadCapability</Code>}
+              >
+                <P>
+                  The <R n="PiiBindReadCapability" />{" "}
+                  messages let peers transmit <Rs n="read_capability" />{" "}
+                  for overlaps between{" "}
+                  <Rs n="PrivateInterest" />. These messages simultaneously
+                  declare <Rs n="AreaOfInterest" />{" "}
+                  for reconciliation, using the <R n="granted_namespace" /> and
+                  {" "}
+                  <R n="granted_area" /> of the bound <R n="read_capability" />
+                  {" "}
+                  and a <R n="aoi_count" /> and <R n="aoi_size" />{" "}
+                  which are explicitly specified in the message.
+                </P>
+
+                <Pseudocode n="sync_defs_PiiBindReadCapability">
+                  <StructDef
+                    comment={
+                      <>
+                        <Rb n="handle_bind" /> a <R n="read_capability" />{" "}
+                        for an overlap between two{" "}
+                        <Rs n="PrivateInterest" />. Additionally, this message
+                        specifies an <R n="AreaOfInterest" />{" "}
+                        which the sender wants to sync.
+                      </>
+                    }
+                    id={["PiiBindReadCapability", "PiiBindReadCapability"]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="IntersectionHandle" />{" "}
+                              (<R n="handle_bind">bound</R> by the{" "}
+                              <Em>sender</Em>{" "}
+                              of this message) which is part of the overlap. If
+                              there are two handles available, use the one that
+                              was bound with{" "}
+                              <Code>
+                                <R n="PiiBindHashActuallyInterested" /> == true
+                              </Code>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "sender_handle",
+                              "PiiBindReadCapabilitySenderHandle",
+                              "sender_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="IntersectionHandle" />{" "}
+                              (<R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em>{" "}
+                              of this message) which is part of the overlap. If
+                              there are two handles available, use the one that
+                              was bound with{" "}
+                              <Code>
+                                <R n="PiiBindHashActuallyInterested" /> == true
+                              </Code>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "receiver_handle",
+                              "PiiBindReadCapabilityReceiverHandle",
+                              "receiver_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="ReadCapability" /> to{" "}
+                              <R n="handle_bind" />. Its{" "}
+                              <R n="granted_namespace" /> must be the (shared)
+                              {" "}
+                              <R n="pi_ns" /> of the two{" "}
+                              <Rs n="PrivateInterest" />. Its{" "}
+                              <R n="granted_area" /> must be{" "}
+                              <R n="pi_include_area">included in</R> the{" "}
+                              <R n="pi_more_specific">less specific</R>{" "}
+                              of the two <Rs n="PrivateInterest" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "capability",
+                              "PiiBindReadCapabilityCapability",
+                              "capabilities",
+                            ],
+                            <R n="ReadCapability" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="aoi_count" /> of the{" "}
+                              <R n="AreaOfInterest" />{" "}
+                              that the sender wants to sync.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "max_count",
+                              "PiiBindReadCapabilityMaxCount",
+                              "max_count",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="aoi_size" /> of the{" "}
+                              <R n="AreaOfInterest" />{" "}
+                              that the sender wants to sync.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "max_size",
+                              "PiiBindReadCapabilityMaxSize",
+                              "max_size",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  It is an error when <R n="alfie" /> sends a{" "}
+                  <R n="PiiBindReadCapabilityCapability" /> whose{" "}
+                  <R n="access_receiver" /> is not{" "}
+                  <R n="ini_pk" />. Likewise, it is an error when{" "}
+                  <R n="betty" /> sends a{" "}
+                  <R n="PiiBindReadCapabilityCapability" /> whose{" "}
+                  <R n="access_receiver" /> is not <R n="res_pk" />.
+                </P>
+
+                <P>
+                  To avoid duplicate <R n="d3rbsr" /> sessions for the same{" "}
+                  <Rs n="Area" />, only <R n="alfie" />{" "}
+                  should react to sending or receiving{" "}
+                  <R n="PiiBindReadCapability" />{" "}
+                  messages by initiating set reconciliation. <Rb n="betty" />
+                  {" "}
+                  should never initiate reconciliation — unless she considers
+                  the redundant bandwidth consumption of duplicate
+                  reconciliation less of an issue than having to wait for{" "}
+                  <R n="alfie" /> to initiate reconciliation.
+                </P>
+
+                <P>
+                  <Rb n="PiiBindReadCapability" /> messages use the{" "}
+                  <R n="CapabilityChannel" />.
+                </P>
+              </Hsection>
+
               {
                 /*
                 - submit hash-boolean pair
                 - request a capability (including a request authentication, and optionally attaching an EnumerationCapability to the request (remember that those require a different request authentication))
-                - send (bind) read capability (on request, because of equality, or in response to getting a read capability) (indicate the PII handle? yes, )
+                - send (bind) read capability (indicate both PII handles, include AoI information (the "oI" part))
 
                 - register AoI
                 - register static token
@@ -1091,7 +1244,7 @@ export const sync = (
                     ),
 
                     aside_block(
-                        pinformative("To avoid duplicate <R n="d3rbsr"/> sessions for the same <Rs n="Area"/>, only ", r("alfie"), " should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for ", r("alfie"), " to initiate reconciliation."),
+                        pinformative("To avoid duplicate <R n="d3rbsr"/> sessions for the same <Rs n="Area"/>, only <R n="alfie"/> should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for <R n="alfie"/> to initiate reconciliation."),
                     ),
 
                     pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),

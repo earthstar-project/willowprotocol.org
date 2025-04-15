@@ -1153,7 +1153,7 @@ export const private_interest_intersection = (
                   />{" "}
                   message to the other peer to announce the overlap, the other
                   peer then sends its <Rs n="read_capability" />{" "}
-                  that certifies read access to <Rs n="Area" />{" "}
+                  which certify read access to <Rs n="Area" />{" "}
                   <R n="pi_include_area">included in</R> the{" "}
                   <R n="pi_more_specific">less specific</R>{" "}
                   <R n="PrivateInterest" />.
