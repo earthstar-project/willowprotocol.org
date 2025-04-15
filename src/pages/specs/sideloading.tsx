@@ -112,7 +112,7 @@ export const sideloading = (
         <P>
           Finally, given that this protocol cannot interactively authorise users
           (e.g. via{" "}
-          <R n="private_interest_intersection">
+          <R n="private_interest_overlap">
             private interest intersection
           </R>), drops are always fully encrypted.
         </P>

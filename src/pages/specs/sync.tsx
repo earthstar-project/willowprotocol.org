@@ -76,8 +76,9 @@ export const sync = (
               authorises its access.
             </Li>
             <Li>
-              Private area intersection: peers can discover common interests
-              without disclosing any non-shared information to each other.
+              Private area overlap detection: peers can discover common
+              interests without disclosing any non-shared information to each
+              other.
             </Li>
             <Li>
               Resource control: peers communicate (and enforce) their
@@ -116,7 +117,7 @@ export const sync = (
             </Alj>
           </P>
 
-          <Hsection n="sync_pii" title="Private Interest Intersection">
+          <Hsection n="sync_pii" title="Private Interest Overlap Detection">
             <P>
               The WGPS lets two peers determine which <Rs n="namespace" /> and
               {" "}
@@ -124,8 +125,8 @@ export const sync = (
               therein they share an interest in, without leaking any data that
               only one of them wishes to synchronise. We explain the underlying
               {" "}
-              <R n="private_interest_intersection">
-                private interest intersection protocol here
+              <R n="private_interest_overlap">
+                private interest overlap detection protocol here
               </R>. That protocol also covers read access control.
             </P>
           </Hsection>
@@ -248,8 +249,8 @@ export const sync = (
 
           <PreviewScope>
             <P>
-              <R n="private_interest_intersection">
-                Access control and private interest intersection
+              <R n="private_interest_overlap">
+                Access control and private interest overlap detection
               </R>{" "}
               require a type{" "}
               <DefType n="ReadCapability" rs="ReadCapabilities" /> of{" "}
@@ -263,12 +264,13 @@ export const sync = (
               <R n="sync_receiver" />. We require a hash function{" "}
               <DefFunction n="sync_h" r="hash_interests" /> to hash salted{" "}
               <Rs n="PrivateInterest" /> to bytestrings of the fixed width{" "}
-              <DefValue n="interest_hash_length" /> (the <R n="pii_h" />{" "}
-              function from the priavet area intersection sub-spec). The
-              handshake and encryption of the communication channel are out of
-              scope of the WGPS, but the <R n="ini_pk" /> and <R n="res_pk" />
-              {" "}
-              must be of type <R n="sync_receiver" />.<Alj>
+              <DefValue n="interest_hash_length" /> (the <R n="pio_h" />{" "}
+              function from the{" "}
+              <R n="private_interest_overlap">
+                privat area overlap detection sub-spec
+              </R>). The handshake and encryption of the communication channel
+              are out of scope of the WGPS, but the <R n="ini_pk" /> and{" "}
+              <R n="res_pk" /> must be of type <R n="sync_receiver" />.<Alj>
                 TODO: link to our recommended handshake and encryption document
                 here.
               </Alj>
@@ -456,15 +458,15 @@ export const sync = (
                 {
                   tuple: true,
                   id: [
-                    "IntersectionHandle",
-                    "IntersectionHandle",
-                    "IntersectionHandles",
+                    "OverlapHandle",
+                    "OverlapHandle",
+                    "OverlapHandles",
                   ],
                   comment: (
                     <>
                       <Rb n="resource_handle" />{" "}
                       for the hash-boolean pairs transmitted during{" "}
-                      <R n="pii_pii">private interest intersection</R>.
+                      <R n="pio_pio">private interest overlap detection</R>.
                     </>
                   ),
                 },
@@ -568,15 +570,15 @@ export const sync = (
                 {
                   tuple: true,
                   id: [
-                    "IntersectionChannel",
-                    "IntersectionChannel",
-                    "IntersectionChannels",
+                    "OverlapChannel",
+                    "OverlapChannel",
+                    "OverlapChannels",
                   ],
                   comment: (
                     <>
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="IntersectionHandle" />.
+                      <Rs n="OverlapHandle" />.
                     </>
                   ),
                 },
@@ -640,13 +642,13 @@ export const sync = (
             </P>
 
             <Hsection
-              n="sync_pii_messages"
-              title="Private Interest Intersection"
+              n="sync_pio_messages"
+              title="Private Interest Overlap"
             >
               <P>
                 In{" "}
-                <R n="private_interest_intersection">
-                  private interest intersection
+                <R n="private_interest_overlap">
+                  private interest overlap detection
                 </R>, the two peers privately determine which{" "}
                 <Rs n="PrivateInterest" />{" "}
                 they share, and provae read access for those interests.
@@ -654,30 +656,30 @@ export const sync = (
               </P>
 
               <Hsection
-                n="sync_msg_PiiBindHash"
-                title={<Code>PiiBindHash</Code>}
+                n="sync_msg_PioBindHash"
+                title={<Code>PioBindHash</Code>}
               >
                 <P>
-                  The <R n="PiiBindHash" /> messages let peers bind hashes of
+                  The <R n="PioBindHash" /> messages let peers bind hashes of
                   {" "}
                   <Rs n="PrivateInterest" /> for later reference during{" "}
-                  <R n="private_interest_intersection">
-                    private interest intersection
-                  </R>, as explained <R n="pii_pii">here</R>.
+                  <R n="private_interest_overlap">
+                    private interest overlap detection
+                  </R>, as explained <R n="pio_pio">here</R>.
                 </P>
 
-                <Pseudocode n="sync_defs_PiiBindHash">
+                <Pseudocode n="sync_defs_PioBindHash">
                   <StructDef
                     comment={
                       <>
                         <Rb n="handle_bind" /> data to an{" "}
-                        <R n="IntersectionHandle" /> for performing{" "}
-                        <R n="private_interest_intersection">
-                          private interest intersection
+                        <R n="OverlapHandle" /> for performing{" "}
+                        <R n="private_interest_overlap">
+                          private interest overlap detection
                         </R>.
                       </>
                     }
-                    id={["PiiBindHash", "PiiBindHash"]}
+                    id={["PioBindHash", "PioBindHash"]}
                     fields={[
                       {
                         commented: {
@@ -689,7 +691,7 @@ export const sync = (
                           ),
                           dedicatedLine: true,
                           segment: [
-                            ["hash", "PiiBindHashHash", "hashes"],
+                            ["hash", "PioBindHashHash", "hashes"],
                             <ArrayType
                               count={<R n="interest_hash_length" />}
                             >
@@ -712,7 +714,7 @@ export const sync = (
                           segment: [
                             [
                               "actually_interested",
-                              "PiiBindHashActuallyInterested",
+                              "PioBindHashActuallyInterested",
                             ],
                             <R n="Bool" />,
                           ],
@@ -723,21 +725,21 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="PiiBindHash" /> messages use the{" "}
-                  <R n="IntersectionChannel" />.
+                  <Rb n="PioBindHash" /> messages use the{" "}
+                  <R n="OverlapChannel" />.
                 </P>
               </Hsection>
 
               <Hsection
-                n="sync_msg_PiiAnnounceOverlap"
-                title={<Code>PiiAnnounceOverlap</Code>}
+                n="sync_msg_PioAnnounceOverlap"
+                title={<Code>PioAnnounceOverlap</Code>}
               >
                 <P>
-                  The <R n="PiiAnnounceOverlap" /> messages let peers send{" "}
+                  The <R n="PioAnnounceOverlap" /> messages let peers send{" "}
                   <Rs n="overlap_announcement" />.
                 </P>
 
-                <Pseudocode n="sync_defs_PiiAnnounceOverlap">
+                <Pseudocode n="sync_defs_PioAnnounceOverlap">
                   <StructDef
                     comment={
                       <>
@@ -748,20 +750,20 @@ export const sync = (
                         <R n="enumeration_capability" />.
                       </>
                     }
-                    id={["PiiAnnounceOverlap", "PiiAnnounceOverlap"]}
+                    id={["PioAnnounceOverlap", "PioAnnounceOverlap"]}
                     fields={[
                       {
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" />{" "}
+                              The <R n="OverlapHandle" />{" "}
                               (<R n="handle_bind">bound</R> by the{" "}
                               <Em>sender</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
                               was bound with{" "}
                               <Code>
-                                <R n="PiiBindHashActuallyInterested" /> == true
+                                <R n="PioBindHashActuallyInterested" /> == true
                               </Code>.
                             </>
                           ),
@@ -769,7 +771,7 @@ export const sync = (
                           segment: [
                             [
                               "sender_handle",
-                              "PiiAnnounceOverlapSenderHandle",
+                              "PioAnnounceOverlapSenderHandle",
                               "sender_handles",
                             ],
                             <R n="U64" />,
@@ -780,14 +782,14 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" />{" "}
+                              The <R n="OverlapHandle" />{" "}
                               (<R n="handle_bind">bound</R> by the{" "}
                               <Em>receiver</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
                               was bound with{" "}
                               <Code>
-                                <R n="PiiBindHashActuallyInterested" /> == true
+                                <R n="PioBindHashActuallyInterested" /> == true
                               </Code>.
                             </>
                           ),
@@ -795,7 +797,7 @@ export const sync = (
                           segment: [
                             [
                               "receiver_handle",
-                              "PiiAnnounceOverlapReceiverHandle",
+                              "PioAnnounceOverlapReceiverHandle",
                               "receiver_handles",
                             ],
                             <R n="U64" />,
@@ -815,7 +817,7 @@ export const sync = (
                           segment: [
                             [
                               "authentication",
-                              "PiiAnnounceOverlapAuthentication",
+                              "PioAnnounceOverlapAuthentication",
                               "authentications",
                             ],
                             <ArrayType
@@ -841,7 +843,7 @@ export const sync = (
                           segment: [
                             [
                               "enumeration_capability",
-                              "PiiAnnounceOverlapEnumerationCapability",
+                              "PioAnnounceOverlapEnumerationCapability",
                               "enumeration_capabilitys",
                             ],
                             <ChoiceType
@@ -858,17 +860,17 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="PiiAnnounceOverlap" /> messages are{" "}
+                  <Rb n="PioAnnounceOverlap" /> messages are{" "}
                   <Rs n="global_message" />.
                 </P>
               </Hsection>
 
               <Hsection
-                n="sync_msg_PiiBindReadCapability"
-                title={<Code>PiiBindReadCapability</Code>}
+                n="sync_msg_PioBindReadCapability"
+                title={<Code>PioBindReadCapability</Code>}
               >
                 <P>
-                  The <R n="PiiBindReadCapability" />{" "}
+                  The <R n="PioBindReadCapability" />{" "}
                   messages let peers transmit <Rs n="read_capability" />{" "}
                   for overlaps between{" "}
                   <Rs n="PrivateInterest" />. These messages simultaneously
@@ -881,7 +883,7 @@ export const sync = (
                   which are explicitly specified in the message.
                 </P>
 
-                <Pseudocode n="sync_defs_PiiBindReadCapability">
+                <Pseudocode n="sync_defs_PioBindReadCapability">
                   <StructDef
                     comment={
                       <>
@@ -892,20 +894,20 @@ export const sync = (
                         which the sender wants to sync.
                       </>
                     }
-                    id={["PiiBindReadCapability", "PiiBindReadCapability"]}
+                    id={["PioBindReadCapability", "PioBindReadCapability"]}
                     fields={[
                       {
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" />{" "}
+                              The <R n="OverlapHandle" />{" "}
                               (<R n="handle_bind">bound</R> by the{" "}
                               <Em>sender</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
                               was bound with{" "}
                               <Code>
-                                <R n="PiiBindHashActuallyInterested" /> == true
+                                <R n="PioBindHashActuallyInterested" /> == true
                               </Code>.
                             </>
                           ),
@@ -913,7 +915,7 @@ export const sync = (
                           segment: [
                             [
                               "sender_handle",
-                              "PiiBindReadCapabilitySenderHandle",
+                              "PioBindReadCapabilitySenderHandle",
                               "sender_handles",
                             ],
                             <R n="U64" />,
@@ -924,14 +926,14 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="IntersectionHandle" />{" "}
+                              The <R n="OverlapHandle" />{" "}
                               (<R n="handle_bind">bound</R> by the{" "}
                               <Em>receiver</Em>{" "}
                               of this message) which is part of the overlap. If
                               there are two handles available, use the one that
                               was bound with{" "}
                               <Code>
-                                <R n="PiiBindHashActuallyInterested" /> == true
+                                <R n="PioBindHashActuallyInterested" /> == true
                               </Code>.
                             </>
                           ),
@@ -939,7 +941,7 @@ export const sync = (
                           segment: [
                             [
                               "receiver_handle",
-                              "PiiBindReadCapabilityReceiverHandle",
+                              "PioBindReadCapabilityReceiverHandle",
                               "receiver_handles",
                             ],
                             <R n="U64" />,
@@ -966,7 +968,7 @@ export const sync = (
                           segment: [
                             [
                               "capability",
-                              "PiiBindReadCapabilityCapability",
+                              "PioBindReadCapabilityCapability",
                               "capabilities",
                             ],
                             <R n="ReadCapability" />,
@@ -986,7 +988,7 @@ export const sync = (
                           segment: [
                             [
                               "max_count",
-                              "PiiBindReadCapabilityMaxCount",
+                              "PioBindReadCapabilityMaxCount",
                               "max_count",
                             ],
                             <R n="U64" />,
@@ -1006,7 +1008,7 @@ export const sync = (
                           segment: [
                             [
                               "max_size",
-                              "PiiBindReadCapabilityMaxSize",
+                              "PioBindReadCapabilityMaxSize",
                               "max_size",
                             ],
                             <R n="U64" />,
@@ -1019,11 +1021,11 @@ export const sync = (
 
                 <P>
                   It is an error when <R n="alfie" /> sends a{" "}
-                  <R n="PiiBindReadCapabilityCapability" /> whose{" "}
+                  <R n="PioBindReadCapabilityCapability" /> whose{" "}
                   <R n="access_receiver" /> is not{" "}
                   <R n="ini_pk" />. Likewise, it is an error when{" "}
                   <R n="betty" /> sends a{" "}
-                  <R n="PiiBindReadCapabilityCapability" /> whose{" "}
+                  <R n="PioBindReadCapabilityCapability" /> whose{" "}
                   <R n="access_receiver" /> is not <R n="res_pk" />.
                 </P>
 
@@ -1031,7 +1033,7 @@ export const sync = (
                   To avoid duplicate <R n="d3rbsr" /> sessions for the same{" "}
                   <Rs n="Area" />, only <R n="alfie" />{" "}
                   should react to sending or receiving{" "}
-                  <R n="PiiBindReadCapability" />{" "}
+                  <R n="PioBindReadCapability" />{" "}
                   messages by initiating set reconciliation. <Rb n="betty" />
                   {" "}
                   should never initiate reconciliation — unless she considers
@@ -1041,18 +1043,13 @@ export const sync = (
                 </P>
 
                 <P>
-                  <Rb n="PiiBindReadCapability" /> messages use the{" "}
+                  <Rb n="PioBindReadCapability" /> messages use the{" "}
                   <R n="CapabilityChannel" />.
                 </P>
               </Hsection>
 
               {
                 /*
-                - submit hash-boolean pair
-                - request a capability (including a request authentication, and optionally attaching an EnumerationCapability to the request (remember that those require a different request authentication))
-                - send (bind) read capability (indicate both PII handles, include AoI information (the "oI" part))
-
-                - register AoI
                 - register static token
               */
               }
@@ -1063,195 +1060,6 @@ export const sync = (
         {
           /*
 
-                hsection("sync_pai_messages", "Private Area Intersection", [
-                    pinformative(link_name("private_area_intersection", "Private area intersection"), " operates by performing ", link_name("psi_actual", "private set intersection"), " and requesting and supplying ", rs("SubspaceCapability"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "PaiBindFragment",
-                            comment: [<Rb n="handle_bind"/> data to an <R n="IntersectionHandle"/> for performing <R n="private_interest_intersection">private area intersection</R>."],
-                            fields: [
-                                {
-                                    id: "PaiBindFragmentGroupMember",
-                                    name: "group_member",
-                                    comment: ["The result of first applying ", r("hash_into_group"), " to some ", r("fragment"), " for <R n="private_interest_intersection">private area intersection</R> and then performing scalar multiplication with ", r("scalar"), "."],
-                                    rhs: r("PsiGroup"),
-                                },
-                                {
-                                    id: "PaiBindFragmentIsSecondary",
-                                    name: "is_secondary",
-                                    comment: ["Set to <Code>true</Code> if the private set intersection item is a ", r("fragment_secondary"), " ", r("fragment"), "."],
-                                    rhs: r("Bool"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PaiBindFragment"), " message corresponds to mixing a data colour with one’s secret colour, and sending the mixture to the other peer."]),
-                        "The ", r("PaiBindFragment"), " messages let peers submit ", rs("fragment"), " to the private set intersection part of <R n="private_interest_intersection">private area intersection</R>. The freshly created <R n="IntersectionHandle"/> ", r("handle_bind", "binds"), " the ", r("PaiBindFragmentGroupMember"), " in the ", r("psi_state_pending"), " state.",
-                    ]),
-
-                    pinformative(R("PaiBindFragment"), " messages use the <R n="IntersectionChannel"/>."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "PaiReplyFragment",
-                            comment: ["Finalise private set intersection for a single item."],
-                            fields: [
-                                {
-                                    id: "PaiReplyFragmentHandle",
-                                    name: "handle",
-                                    comment: ["The <R n="IntersectionHandle"/> of the ", r("PaiBindFragment"), " message which this finalises."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "PaiReplyFragmentGroupMember",
-                                    name: "group_member",
-                                    comment: ["The result of performing scalar multiplication between the ", r("PaiBindFragmentGroupMember"), " of the message that this is replying to and ", r("scalar"), "."],
-                                    rhs: r("PsiGroup"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative([
-                        marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PaiReplyFragment"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer, and sending the resulting colour back."]),
-                        "The ", r("PaiReplyFragment"), " messages let peers complete the information exchange regarding a single ", r("fragment"), " submitted to private set intersection in the <R n="private_interest_intersection">private area intersection</R> process.",
-                    ]),
-
-                    pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per <R n="IntersectionHandle"/>. Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", <Rb n="handle_bind"/> the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "PaiRequestSubspaceCapability",
-                            plural: "PaiRequestSubspaceCapabilities",
-                            comment: ["Ask the receiver to send a ", r("SubspaceCapability"), "."],
-                            fields: [
-                                {
-                                    id: "PaiRequestSubspaceCapabilityHandle",
-                                    name: "handle",
-                                    comment: ["The <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
-                                    rhs: r("U64"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the <R n="subspace"/> in question."),
-
-                    pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per <R n="IntersectionHandle"/>."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "PaiReplySubspaceCapability",
-                            plural: "PaiReplySubspaceCapabilities",
-                            comment: ["Send a previously requested ", r("SubspaceCapability"), "."],
-                            fields: [
-                                {
-                                    id: "PaiReplySubspaceCapabilityHandle",
-                                    name: "handle",
-                                    comment: ["The ", r("PaiRequestSubspaceCapabilityHandle"), " of the ", r("PaiRequestSubspaceCapability"), " message that this answers (hence, an <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the ", em("receiver"), " of this message)."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "PaiReplySubspaceCapabilityCapability",
-                                    name: "capability",
-                                    comment: ["A ", r("SubspaceCapability"), " whose ", r("subspace_granted_namespace"), " corresponds to the request this answers."],
-                                    rhs: r("SubspaceCapability"),
-                                },
-                                {
-                                    id: "PaiReplySubspaceCapabilitySignature",
-                                    name: "signature",
-                                    comment: ["The ", r("sync_subspace_signature"), " issued by the ", r("subspace_receiver"), " of the ", r("PaiReplySubspaceCapabilityCapability"), " over the sender’s ", r("value_challenge"), "."],
-                                    rhs: r("sync_subspace_signature"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative(
-                        marginale(["Note that ", r("PaiReplySubspaceCapability"), " messages do not use any logical channel. Hence, peers must be able to verify them in a constant amount of memory. Whether this is possible, depends on the capability system."]),
-                        "The ", r("PaiReplySubspaceCapability"), " messages let peers answer requests for ", rs("SubspaceCapability"), ". To do so, they must present a valid ", r("sync_subspace_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to the ", r("subspace_receiver"), " of the ", r("SubspaceCapability"), ".",
-                    ),
-
-                    pinformative("A peer may send at most one ", r("PaiReplySubspaceCapability"), " message per ", r("PaiRequestSubspaceCapability"), " it received."),
-                ]),
-
-                hsection("sync_setup", "Setup", [
-                    pinformative("To transmit <Rs n="Entry"/>, a peer first has to register <Rs n="ReadCapability"/>, <Rs n="AreaOfInterest"/>, and ", rs("StaticToken"), " with the other peer."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "SetupBindReadCapability",
-                            plural: "SetupBindReadCapabilities",
-                            comment: [<Rb n="handle_bind"/> a ", r("ReadCapability"), " to a ", r("CapabilityHandle"), "."],
-                            fields: [
-                                {
-                                    id: "SetupBindReadCapabilityCapability",
-                                    name: "capability",
-                                    comment: ["A ", r("ReadCapability"), " that the peer wishes to reference in future messages."],
-                                    rhs: r("ReadCapability"),
-                                },
-                                {
-                                    id: "SetupBindReadCapabilityHandle",
-                                    name: "handle",
-                                    comment: ["The <R n="IntersectionHandle"/>, <R n="handle_bind">bound</R> by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "SetupBindReadCapabilitySignature",
-                                    name: "signature",
-                                    comment: ["The ", r("sync_signature"), " issued by the ", r("sync_receiver"), " of the ", r("SetupBindReadCapabilityCapability"), " over the sender’s ", r("value_challenge"), "."],
-                                    rhs: r("sync_signature"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("SetupBindReadCapability"), " messages let peers ", <Rb n="handle_bind"/> a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to <R n="access_receiver"/> of the ", r("ReadCapability"), "."),
-
-                    pinformative(
-                        marginale(["These requirements allow us to encode ", r("SetupBindReadCapability"), " messages more efficiently."]),
-                        "The ", r("SetupBindReadCapabilityHandle"), " must be <R n="handle_bind">bound</R> to the ", r("fragment"), " (", r("fragment_primary"), ", if possible) of the ", r("SetupBindReadCapabilityCapability"), " with the longest <R n="Path"/> ", r("path_prefix"), " that is in the intersection of the two peers’ ", rs("fragment"), ".",
-                    ),
-
-                    pinformative(R("SetupBindReadCapability"), " messages use the ", r("CapabilityChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "SetupBindAreaOfInterest",
-                            comment: [<Rb n="handle_bind"/> an ", r("AreaOfInterest"), " to an ", r("AreaOfInterestHandle"), "."],
-                            fields: [
-                                {
-                                    id: "SetupBindAreaOfInterestAOI",
-                                    name: "area_of_interest",
-                                    comment: ["An ", r("AreaOfInterest"), " that the peer wishes to reference in future messages."],
-                                    rhs: r("AreaOfInterest"),
-                                },
-                                {
-                                    id: "SetupBindAreaOfInterestCapability",
-                                    name: "authorisation",
-                                    comment: ["A ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message", apo, "s ", r("SetupBindAreaOfInterestAOI"), "."],
-                                    rhs: r("U64"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative(
-                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", <Rb n="handle_bind"/> an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
-                    ),
-
-                    aside_block(
-                        pinformative("To avoid duplicate <R n="d3rbsr"/> sessions for the same <Rs n="Area"/>, only <R n="alfie"/> should react to sending or receiving ", rs("SetupBindAreaOfInterest"), " messages by initiating set reconciliation. ", R("betty"), " should never initiate reconciliation — unless she considers the redundant bandwidth consumption of duplicate reconciliation less of an issue than having to wait for <R n="alfie"/> to initiate reconciliation."),
-                    ),
-
-                    pinformative(R("SetupBindAreaOfInterest"), " messages use the ", r("AreaOfInterestChannel"), "."),
-
-                    pinformative(
-                        "Let ", def_value({id: "handle2ns_handle", singular: "handle"}), " be an ", r("AreaOfInterestHandle"), ". We then define ", code(function_call(def_fn({id: "handle_to_namespace_id"}), r("handle2ns_handle"))), " to denote the <R n="granted_namespace"/> of the ", r("ReadCapability"), " whose ", r("CapabilityHandle"), " is the ", r("SetupBindAreaOfInterestCapability"), " of the ", r("SetupBindAreaOfInterest"), " that <R n="handle_bind">bound</R> ", r("handle2ns_handle"), ".",
-                    ),
 
                     pseudocode(
                         new Struct({
@@ -2760,7 +2568,7 @@ export const sync = (
                         "To denote ", rs("LogicalChannel"), ", we use sequences of three bits. The ", def_fn({id: "encode_channel"}), " function maps ", lis(
                             [r("ReconciliationChannel"), " to ", code("000"), ","],
                             [r("DataChannel"), " to ", code("001"), ","],
-                            [r("IntersectionChannel"), " to ", code("010"), ","],
+                            [r("OverlapChannel"), " to ", code("010"), ","],
                             [r("CapabilityChannel"), " to ", code("011"), ","],
                             [r("AreaOfInterestChannel"), " to ", code("100"), ","],
                             [r("PayloadRequestChannel"), " to ", code("101"), ", and"],
@@ -2968,7 +2776,7 @@ export const sync = (
 
                     pinformative(
                         "To denote ", rs("HandleType"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_type"}), " maps ", lis(
-                            [r("IntersectionHandle"), " to ", code("000"), ","],
+                            [r("OverlapHandle"), " to ", code("000"), ","],
                             [r("CapabilityHandle"), " to ", code("001"), ","],
                             [r("AreaOfInterestHandle"), " to ", code("010"), ","],
                             [r("PayloadRequestHandle"), " to ", code("011"), ","],

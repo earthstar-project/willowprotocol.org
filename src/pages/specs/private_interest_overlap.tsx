@@ -102,12 +102,12 @@ function PiiExample(
   );
 }
 
-export const private_interest_intersection = (
+export const private_interest_overlap = (
   <Dir name="pii">
     <File name="index.html">
       <PageTemplate
         htmlTitle="Read Access and Confidentiality"
-        headingId="private_interest_intersection"
+        headingId="private_interest_overlap"
         heading={"Read Access and Confidentiality"}
         toc
         bibliography
@@ -124,7 +124,7 @@ export const private_interest_intersection = (
           adversarial settings.
         </P>
 
-        <Hsection n="pii_goals" title="Setting and Goals">
+        <Hsection n="pio_goals" title="Setting and Goals">
           <P>
             We want to allow peers to specify pairs of <Rs n="namespace" /> and
             {" "}
@@ -294,11 +294,11 @@ export const private_interest_intersection = (
               well-known protections
             </AE>{" "}
             for settings where the two peers have prior knowledge about each
-            other before they start the connection, but we also want to be able
-            to enable sync between anonymous peers who do not know each other at
-            all. Hence, even after the other peer has proven to us that they
-            have access to some data, we still must be careful about what we
-            send (or rather, how we encrypt it).
+            other before they start the connection, but we also want to allow
+            for sync between anonymous peers who do not know each other at all.
+            Hence, even after the other peer has proven to us that they have
+            access to some data, we still must be careful about what we send (or
+            rather, how we encrypt it).
           </P>
         </Hsection>
 
@@ -489,9 +489,9 @@ export const private_interest_intersection = (
               We shall assume that the connection between the two syncing peers
               is established via a handshake. We refer to the two peers as the
               {" "}
-              <Def n="pii_initiator" r="initiator" rs="initiators" /> and the
+              <Def n="pio_initiator" r="initiator" rs="initiators" /> and the
               {" "}
-              <Def n="pii_responder" r="responder" rs="responders" />{" "}
+              <Def n="pio_responder" r="responder" rs="responders" />{" "}
               respectively to break symmetry. We require the handshake to have
               the following properties:<Marginale>
                 These properties are more or less the bread-and-butter
@@ -513,20 +513,20 @@ export const private_interest_intersection = (
                 <DefValue n="ini_pk" /> and{" "}
                 <DefValue n="res_pk" />, which are public keys submitted by the
                 {" "}
-                <R n="pii_initiator" /> and the <R n="pii_responder" />{" "}
+                <R n="pio_initiator" /> and the <R n="pio_responder" />{" "}
                 respectively,
               </Li>
               <Li>
                 during the handshake, the peers prove to each other knowledge of
-                the respective secret keys for <R n="pii_initiator" /> and{" "}
-                <R n="pii_responder" />, and
+                the respective secret keys for <R n="pio_initiator" /> and{" "}
+                <R n="pio_responder" />, and
               </Li>
               <Li>
                 the two peers arrive at a random bytestring<Marginale>
                   In the noise framework, this corresponds to the{" "}
                   <Code>GetHandshakeHash()</Code> function.
                 </Marginale>{" "}
-                <DefValue n="pii_rnd" r="rnd" />{" "}
+                <DefValue n="pio_rnd" r="rnd" />{" "}
                 which cannot be dictated by any one peer alone.
               </Li>
             </Ul>
@@ -542,18 +542,18 @@ export const private_interest_intersection = (
 
           <PreviewScope>
             <P>
-              The <R n="pii_rnd" /> bytestring{" "}
+              The <R n="pio_rnd" /> bytestring{" "}
               forms the basis for the two peers to salt their hashes. We define
               {" "}
-              <DefValue n="pii_ini_salt" r="ini_salt" /> as equal to{" "}
-              <R n="pii_rnd" />, and <DefValue n="pii_res_salt" r="res_salt" />
+              <DefValue n="pio_ini_salt" r="ini_salt" /> as equal to{" "}
+              <R n="pio_rnd" />, and <DefValue n="pio_res_salt" r="res_salt" />
               {" "}
               as the bytestring obtained by flipping every bit of{" "}
-              <R n="pii_rnd" />.
+              <R n="pio_rnd" />.
             </P>
           </PreviewScope>
 
-          <Hsection n="pii_private_interests" title="Private Interests">
+          <Hsection n="pio_private_interests" title="Private Interests">
             <P>
               Before we go into further details, we introduce some compact
               terminology around the data we want to keep confidential
@@ -815,9 +815,9 @@ export const private_interest_intersection = (
           </Hsection>
 
           <Hsection
-            n="pii_pii"
-            title="Private Interest Intersection"
-            shortTitle="Private Intersection"
+            n="pio_pio"
+            title="Private Interest Overlap"
+            shortTitle="Private Overlap"
           >
             <PreviewScope>
               <P>
@@ -839,7 +839,7 @@ export const private_interest_intersection = (
                 challenge then becomes to find overlapping{" "}
                 <Rs n="PrivateInterest" />{" "}
                 by comparing only small numbers of salted hashes. We assume
-                there is a secure hash function <DefFunction n="pii_h" r="h" />
+                there is a secure hash function <DefFunction n="pio_h" r="h" />
                 {" "}
                 that maps pairs of salts (bytestrings) and{" "}
                 <Rs n="PrivateInterest" /> to bytestrings of some fixed width.
@@ -864,22 +864,22 @@ export const private_interest_intersection = (
               <Ul>
                 <Li>
                   For each <R n="PrivateInterest" />{" "}
-                  <DefValue n="pii_hashing_p0" r="p" /> with a <R n="pi_ss" />
+                  <DefValue n="pio_hashing_p0" r="p" /> with a <R n="pi_ss" />
                   {" "}
                   of <R n="ss_any" />,
                   <Ul>
                     <Li>
-                      the <R n="pii_initiator" /> transmits the pair{" "}
+                      the <R n="pio_initiator" /> transmits the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
-                        <R n="pii_hashing_p0" />), true)
+                        (<R n="pio_h" />(<R n="pio_ini_salt" />,{" "}
+                        <R n="pio_hashing_p0" />), true)
                       </Code>, and
                     </Li>
                     <Li>
-                      the <R n="pii_responder" />
+                      the <R n="pio_responder" />
                       <Marginale>
-                        Here and below, <R n="pii_responder" /> and{" "}
-                        <R n="pii_initiator" />{" "}
+                        Here and below, <R n="pio_responder" /> and{" "}
+                        <R n="pio_initiator" />{" "}
                         send the same pairs, except they salt differently.
                       </Marginale>{" "}
                       <Alj>
@@ -888,44 +888,44 @@ export const private_interest_intersection = (
                       </Alj>
                       transmits the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
-                        <R n="pii_hashing_p0" />), true)
+                        (<R n="pio_h" />(<R n="pio_res_salt" />,{" "}
+                        <R n="pio_hashing_p0" />), true)
                       </Code>.
                     </Li>
                   </Ul>
                 </Li>
                 <Li>
                   For each <R n="PrivateInterest" />{" "}
-                  <DefValue n="pii_hashing_p1" r="p" /> with a <R n="pi_ss" />
+                  <DefValue n="pio_hashing_p1" r="p" /> with a <R n="pi_ss" />
                   {" "}
                   that is not <R n="ss_any" />, let{" "}
-                  <DefValue n="pii_hashing_p_relaxed" r="p_relaxed" />{" "}
+                  <DefValue n="pio_hashing_p_relaxed" r="p_relaxed" />{" "}
                   denote the <R n="pi_relaxation" /> of{" "}
-                  <R n="pii_hashing_p1" />. Then each peer transmits{" "}
+                  <R n="pio_hashing_p1" />. Then each peer transmits{" "}
                   <Em>two</Em> pairs:
                   <Ul>
                     <Li>
-                      the <R n="pii_initiator" /> transmits the pair{" "}
+                      the <R n="pio_initiator" /> transmits the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
-                        <R n="pii_hashing_p1" />), true)
+                        (<R n="pio_h" />(<R n="pio_ini_salt" />,{" "}
+                        <R n="pio_hashing_p1" />), true)
                       </Code>{" "}
                       and the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_ini_salt" />,{" "}
-                        <R n="pii_hashing_p_relaxed" />), false)
+                        (<R n="pio_h" />(<R n="pio_ini_salt" />,{" "}
+                        <R n="pio_hashing_p_relaxed" />), false)
                       </Code>, and
                     </Li>
                     <Li>
-                      the <R n="pii_responder" /> transmits the pair{" "}
+                      the <R n="pio_responder" /> transmits the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
-                        <R n="pii_hashing_p1" />), true)
+                        (<R n="pio_h" />(<R n="pio_res_salt" />,{" "}
+                        <R n="pio_hashing_p1" />), true)
                       </Code>{" "}
                       and the pair{" "}
                       <Code>
-                        (<R n="pii_h" />(<R n="pii_res_salt" />,{" "}
-                        <R n="pii_hashing_p_relaxed" />), false)
+                        (<R n="pio_h" />(<R n="pio_res_salt" />,{" "}
+                        <R n="pio_hashing_p_relaxed" />), false)
                       </Code>.
                     </Li>
                   </Ul>
@@ -957,9 +957,9 @@ export const private_interest_intersection = (
             </P>
             <Ul>
               <Li>
-                the <R n="pii_initiator" /> now salts with{" "}
-                <R n="pii_res_salt" /> and the <R n="pii_responder" />{" "}
-                now salts with <R n="pii_ini_salt" />, and
+                the <R n="pio_initiator" /> now salts with{" "}
+                <R n="pio_res_salt" /> and the <R n="pio_responder" />{" "}
+                now salts with <R n="pio_ini_salt" />, and
               </Li>
               <Li>
                 whenever a peer computes the pair for a{" "}
@@ -1100,7 +1100,7 @@ export const private_interest_intersection = (
             </Details>
           </Hsection>
 
-          <Hsection n="pii_caps" title="Exchanging Capabilities">
+          <Hsection n="pio_caps" title="Exchanging Capabilities">
             <P>
               The previous scheme ensures that whenever two{" "}
               <Rs n="PrivateInterest" /> submitted by different peers are{" "}
@@ -1204,13 +1204,13 @@ export const private_interest_intersection = (
                 in the form of the hash of the corresponding{" "}
                 <R n="PrivateInterest" />{" "}
                 salted with the announcer’s salt. So when the{" "}
-                <R n="pii_initiator" /> announces an overlap, that{" "}
+                <R n="pio_initiator" /> announces an overlap, that{" "}
                 <R n="overlap_announcement" /> must contain the hash salted with
                 {" "}
-                <R n="pii_ini_salt" />, and <Rs n="overlap_announcement" />{" "}
-                by the <R n="pii_responder" /> must contain the hash salted with
+                <R n="pio_ini_salt" />, and <Rs n="overlap_announcement" />{" "}
+                by the <R n="pio_responder" /> must contain the hash salted with
                 {" "}
-                <R n="pii_res_salt" />. These salted hashes can only be produced
+                <R n="pio_res_salt" />. These salted hashes can only be produced
                 by somebody who actually knows the <R n="PrivateInterest" />
                 {" "}
                 in question.
@@ -1264,7 +1264,7 @@ export const private_interest_intersection = (
             <P>
               Imagine two peers, with the exact same 400{" "}
               <Rs n="PrivateInterest" />, but they can each submit only 20 into
-              the private intersection process due to resource limits. If they
+              the private overlap detection process due to resource limits. If they
               each selected 20 of their interests at random, they would likely
               part ways thinking they don't share any common interests. If they
               both sorted their <Rs n="PrivateInterest" />{" "}
@@ -1276,7 +1276,7 @@ export const private_interest_intersection = (
             <P>
               As a solution, both peers should send the{" "}
               <Rs n="PrivateInterest" /> whose hashes, salted with{" "}
-              <R n="pii_ini_salt" />, are their numerically least hashes. This
+              <R n="pio_ini_salt" />, are their numerically least hashes. This
               way, the sorting order is an independent, random permutation in
               each session, yet peers with large overlaps in their{" "}
               <Rs n="PrivateInterest" /> are likely to detect that overlap.
@@ -1402,7 +1402,7 @@ export const private_interest_intersection = (
           </Hsection>
         </Hsection>
 
-        <Hsection n="pii_security_model" title="Security Properties">
+        <Hsection n="pio_security_model" title="Security Properties">
           <P>
             We now lay out out the security model of this approach: which data
             gets exposed in which scenarios? We do not have formal proofs for
@@ -1418,7 +1418,7 @@ export const private_interest_intersection = (
             communication channel.
           </P>
 
-          <Hsection n="pii_threat_model" title="Threat Model">
+          <Hsection n="pio_threat_model" title="Threat Model">
             <P>
               We consider two primary scenarios:
             </P>
@@ -1451,7 +1451,7 @@ export const private_interest_intersection = (
             </P>
           </Hsection>
 
-          <Hsection n="pii_scope" title="Scope">
+          <Hsection n="pio_scope" title="Scope">
             <P>
               We now list the information we wish to keep confidential. We group
               it in four levels, based on which kind of peer or attacker is

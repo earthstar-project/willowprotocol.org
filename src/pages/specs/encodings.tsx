@@ -1119,7 +1119,7 @@ export const encodings = (
           <P>
             We now define some relative encodings which take care to not reveal
             certain parts of the values being encoded. We use these in the{" "}
-            <R n="private_interest_intersection" /> parts of the{" "}
+            <R n="private_interest_overlap" /> parts of the{" "}
             <R n="sync">WGPS</R>.
           </P>
 

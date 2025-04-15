@@ -58,7 +58,7 @@ export const specs = (
             <R n="e2e">Encrypting Entries</R>
           </Li>
           <Li>
-            <R n="private_interest_intersection">
+            <R n="private_interest_overlap">
               Private Interest Intersection
             </R>
           </Li>
