@@ -1,16 +1,19 @@
 import { Dir, File } from "macromania-outfs";
 import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Img, Li, P, Ul } from "macromania-html";
+import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
 import { Def, R, Rb, Rs } from "macromania-defref";
 import {
   AccessStruct,
+  ArrayType,
+  ChoiceType,
   DefFunction,
   DefType,
   DefValue,
+  DefVariant,
   Enum,
   StructDef,
 } from "macromania-rustic";
@@ -259,7 +262,8 @@ export const sync = (
               <Rs n="enumeration_receiver" /> are of type{" "}
               <R n="sync_receiver" />. We require a hash function{" "}
               <DefFunction n="sync_h" r="hash_interests" /> to hash salted{" "}
-              <Rs n="PrivateInterest" /> (the <R n="pii_h" />{" "}
+              <Rs n="PrivateInterest" /> to bytestrings of the fixed width{" "}
+              <DefValue n="interest_hash_length" /> (the <R n="pii_h" />{" "}
               function from the priavet area intersection sub-spec). The
               handshake and encryption of the communication channel are out of
               scope of the WGPS, but the <R n="ini_pk" /> and <R n="res_pk" />
@@ -657,40 +661,254 @@ export const sync = (
 
           <Hsection n="sync_messages" title="Messages">
             <P>
-              <Alj inline>TODO</Alj>
+              We now define the different kinds of messages. When we do not
+              mention the <R n="logical_channel" />{" "}
+              that messages of a particular kind use, then these messages are
+              {" "}
+              <Rs n="global_message" /> that do not belong to any{" "}
+              <R n="logical_channel" />.
             </P>
+
+            <Hsection
+              n="sync_pii_messages"
+              title="Private Interest Intersection"
+            >
+              <P>
+                In{" "}
+                <R n="private_interest_intersection">
+                  private interest intersection
+                </R>, the two peers privately determine which{" "}
+                <Rs n="PrivateInterest" />{" "}
+                they share, and provae read access for those interests.
+                <Alj>TODO omit all message headings from the toc</Alj>
+              </P>
+
+              <Hsection
+                n="sync_msg_PiiBindHash"
+                title={<Code>PiiBindHash</Code>}
+              >
+                <P>
+                  The <R n="PiiBindHash" /> messages let peers bind hashes of
+                  {" "}
+                  <Rs n="PrivateInterest" /> for later reference during{" "}
+                  <R n="private_interest_intersection">
+                    private interest intersection
+                  </R>, as explained <R n="pii_pii">here</R>.
+                </P>
+
+                <Pseudocode n="sync_defs_PiiBindHash">
+                  <StructDef
+                    comment={
+                      <>
+                        <Rb n="handle_bind" /> data to an{" "}
+                        <R n="IntersectionHandle" /> for performing{" "}
+                        <R n="private_interest_intersection">
+                          private interest intersection
+                        </R>.
+                      </>
+                    }
+                    id={["PiiBindHash", "PiiBindHash"]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The result of applying <R n="sync_h" /> to a{" "}
+                              <R n="PrivateInterest" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            ["hash", "PiiBindHashHash", "hashes"],
+                            <ArrayType
+                              count={<R n="interest_hash_length" />}
+                            >
+                              <R n="U8" />
+                            </ArrayType>,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              Whether the peer is directly interested in the
+                              hashed{" "}
+                              <R n="PrivateInterest" />, or whether it is merely
+                              a <R n="pi_relaxation" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "actually_interested",
+                              "PiiBindHashActuallyInterested",
+                            ],
+                            <R n="Bool" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="PiiBindHash" /> messages use the{" "}
+                  <R n="IntersectionChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_PiiAnnounceOverlap"
+                title={<Code>PiiAnnounceOverlap</Code>}
+              >
+                <P>
+                  The <R n="PiiAnnounceOverlap" /> messages let peers send{" "}
+                  <Rs n="overlap_announcement" />.
+                </P>
+
+                <Pseudocode n="sync_defs_PiiAnnounceOverlap">
+                  <StructDef
+                    comment={
+                      <>
+                        Send an <R n="overlap_announcement" />, including its
+                        {" "}
+                        <R n="announcement_authentication" /> and an optional
+                        {" "}
+                        <R n="enumeration_capability" />.
+                      </>
+                    }
+                    id={["PiiAnnounceOverlap", "PiiAnnounceOverlap"]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="IntersectionHandle" /> (bound by the
+                              {" "}
+                              <Em>sender</Em>{" "}
+                              of this message) which is part of the overlap. If
+                              there are two handles available, use the one that
+                              was bound with{" "}
+                              <Code>
+                                <R n="PiiBindHashActuallyInterested" /> == true
+                              </Code>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "sender_handle",
+                              "PiiAnnounceOverlapSenderHandle",
+                              "sender_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="IntersectionHandle" /> (bound by the
+                              {" "}
+                              <Em>receiver</Em>{" "}
+                              of this message) which is part of the overlap. If
+                              there are two handles available, use the one that
+                              was bound with{" "}
+                              <Code>
+                                <R n="PiiBindHashActuallyInterested" /> == true
+                              </Code>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "receiver_handle",
+                              "PiiAnnounceOverlapReceiverHandle",
+                              "receiver_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="announcement_authentication" /> for this
+                              {" "}
+                              <R n="overlap_announcement" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "authentication",
+                              "PiiAnnounceOverlapAuthentication",
+                              "authentications",
+                            ],
+                            <ArrayType
+                              count={<R n="interest_hash_length" />}
+                            >
+                              <R n="U8" />
+                            </ArrayType>,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="enumeration_capability" /> if this{" "}
+                              <R n="overlap_announcement" /> is for an{" "}
+                              <R n="pi_awkward" /> pair, or{" "}
+                              <DefVariant n="enum_cap_none" r="none" />{" "}
+                              otherwise.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "enumeration_capability",
+                              "PiiAnnounceOverlapEnumerationCapability",
+                              "enumeration_capabilitys",
+                            ],
+                            <ChoiceType
+                              types={[
+                                <R n="EnumerationCapability" />,
+                                <R n="enum_cap_none" />,
+                              ]}
+                            />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="PiiAnnounceOverlap" /> messages are{" "}
+                  <Rs n="global_message" />.
+                </P>
+              </Hsection>
+
+              {
+                /*
+                - submit hash-boolean pair
+                - request a capability (including a request authentication, and optionally attaching an EnumerationCapability to the request (remember that those require a different request authentication))
+                - send (bind) read capability (on request, because of equality, or in response to getting a read capability) (indicate the PII handle? yes, )
+
+                - register AoI
+                - register static token
+              */
+              }
+            </Hsection>
           </Hsection>
         </Hsection>
 
         {
           /*
-
-
-            hsection("sync_messages", "Messages", [
-                pinformative("We now define the different kinds of messages. When we do not mention the <R n="logical_channel"/> that messages of a particular kind use, then these messages are ", rs("control_message"), " that do not belong to any <R n="logical_channel"/>."),
-
-                hsection("sync_commitment", "Commitment Scheme", [
-                    pinformative("The WGPS enforces ", link_name("access_control", "access control"), " by making peers prove ownership of ", rs("dss_sk"), " by signing a nonce determined via a ", r("commitment_scheme"), ". Peers transmit the ", r("challenge_hash"), " of their committed data in the first few bytes of the protocol, the ", r("CommitmentReveal"), " message then allows them to conclude the ", r("commitment_scheme"), ":"),
-
-                    pseudocode(
-                        new Struct({
-                            id: "CommitmentReveal",
-                            comment: ["Complete the ", link_name("commitment_scheme", "commitment scheme"), " to determine the ", r("value_challenge"), " for ", r("read_authentication"), "."],
-                            fields: [
-                                {
-                                    id: "CommitmentRevealNonce",
-                                    name: "nonce",
-                                    comment: ["The ", r("nonce"), " of the sender, encoded as a ", link("big-endian", "https://en.wikipedia.org/wiki/Endianness"), " ", link("unsigned integer", "https://en.wikipedia.org/w/index.php?title=Unsigned_integer"), "."],
-                                    rhs: ["[", r("U8"), "; ", r("challenge_length"), "]"],
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("Upon receiving a ", r("CommitmentReveal"), " message, a peer can determine its ", def_value({id: "value_challenge", singular: "challenge"}), ": for ", r("alfie"), ", ", r("value_challenge"), " is the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of his ", r("nonce"), " and the received ", r("CommitmentRevealNonce"), ". For ", r("betty"), ", ", r("value_challenge"), " is the ", link("bitwise complement", "https://en.wikipedia.org/wiki/Bitwise_operation#NOT"), " of the ", link("bitwise exclusive or", "https://en.wikipedia.org/wiki/Bitwise_operation#XOR"), " of her ", r("nonce"), " and the received ", r("CommitmentRevealNonce"), "."),
-
-                    pinformative("Each peer must send this message at most once, and a peer should not send this message before having fully received a ", r("received_commitment"), "."),
-                ]),
 
                 hsection("sync_pai_messages", "Private Area Intersection", [
                     pinformative(link_name("private_area_intersection", "Private area intersection"), " operates by performing ", link_name("psi_actual", "private set intersection"), " and requesting and supplying ", rs("SubspaceCapability"), "."),
@@ -698,12 +916,12 @@ export const sync = (
                     pseudocode(
                         new Struct({
                             id: "PaiBindFragment",
-                            comment: [R("handle_bind"), " data to an ", r("IntersectionHandle"), " for performing ", link_name("private_area_intersection", "private area intersection"), "."],
+                            comment: [<Rb n="handle_bind"/> data to an <R n="IntersectionHandle"/> for performing <R n="private_interest_intersection">private area intersection</R>."],
                             fields: [
                                 {
                                     id: "PaiBindFragmentGroupMember",
                                     name: "group_member",
-                                    comment: ["The result of first applying ", r("hash_into_group"), " to some ", r("fragment"), " for ", link_name("private_area_intersection", "private area intersection"), " and then performing scalar multiplication with ", r("scalar"), "."],
+                                    comment: ["The result of first applying ", r("hash_into_group"), " to some ", r("fragment"), " for <R n="private_interest_intersection">private area intersection</R> and then performing scalar multiplication with ", r("scalar"), "."],
                                     rhs: r("PsiGroup"),
                                 },
                                 {
@@ -718,10 +936,10 @@ export const sync = (
 
                     pinformative([
                         marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PaiBindFragment"), " message corresponds to mixing a data colour with one’s secret colour, and sending the mixture to the other peer."]),
-                        "The ", r("PaiBindFragment"), " messages let peers submit ", rs("fragment"), " to the private set intersection part of ", link_name("private_area_intersection", "private area intersection"), ". The freshly created ", r("IntersectionHandle"), " ", r("handle_bind", "binds"), " the ", r("PaiBindFragmentGroupMember"), " in the ", r("psi_state_pending"), " state.",
+                        "The ", r("PaiBindFragment"), " messages let peers submit ", rs("fragment"), " to the private set intersection part of <R n="private_interest_intersection">private area intersection</R>. The freshly created <R n="IntersectionHandle"/> ", r("handle_bind", "binds"), " the ", r("PaiBindFragmentGroupMember"), " in the ", r("psi_state_pending"), " state.",
                     ]),
 
-                    pinformative(R("PaiBindFragment"), " messages use the ", r("IntersectionChannel"), "."),
+                    pinformative(R("PaiBindFragment"), " messages use the <R n="IntersectionChannel"/>."),
 
                     pseudocode(
                         new Struct({
@@ -731,7 +949,7 @@ export const sync = (
                                 {
                                     id: "PaiReplyFragmentHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " of the ", r("PaiBindFragment"), " message which this finalises."],
+                                    comment: ["The <R n="IntersectionHandle"/> of the ", r("PaiBindFragment"), " message which this finalises."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -746,10 +964,10 @@ export const sync = (
 
                     pinformative([
                         marginale(["In the ", link_name("private_equality_testing", "colour mixing metaphor"), ", a ", r("PaiReplyFragment"), " message corresponds to mixing one’s secret colour with a colour mixture received from the other peer, and sending the resulting colour back."]),
-                        "The ", r("PaiReplyFragment"), " messages let peers complete the information exchange regarding a single ", r("fragment"), " submitted to private set intersection in the ", link_name("private_area_intersection", "private area intersection"), " process.",
+                        "The ", r("PaiReplyFragment"), " messages let peers complete the information exchange regarding a single ", r("fragment"), " submitted to private set intersection in the <R n="private_interest_intersection">private area intersection</R> process.",
                     ]),
 
-                    pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per ", r("IntersectionHandle"), ". Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", r("handle_bind"), " the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
+                    pinformative("The ", r("PaiReplyFragmentHandle"), " must refer to an <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the other peer via a ", r("PaiBindFragment"), " message. A peer may send at most one ", r("PaiReplyFragment"), " message per <R n="IntersectionHandle"/>. Upon sending or receiving a ", r("PaiReplyFragment"), " message, a peer updates the ", r("resource_handle"), " binding to now ", <Rb n="handle_bind"/> the ", r("PaiReplyFragmentGroupMember"), " of the ", r("PaiReplyFragment"), " message, in the state ", r("psi_state_completed"), "."),
 
                     pseudocode(
                         new Struct({
@@ -760,7 +978,7 @@ export const sync = (
                                 {
                                     id: "PaiRequestSubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
+                                    comment: ["The <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the sender for the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), " for whose <R n="NamespaceId"/> to request the ", r("SubspaceCapability"), "."],
                                     rhs: r("U64"),
                                 },
                             ],
@@ -769,7 +987,7 @@ export const sync = (
 
                     pinformative("The ", r("PaiRequestSubspaceCapability"), " messages let peers request ", rs("SubspaceCapability"), ", by sending the ", r("fragment_least_specific"), " ", r("fragment_secondary"), " ", r("fragment"), ". This item must be in the intersection of the two peers’ ", rs("fragment"), ". The receiver of the message can thus look up the <R n="subspace"/> in question."),
 
-                    pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per ", r("IntersectionHandle"), "."),
+                    pinformative("A peer may send at most one ", r("PaiRequestSubspaceCapability"), " message per <R n="IntersectionHandle"/>."),
 
                     pseudocode(
                         new Struct({
@@ -780,7 +998,7 @@ export const sync = (
                                 {
                                     id: "PaiReplySubspaceCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("PaiRequestSubspaceCapabilityHandle"), " of the ", r("PaiRequestSubspaceCapability"), " message that this answers (hence, an ", r("IntersectionHandle"), " <R n="handle_bind">bound</R> by the ", em("receiver"), " of this message)."],
+                                    comment: ["The ", r("PaiRequestSubspaceCapabilityHandle"), " of the ", r("PaiRequestSubspaceCapability"), " message that this answers (hence, an <R n="IntersectionHandle"/> <R n="handle_bind">bound</R> by the ", em("receiver"), " of this message)."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -814,7 +1032,7 @@ export const sync = (
                         new Struct({
                             id: "SetupBindReadCapability",
                             plural: "SetupBindReadCapabilities",
-                            comment: [R("handle_bind"), " a ", r("ReadCapability"), " to a ", r("CapabilityHandle"), "."],
+                            comment: [<Rb n="handle_bind"/> a ", r("ReadCapability"), " to a ", r("CapabilityHandle"), "."],
                             fields: [
                                 {
                                     id: "SetupBindReadCapabilityCapability",
@@ -825,7 +1043,7 @@ export const sync = (
                                 {
                                     id: "SetupBindReadCapabilityHandle",
                                     name: "handle",
-                                    comment: ["The ", r("IntersectionHandle"), ", <R n="handle_bind">bound</R> by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
+                                    comment: ["The <R n="IntersectionHandle"/>, <R n="handle_bind">bound</R> by the sender, of the ", r("SetupBindReadCapabilityCapability"), "’s ", r("fragment"), " with the longest <R n="Path"/> in the intersection of the ", rs("fragment"), ". If both a ", r("fragment_primary"), " and ", r("fragment_secondary"), " such ", r("fragment"), " exist, choose the ", r("fragment_primary"), " one."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -838,7 +1056,7 @@ export const sync = (
                         }),
                     ),
 
-                    pinformative("The ", r("SetupBindReadCapability"), " messages let peers ", r("handle_bind"), " a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to <R n="access_receiver"/> of the ", r("ReadCapability"), "."),
+                    pinformative("The ", r("SetupBindReadCapability"), " messages let peers ", <Rb n="handle_bind"/> a ", r("ReadCapability"), " for later reference. To do so, they must present a valid ", r("sync_signature"), " over their ", r("value_challenge"), ", thus demonstrating they hold the secret key corresponding to <R n="access_receiver"/> of the ", r("ReadCapability"), "."),
 
                     pinformative(
                         marginale(["These requirements allow us to encode ", r("SetupBindReadCapability"), " messages more efficiently."]),
@@ -850,7 +1068,7 @@ export const sync = (
                     pseudocode(
                         new Struct({
                             id: "SetupBindAreaOfInterest",
-                            comment: [R("handle_bind"), " an ", r("AreaOfInterest"), " to an ", r("AreaOfInterestHandle"), "."],
+                            comment: [<Rb n="handle_bind"/> an ", r("AreaOfInterest"), " to an ", r("AreaOfInterestHandle"), "."],
                             fields: [
                                 {
                                     id: "SetupBindAreaOfInterestAOI",
@@ -869,7 +1087,7 @@ export const sync = (
                     ),
 
                     pinformative(
-                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", r("handle_bind"), " an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
+                        "The ", r("SetupBindAreaOfInterest"), " messages let peers ", <Rb n="handle_bind"/> an ", r("AreaOfInterest"), " for later reference. They show that they may indeed receive <Rs n="Entry"/> from the ", r("AreaOfInterest"), " by providing a ", r("CapabilityHandle"), " <R n="handle_bind">bound</R> by the sender that grants access to all entries in the message’s ", r("SetupBindAreaOfInterestAOI"), ".",
                     ),
 
                     aside_block(
@@ -885,7 +1103,7 @@ export const sync = (
                     pseudocode(
                         new Struct({
                             id: "SetupBindStaticToken",
-                            comment: [R("handle_bind"), " a <R n="StaticToken"/> to a ", r("StaticTokenHandle"), "."],
+                            comment: [<Rb n="handle_bind"/> a <R n="StaticToken"/> to a ", r("StaticTokenHandle"), "."],
                             fields: [
                                 {
                                     id: "SetupBindStaticTokenToken",
@@ -897,7 +1115,7 @@ export const sync = (
                         }),
                     ),
 
-                    pinformative("The ", r("SetupBindStaticToken"), " messages let peers ", r("handle_bind"), " ", rs("StaticToken"), ". Transmission of <Rs n="AuthorisedEntry"/> in other messages refers to <Rs n="StaticTokenHandle"/> rather than transmitting ", rs("StaticToken"), " verbatim."),
+                    pinformative("The ", r("SetupBindStaticToken"), " messages let peers ", <Rb n="handle_bind"/> ", rs("StaticToken"), ". Transmission of <Rs n="AuthorisedEntry"/> in other messages refers to <Rs n="StaticTokenHandle"/> rather than transmitting ", rs("StaticToken"), " verbatim."),
 
                     pinformative(R("SetupBindStaticToken"), " messages use the ", r("StaticTokenChannel"), "."),
                 ]),
@@ -1210,7 +1428,7 @@ export const sync = (
                     pseudocode(
                         new Struct({
                             id: "DataBindPayloadRequest",
-                            comment: [R("handle_bind"), " an <R n="Entry"/> to a ", r("PayloadRequestHandle"), " and request transmission of its <R n="Payload"/> from an offset."],
+                            comment: [<Rb n="handle_bind"/> an <R n="Entry"/> to a ", r("PayloadRequestHandle"), " and request transmission of its <R n="Payload"/> from an offset."],
                             fields: [
                                 {
                                     id: "DataBindPayloadRequestEntry",

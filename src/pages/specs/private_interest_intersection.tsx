@@ -1134,73 +1134,82 @@ export const private_interest_intersection = (
               in which he should not be able to learn anything.
             </P>
 
-            <P>
-              In general, whenever there is an overlap in the two peer’s{" "}
-              <Rs n="PrivateInterest" />, one of three situations occurs:
-            </P>
-            <Ol>
-              <Li>
-                One of the <Rs n="PrivateInterest" /> is{" "}
-                <R n="pi_strictly_more_specific" />{" "}
-                than the other. The peer who has the <R n="pi_more_specific" />
-                {" "}
-                <R n="PrivateInterest" />{" "}
-                is the one to detect the overlap. This peer sends a message to
-                the other peer, requesting the <Rs n="read_capability" />{" "}
-                that certify read access to the <R n="Area" />{" "}
-                <R n="pi_include_area">included in</R> the{" "}
-                <R n="pi_more_specific">less specific</R>{" "}
-                <R n="PrivateInterest" />.
-              </Li>
-              <Li>
-                Both <Rs n="PrivateInterest" />{" "}
-                are equal. Both peers are able to detect this — the matching
-                hashes correspond to a <R n="PrivateInterest" /> with a{" "}
-                <R n="pi_path" />{" "}
-                in which they are themselves directly interested in. The{" "}
-                <R n="pii_initiator" /> sends its{" "}
-                <Rs n="read_capability" />, the <R n="pii_responder" />{" "}
-                does not send anything proactively.
-              </Li>
-              <Li>
-                The two <Rs n="PrivateInterest" /> are{" "}
-                <R n="pi_awkward" />. We discuss this case later and ignore it
-                for now.
-              </Li>
-            </Ol>
+            <PreviewScope>
+              <P>
+                In general, whenever there is an overlap in the two peer’s{" "}
+                <Rs n="PrivateInterest" />, one of three situations occurs:
+              </P>
+              <Ol>
+                <Li>
+                  One of the <Rs n="PrivateInterest" /> is{" "}
+                  <R n="pi_strictly_more_specific" />{" "}
+                  than the other. The peer who has the{" "}
+                  <R n="pi_more_specific" /> <R n="PrivateInterest" />{" "}
+                  is the one to detect the overlap. This peer sends an{" "}
+                  <Def
+                    n="overlap_announcement"
+                    r="overlap announcement"
+                    rs="overlap announcements"
+                  />{" "}
+                  message to the other peer to announce the overlap, the other
+                  peer then sends its <Rs n="read_capability" />{" "}
+                  that certifies read access to <Rs n="Area" />{" "}
+                  <R n="pi_include_area">included in</R> the{" "}
+                  <R n="pi_more_specific">less specific</R>{" "}
+                  <R n="PrivateInterest" />.
+                </Li>
+                <Li>
+                  Both <Rs n="PrivateInterest" />{" "}
+                  are equal. Both peers are able to detect this — the matching
+                  hashes correspond to a <R n="PrivateInterest" /> with a{" "}
+                  <R n="pi_path" />{" "}
+                  in which they are themselves directly interested in. Both
+                  peers can and should immediately send their{" "}
+                  <Rs n="read_capability" />.
+                </Li>
+                <Li>
+                  The two <Rs n="PrivateInterest" /> are{" "}
+                  <R n="pi_awkward" />. We discuss this case later and ignore it
+                  for now.
+                </Li>
+              </Ol>
+            </PreviewScope>
 
             <P>
-              Upon receiving a request for <Rs n="read_capability" />{" "}
-              (case one) or being the <R n="pii_initiator" />{" "}
-              and detecting equal <Rs n="PrivateInterest" />{" "}
-              (case two), a peer sends its <Rs n="read_capability" /> whose{" "}
-              <Rs n="granted_area" /> are <R n="pi_include_area">included</R>
+              Upon receiving an <R n="overlap_announcement" />, a peer sends its
               {" "}
-              in the <Rs n="PrivateInterest" />{" "}
-              in question. Upon receiving such a{" "}
-              <R n="read_capability" />, a peer answers with its own,{" "}
+              <Rs n="read_capability" /> whose <Rs n="granted_area" /> are{" "}
+              <R n="pi_include_area">included</R> in the{" "}
+              <Rs n="PrivateInterest" /> in question. Upon receiving such a{" "}
+              <R n="read_capability" />, a peer answers with its own{" "}
               <R n="area_intersection">intersecting</R>{" "}
-              <Rs n="read_capability" />.
+              <Rs n="read_capability" />{" "}
+              (if it hadn’t sent them for other reasons already).
             </P>
 
             <PreviewScope>
               <P>
-                This scheme is obviously broken if peers can simply request{" "}
-                <Rs n="read_capability" /> for <Em>arbitrary</Em>{" "}
-                hashes. But we can prevent this by mandating that every request
-                contains a{" "}
+                The scheme of replying with sensitive information to{" "}
+                <Rs n="overlap_announcement" />{" "}
+                is obviously broken if peers can simply claim an overlap for
+                {" "}
+                <Em>arbitrary</Em>{" "}
+                hashes. But we can prevent this by mandating that every
+                <R n="overlap_announcement" /> contains an{" "}
                 <Def
-                  n="request_authentication"
-                  r="request authentication"
-                  rs="request authentications"
+                  n="announcement_authentication"
+                  r="announcement authentication"
+                  rs="announcement authentications"
                 />{" "}
                 in the form of the hash of the corresponding{" "}
                 <R n="PrivateInterest" />{" "}
-                salted with the requester’s salt. So if the{" "}
-                <R n="pii_initiator" /> requests{" "}
-                <Rs n="read_capability" />, that request must contain the hash
-                salted with <R n="pii_ini_salt" />, and requests by the{" "}
-                <R n="pii_responder" /> must contain the hash salted with{" "}
+                salted with the announcer’s salt. So when the{" "}
+                <R n="pii_initiator" /> announces an overlap, that{" "}
+                <R n="overlap_announcement" /> must contain the hash salted with
+                {" "}
+                <R n="pii_ini_salt" />, and <Rs n="overlap_announcement" />{" "}
+                by the <R n="pii_responder" /> must contain the hash salted with
+                {" "}
                 <R n="pii_res_salt" />. These salted hashes can only be produced
                 by somebody who actually knows the <R n="PrivateInterest" />
                 {" "}
@@ -1349,11 +1358,9 @@ export const private_interest_intersection = (
               </Sidenote>{" "}
               be granted an <R n="enumeration_capability" /> with the same{" "}
               <R n="enumeration_receiver" />. When, during sync, a peer detects
-              an <R n="pi_awkward" /> pair, it attaches to its request for a
-              {" "}
-              <R n="read_capability" /> its <R n="enumeration_capability" />
-              {" "}
-              for the <R n="namespace" />{" "}
+              an <R n="pi_awkward" /> pair, it attaches to its{" "}
+              <R n="overlap_announcement" /> its{" "}
+              <R n="enumeration_capability" /> for the <R n="namespace" />{" "}
               in question, using an encoding that omits all sensitive{" "}
               <Sidenote
                 note={
@@ -1370,8 +1377,8 @@ export const private_interest_intersection = (
                 }
               >
                 information
-              </Sidenote>. The other peer replies to the request only if the
-              {" "}
+              </Sidenote>. The other peer replies to the{" "}
+              <R n="overlap_announcement" /> only if the{" "}
               <R n="enumeration_receiver" /> matches the <R n="ini_pk" /> or the
               {" "}
               <R n="res_pk" /> (depending on role) and the{" "}
@@ -1380,12 +1387,13 @@ export const private_interest_intersection = (
             </P>
 
             <P>
-              Since the requester does not know the <R n="pi_ss" />{" "}
+              Since the announcer does not know the <R n="pi_ss" />{" "}
               of the other peer’s <R n="PrivateInterest" />{" "}
-              in this case, the requester cannot provide the correctly salted
+              in this case, the announcer cannot provide the correctly salted
               hash of the other’s <R n="PrivateInterest" /> as a{" "}
-              <R n="request_authentication" />. For <R n="pi_awkward" />{" "}
-              pairs, the <R n="request_authentication" />{" "}
+              <R n="announcement_authentication" />. For <R n="pi_awkward" />
+              {" "}
+              pairs, the <R n="announcement_authentication" />{" "}
               is thus the salted hash over the <R n="PrivateInterest" />{" "}
               that was submitted by the other peer, except its <R n="pi_ss" />
               {" "}
