@@ -4,6 +4,7 @@ import {
   Alj,
   AsideBlock,
   Curly,
+  Gwil,
   NoWrap,
   Path,
   Purple,
@@ -84,7 +85,7 @@ function PiiExample(
         )}
         <Path components={rightPath} />
       </Div>
-      <Alj inline>TODO: visualise the example.</Alj>
+      <Alj inline>🖼️ visualise this example.</Alj>
       <Div clazz="piiExampleCaption">
         {overlap
           ? (
@@ -113,6 +114,10 @@ export const private_interest_intersection = (
         bibliography
       >
         <P>
+          <Gwil>
+            🖼️ a capability which has been outlined with a red pen by a gleeful,
+            malicious writer.
+          </Gwil>
           This document details a mechanism for implementing capability-enforced
           read-access-control when synchronising data between two Willow peers.
           This is more complex than simply defining a type of read access
@@ -555,6 +560,9 @@ export const private_interest_intersection = (
 
           <Hsection n="pii_private_interests" title="Private Interests">
             <P>
+              <Gwil>
+                🖼️ a redacted capability with some red pen with question marks
+              </Gwil>
               Before we go into further details, we introduce some compact
               terminology around the data we want to keep confidential
               (<Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and{" "}
