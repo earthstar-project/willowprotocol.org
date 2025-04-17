@@ -317,7 +317,7 @@ export const sync = (
           <PreviewScope>
             <P>
               We specify the requirements for{" "}
-              <R n="sync_verified_streaming">payload transformations</R>{" "}
+              <R n="sync_verified_streaming">verified streaming</R>{" "}
               in a rather abstract way: there must be a{" "}
               <Sidenote
                 note={
@@ -473,8 +473,8 @@ export const sync = (
                 {
                   tuple: true,
                   id: [
-                    "CapabilityHandle",
-                    "CapabilityHandle",
+                    "ReadCapabilityHandle",
+                    "ReadCapabilityHandle",
                     "CapabilityHandles",
                   ],
                   comment: (
@@ -593,7 +593,7 @@ export const sync = (
                     <>
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="CapabilityHandle" />.
+                      <Rs n="ReadCapabilityHandle" />.
                     </>
                   ),
                 },
@@ -1048,6 +1048,89 @@ export const sync = (
                 </P>
               </Hsection>
 
+              <Hsection
+                n="sync_msg_PioBindStaticToken"
+                title={<Code>PioBindStaticToken</Code>}
+              >
+                <P>
+                  The <R n="PioBindStaticToken" /> messages let peers{" "}
+                  <R n="handle_bind" /> <Rs n="StaticToken" />{" "}
+                  for later reference when transmitting <Rs n="Entry" />.
+                </P>
+
+                <Pseudocode n="sync_defs_PioBindStaticToken">
+                  <StructDef
+                    comment={
+                      <>
+                        <Rb n="handle_bind" /> a <R n="StaticToken" /> to a{" "}
+                        <R n="StaticTokenHandle" />.
+                      </>
+                    }
+                    id={["PioBindStaticToken", "PioBindStaticToken"]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="StaticToken" /> to{" "}
+                              <R n="handle_bind" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "static_token",
+                              "PioBindStaticTokenStaticToken",
+                              "static_tokens",
+                            ],
+                            <R n="StaticToken" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em> of this message. The{" "}
+                              <R n="granted_namespace" /> of the corresponding
+                              {" "}
+                              <R n="read_capability" /> must match the{" "}
+                              <R n="entry_namespace_id" /> of the{" "}
+                              <R n="Entry" /> which the{" "}
+                              <R n="PioBindStaticTokenStaticToken" />{" "}
+                              authorises. The <R n="granted_area" />{" "}
+                              of the corresponding <R n="read_capability" />
+                              {" "}
+                              must <R n="area_include" /> the <R n="Entry" />
+                              {" "}
+                              which the <R n="PioBindStaticTokenStaticToken" />
+                              {" "}
+                              authorises.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "clearance",
+                              "PioBindStaticTokenClearance",
+                              "clearances",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="PioBindStaticToken" /> messages use the{" "}
+                  <R n="StaticTokenChannel" />.
+                </P>
+              </Hsection>
+
               {
                 /*
                 - register static token
@@ -1415,7 +1498,7 @@ export const sync = (
 
                     pinformative([
                         marginale(["If the receiver of a ", r("DataBindPayloadRequest"), " does not have the requested <R n="Payload"/> and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("DataBindPayloadRequest"), " messages let peers explicitly request <Rs n="Payload"/>, by binding a ", r("PayloadRequestHandle"), " to the specified ", r("DataBindPayloadRequestEntry"), " and ", r("DataBindPayloadRequestOffset"), ". The other peer is expected to then transmit the <R n="Payload"/>, starting at the specified ", r("DataBindPayloadRequestOffset"), ". The request contains a ", r("CapabilityHandle"), " to a ", r("ReadCapability"), " whose <R n="granted_area"/> must ", r("area_include"), " the requested <R n="Entry"/>.",
+                        "The ", r("DataBindPayloadRequest"), " messages let peers explicitly request <Rs n="Payload"/>, by binding a ", r("PayloadRequestHandle"), " to the specified ", r("DataBindPayloadRequestEntry"), " and ", r("DataBindPayloadRequestOffset"), ". The other peer is expected to then transmit the <R n="Payload"/>, starting at the specified ", r("DataBindPayloadRequestOffset"), ". The request contains a ", r("ReadCapabilityHandle"), " to a ", r("ReadCapability"), " whose <R n="granted_area"/> must ", r("area_include"), " the requested <R n="Entry"/>.",
                     ]),
 
                     pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
@@ -2777,7 +2860,7 @@ export const sync = (
                     pinformative(
                         "To denote ", rs("HandleType"), ", we use sequences of three bits. ", def_fn({id: "encode_handle_type"}), " maps ", lis(
                             [r("OverlapHandle"), " to ", code("000"), ","],
-                            [r("CapabilityHandle"), " to ", code("001"), ","],
+                            [r("ReadCapabilityHandle"), " to ", code("001"), ","],
                             [r("AreaOfInterestHandle"), " to ", code("010"), ","],
                             [r("PayloadRequestHandle"), " to ", code("011"), ","],
                             [r("StaticTokenHandle"), " to ", code("100"), ","],
