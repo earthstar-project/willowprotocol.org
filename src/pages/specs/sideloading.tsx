@@ -44,7 +44,7 @@ export const sideloading = (
             <Marginale inlineable>
               <Img
                 src={<ResolveAsset asset={["sideload", "sideload_spot.png"]} />}
-                alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it..`}
+                alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
               />
               <MarginCaption>
                 You really <Em>could</Em>{" "}
