@@ -239,7 +239,7 @@ export const es6_spec = (
 
 				hsection("es6_wgps_reconciliation", "3d Range-Based Set Reconciliation", [
 					pinformative(
-						"The type ", r("Fingerprint"), " is the type of 32 byte arrays that are valid ", link("encodings of Edwards25519 curve points", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ", the type ", r("PreFingerprint"), " is the type of Edwards25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point according to ", link("RFC 8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ".",
+						"The type <R n="Fingerprint"/> is the type of 32 byte arrays that are valid ", link("encodings of Edwards25519 curve points", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ", the type ", r("PreFingerprint"), " is the type of Edwards25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point according to ", link("RFC 8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ".",
 					),
 
 					pinformative(
@@ -318,7 +318,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), " (which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each <R n="Fingerprint"/> (which is already a sequence of bytes) to itself."
 					),
 				]),
 

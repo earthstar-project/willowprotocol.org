@@ -1130,242 +1130,758 @@ export const sync = (
                   <R n="StaticTokenChannel" />.
                 </P>
               </Hsection>
+            </Hsection>
 
-              {
-                /*
-                - register static token
-              */
-              }
+            <Hsection n="sync_reconciliation" title="Reconciliation">
+              <P>
+                We employ{" "}
+                <R n="d3_range_based_set_reconciliation">
+                  3d range-based set reconciliation
+                </R>{" "}
+                to synchronise the data of the peers. Our{" "}
+                <R n="ReconciliationSendFingerprint" />{" "}
+                messages serve to transmit <Rs n="D3RangeFingerprint" />.
+              </P>
+
+              <P>
+                For <Rs n="D3RangeEntrySet" />{" "}
+                we need four different message type, in order to keep things
+                streaming, interleavable, and adaptable to store mutation that
+                happens concurrently to syncing:{" "}
+                <R n="ReconciliationAnnounceEntries" /> messages announce a{" "}
+                <R n="D3Range" /> whose <Rs n="Entry" />{" "}
+                will be transmitted. For each <R n="Entry" /> in the{" "}
+                <R n="D3Range" />, the peer must then transmit its data. This
+                begins with a <R n="ReconciliationSendEntry" />{" "}
+                message to transmit the <R n="Entry" />{" "}
+                without its payload, followed by many (possibly zero){" "}
+                <R n="ReconciliationSendPayload" />{" "}
+                messages to transmit consecutive chunks of the payload, and
+                terminated by exactly one{" "}
+                <R n="ReconciliationTerminatePayload" />{" "}
+                message. Peers neither preannounce how many <Rs n="Entry" />
+                {" "}
+                they will send in each <R n="D3Range" />, nor how many{" "}
+                <R n="Payload" /> bytes they will transmit in total per{" "}
+                <R n="Entry" />.
+              </P>
+
+              <P>
+                Peers <Em>must</Em>{" "}
+                follow this cadence strictly, sending reconciliation-related
+                {" "}
+                <Sidenote
+                  note={
+                    <>
+                      <R n="ReconciliationSendFingerprint" />,{" "}
+                      <R n="ReconciliationAnnounceEntries" />,{" "}
+                      <R n="ReconciliationSendEntry" />,{" "}
+                      <R n="ReconciliationSendPayload" />, and
+                      <R n="ReconciliationTerminatePayload" />.
+                    </>
+                  }
+                >
+                  messages
+                </Sidenote>{" "}
+                places strict constrains on the next reconciliation-related
+                messages<Marginale>
+                  All other kinds of messages remain unaffected and can be
+                  freely interleaved, only the ordering of
+                  reconciliation-related messages relative to each other is
+                  restricted
+                </Marginale>{" "}
+                that may be sent:
+              </P>
+
+              <Ul>
+                <Li>
+                  every <R n="ReconciliationAnnounceEntries" />{" "}
+                  must be followed by an <R n="ReconciliationSendEntry" />{" "}
+                  message if and only if its{" "}
+                  <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
+                  <Code>true</Code>,
+                </Li>
+                <Li>
+                  every <R n="ReconciliationSendEntry" />{" "}
+                  message must be followed by zero or more{" "}
+                  <R n="ReconciliationSendPayload" />{" "}
+                  messages, followed by exactly one{" "}
+                  <R n="ReconciliationTerminatePayload" /> message, and
+                </Li>
+                <Li>
+                  <R n="ReconciliationSendEntry" /> must only follow a{" "}
+                  <R n="ReconciliationSendEntry" /> message whose{" "}
+                  <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
+                  <Code>true</Code>, or a{" "}
+                  <R n="ReconciliationTerminatePayload" />.
+                </Li>
+              </Ul>
+
+              <P>
+                There is a second concern that spans multiple of the
+                reconciliation messages: peers should know when to proceed from
+                {" "}
+                <R n="d3_range_based_set_reconciliation" /> to{" "}
+                <R n="sync_post_sync_forwarding">eager forwarding</R> of new
+                {" "}
+                <Rs n="Entry" />. Continuously tracking whether the responses
+                you received to a <R n="D3RangeFingerprint" />{" "}
+                have fully covered its <R n="D3RangeFingerprintRange" />{" "}
+                is computationally inconvenient, so we allow for a cooperative
+                approach instead: peers tell each other once they have fully
+                covered a <R n="D3RangeFingerprintRange" /> they reply to.
+              </P>
+
+              <PreviewScope>
+                <P>
+                  To this end, we (implicitly) assign an id to certain messages
+                  through the following mechanism: each peer tracks two numbers,
+                  {" "}
+                  <DefValue n="my_range_counter" /> and{" "}
+                  <DefValue n="your_range_counter" />. Both are initialised to
+                  {" "}
+                  <M post=".">1</M> Whenever a peer <Em>sends</Em> either a{" "}
+                  <R n="ReconciliationAnnounceEntries" /> message with{" "}
+                  <R n="ReconciliationAnnounceEntriesWantResponse" /> set to
+                  {" "}
+                  <Code>true</Code> or a <R n="ReconciliationSendFingerprint" />
+                  {" "}
+                  message, it increments its{" "}
+                  <R n="my_range_counter" />. Whenever it <Em>receives</Em>{" "}
+                  such a message, it increments its{" "}
+                  <R n="your_range_counter" />. When a messages causes one of
+                  these values to be incremented, we call{" "}
+                  <Sidenote
+                    note={
+                      <>
+                        Both peers assign the same values to the same messages.
+                      </>
+                    }
+                  >
+                    the
+                  </Sidenote>{" "}
+                  value <Em>before</Em> incrementation the message's{" "}
+                  <DefValue n="range_count" />.
+                </P>
+
+                <P>
+                  Whenever a peer receives a message of some{" "}
+                  <R n="range_count" />{" "}
+                  <DefValue n="recon_send_fp_count" r="count" />, it may recurse
+                  by producing a cover of smaller{" "}
+                  <Rs n="D3Range" />. For each subrange of that cover, it sends
+                  either a <R n="ReconciliationSendFingerprint" /> message or a
+                  {" "}
+                  <R n="ReconciliationAnnounceEntries" />{" "}
+                  message. Each of these response messages contains the{" "}
+                  <R n="recon_send_fp_count" />{" "}
+                  as a field. They also contain a flag which is set to{" "}
+                  <Code>true</Code>{" "}
+                  only on the final of these covering messages. With this
+                  information, peers can track relatively easily whether any
+                  given range has been fully reconciled yet or not.
+                </P>
+              </PreviewScope>
+
+              <P>
+                For ease of presentation, we bundle these and other fields that
+                are shared between <R n="ReconciliationSendFingerprint" /> and
+                {" "}
+                <R n="ReconciliationAnnounceEntries" /> messages into a struct:
+              </P>
+
+              <Pseudocode n="sync_defs_RangeInfo">
+                <StructDef
+                  comment={
+                    <>
+                      The data shared between{" "}
+                      <R n="ReconciliationSendFingerprint" /> and{" "}
+                      <R n="ReconciliationAnnounceEntries" /> messages.
+                    </>
+                  }
+                  id={[
+                    "RangeInfo",
+                    "RangeInfo",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="recon_send_fp_count" />{" "}
+                            of the message this message is responding to. If
+                            this message was not created in response to any
+                            other message, this field is <M post=".">0</M>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "covers",
+                            "RangeInfoCovers",
+                            "covers",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether this message is the final message sent in
+                            response to some other message. If this message is
+                            not sent as a response at all, this field is{" "}
+                            <Code>true</Code>.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "is_final",
+                            "RangeInfoIsFinal",
+                            "is_final",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="D3Range" /> the message pertains to.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "range",
+                            "RangeInfoRange",
+                            "ranges",
+                          ],
+                          <R n="D3Range" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            A <R n="ReadCapabilityHandle" />{" "}
+                            <R n="handle_bind">bound</R> by the <Em>sender</Em>
+                            {" "}
+                            of this message. The <R n="granted_area" />{" "}
+                            of the corresponding <R n="read_capability" />{" "}
+                            must fully contain the <R n="RangeInfoRange" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "sender_handle",
+                            "RangeInfoRangeSenderHandle",
+                            "sender_handles",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            A <R n="ReadCapabilityHandle" />{" "}
+                            <R n="handle_bind">bound</R> by the{" "}
+                            <Em>receiver</Em> of this message. The{" "}
+                            <R n="granted_area" /> of the corresponding{" "}
+                            <R n="read_capability" /> must fully contain the
+                            {" "}
+                            <R n="RangeInfoRange" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "receiver_handle",
+                            "RangeInfoRangeReceiverHandle",
+                            "receiver_handles",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <Hsection
+                n="sync_msg_ReconciliationSendFingerprint"
+                title={<Code>ReconciliationSendFingerprint</Code>}
+              >
+                <P>
+                  The <R n="ReconciliationSendFingerprint" />{" "}
+                  messages let peers transmit <Rs n="D3RangeFingerprint" />{" "}
+                  for range-based set reconciliation.
+                </P>
+
+                <Pseudocode n="sync_defs_ReconciliationSendFingerprint">
+                  <StructDef
+                    comment={
+                      <>
+                        Send a <R n="Fingerprint" /> as part of{" "}
+                        <R n="d3rbsr" />.
+                      </>
+                    }
+                    id={[
+                      "ReconciliationSendFingerprint",
+                      "ReconciliationSendFingerprint",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="RangeInfo" /> for this message.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "info",
+                              "ReconciliationSendFingerprintInfo",
+                              "info",
+                            ],
+                            <R n="RangeInfo" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="Fingerprint" /> of all{" "}
+                              <Rs n="LengthyEntry" /> the peer has in{"  "}
+                              <AccessStruct field="RangeInfoRange">
+                                <R n="ReconciliationSendFingerprintInfo" />
+                              </AccessStruct>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "fingerprint",
+                              "ReconciliationSendFingerprintFingerprint",
+                              "fingerprint",
+                            ],
+                            <R n="Fingerprint" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="ReconciliationSendFingerprint" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_ReconciliationAnnounceEntries"
+                title={<Code>ReconciliationAnnounceEntries</Code>}
+              >
+                <P>
+                  The <R n="ReconciliationAnnounceEntries" />{" "}
+                  messages let peers begin transmission of their{" "}
+                  <Rs n="LengthyEntry" /> in a <R n="D3Range" />{" "}
+                  for range-based set reconciliation.
+                </P>
+
+                <Pseudocode n="sync_defs_ReconciliationAnnounceEntries">
+                  <StructDef
+                    comment={
+                      <>
+                        Prepare transmission of the <Rs n="LengthyEntry" />{" "}
+                        a peer has in a <R n="D3Range" /> as part of{" "}
+                        <R n="d3rbsr" />.
+                      </>
+                    }
+                    id={[
+                      "ReconciliationAnnounceEntries",
+                      "ReconciliationAnnounceEntries",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="RangeInfo" /> for this message.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "info",
+                              "ReconciliationAnnounceEntriesInfo",
+                              "info",
+                            ],
+                            <R n="RangeInfo" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              Must be <Code>true</Code>{" "}
+                              if and only if the the sender has zero{" "}
+                              <Rs n="Entry" /> in{"  "}
+                              <AccessStruct field="RangeInfoRange">
+                                <R n="ReconciliationAnnounceEntriesInfo" />
+                              </AccessStruct>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "is_empty",
+                              "ReconciliationAnnounceEntriesIsEmpty",
+                            ],
+                            <R n="Bool" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A boolean flag to indicate whether the sender
+                              wishes to receive a{" "}
+                              <R n="ReconciliationAnnounceEntries" />{" "}
+                              message for the same <R n="D3Range" /> in return.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "want_response",
+                              "ReconciliationAnnounceEntriesWantResponse",
+                            ],
+                            <R n="Bool" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              Whether the sender promises to send the{" "}
+                              <Rs n="Entry" /> in{"  "}
+                              <AccessStruct field="RangeInfoRange">
+                                <R n="ReconciliationAnnounceEntriesInfo" />
+                              </AccessStruct>{" "}
+                              sorted ascendingly by <R n="entry_subspace_id" />
+                              {" "}
+                              , using <Rs n="entry_path" />{" "}
+                              (sorted lexicographically) as the tiebreaker.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "will_sort",
+                              "ReconciliationAnnounceEntriesWillSort",
+                            ],
+                            <R n="Bool" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  Actual transmission of the announced <Rs n="LengthyEntry" />
+                  {" "}
+                  in{" "}
+                  <AccessStruct field="RangeInfoRange">
+                    <R n="ReconciliationAnnounceEntriesInfo" />
+                  </AccessStruct>{" "}
+                  happens via <R n="ReconciliationSendEntry" /> messages.
+                </P>
+
+                <P>
+                  Promising (and then fulfilling) sorted transmission via the
+                  {" "}
+                  <R n="ReconciliationAnnounceEntriesWillSort" />{" "}
+                  enables the receiver to determine which of its own{" "}
+                  <Rs n="Entry" />{" "}
+                  it can omit from a reply in constant space. For unsorted{" "}
+                  <Rs n="Entry" />, receivers that cannot allocate a linear
+                  amount of memory have to resort to possibly redundant{" "}
+                  <R n="Entry" /> transmissions to uphold the correctness of
+                  {" "}
+                  <R n="d3rbsr" />.
+                </P>
+
+                <P>
+                  <Rb n="ReconciliationAnnounceEntries" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_ReconciliationSendEntry"
+                title={<Code>ReconciliationSendEntry</Code>}
+              >
+                <P>
+                  The <R n="ReconciliationSendEntry" />{" "}
+                  messages let peers transmit <Rs n="LengthyEntry" />{" "}
+                  for range-based set reconciliation.
+                </P>
+
+                <Pseudocode n="sync_defs_ReconciliationSendEntry">
+                  <StructDef
+                    comment={
+                      <>
+                        Send a <R n="LengthyEntry" /> as part of{" "}
+                        <R n="d3rbsr" />.
+                      </>
+                    }
+                    id={[
+                      "ReconciliationSendEntry",
+                      "ReconciliationSendEntry",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="LengthyEntry" /> itself.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "entry",
+                              "ReconciliationSendEntryEntry",
+                              "entry",
+                            ],
+                            <R n="LengthyEntry" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="StaticTokenHandle" />,{" "}
+                              <R n="handle_bind">bound</R>{" "}
+                              by the sender of this message, which is{" "}
+                              <R n="handle_bind">bound</R>{" "}
+                              to the static part of the{" "}
+                              <R n="ReconciliationSendEntryEntry" />’s{" "}
+                              <R n="AuthorisationToken" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "static_token_handle",
+                              "ReconciliationSendEntryStaticTokenHandle",
+                              "static_token_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The dynamic part of the{" "}
+                              <R n="ReconciliationSendEntryEntry" />’s{" "}
+                              <R n="AuthorisationToken" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "ReconciliationSendEntryDynamicToken",
+                              "ReconciliationSendEntryDynamicToken",
+                              "ReconciliationSendEntryDynamicTokens",
+                            ],
+                            <R n="DynamicToken" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="ReconciliationSendEntry" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_ReconciliationSendPayload"
+                title={<Code>ReconciliationSendPayload</Code>}
+              >
+                <P>
+                  The <R n="ReconciliationSendPayload" />{" "}
+                  messages let peers transmit (successive parts of) the
+                  concatenation of the <R n="transform_payload">transformed</R>
+                  {" "}
+                  <Rs n="Payload" /> of <Rs n="Entry" />{" "}
+                  immediately during range-based set reconciliation. The sender
+                  can freely decide how many (including zero) bytes to eargerly
+                  transmit, and it must respect the receiver’s{" "}
+                  <R n="peer_max_payload_size" />.
+                </P>
+
+                <Pseudocode n="sync_defs_ReconciliationSendPayload">
+                  <StructDef
+                    comment={
+                      <>
+                        Send some <R n="transform_payload">transformed</R>{" "}
+                        <R n="Payload" /> bytes as part of <R n="d3rbsr" />.
+                      </>
+                    }
+                    id={[
+                      "ReconciliationSendPayload",
+                      "ReconciliationSendPayload",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The number of transmitted bytes.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "amount",
+                              "ReconciliationSendPayloadAmount",
+                              "amounts",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The bytes to transmit, a contiguous substring of
+                              the result of applying <R n="transform_payload" />
+                              {" "}
+                              to the <R n="Payload" /> of the{" "}
+                              <R n="ReconciliationSendEntry">previously sent</R>
+                              {" "}
+                              <R n="Entry" />{" "}
+                              and concatenating the result into a single
+                              bytestring.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "bytes",
+                              "ReconciliationSendPayloadBytes",
+                              "bytes",
+                            ],
+                            <ArrayType
+                              count={<R n="ReconciliationSendPayloadAmount" />}
+                            >
+                              <R n="U8" />
+                            </ArrayType>,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="ReconciliationSendEntry" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_ReconciliationTerminatePayload"
+                title={<Code>ReconciliationTerminatePayload</Code>}
+              >
+                <P>
+                  The <R n="ReconciliationTerminatePayload" />{" "}
+                  messages let peers indicate that they will not send more
+                  payload bytes for the current <R n="Entry" />{" "}
+                  as part of set reconciliation. The messages further indicate
+                  whether more <Rs n="LengthyEntry" />{" "}
+                  will follow for the current <R n="D3Range" />.
+                </P>
+
+                <Pseudocode n="sync_defs_ReconciliationTerminatePayload">
+                  <StructDef
+                    comment={
+                      <>
+                        Signal the end of the current
+                        <R n="Payload" /> transmission as part of{" "}
+                        <R n="d3rbsr" />, and indicate whether another{" "}
+                        <R n="LengthyEntry" />{" "}
+                        transmission will follow for the current{" "}
+                        <R n="D3Range" />.
+                      </>
+                    }
+                    id={[
+                      "ReconciliationTerminatePayload",
+                      "ReconciliationTerminatePayload",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              Set to <Code>true</Code> if and only if no further
+                              {" "}
+                              <R n="ReconciliationSendEntry" />{" "}
+                              message will be sent as part of reconciling the
+                              current <R n="D3Range" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "is_final",
+                              "ReconciliationTerminatePayloadFinal",
+                              "is_final",
+                            ],
+                            <R n="Bool" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="ReconciliationTerminatePayload" /> messages use the
+                  {" "}
+                  <R n="ReconciliationChannel" />.
+                </P>
+              </Hsection>
             </Hsection>
           </Hsection>
         </Hsection>
 
         {
           /*
-
-
-                    pseudocode(
-                        new Struct({
-                            id: "SetupBindStaticToken",
-                            comment: [<Rb n="handle_bind"/> a <R n="StaticToken"/> to a ", r("StaticTokenHandle"), "."],
-                            fields: [
-                                {
-                                    id: "SetupBindStaticTokenToken",
-                                    name: "static_token",
-                                    comment: ["The <R n="StaticToken"/> to bind."],
-                                    rhs: r("StaticToken"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("SetupBindStaticToken"), " messages let peers ", <Rb n="handle_bind"/> ", rs("StaticToken"), ". Transmission of <Rs n="AuthorisedEntry"/> in other messages refers to <Rs n="StaticTokenHandle"/> rather than transmitting ", rs("StaticToken"), " verbatim."),
-
-                    pinformative(R("SetupBindStaticToken"), " messages use the ", r("StaticTokenChannel"), "."),
-                ]),
-
-                hsection("sync_reconciliation", "Reconciliation", [
-                    pinformative("We use ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " to synchronise the data of the peers."),
-
-                    surpress_output(def_symbol({id: "covers_none", singular: "none"}, "none", ["A value that signals that a message does not complete a <R n="D3Range"/> cover."])),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ReconciliationSendFingerprint",
-                            comment: ["Send a ", r("Fingerprint"), " as part of <R n="d3rbsr"/>."],
-                            fields: [
-                                {
-                                    id: "ReconciliationSendFingerprintRange",
-                                    name: "range",
-                                    comment: ["The <R n="D3Range"/> whose ", r("Fingerprint"), " is transmitted."],
-                                    rhs: r("D3Range"),
-                                },
-                                {
-                                    id: "ReconciliationSendFingerprintFingerprint",
-                                    name: "fingerprint",
-                                    comment: ["The ", r("Fingerprint"), " of the ", r("ReconciliationSendFingerprintRange"), ", that is, of all <Rs n="LengthyEntry"/> the peer has in the ", r("ReconciliationSendFingerprintRange"), "."],
-                                    rhs: r("Fingerprint"),
-                                },
-                                {
-                                    id: "ReconciliationSendFingerprintSenderHandle",
-                                    name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationSendFingerprintReceiverHandle",
-                                    name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message, that fully contains the ", r("ReconciliationSendFingerprintRange"), "."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationSendFingerprintCovers",
-                                    name: "covers",
-                                    comment: ["If this message is the last of a set of messages that together cover the ", r("ReconciliationSendFingerprintRange"), " of some prior ", r("ReconciliationSendFingerprint"), " message, then this field contains the ", r("range_count"), " of that ", r("ReconciliationSendFingerprint"), " message. Otherwise, ", r("covers_none"), "."],
-                                    rhs: pseudo_choices(r("U64"), r("covers_none")),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("ReconciliationSendFingerprint"), " messages let peers initiate and progress <R n="d3rbsr"/>. Each ", r("ReconciliationSendFingerprint"), " message must contain <Rs n="AreaOfInterestHandle"/> issued by both peers; this upholds read access control."),
-
-                    pinformative("In order to inform each other whenever they fully cover a <R n="D3Range"/> during reconciliation, each peer tracks two numbers: ", def_value("my_range_counter"), " and ", def_value("your_range_counter"), ". Both are initialised to zero. Whenever a peer ", em("sends"), " either a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesFlag"), " set to <Code>true</Code> or a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("my_range_counter"), ". Whenever it ", em("receives"), " either a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesFlag"), " set to <Code>true</Code> or a ", r("ReconciliationSendFingerprint"), " message, it increments its ", r("your_range_counter"), ". When a messages causes one of these values to be incremented, we call ", sidenote("the", ["Both peers assign the same values to the same messages."]), " value ", em("before"), " incrementation the message's ", def("range_count"), "."),
-
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of ", r("range_count"), " ", def_value({id: "recon_send_fp_count", singular: "count"}), ", it may recurse by producing a cover of smaller <Rs n="D3Range"/>. For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationSendFingerprint"), " message, its ", r("ReconciliationSendFingerprintCovers"), " field should be set to ", r("recon_send_fp_count"), ". The ", r("ReconciliationSendFingerprintCovers"), " field of all other ", r("ReconciliationSendFingerprint"), " messages should be set to ", r("covers_none"), "."),
-
-                    pinformative(R("ReconciliationSendFingerprint"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ReconciliationAnnounceEntries",
-                            plural: "ReconciliationAnnounceEntries",
-                            comment: ["Prepare transmission of the <Rs n="LengthyEntry"/> a peer has in a <R n="D3Range"/> as part of <R n="d3rbsr"/>."],
-                            fields: [
-                                {
-                                    id: "ReconciliationAnnounceEntriesRange",
-                                    name: "range",
-                                    comment: ["The <R n="D3Range"/> whose <Rs n="LengthyEntry"/> to transmit."],
-                                    rhs: r("D3Range"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesEmpty",
-                                    name: "is_empty",
-                                    comment: ["True if and only if the the sender has zero ", rs("Entry") ," in the ", r("ReconciliationAnnounceEntriesRange"), "."],
-                                    rhs: r("Bool"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesFlag",
-                                    name: "want_response",
-                                    comment: ["A boolean flag to indicate whether the sender wishes to receive a ", r("ReconciliationAnnounceEntries"), " message for the same <R n="D3Range"/> in return."],
-                                    rhs: r("Bool"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesWillSort",
-                                    name: "will_sort",
-                                    comment: ["Whether the sender promises to send the <Rs n="Entry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " sorted ascendingly by <R n="entry_subspace_id"/> first, <R n="entry_path"/> second."],
-                                    rhs: r("Bool"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesSenderHandle",
-                                    name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesReceiverHandle",
-                                    name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message, that fully contains the ", r("ReconciliationAnnounceEntriesRange"), "."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationAnnounceEntriesCovers",
-                                    name: "covers",
-                                    comment: ["If this message is the last of a set of messages that together cover the ", r("ReconciliationSendFingerprintRange"), " of some prior ", r("ReconciliationSendFingerprint"), " message, then this field contains the ", r("range_count"), " of that ", r("ReconciliationSendFingerprint"), " message. Otherwise, ", r("covers_none"), "."],
-                                    rhs: pseudo_choices(r("U64"), r("covers_none")),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("ReconciliationAnnounceEntries"), " messages let peers begin transmission of their <Rs n="LengthyEntry"/> in a <R n="D3Range"/>. Each ", r("ReconciliationAnnounceEntries"), " message must contain <Rs n="AreaOfInterestHandle"/> issued by both peers that contain the ", r("ReconciliationAnnounceEntriesRange"), "; this upholds read access control."),
-
-                    pinformative("Actual transmission of the <Rs n="LengthyEntry"/> in the ", r("ReconciliationAnnounceEntriesRange"), " happens via ", r("ReconciliationSendEntry"), " messages. The ", r("ReconciliationAnnounceEntriesWillSort"), " flag should be set to ", code("1"), " if the sender will transmit the ", rs("LengthyEntry"), marginale([
-                        "Sorting the <Rs n="Entry"/> allows the receiver to determine which of its own <Rs n="Entry"/> it can omit from a reply in constant space. For unsorted <Rs n="Entry"/>, peers that cannot allocate a linear amount of memory have to resort to possibly redundant <R n="Entry"/> transmissions to uphold the correctness of <R n="d3rbsr"/>."
-                    ]), " sorted in ascending order by <R n="entry_subspace_id"/> first, using the <R n="entry_path"/> as a tiebreaker. If the sender will not guarantee this order, the flag must be set to ", code("0"), "."),
-
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " message may be sent until all <Rs n="Entry"/> announced by a prior ", r("ReconciliationAnnounceEntries"), " message have been sent. The <Rs n="Entry"/> are known to all have been sent if the ", r("ReconciliationAnnounceEntriesEmpty"), " has been set to <Code>true</Code>, or once a ", r("ReconciliationTerminatePayload"), " message with the ", r("ReconciliationTerminatePayloadFinal"), " flag set to <Code>true</Code> has been sent."),
-
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message that matches its local ", r("Fingerprint"), ", it should reply with a ", r("ReconciliationAnnounceEntries"), " message with ", r("ReconciliationAnnounceEntriesEmpty"), " set to <Code>true</Code> and ", r("ReconciliationAnnounceEntriesFlag"), " <Code>false</Code>, to indicate to the other peer that reconciliation of the <R n="D3Range"/> has concluded successfully."),
-
-                    pinformative("When a peer receives a ", r("ReconciliationSendFingerprint"), " message of some ", r("range_count"), " ", def_value({id: "recon_announce_count", singular: "count"}), ", it may recurse by producing a cover of smaller <Rs n="D3Range"/>. For each subrange of that cover, it sends either a ", r("ReconciliationSendFingerprint"), " message or a ", r("ReconciliationAnnounceEntries"), " message. If the last of these messages that it sends for the cover is a ", r("ReconciliationAnnounceEntries"), " message, its ", r("ReconciliationAnnounceEntriesCovers"), " field should be set to ", r("recon_announce_count"), ". The ", r("ReconciliationAnnounceEntriesCovers"), " field of all other ", r("ReconciliationAnnounceEntries"), " messages should be set to ", r("covers_none"), "."),
-
-                    pinformative(R("ReconciliationAnnounceEntries"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ReconciliationSendEntry",
-                            plural: "ReconciliationSendEntries",
-                            comment: ["Transmit a <R n="LengthyEntry"/> as part of <R n="d3rbsr"/>."],
-                            fields: [
-                                {
-                                    id: "ReconciliationSendEntryEntry",
-                                    name: "entry",
-                                    comment: ["The <R n="LengthyEntry"/> itself."],
-                                    rhs: r("LengthyEntry"),
-                                },
-                                {
-                                    id: "ReconciliationSendEntryStaticTokenHandle",
-                                    name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), ", <R n="handle_bind">bound</R> by the sender of this message, that is <R n="handle_bind">bound</R> to the static part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationSendEntryDynamicToken",
-                                    name: "dynamic_token",
-                                    comment: ["The dynamic part of the ", r("ReconciliationSendEntryEntry"), "’s <R n="AuthorisationToken"/>."],
-                                    rhs: r("DynamicToken"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("ReconciliationSendEntry"), " messages let peers transmit <Rs n="Entry"/> as part of <R n="d3rbsr"/>. These messages may only be sent after a ", r("ReconciliationAnnounceEntries"), " with its ", r("ReconciliationAnnounceEntriesEmpty"), " flag set to <Code>false</Code>, or a ", r("ReconciliationTerminatePayload"), " with its ", r("ReconciliationTerminatePayloadFinal"), " flag set to <Code>false</Code>. The transmitted <Rs n="Entry"/> must be ", r("d3_range_include", "included"), " in the <R n="D3Range"/> of the corresponding ", r("ReconciliationAnnounceEntries"), " message."),
-
-                    pinformative("No ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " message may be sent after a ", r("ReconciliationSendEntry"), " message, until a sequence of zero or more ", r("ReconciliationSendPayload"), " messages followed by exactly one ", r("ReconciliationTerminatePayload"), " message has been sent. If the ", r("ReconciliationTerminatePayloadFinal"), " flag of the ", r("ReconciliationTerminatePayload"), " message is set to <Code>false</Code>, then another ", r("ReconciliationSendEntry"), " message may be sent. Otherwise, another ", r("ReconciliationAnnounceEntries"), " message may be sent."),
-
-                    pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ReconciliationSendPayload",
-                            comment: ["Transmit some ", link_name("sync_payloads_transform", "transformed"), " <R n="Payload"/> bytes."],
-                            fields: [
-                                {
-                                    id: "ReconciliationSendPayloadAmount",
-                                    name: "amount",
-                                    comment: ["The number of transmitted bytes."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ReconciliationSendPayloadBytes",
-                                    name: "bytes",
-                                    comment: [r("ReconciliationSendPayloadAmount"), " many bytes, a substring of the bytes obtained by applying ", r("transform_payload"), " to the <R n="Payload"/> to be transmitted."],
-                                    rhs: ["[", hl_builtin("u8"), "]"],
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("ReconciliationSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " <Rs n="Payload"/>."),
-
-                    pinformative("Each ", r("ReconciliationSendPayload"), " message transmits a successive (starting at byte zero) part of the result of applying ", r("transform_payload"), " to the <R n="Payload"/> of the <R n="Entry"/> with the most recent ", r("ReconciliationSendEntry"), " message by the sender. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original <R n="Payload"/> from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
-
-                    pinformative("After sending a ", r("ReconciliationSendPayload"), " message, a peer may not send ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages until it has sent a ", r("ReconciliationTerminatePayload"), " message. ", r("ReconciliationSendPayload"), " messages must only be sent when there was a corresponding ", r("ReconciliationSendEntry"), " message that indicates which <R n="Entry"/> the payload chunk belongs to."),
-
-                    pinformative(R("ReconciliationSendEntry"), " messages use the ", r("ReconciliationChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ReconciliationTerminatePayload",
-                            comment: ["Indicate that no more bytes will be transmitted for the currently transmitted <R n="Payload"/> as part of set reconciliation."],
-                            fields: [
-                                {
-                                    id: "ReconciliationTerminatePayloadFinal",
-                                    name: "is_final",
-                                    comment: ["True if and only if no further ", r("ReconciliationSendEntry"), " message will be sent as part of reconciling the current <R n="D3Range"/>."],
-                                    rhs: r("Bool"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("ReconciliationTerminatePayload"), " messages let peers indicate that they will not send more payload bytes for the current <R n="Entry"/> as part of set reconciliation. This may be because the end of the <R n="Payload"/> has been reached, or simply because the peer chooses to not send any further bytes."),
-
-                    pinformative("The ", r("ReconciliationTerminatePayloadFinal"), " flag announces whether more <Rs n="Entry"/> will be sent as part of the current <R n="D3Range"/>."),
-
-                    pinformative(R("ReconciliationTerminatePayload"), " messages use the ", r("ReconciliationChannel"), "."),
-                ]),
 
                 hsection("sync_data", "Data", [
                     pinformative("Outside of ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push <Rs n="Entry"/> and <Rs n="Payload"/> to each other, and they can request specific <Rs n="Payload"/>."),
@@ -1384,7 +1900,7 @@ export const sync = (
                                 {
                                     id: "DataSendEntryStatic",
                                     name: "static_token_handle",
-                                    comment: ["A ", r("StaticTokenHandle"), " <R n="handle_bind">bound</R> to the <R n="StaticToken"/> of the <R n="Entry"/> to transmit."],
+                                    comment: ["A <R n="StaticTokenHandle"/> <R n="handle_bind">bound</R> to the <R n="StaticToken"/> of the <R n="Entry"/> to transmit."],
                                     rhs: r("U64"),
                                 },
                                 {
@@ -1705,7 +2221,7 @@ export const sync = (
                             "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_dynamic_token"}), " for <R n="DynamicToken"/>.",
                         ),
                         preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_fingerprint"}), " for ", r("Fingerprint"), ".",
+                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_fingerprint"}), " for <R n="Fingerprint"/>.",
                         ),
                     ),
 
@@ -1981,19 +2497,19 @@ export const sync = (
 
                         lis(
                             [
-                                "A <R n="D3Range"/> ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintRange"), ". The initial value is ", code(function_call(r("default_3d_range"), r("sync_default_subspace_id"))), "."
+                                "A <R n="D3Range"/> ", def_value({id: "sync_enc_prev_range", singular: "prev_range"}), ", which is updated every time after proccessing a <R n="ReconciliationSendFingerprint"/> or <R n="ReconciliationAnnounceEntries"/> message to the message’s <R n="ReconciliationSendFingerprintRange"/>. The initial value is ", code(function_call(r("default_3d_range"), r("sync_default_subspace_id"))), "."
                             ],
                             [
-                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_sender", singular: "prev_sender_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintSenderHandle"), ". The initial value is ", code("0"), "."
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_sender", singular: "prev_sender_handle"}), ", which is updated every time after proccessing a <R n="ReconciliationSendFingerprint"/> or <R n="ReconciliationAnnounceEntries"/> message to the message’s ", r("ReconciliationSendFingerprintSenderHandle"), ". The initial value is ", code("0"), "."
                             ],
                             [
-                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a ", r("ReconciliationSendFingerprint"), " or ", r("ReconciliationAnnounceEntries"), " message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), ". The initial value is ", code("0"), "."
+                                "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a <R n="ReconciliationSendFingerprint"/> or <R n="ReconciliationAnnounceEntries"/> message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), ". The initial value is ", code("0"), "."
                             ],
                             [
-                                "An <R n="Entry"/> ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the <R n="LengthyEntry"/> of the message’s ", r("ReconciliationSendEntryEntry"), ". The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
+                                "An <R n="Entry"/> ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a <R n="ReconciliationSendEntry"/> message to the <R n="LengthyEntry"/> of the message’s <R n="ReconciliationSendEntryEntry"/>. The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
                             ],
                             [
-                                "A ", r("StaticTokenHandle"), " ", def_value({id: "sync_enc_prev_token", singular: "prev_token"}), ", which is updated every time after proccessing a ", r("ReconciliationSendEntry"), " message to the message’s ", r("ReconciliationSendEntryStaticTokenHandle"), ". The initial value is ", code("0"), "."
+                                "A <R n="StaticTokenHandle"/> ", def_value({id: "sync_enc_prev_token", singular: "prev_token"}), ", which is updated every time after proccessing a <R n="ReconciliationSendEntry"/> message to the message’s ", r("ReconciliationSendEntryStaticTokenHandle"), ". The initial value is ", code("0"), "."
                             ],
                         ),
                     ),
@@ -2005,7 +2521,7 @@ export const sync = (
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("ReconciliationSendFingerprint"), " message ", def_value({id: "enc_recon_fp", singular: "m"}), " starts with a bitfield:",
+                        "The encoding of a <R n="ReconciliationSendFingerprint"/> message ", def_value({id: "enc_recon_fp", singular: "m"}), " starts with a bitfield:",
                     ),
 
                     encodingdef(
@@ -2100,7 +2616,7 @@ export const sync = (
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("ReconciliationAnnounceEntries"), " message ", def_value({id: "enc_recon_announce", singular: "m"}), " is the concatenation of:",
+                        "The encoding of a <R n="ReconciliationAnnounceEntries"/> message ", def_value({id: "enc_recon_announce", singular: "m"}), " is the concatenation of:",
                     ),
 
                     encodingdef(
@@ -2118,7 +2634,7 @@ export const sync = (
                             new BitfieldRow(
                                 1,
                                 [
-                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesFlag"), " == ", code("true")),
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesWantResponse"), " == ", code("true")),
                                 ],
                             ),
                             new BitfieldRow(
@@ -2148,7 +2664,7 @@ export const sync = (
                             new BitfieldRow(
                                 1,
                                 [
-                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesEmpty"), " == ", code("true")),
+                                    code("1"), " ", r("iff"), " ", code(field_access(r("enc_recon_announce"), "ReconciliationAnnounceEntriesIsEmpty"), " == ", code("true")),
                                 ],
                             ),
                             new BitfieldRow(
@@ -2225,15 +2741,15 @@ export const sync = (
                     hr(),
 
                     pinformative(
-                        "The WGPS mandates a strict cadence of ", r("ReconciliationAnnounceEntries"), " messages followed by ", r("ReconciliationSendEntry"), " messages, there are no points in time where it would be valid to send both. Hence, their encodings need not be distinguishable."
+                        "The WGPS mandates a strict cadence of <R n="ReconciliationAnnounceEntries"/> messages followed by <R n="ReconciliationSendEntry"/> messages, there are no points in time where it would be valid to send both. Hence, their encodings need not be distinguishable."
                     ),
 
                     pinformative(
-                        "When it is possible to receive a ", r("ReconciliationSendEntry"), " message, denote the preceeding ", r("ReconciliationAnnounceEntries"), " message by ", def_value({id: "sync_enc_rec_announced", singular: "announced"}), ".",
+                        "When it is possible to receive a <R n="ReconciliationSendEntry"/> message, denote the preceeding <R n="ReconciliationAnnounceEntries"/> message by ", def_value({id: "sync_enc_rec_announced", singular: "announced"}), ".",
                     ),
 
                     pinformative(
-                        "The encoding of a ", r("ReconciliationSendEntry"), " message ", def_value({id: "enc_recon_entry", singular: "m"}), " starts with a bitfield:",
+                        "The encoding of a <R n="ReconciliationSendEntry"/> message ", def_value({id: "enc_recon_entry", singular: "m"}), " starts with a bitfield:",
                     ),
 
                     encodingdef(
@@ -2317,7 +2833,7 @@ export const sync = (
                     hr(),
 
                     pinformative(
-                        r("ReconciliationSendPayload"), " and ", r("ReconciliationTerminatePayload"), " messages need to be distinguishable from each other, but not from ", r("ReconciliationAnnounceEntries"), " or ", r("ReconciliationSendEntry"), " messages."
+                        r("ReconciliationSendPayload"), " and ", r("ReconciliationTerminatePayload"), " messages need to be distinguishable from each other, but not from <R n="ReconciliationAnnounceEntries"/> or <R n="ReconciliationSendEntry"/> messages."
                     ),
 
                     pinformative(
