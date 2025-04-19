@@ -186,7 +186,7 @@ export const sync = (
                     <Rs n="AreaOfInterest" /> can be quadratic in the number of
                     {" "}
                     <Rs n="AreaOfInterest" />, and we do not want to mandate
-                    keeping a quadratic amount of state
+                    keeping a quadratic amount of state.
                   </>
                 }
               >
@@ -640,12 +640,7 @@ export const sync = (
 
           <Hsection n="sync_messages" title="Messages">
             <P>
-              We now define the different kinds of messages. When we do not
-              mention the <R n="logical_channel" />{" "}
-              that messages of a particular kind use, then these messages are
-              {" "}
-              <Rs n="global_message" /> that do not belong to any{" "}
-              <R n="logical_channel" />.
+              We now define the different kinds of messages.
             </P>
 
             <Hsection
@@ -1120,9 +1115,9 @@ export const sync = (
                           dedicatedLine: true,
                           segment: [
                             [
-                              "clearance",
-                              "PioBindStaticTokenClearance",
-                              "clearances",
+                              "receiver_clearance",
+                              "PioBindStaticTokenReceiverClearance",
+                              "receiver_clearances",
                             ],
                             <R n="U64" />,
                           ],
@@ -1884,12 +1879,11 @@ export const sync = (
               </Hsection>
             </Hsection>
 
-            <Hsection n="sync_push" title="Push">
+            <Hsection n="sync_data" title="Data">
               <P>
                 After{" "}
-                <R n="d3_range_based_set_reconciliation" />, peers can push new
-                {" "}
-                <Rs n="Entry" />{" "}
+                <R n="d3_range_based_set_reconciliation" />, peers can forward
+                new <Rs n="Entry" />{" "}
                 and their (<R n="transform_payload">transformed</R>){" "}
                 <Rs n="Payload" /> to each other.
               </P>
@@ -1902,30 +1896,39 @@ export const sync = (
                   <DefValue n="currently_received_entry" />. It is initialised
                   to{" "}
                   <Code>
-                    <R n="default_Entry" />(<R n="sync_default_namespace_id" />,
+                    <R n="default_entry" />(<R n="sync_default_namespace_id" />,
                     {" "}
                     <R n="sync_default_subspace_id" />,{" "}
                     <R n="sync_default_payload_digest" />)
-                  </Code>. Upon receiving a <R n="PushEntry" />{" "}
+                  </Code>. Upon receiving a <R n="DataSendEntry" />{" "}
                   message, a peer sets its <R n="currently_received_entry" />
                   {" "}
-                  to the received <R n="PushEntryEntry" />.
+                  to the received <R n="DataSendEntryEntry" />.
                 </P>
               </PreviewScope>
 
+              <P>
+                Peers can further explicitly request the <Rs n="Payload" /> of
+                {" "}
+                <Rs n="Entry" />. Requested <Rs n="Payload" />{" "}
+                are delivered by setting the requestor’s{" "}
+                <R n="currently_received_entry" /> with a{" "}
+                <R n="DataReplyPayload" /> message.
+              </P>
+
               <Hsection
-                n="sync_msg_PushEntry"
-                title={<Code>PushEntry</Code>}
+                n="sync_msg_DataSendEntry"
+                title={<Code>DataSendEntry</Code>}
               >
                 <P>
-                  The <R n="PushEntry" /> messages let peers send{" "}
+                  The <R n="DataSendEntry" /> messages let peers send{" "}
                   <Rs n="AuthorisedEntry" />{" "}
-                  outside of set reconciliation. Receiving a <R n="PushEntry" />
-                  {" "}
-                  sets the receiver’s <R n="currently_received_entry" />.
+                  outside of set reconciliation. Receiving a{" "}
+                  <R n="DataSendEntry" /> sets the receiver’s{" "}
+                  <R n="currently_received_entry" />.
                 </P>
 
-                <Pseudocode n="sync_defs_PushEntry">
+                <Pseudocode n="sync_defs_DataSendEntry">
                   <StructDef
                     comment={
                       <>
@@ -1935,8 +1938,8 @@ export const sync = (
                       </>
                     }
                     id={[
-                      "PushEntry",
-                      "PushEntry",
+                      "DataSendEntry",
+                      "DataSendEntry",
                     ]}
                     fields={[
                       {
@@ -1950,7 +1953,7 @@ export const sync = (
                           segment: [
                             [
                               "entry",
-                              "PushEntryEntry",
+                              "DataSendEntryEntry",
                               "entries",
                             ],
                             <R n="Entry" />,
@@ -1966,7 +1969,7 @@ export const sync = (
                               by the sender of this message, which is{" "}
                               <R n="handle_bind">bound</R>{" "}
                               to the static part of the{" "}
-                              <R n="PushEntryEntry" />’s{" "}
+                              <R n="DataSendEntryEntry" />’s{" "}
                               <R n="AuthorisationToken" />.
                             </>
                           ),
@@ -1974,7 +1977,7 @@ export const sync = (
                           segment: [
                             [
                               "static_token_handle",
-                              "PushEntryStaticTokenHandle",
+                              "DataSendEntryStaticTokenHandle",
                               "static_token_handles",
                             ],
                             <R n="U64" />,
@@ -1985,8 +1988,8 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The dynamic part of the <R n="PushEntryEntry" />’s
-                              {" "}
+                              The dynamic part of the{" "}
+                              <R n="DataSendEntryEntry" />’s{" "}
                               <R n="AuthorisationToken" />.
                             </>
                           ),
@@ -1994,7 +1997,7 @@ export const sync = (
                           segment: [
                             [
                               "dynamic_token",
-                              "PushEntryDynamicToken",
+                              "DataSendEntryDynamicToken",
                               "dynamic_tokens",
                             ],
                             <R n="DynamicToken" />,
@@ -2006,16 +2009,17 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="PushEntry" /> messages use the <R n="DataChannel" />.
+                  <Rb n="DataSendEntry" /> messages use the{" "}
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
 
               <Hsection
-                n="sync_msg_PushPayload"
-                title={<Code>PushPayload</Code>}
+                n="sync_msg_DataSendPayload"
+                title={<Code>DataSendPayload</Code>}
               >
                 <P>
-                  The <R n="PushPayload" />{" "}
+                  The <R n="DataSendPayload" />{" "}
                   messages let peers transmit (successive parts of) the
                   concatenation of the <R n="transform_payload">transformed</R>
                   {" "}
@@ -2023,7 +2027,7 @@ export const sync = (
                   <R n="currently_received_entry" />.
                 </P>
 
-                <Pseudocode n="sync_defs_PushPayload">
+                <Pseudocode n="sync_defs_DataSendPayload">
                   <StructDef
                     comment={
                       <>
@@ -2032,8 +2036,8 @@ export const sync = (
                       </>
                     }
                     id={[
-                      "PushPayload",
-                      "PushPayload",
+                      "DataSendPayload",
+                      "DataSendPayload",
                     ]}
                     fields={[
                       {
@@ -2048,7 +2052,7 @@ export const sync = (
                           segment: [
                             [
                               "offset",
-                              "PushPayloadOffset",
+                              "DataSendPayloadOffset",
                               "offset",
                             ],
                             <R n="U64" />,
@@ -2066,7 +2070,7 @@ export const sync = (
                           segment: [
                             [
                               "amount",
-                              "PushPayloadAmount",
+                              "DataSendPayloadAmount",
                               "amounts",
                             ],
                             <R n="U64" />,
@@ -2079,10 +2083,9 @@ export const sync = (
                             <>
                               The bytes to transmit, the concatenation of the
                               {" "}
-                              <R n="PushPayloadAmount" /> many <Rs n="Chunk" />
-                              {" "}
-                              — starting at index <R n="PushPayloadOffset" />
-                              {" "}
+                              <R n="DataSendPayloadAmount" /> many{" "}
+                              <Rs n="Chunk" /> — starting at index{" "}
+                              <R n="DataSendPayloadOffset" />{" "}
                               — obtained by applying <R n="transform_payload" />
                               {" "}
                               to the <R n="Payload" /> of the receiver’s{" "}
@@ -2093,11 +2096,11 @@ export const sync = (
                           segment: [
                             [
                               "bytes",
-                              "PushPayloadBytes",
+                              "DataSendPayloadBytes",
                               "bytes",
                             ],
                             <ArrayType
-                              count={<R n="PushPayloadAmount" />}
+                              count={<R n="DataSendPayloadAmount" />}
                             >
                               <R n="U8" />
                             </ArrayType>,
@@ -2109,9 +2112,440 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="PushPayload" /> messages use the <R n="DataChannel" />.
+                  <Rb n="DataSendPayload" /> messages use the{" "}
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
+
+              <Hsection
+                n="sync_msg_DataSetEagerness"
+                title={<Code>DataSetEagerness</Code>}
+              >
+                <P>
+                  The <R n="DataSetEagerness" /> messages let peers politely
+                  {" "}
+                  <Sidenote
+                    note={
+                      <>
+                        <Rb n="DataSetEagerness" />{" "}
+                        messages are not binding, they merely present an
+                        optimisation opportunity.
+                      </>
+                    }
+                  >
+                    ask
+                  </Sidenote>{" "}
+                  the other peer whether to eagerly include the{" "}
+                  <Rs n="Payload" /> of <Rs n="Entry" /> which it{" "}
+                  <R n="DataSendEntry">pushes</R> in some overlap of two{" "}
+                  <Rs n="read_capability" />, or whether to omit the{" "}
+                  <Rs n="Payload" />. This allows peers to implement the
+                  Plumtree algorithm<Bib item="leitao2007epidemic" />.
+                </P>
+
+                <Pseudocode n="sync_defs_DataSetEagerness">
+                  <StructDef
+                    comment={
+                      <>
+                        Express eagerness preferences for the <R n="Payload" />
+                        {" "}
+                        transmissions in the overlaps of the{" "}
+                        <Rs n="granted_area" /> of two{" "}
+                        <Rs n="ReadCapability" />.
+                      </>
+                    }
+                    id={[
+                      "DataSetEagerness",
+                      "DataSetEagerness",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>sender</Em>{" "}
+                              of this message. This message pertains to the{" "}
+                              <R n="granted_area" /> of the corresponding{" "}
+                              <R n="read_capability" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "sender_handle",
+                              "DataSetEagernessSenderHandle",
+                              "sender_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em>{" "}
+                              of this message. This message pertains to the{" "}
+                              <R n="granted_area" /> of the corresponding{" "}
+                              <R n="read_capability" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "receiver_handle",
+                              "DataSetEagernessReceiverHandle",
+                              "receiver_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              Whether the receiver should eagerly include{" "}
+                              <Rs n="Payload" /> when it pushes <Rs n="Entry" />
+                              {" "}
+                              from the overlap of the <Rs n="granted_area" />
+                              {" "}
+                              of the <R n="ReadCapability" /> corresponding to
+                              {" "}
+                              <R n="DataSetEagernessSenderHandle" /> and{" "}
+                              <R n="DataSetEagernessReceiverHandle" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "set_eager",
+                              "DataSetEagernessSetEager",
+                              "set_eager",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="DataSetEagerness" /> messages are{" "}
+                  <Rs n="global_message" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_DataBindPayloadRequest"
+                title={<Code>DataBindPayloadRequest</Code>}
+              >
+                <P>
+                  <Marginale>
+                    When the receiver of a <R n="DataBindPayloadRequest" />{" "}
+                    message does not have a requested <R n="Payload" />{" "}
+                    and does not plan to obtain it in the future, it should
+                    signal so by <R n="handle_free">freeing</R> the{" "}
+                    <R n="PayloadRequestHandle" />.
+                  </Marginale>
+                  The <R n="DataBindPayloadRequest" />{" "}
+                  messages let peers request the <R n="Payload" /> of an{" "}
+                  <R n="Entry" />.
+                </P>
+
+                <Pseudocode n="sync_defs_DataBindPayloadRequest">
+                  <StructDef
+                    comment={
+                      <>
+                        <Rb n="handle_bind" /> an <R n="Entry" /> to a{" "}
+                        <R n="PayloadRequestHandle" />, requesting its{" "}
+                        <R n="Payload" />.
+                      </>
+                    }
+                    id={[
+                      "DataBindPayloadRequest",
+                      "DataBindPayloadRequest",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="Entry" /> whose <R n="Payload" />{" "}
+                              to request.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "entry",
+                              "DataBindPayloadRequestEntry",
+                              "entry",
+                            ],
+                            <R n="Entry" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="Chunk" />{" "}
+                              index at which the response should start.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "offset",
+                              "DataBindPayloadRequestOffset",
+                              "offset",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em> of this message. The{" "}
+                              <R n="granted_namespace" /> of the corresponding
+                              {" "}
+                              <R n="read_capability" /> must match the{" "}
+                              <R n="entry_namespace_id" /> of the{" "}
+                              <R n="Entry" /> which the{" "}
+                              <R n="DataBindPayloadRequestEntry" />{" "}
+                              authorises. The <R n="granted_area" />{" "}
+                              of the corresponding <R n="read_capability" />
+                              {" "}
+                              must <R n="area_include" /> the <R n="Entry" />
+                              {" "}
+                              which the <R n="DataBindPayloadRequestEntry" />
+                              {" "}
+                              authorises.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "receiver_clearance",
+                              "DataBindPayloadRequestReceiverClearance",
+                              "receiver_clearances",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>sender</Em> of this message. The{" "}
+                              <R n="granted_namespace" /> of the corresponding
+                              {" "}
+                              <R n="read_capability" /> must match the{" "}
+                              <R n="entry_namespace_id" /> of the{" "}
+                              <R n="Entry" /> which the{" "}
+                              <R n="DataBindPayloadRequestEntry" />{" "}
+                              authorises. The <R n="granted_area" />{" "}
+                              of the corresponding <R n="read_capability" />
+                              {" "}
+                              must <R n="area_include" /> the <R n="Entry" />
+                              {" "}
+                              which the <R n="DataBindPayloadRequestEntry" />
+                              {" "}
+                              authorises.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "sender_clearance",
+                              "DataBindPayloadRequestSenderClearance",
+                              "sender_clearances",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="DataBindPayloadRequest" /> messages use the{" "}
+                  <R n="PayloadRequestChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_DataReplyPayload"
+                title={<Code>DataReplyPayload</Code>}
+              >
+                <P>
+                  The <R n="DataReplyPayload" /> messages let peers reply to
+                  {" "}
+                  <R n="DataBindPayloadRequest" />{" "}
+                  messages by setting the requestor’s{" "}
+                  <R n="currently_received_entry" />. The actual transmission of
+                  the (<R n="transform_payload">transformed</R>){" "}
+                  <Rs n="Chunk" /> can then take place via{" "}
+                  <R n="DataSendPayload" /> messages.
+                </P>
+
+                <Pseudocode n="sync_defs_DataReplyPayload">
+                  <StructDef
+                    comment={
+                      <>
+                        Set the receivers <R n="currently_received_entry" />
+                        {" "}
+                        to the <R n="DataSendEntryEntry" /> of a{" "}
+                        <R n="DataSendEntry" /> message.
+                      </>
+                    }
+                    id={[
+                      "DataReplyPayload",
+                      "DataReplyPayload",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="PayloadRequestHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em> of this message that determines
+                              {" "}
+                              <R n="currently_received_entry" /> and{" "}
+                              <R n="Chunk" />{" "}
+                              <R n="DataBindPayloadRequestOffset" />{" "}
+                              of subsequent{" "}
+                              <R n="DataSendPayload">
+                                payload byte transmissions
+                              </R>.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "request",
+                              "DataReplyPayloadRequest",
+                              "request",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="DataReplyPayload" /> messages use the{" "}
+                  <R n="DataChannel" />.
+                </P>
+              </Hsection>
+            </Hsection>
+
+            <Hsection n="sync_resource_handle" title="ResourceHandle">
+              <P>
+                The <R n="ResourceHandleFree" />{" "}
+                messages let peers indicate they wish to <R n="handle_free" /> a
+                {" "}
+                <R n="resource_handle" />.
+              </P>
+
+              <Pseudocode n="sync_defs_ResourceHandleFree">
+                <StructDef
+                  comment={
+                    <>
+                      Indicate that the sender wants to <R n="handle_free" /> a
+                      {" "}
+                      <R n="resource_handle" />.
+                    </>
+                  }
+                  id={[
+                    "ResourceHandleFree",
+                    "ResourceHandleFree",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The type of <R n="resource_handle" /> to{" "}
+                            <R n="handle_free" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "handle_type",
+                            "ResourceHandleFreeHandleType",
+                            "handle_types",
+                          ],
+                          <R n="HandleType" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether the <R n="resource_handle" /> to{" "}
+                            <R n="handle_free" />{" "}
+                            was bound by the sender (<Code>true</Code>) or the
+                            receiver (<Code>false</Code>) of this message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "mine",
+                            "ResourceHandleFreeMine",
+                            "mine",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The numeric id of the <R n="resource_handle" />{" "}
+                            to free.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "handle_id",
+                            "ResourceHandleFreeHandleId",
+                            "handle_ids",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                <Rb n="ResourceHandleFree" /> messages are{" "}
+                <Rs n="global_message" />.
+              </P>
             </Hsection>
           </Hsection>
         </Hsection>
@@ -2119,126 +2553,6 @@ export const sync = (
         {
           /*
 
-                    fields={[
-
-                      }, */
-        }
-
-        {
-          /*
-
-
-                    pseudocode(
-                        new Struct({
-                            id: "DataSendPayload",
-                            comment: ["Transmit some ", link_name("sync_payloads_transform", "transformed"), " <R n="Payload"/> bytes."],
-                            fields: [
-                                {
-                                    id: "DataSendPayloadAmount",
-                                    name: "amount",
-                                    comment: ["The number of transmitted bytes."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "DataSendPayloadBytes",
-                                    name: "bytes",
-                                    comment: [r("DataSendPayloadAmount"), " many bytes, a substring of the bytes obtained by applying ", r("transform_payload"), " to the <R n="Payload"/> to be transmitted."],
-                                    rhs: ["[", hl_builtin("u8"), "]"],
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("DataSendPayload"), " messages let peers transmit (parts of) ", link_name("sync_payloads_transform", "transformed"), " <Rs n="Payload"/>."),
-
-                    pinformative("Each ", r("DataSendPayload"), " message transmits a successive part of the result of applying ", r("transform_payload"), " to the <R n="Payload"/> of the ", r("currently_received_entry"), " of the receiver. The WGPS does not concern itself with how (or whether) the receiver can reconstruct the original <R n="Payload"/> from these chunks of transformed bytes, that is a detail of choosing a suitable transformation function."),
-
-                    pinformative(R("DataSendPayload"), " messages use the ", r("DataChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "DataSetMetadata",
-                            comment: ["Express preferences for <R n="Payload"/> transfer in the intersection of two <Rs n="AreaOfInterest"/>."],
-                            fields: [
-                                {
-                                    id: "DataSetMetadataSenderHandle",
-                                    name: "sender_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the sender of this message."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "DataSetMetadataReceiverHandle",
-                                    name: "receiver_handle",
-                                    comment: ["An ", r("AreaOfInterestHandle"), ", <R n="handle_bind">bound</R> by the receiver of this message."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "DataSetMetadataEagerness",
-                                    name: "is_eager",
-                                    comment: ["Whether the other peer should eagerly forward <Rs n="Payload"/> in this intersection."],
-                                    rhs: r("Bool"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("DataSetMetadata"), " messages let peers express whether the other peer should eagerly push <Rs n="Payload"/> from the intersection of two <Rs n="AreaOfInterest"/>, or whether they should send only ", r("DataSendEntry"), " messages for that intersection."),
-
-                    pinformative(R("DataSetMetadata"), " messages are not binding, they merely present an optimisation opportunity. In particular, they allow expressing the ", code("Prune"), " and ", code("Graft"), " messages of the ", link("epidemic broadcast tree protocol", "https://repositorium.sdum.uminho.pt/bitstream/1822/38894/1/647.pdf"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "DataBindPayloadRequest",
-                            comment: [<Rb n="handle_bind"/> an <R n="Entry"/> to a ", r("PayloadRequestHandle"), " and request transmission of its <R n="Payload"/> from an offset."],
-                            fields: [
-                                {
-                                    id: "DataBindPayloadRequestEntry",
-                                    name: "entry",
-                                    comment: ["The <R n="Entry"/> to request."],
-                                    rhs: r("Entry"),
-                                },
-                                {
-                                    id: "DataBindPayloadRequestOffset",
-                                    name: "offset",
-                                    comment: ["The offset in the <R n="Payload"/> starting from which the sender would like to receive the <R n="Payload"/> bytes."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "DataBindPayloadRequestCapability",
-                                    name: "capability",
-                                    comment: ["A ", r("resource_handle"), " for a ", r("ReadCapability"), " <R n="handle_bind">bound</R> by the sender that grants them read access to the <R n="handle_bind">bound</R> <R n="Entry"/>."],
-                                    rhs: r("U64"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative([
-                        marginale(["If the receiver of a ", r("DataBindPayloadRequest"), " does not have the requested <R n="Payload"/> and does not plan to obtain it in the future, it should signal so by ", r("handle_free", "freeing"), " the ", r("PayloadRequestHandle"), "."]),
-                        "The ", r("DataBindPayloadRequest"), " messages let peers explicitly request <Rs n="Payload"/>, by binding a ", r("PayloadRequestHandle"), " to the specified ", r("DataBindPayloadRequestEntry"), " and ", r("DataBindPayloadRequestOffset"), ". The other peer is expected to then transmit the <R n="Payload"/>, starting at the specified ", r("DataBindPayloadRequestOffset"), ". The request contains a ", r("ReadCapabilityHandle"), " to a ", r("ReadCapability"), " whose <R n="granted_area"/> must ", r("area_include"), " the requested <R n="Entry"/>.",
-                    ]),
-
-                    pinformative(R("DataBindPayloadRequest"), " messages use the ", r("PayloadRequestChannel"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "DataReplyPayload",
-                            comment: ["Set up the state for replying to a ", r("DataBindPayloadRequest"), " message."],
-                            fields: [
-                                {
-                                    id: "DataReplyPayloadHandle",
-                                    name: "handle",
-                                    comment: ["The ", r("PayloadRequestHandle"), " to which to reply."],
-                                    rhs: r("U64"),
-                                },
-                            ],
-                        }),
-                    ),
-
-                    pinformative("The ", r("DataReplyPayload"), " messages let peers reply to ", r("DataBindPayloadRequest"), " messages, by indicating that future ", r("DataSendPayload"), " messages will pertain to the requested <R n="Payload"/>. More precisely, upon receiving a ", r("DataReplyPayload"), " message, a peer sets its ", r("currently_received_entry"), " value to that to which the message", apo, "s ", r("DataReplyPayloadHandle"), " is <R n="handle_bind">bound</R>."),
-
-                    pinformative(R("DataReplyPayload"), " messages use the ", r("DataChannel"), "."),
-                ]),
                 hsection("sync_control", "Resource Control", [
                     pinformative("Finally, we maintain <Rs n="logical_channel"/> and ", r("handle_free"), " <Rs n="resource_handle"/>, as explained in the ", link_name("resources_message_types", "resource control document"), "."),
 
@@ -3095,7 +3409,7 @@ export const sync = (
 
                 hsection("sync_encode_data", "Data", [
                     pinformative(
-                        "When encoding <Rs n="Entry"/> for ", r("DataSendEntry"), " and ", r("DataBindPayloadRequest"), " messages, the <R n="Entry"/> can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an <R n="Area"/>. Such an <R n="Area"/> ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the <Rs n="Area"/> <R n="handle_bind">bound</R> by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " <R n="handle_bind">bound</R> by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " <R n="handle_bind">bound</R> by the receiver of the encoded message.",
+                        "When encoding <Rs n="Entry"/> for ", r("DataSendEntry"), " and <R n="DataBindPayloadRequest"/> messages, the <R n="Entry"/> can be encoded either relative to the ", r("currently_received_entry"), ", or as part of an <R n="Area"/>. Such an <R n="Area"/> ", def_value({id: "sync_enc_data_outer", singular: "out"}), " is always specified as the ", r("area_intersection"), " of the <Rs n="Area"/> <R n="handle_bind">bound</R> by an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_sender", singular: "sender_handle"}), " <R n="handle_bind">bound</R> by the sender of the encoded message, and an ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_data_receiver", singular: "receiver_handle"}), " <R n="handle_bind">bound</R> by the receiver of the encoded message.",
                     ),
 
                     hr(),
@@ -3256,7 +3570,7 @@ export const sync = (
                     hr(),
 
                     pinformative(
-                        "The encoding of a ", r("DataBindPayloadRequest"), " message ", def_value({id: "enc_data_req_pay", singular: "m"}), " is the concatenation of:",
+                        "The encoding of a <R n="DataBindPayloadRequest"/> message ", def_value({id: "enc_data_req_pay", singular: "m"}), " is the concatenation of:",
                         encodingdef(
                             new Bitfields(
                                 new BitfieldRow(
