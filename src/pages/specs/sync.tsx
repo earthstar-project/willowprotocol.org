@@ -111,13 +111,13 @@ export const sync = (
           <P>
             Data synchronisation for Willow needs to solve a number of
             sub-problems, which we summarise in this section.
-            <Alj>
-              On the old page, the subsections did not show up in the toc. TODO:
-              add such a flag to macromania tocs as well.
-            </Alj>
           </P>
 
-          <Hsection n="sync_pii" title="Private Interest Overlap Detection">
+          <Hsection
+            n="sync_pii"
+            title="Private Interest Overlap Detection"
+            noToc
+          >
             <P>
               The WGPS lets two peers determine which <Rs n="namespace" /> and
               {" "}
@@ -131,7 +131,7 @@ export const sync = (
             </P>
           </Hsection>
 
-          <Hsection n="sync_partial" title="Partial Synchronisation">
+          <Hsection n="sync_partial" title="Partial Synchronisation" noToc>
             <P>
               To synchronise data, peers specify any number of{" "}
               <Rs n="AreaOfInterest" />
@@ -163,6 +163,7 @@ export const sync = (
           <Hsection
             n="sync_post_sync_forwarding"
             title="Post-Reconciliation Forwarding"
+            noToc
           >
             <P>
               After performing{" "}
@@ -173,7 +174,7 @@ export const sync = (
             </P>
           </Hsection>
 
-          <Hsection n="sync_payloads" title="Payload Transmission">
+          <Hsection n="sync_payloads" title="Payload Transmission" noToc>
             <P>
               When a peer sends an{" "}
               <R n="Entry" />, it can choose whether to immediately transmit the
@@ -208,6 +209,7 @@ export const sync = (
           <Hsection
             n="sync_verified_streaming"
             title="Verified Payload Streaming"
+            noToc
           >
             <P>
               If transmission of a <R n="Payload" />{" "}
@@ -226,6 +228,7 @@ export const sync = (
           <Hsection
             n="sync_resources"
             title="Resource Limits"
+            noToc
           >
             <P>
               Multiplexing and management of shared state require peers to
@@ -654,12 +657,12 @@ export const sync = (
                 </R>, the two peers privately determine which{" "}
                 <Rs n="PrivateInterest" />{" "}
                 they share, and provae read access for those interests.
-                <Alj>TODO omit all message headings from the toc</Alj>
               </P>
 
               <Hsection
                 n="sync_msg_PioBindHash"
                 title={<Code>PioBindHash</Code>}
+                noToc
               >
                 <P>
                   The <R n="PioBindHash" /> messages let peers bind hashes of
@@ -735,6 +738,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_PioAnnounceOverlap"
                 title={<Code>PioAnnounceOverlap</Code>}
+                noToc
               >
                 <P>
                   The <R n="PioAnnounceOverlap" /> messages let peers send{" "}
@@ -870,6 +874,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_PioBindReadCapability"
                 title={<Code>PioBindReadCapability</Code>}
+                noToc
               >
                 <P>
                   The <R n="PioBindReadCapability" />{" "}
@@ -1053,6 +1058,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_PioBindStaticToken"
                 title={<Code>PioBindStaticToken</Code>}
+                noToc
               >
                 <P>
                   The <R n="PioBindStaticToken" /> messages let peers{" "}
@@ -1420,6 +1426,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_ReconciliationSendFingerprint"
                 title={<Code>ReconciliationSendFingerprint</Code>}
+                noToc
               >
                 <P>
                   The <R n="ReconciliationSendFingerprint" />{" "}
@@ -1493,6 +1500,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_ReconciliationAnnounceEntries"
                 title={<Code>ReconciliationAnnounceEntries</Code>}
+                noToc
               >
                 <P>
                   The <R n="ReconciliationAnnounceEntries" />{" "}
@@ -1637,6 +1645,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_ReconciliationSendEntry"
                 title={<Code>ReconciliationSendEntry</Code>}
+                noToc
               >
                 <P>
                   The <R n="ReconciliationSendEntry" />{" "}
@@ -1732,6 +1741,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_ReconciliationSendPayload"
                 title={<Code>ReconciliationSendPayload</Code>}
+                noToc
               >
                 <P>
                   The <R n="ReconciliationSendPayload" />{" "}
@@ -1818,6 +1828,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_ReconciliationTerminatePayload"
                 title={<Code>ReconciliationTerminatePayload</Code>}
+                noToc
               >
                 <P>
                   The <R n="ReconciliationTerminatePayload" />{" "}
@@ -1919,6 +1930,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_DataSendEntry"
                 title={<Code>DataSendEntry</Code>}
+                noToc
               >
                 <P>
                   The <R n="DataSendEntry" /> messages let peers send{" "}
@@ -2017,6 +2029,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_DataSendPayload"
                 title={<Code>DataSendPayload</Code>}
+                noToc
               >
                 <P>
                   The <R n="DataSendPayload" />{" "}
@@ -2120,6 +2133,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_DataSetEagerness"
                 title={<Code>DataSetEagerness</Code>}
+                noToc
               >
                 <P>
                   The <R n="DataSetEagerness" /> messages let peers politely
@@ -2244,6 +2258,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_DataBindPayloadRequest"
                 title={<Code>DataBindPayloadRequest</Code>}
+                noToc
               >
                 <P>
                   <Marginale>
@@ -2391,6 +2406,7 @@ export const sync = (
               <Hsection
                 n="sync_msg_DataReplyPayload"
                 title={<Code>DataReplyPayload</Code>}
+                noToc
               >
                 <P>
                   The <R n="DataReplyPayload" /> messages let peers reply to
@@ -2552,150 +2568,6 @@ export const sync = (
 
         {
           /*
-
-                hsection("sync_control", "Resource Control", [
-                    pinformative("Finally, we maintain <Rs n="logical_channel"/> and ", r("handle_free"), " <Rs n="resource_handle"/>, as explained in the ", link_name("resources_message_types", "resource control document"), "."),
-
-                    pseudocode(
-                        new Struct({
-                            id: "ControlIssueGuarantee",
-                            comment: ["Make a binding promise of available buffer capacity to the other peer."],
-                            fields: [
-                                {
-                                    id: "ControlIssueGuaranteeAmount",
-                                    name: "amount",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ControlIssueGuaranteeChannel",
-                                    name: "channel",
-                                    rhs: r("LogicalChannel"),
-                                },
-                            ],
-                        }),
-
-                        new Struct({
-                            id: "ControlAbsolve",
-                            comment: ["Allow the other peer to reduce its total buffer capacity by ", r("ControlAbsolveAmount"), "."],
-                            fields: [
-                                {
-                                    id: "ControlAbsolveAmount",
-                                    name: "amount",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ControlAbsolveChannel",
-                                    name: "channel",
-                                    rhs: r("LogicalChannel"),
-                                },
-                            ],
-                        }),
-
-                        new Struct({
-                            id: "ControlPlead",
-                            comment: ["Ask the other peer to send an ", r("ControlAbsolve"), " message such that the receiver remaining ", rs("guarantee"), " will be ", r("ControlPleadTarget"), "."],
-                            fields: [
-                                {
-                                    id: "ControlPleadTarget",
-                                    name: "target",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ControlPleadChannel",
-                                    name: "channel",
-                                    rhs: r("LogicalChannel"),
-                                },
-                            ],
-                        }),
-
-                        new Struct({
-                            id: "ControlLimitSending",
-                            comment: [
-                              "Promise to the other peer an upper bound on the number of bytes of messages that you will send on some <R n="logical_channel"/>.",
-                            ],
-                            fields: [
-                              {
-                                id: "ControlLimitSendingBound",
-                                name: "bound",
-                                rhs: r("U64"),
-                              },
-                              {
-                                id: "ControlLimitSendingChannel",
-                                name: "channel",
-                                rhs: r("LogicalChannel"),
-                              },
-                            ],
-                          }),
-
-                          new Struct({
-                            id: "ControlLimitReceiving",
-                            comment: [
-                              "Promise to the other peer an upper bound on the number of bytes of messages that you will still receive on some <R n="logical_channel"/>.",
-                            ],
-                            fields: [
-                              {
-                                id: "ControlLimitReceivingBound",
-                                name: "bound",
-                                rhs: r("U64"),
-                              },
-                              {
-                                id: "ControlLimitReceivingChannel",
-                                name: "channel",
-                                rhs: r("LogicalChannel"),
-                              },
-                            ],
-                          }),
-
-                        new Struct({
-                            id: "ControlAnnounceDropping",
-                            comment: ["Notify the other peer that you have started dropping messages and will continue to do so until you receives a ", r("ControlApologise"), " message. Note that you must send any outstanding ", rs("guarantee"), " of the <R n="logical_channel"/> before sending a ", r("ControlAnnounceDropping"), " message."],
-                            fields: [
-                                {
-                                    id: "ControlAnnounceDroppingChannel",
-                                    name: "channel",
-                                    rhs: r("LogicalChannel"),
-                                },
-                            ],
-                        }),
-
-                        new Struct({
-                            id: "ControlApologise",
-                            comment: ["Notify the other peer that it can stop dropping messages of this <R n="logical_channel"/>."],
-                            fields: [
-                                {
-                                    id: "ControlApologiseChannel",
-                                    name: "channel",
-                                    rhs: r("LogicalChannel"),
-                                },
-                            ],
-                        }),
-
-                        new Struct({
-                            id: "ControlFreeHandle",
-                            name: "ControlFree",
-                            comment: ["Ask the other peer to ", r("handle_free"), " a ", r("resource_handle"), "."],
-                            fields: [
-                                {
-                                    id: "ControlFreeHandleHandle",
-                                    name: "handle",
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "ControlFreeHandleMine",
-                                    comment: ["Indicates whether the peer sending this message is the one who created the ", r("ControlFreeHandleHandle"), " (<Code>true</Code>) or not (<Code>false</Code>)."],
-                                    name: "mine",
-                                    rhs: r("Bool"),
-                                },
-                                {
-                                    id: "ControlFreeHandleType",
-                                    name: "handle_type",
-                                    rhs: r("HandleType"),
-                                },
-                            ],
-                        }),
-                    ),
-                ]),
-            ]),
 
             hsection("sync_encodings", "Encodings", [
                 pinformative("We now describe how to encode the various messages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
