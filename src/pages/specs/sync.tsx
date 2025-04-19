@@ -334,7 +334,14 @@ export const sync = (
               <M>
                 2^<Curly>64</Curly> - 1
               </M>{" "}
-              bytestrings.<Marginale>
+              bytestrings, called the transformed{" "}
+              <DefType n="Chunk" rs="Chunks">Chunks</DefType>. The number and
+              lengths of the <Rs n="Chunk" />{" "}
+              must be fully determined by the length of the{" "}
+              <R n="Payload" />, the actual values of the bytes of the{" "}
+              <R n="Payload" /> must not affect the number and length of the
+              {" "}
+              <R n="Chunk" />.<Marginale>
                 To give an example of how this construction maps to verifiable
                 streaming: <R n="transform_payload" /> could map a{" "}
                 <R n="Payload" /> to a{" "}
@@ -342,9 +349,9 @@ export const sync = (
                   Bab baseline verifiable stream
                 </AE>.
               </Marginale>{" "}
-              Peers exchange concatenations of those transformed payloads
-              instead of actual payloads, and can request each payload
-              transmission to start at any of the transformed bytestrings.
+              Peers exchange concatenations of <Rs n="Chunk" />
+              instead of actual payloads, and communicate offsets in that data
+              in terms of <R n="Chunk" /> offsets.
             </P>
           </PreviewScope>
 
@@ -1738,8 +1745,9 @@ export const sync = (
                   {" "}
                   <Rs n="Payload" /> of <Rs n="Entry" />{" "}
                   immediately during range-based set reconciliation. The sender
-                  can freely decide how many (including zero) bytes to eargerly
-                  transmit, and it must respect the receiver’s{" "}
+                  can freely decide how many (including zero) <Rs n="Chunk" />
+                  {" "}
+                  to eargerly transmit, and it must respect the receiver’s{" "}
                   <R n="peer_max_payload_size" />.
                 </P>
 
@@ -1747,8 +1755,7 @@ export const sync = (
                   <StructDef
                     comment={
                       <>
-                        Send some <R n="transform_payload">transformed</R>{" "}
-                        <R n="Payload" /> bytes as part of <R n="d3rbsr" />.
+                        Send some <Rs n="Chunk" /> as part of <R n="d3rbsr" />.
                       </>
                     }
                     id={[
@@ -1760,7 +1767,7 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The number of transmitted bytes.
+                              The number of transmitted <Rs n="Chunk" />.
                             </>
                           ),
                           dedicatedLine: true,
@@ -1778,15 +1785,14 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The bytes to transmit, a contiguous substring of
-                              the result of applying <R n="transform_payload" />
+                              The bytes to transmit, the concatenation of the
                               {" "}
-                              to the <R n="Payload" /> of the{" "}
+                              <Rs n="Chunk" /> obtained by applying{" "}
+                              <R n="transform_payload" /> to the{" "}
+                              <R n="Payload" /> of the{" "}
                               <R n="ReconciliationSendEntry">previously sent</R>
                               {" "}
-                              <R n="Entry" />{" "}
-                              and concatenating the result into a single
-                              bytestring.
+                              <R n="Entry" />.
                             </>
                           ),
                           dedicatedLine: true,
@@ -1877,55 +1883,250 @@ export const sync = (
                 </P>
               </Hsection>
             </Hsection>
+
+            <Hsection n="sync_push" title="Push">
+              <P>
+                After{" "}
+                <R n="d3_range_based_set_reconciliation" />, peers can push new
+                {" "}
+                <Rs n="Entry" />{" "}
+                and their (<R n="transform_payload">transformed</R>){" "}
+                <Rs n="Payload" /> to each other.
+              </P>
+
+              <PreviewScope>
+                <P>
+                  To map transmitted chunks of <Rs n="Payload" /> to their{" "}
+                  <Rs n="Entry" />, each peer maintains a piece of state, its
+                  {" "}
+                  <DefValue n="currently_received_entry" />. It is initialised
+                  to{" "}
+                  <Code>
+                    <R n="default_Entry" />(<R n="sync_default_namespace_id" />,
+                    {" "}
+                    <R n="sync_default_subspace_id" />,{" "}
+                    <R n="sync_default_payload_digest" />)
+                  </Code>. Upon receiving a <R n="PushEntry" />{" "}
+                  message, a peer sets its <R n="currently_received_entry" />
+                  {" "}
+                  to the received <R n="PushEntryEntry" />.
+                </P>
+              </PreviewScope>
+
+              <Hsection
+                n="sync_msg_PushEntry"
+                title={<Code>PushEntry</Code>}
+              >
+                <P>
+                  The <R n="PushEntry" /> messages let peers send{" "}
+                  <Rs n="AuthorisedEntry" />{" "}
+                  outside of set reconciliation. Receiving a <R n="PushEntry" />
+                  {" "}
+                  sets the receiver’s <R n="currently_received_entry" />.
+                </P>
+
+                <Pseudocode n="sync_defs_PushEntry">
+                  <StructDef
+                    comment={
+                      <>
+                        Transmit an <R n="AuthorisedEntry" />{" "}
+                        and set the receiver’s{" "}
+                        <R n="currently_received_entry" />.
+                      </>
+                    }
+                    id={[
+                      "PushEntry",
+                      "PushEntry",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="Entry" /> to transmit.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "entry",
+                              "PushEntryEntry",
+                              "entries",
+                            ],
+                            <R n="Entry" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="StaticTokenHandle" />,{" "}
+                              <R n="handle_bind">bound</R>{" "}
+                              by the sender of this message, which is{" "}
+                              <R n="handle_bind">bound</R>{" "}
+                              to the static part of the{" "}
+                              <R n="PushEntryEntry" />’s{" "}
+                              <R n="AuthorisationToken" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "static_token_handle",
+                              "PushEntryStaticTokenHandle",
+                              "static_token_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The dynamic part of the <R n="PushEntryEntry" />’s
+                              {" "}
+                              <R n="AuthorisationToken" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "dynamic_token",
+                              "PushEntryDynamicToken",
+                              "dynamic_tokens",
+                            ],
+                            <R n="DynamicToken" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="PushEntry" /> messages use the <R n="DataChannel" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_PushPayload"
+                title={<Code>PushPayload</Code>}
+              >
+                <P>
+                  The <R n="PushPayload" />{" "}
+                  messages let peers transmit (successive parts of) the
+                  concatenation of the <R n="transform_payload">transformed</R>
+                  {" "}
+                  <Rs n="Payload" /> of the receiver’s{" "}
+                  <R n="currently_received_entry" />.
+                </P>
+
+                <Pseudocode n="sync_defs_PushPayload">
+                  <StructDef
+                    comment={
+                      <>
+                        Send some <Rs n="Chunk" /> of the receiver’s{" "}
+                        <R n="currently_received_entry" />.
+                      </>
+                    }
+                    id={[
+                      "PushPayload",
+                      "PushPayload",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="Chunk" />{" "}
+                              index at which the data starts.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "offset",
+                              "PushPayloadOffset",
+                              "offset",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The number of transmitted <Rs n="Chunk" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "amount",
+                              "PushPayloadAmount",
+                              "amounts",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The bytes to transmit, the concatenation of the
+                              {" "}
+                              <R n="PushPayloadAmount" /> many <Rs n="Chunk" />
+                              {" "}
+                              — starting at index <R n="PushPayloadOffset" />
+                              {" "}
+                              — obtained by applying <R n="transform_payload" />
+                              {" "}
+                              to the <R n="Payload" /> of the receiver’s{" "}
+                              <R n="currently_received_entry" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "bytes",
+                              "PushPayloadBytes",
+                              "bytes",
+                            ],
+                            <ArrayType
+                              count={<R n="PushPayloadAmount" />}
+                            >
+                              <R n="U8" />
+                            </ArrayType>,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="PushPayload" /> messages use the <R n="DataChannel" />.
+                </P>
+              </Hsection>
+            </Hsection>
           </Hsection>
         </Hsection>
 
         {
           /*
 
-                hsection("sync_data", "Data", [
-                    pinformative("Outside of ", link_name("d3_range_based_set_reconciliation", "3d range-based set reconciliation"), " peers can unsolicitedly push <Rs n="Entry"/> and <Rs n="Payload"/> to each other, and they can request specific <Rs n="Payload"/>."),
+                    fields={[
 
-                    pseudocode(
-                        new Struct({
-                            id: "DataSendEntry",
-                            comment: ["Transmit an ", r("AuthorisedEntry"), " to the other peer, and optionally prepare transmission of its <R n="Payload"/>."],
-                            fields: [
-                                {
-                                    id: "DataSendEntryEntry",
-                                    name: "entry",
-                                    comment: ["The <R n="Entry"/> to transmit."],
-                                    rhs: r("Entry"),
-                                },
-                                {
-                                    id: "DataSendEntryStatic",
-                                    name: "static_token_handle",
-                                    comment: ["A <R n="StaticTokenHandle"/> <R n="handle_bind">bound</R> to the <R n="StaticToken"/> of the <R n="Entry"/> to transmit."],
-                                    rhs: r("U64"),
-                                },
-                                {
-                                    id: "DataSendEntryDynamic",
-                                    name: "dynamic_token",
-                                    comment: ["The <R n="DynamicToken"/> of the <R n="Entry"/> to transmit."],
-                                    rhs: r("DynamicToken"),
-                                },
-                                {
-                                    id: "DataSendEntryOffset",
-                                    name: "offset",
-                                    comment: ["The offset in the <R n="Payload"/> in bytes at which <R n="Payload"/> transmission will begin. If this is equal to the <R n="Entry"/>’s <R n="entry_payload_length"/>, the <R n="Payload"/> will not be transmitted."],
-                                    rhs: r("U64"),
-                                },
-                            ],
-                        }),
-                    ),
+                      }, */
+        }
 
-                    pinformative("The ", r("DataSendEntry"), " messages let peers transmit <Rs n="LengthyEntry"/> outside of <R n="d3rbsr"/>. They further set up later <R n="Payload"/> transmissions (via ", r("DataSendPayload"), " messages)."),
+        {
+          /*
 
-                    pinformative("To map <R n="Payload"/> transmissions to <Rs n="Entry"/>, each peer maintains a piece of state: an <R n="Entry"/> ", def_value("currently_received_entry"), marginale(["These are used by ", r("DataSendPayload"), " messages."]), ". When receiving a ", r("DataSendEntry"), " message, a peer sets its ", r("currently_received_entry"), " to the received ", r("DataSendEntryEntry"), "."),
-
-                    pinformative("Initially, ", r("currently_received_entry"), " is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."),
-
-                    pinformative(R("DataSendEntry"), " messages use the ", r("DataChannel"), "."),
 
                     pseudocode(
                         new Struct({
