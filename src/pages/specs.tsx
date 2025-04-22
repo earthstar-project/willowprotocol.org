@@ -59,7 +59,7 @@ export const specs = (
           </Li>
           <Li>
             <R n="private_interest_overlap">
-              Private Interest Intersection
+              Private Interest Overlap Detection
             </R>
           </Li>
           <Li>

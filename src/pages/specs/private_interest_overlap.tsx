@@ -103,7 +103,7 @@ function PiiExample(
 }
 
 export const private_interest_overlap = (
-  <Dir name="pii">
+  <Dir name="pio">
     <File name="index.html">
       <PageTemplate
         htmlTitle="Read Access and Confidentiality"
