@@ -442,8 +442,9 @@ export const sync = (
 
           <P>
             After this initial transmissions, the protocol becomes a purely
-            message-based protocol. There are several kinds of messages, which
-            the peers create, encode as byte strings, and transmit mostly
+            message-based protocol, built on top of{" "}
+            <R n="lcmux" />. There are several kinds of messages, which the
+            peers create, encode as byte strings, and transmit mostly
             independently from each other.
           </P>
 
@@ -2549,6 +2550,25 @@ export const sync = (
                             "handle_id",
                             "ResourceHandleFreeHandleId",
                             "handle_ids",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The sender’s <R n="handle_refcount" /> for the{" "}
+                            <R n="resource_handle" /> to free.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "reference_count",
+                            "ResourceHandleFreeReferenceCount",
+                            "reference_counts",
                           ],
                           <R n="U64" />,
                         ],
