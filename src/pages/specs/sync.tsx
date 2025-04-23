@@ -310,34 +310,8 @@ export const sync = (
                 3d range-based set reconciliation
               </R>{" "}
               requires a type <DefType n="Fingerprint" rs="Fingerprints" />{" "}
-              of hashes of <Rs n="LengthyEntry" /> (i.e., of{" "}
+              of hashes of <Rs n="LengthyAuthorisedEntry" /> (i.e., of{" "}
               <Rs n="d3rbsr_fp" />).
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
-              To efficiently transmit{" "}
-              <Rs n="AuthorisationToken" />, we decompose them into two parts:
-              the <DefType n="StaticToken" rs="StaticTokens" />{" "}
-              (which might be shared between many{" "}
-              <Rs n="AuthorisationToken" />), and the{" "}
-              <DefType n="DynamicToken" rs="DynamicTokens" />
-              <Marginale>
-                In Meadowcap, for example, <R n="StaticToken" /> is the type
-                {" "}
-                <R n="Capability" /> and <R n="DynamicToken" /> is the type{" "}
-                <R n="UserSignature" />, which together yield a{" "}
-                <R n="MeadowcapAuthorisationToken" />.
-              </Marginale>{" "}
-              (which differs between any two{" "}
-              <Rs n="Entry" />). Formally, we require that there is an{" "}
-              <AE href="https://en.wikipedia.org/wiki/Isomorphism">
-                isomorphism
-              </AE>{" "}
-              between <R n="AuthorisationToken" /> and pairs of a{" "}
-              <R n="StaticToken" /> and a <R n="DynamicToken" />{" "}
-              with respect to the <R n="is_authorised_write" /> function.
             </P>
           </PreviewScope>
 
@@ -523,20 +497,6 @@ export const sync = (
                     </>
                   ),
                 },
-                {
-                  tuple: true,
-                  id: [
-                    "StaticTokenHandle",
-                    "StaticTokenHandle",
-                    "StaticTokenHandles",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="resource_handle" /> for <Rs n="StaticToken" />{" "}
-                      that peers need to transmit.
-                    </>
-                  ),
-                },
               ]}
             />
           </Pseudocode>
@@ -624,23 +584,6 @@ export const sync = (
                       <Rs n="ReadCapabilityHandle" />.{" "}
                       <R n="SendChannelFrameChannel">Channel id</R>:{" "}
                       <M post=".">3</M>
-                    </>
-                  ),
-                },
-                {
-                  tuple: true,
-                  id: [
-                    "StaticTokenChannel",
-                    "StaticTokenChannel",
-                    "StaticTokenChannels",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="logical_channel" /> for controlling the{" "}
-                      <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="StaticTokenHandle" />.{" "}
-                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
-                      <M post=".">4</M>
                     </>
                   ),
                 },
@@ -1061,90 +1004,6 @@ export const sync = (
                   <R n="CapabilityChannel" />.
                 </P>
               </Hsection>
-
-              <Hsection
-                n="sync_msg_PioBindStaticToken"
-                title={<Code>PioBindStaticToken</Code>}
-                noToc
-              >
-                <P>
-                  The <R n="PioBindStaticToken" /> messages let peers{" "}
-                  <R n="handle_bind" /> <Rs n="StaticToken" />{" "}
-                  for later reference when transmitting <Rs n="Entry" />.
-                </P>
-
-                <Pseudocode n="sync_defs_PioBindStaticToken">
-                  <StructDef
-                    comment={
-                      <>
-                        <Rb n="handle_bind" /> a <R n="StaticToken" /> to a{" "}
-                        <R n="StaticTokenHandle" />.
-                      </>
-                    }
-                    id={["PioBindStaticToken", "PioBindStaticToken"]}
-                    fields={[
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The <R n="StaticToken" /> to{" "}
-                              <R n="handle_bind" />.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "static_token",
-                              "PioBindStaticTokenStaticToken",
-                              "static_tokens",
-                            ],
-                            <R n="StaticToken" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              A <R n="ReadCapabilityHandle" />{" "}
-                              <R n="handle_bind">bound</R> by the{" "}
-                              <Em>receiver</Em> of this message. The{" "}
-                              <R n="granted_namespace" /> of the corresponding
-                              {" "}
-                              <R n="read_capability" /> must match the{" "}
-                              <R n="entry_namespace_id" /> of the{" "}
-                              <R n="Entry" /> which the{" "}
-                              <R n="PioBindStaticTokenStaticToken" />{" "}
-                              authorises. The <R n="granted_area" />{" "}
-                              of the corresponding <R n="read_capability" />
-                              {" "}
-                              must <R n="area_include" /> the <R n="Entry" />
-                              {" "}
-                              which the <R n="PioBindStaticTokenStaticToken" />
-                              {" "}
-                              authorises.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "receiver_clearance",
-                              "PioBindStaticTokenReceiverClearance",
-                              "receiver_clearances",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                    ]}
-                  />
-                </Pseudocode>
-
-                <P>
-                  <Rb n="PioBindStaticToken" /> messages use the{" "}
-                  <R n="StaticTokenChannel" />.
-                </P>
-              </Hsection>
             </Hsection>
 
             <Hsection n="sync_reconciliation" title="Reconciliation">
@@ -1477,7 +1336,8 @@ export const sync = (
                           comment: (
                             <>
                               The <R n="Fingerprint" /> of all{" "}
-                              <Rs n="LengthyEntry" /> the peer has in{"  "}
+                              <Rs n="LengthyAuthorisedEntry" /> the peer has in
+                              {"  "}
                               <AccessStruct field="RangeInfoRange">
                                 <R n="ReconciliationSendFingerprintInfo" />
                               </AccessStruct>.
@@ -1512,7 +1372,7 @@ export const sync = (
                 <P>
                   The <R n="ReconciliationAnnounceEntries" />{" "}
                   messages let peers begin transmission of their{" "}
-                  <Rs n="LengthyEntry" /> in a <R n="D3Range" />{" "}
+                  <Rs n="LengthyAuthorisedEntry" /> in a <R n="D3Range" />{" "}
                   for range-based set reconciliation.
                 </P>
 
@@ -1520,9 +1380,9 @@ export const sync = (
                   <StructDef
                     comment={
                       <>
-                        Prepare transmission of the <Rs n="LengthyEntry" />{" "}
-                        a peer has in a <R n="D3Range" /> as part of{" "}
-                        <R n="d3rbsr" />.
+                        Prepare transmission of the{" "}
+                        <Rs n="LengthyAuthorisedEntry" /> a peer has in a{" "}
+                        <R n="D3Range" /> as part of <R n="d3rbsr" />.
                       </>
                     }
                     id={[
@@ -1620,9 +1480,8 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  Actual transmission of the announced <Rs n="LengthyEntry" />
-                  {" "}
-                  in{" "}
+                  Actual transmission of the announced{" "}
+                  <Rs n="LengthyAuthorisedEntry" /> in{" "}
                   <AccessStruct field="RangeInfoRange">
                     <R n="ReconciliationAnnounceEntriesInfo" />
                   </AccessStruct>{" "}
@@ -1656,7 +1515,8 @@ export const sync = (
               >
                 <P>
                   The <R n="ReconciliationSendEntry" />{" "}
-                  messages let peers transmit <Rs n="LengthyEntry" />{" "}
+                  messages let peers transmit <Rs n="LengthyAuthorisedEntry" />
+                  {" "}
                   for range-based set reconciliation.
                 </P>
 
@@ -1664,7 +1524,7 @@ export const sync = (
                   <StructDef
                     comment={
                       <>
-                        Send a <R n="LengthyEntry" /> as part of{" "}
+                        Send a <R n="LengthyAuthorisedEntry" /> as part of{" "}
                         <R n="d3rbsr" />.
                       </>
                     }
@@ -1677,7 +1537,7 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="LengthyEntry" /> itself.
+                              The <R n="LengthyAuthorisedEntry" /> itself.
                             </>
                           ),
                           dedicatedLine: true,
@@ -1687,51 +1547,7 @@ export const sync = (
                               "ReconciliationSendEntryEntry",
                               "entry",
                             ],
-                            <R n="LengthyEntry" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              A <R n="StaticTokenHandle" />,{" "}
-                              <R n="handle_bind">bound</R>{" "}
-                              by the sender of this message, which is{" "}
-                              <R n="handle_bind">bound</R>{" "}
-                              to the static part of the{" "}
-                              <R n="ReconciliationSendEntryEntry" />’s{" "}
-                              <R n="AuthorisationToken" />.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "static_token_handle",
-                              "ReconciliationSendEntryStaticTokenHandle",
-                              "static_token_handles",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The dynamic part of the{" "}
-                              <R n="ReconciliationSendEntryEntry" />’s{" "}
-                              <R n="AuthorisationToken" />.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "ReconciliationSendEntryDynamicToken",
-                              "ReconciliationSendEntryDynamicToken",
-                              "ReconciliationSendEntryDynamicTokens",
-                            ],
-                            <R n="DynamicToken" />,
+                            <R n="LengthyAuthorisedEntry" />,
                           ],
                         },
                       },
@@ -1842,7 +1658,7 @@ export const sync = (
                   messages let peers indicate that they will not send more
                   payload bytes for the current <R n="Entry" />{" "}
                   as part of set reconciliation. The messages further indicate
-                  whether more <Rs n="LengthyEntry" />{" "}
+                  whether more <Rs n="LengthyAuthorisedEntry" />{" "}
                   will follow for the current <R n="D3Range" />.
                 </P>
 
@@ -1853,7 +1669,7 @@ export const sync = (
                         Signal the end of the current
                         <R n="Payload" /> transmission as part of{" "}
                         <R n="d3rbsr" />, and indicate whether another{" "}
-                        <R n="LengthyEntry" />{" "}
+                        <R n="LengthyAuthorisedEntry" />{" "}
                         transmission will follow for the current{" "}
                         <R n="D3Range" />.
                       </>
@@ -1956,7 +1772,7 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="Entry" /> to transmit.
+                              The <R n="AuthorisedEntry" /> to transmit.
                             </>
                           ),
                           dedicatedLine: true,
@@ -1966,51 +1782,7 @@ export const sync = (
                               "DataSendEntryEntry",
                               "entries",
                             ],
-                            <R n="Entry" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              A <R n="StaticTokenHandle" />,{" "}
-                              <R n="handle_bind">bound</R>{" "}
-                              by the sender of this message, which is{" "}
-                              <R n="handle_bind">bound</R>{" "}
-                              to the static part of the{" "}
-                              <R n="DataSendEntryEntry" />’s{" "}
-                              <R n="AuthorisationToken" />.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "static_token_handle",
-                              "DataSendEntryStaticTokenHandle",
-                              "static_token_handles",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The dynamic part of the{" "}
-                              <R n="DataSendEntryEntry" />’s{" "}
-                              <R n="AuthorisationToken" />.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "dynamic_token",
-                              "DataSendEntryDynamicToken",
-                              "dynamic_tokens",
-                            ],
-                            <R n="DynamicToken" />,
+                            <R n="AuthorisedEntry" />,
                           ],
                         },
                       },
@@ -2482,7 +2254,8 @@ export const sync = (
                   <R n="subspace_successor_t" />.
                 </Li>
 
-                <Li>
+                {
+                  /* <Li>
                   A <R n="relative_encoding_relation" />{" "}
                   <DefFunction
                     n="EncodeStaticToken"
@@ -2498,9 +2271,11 @@ export const sync = (
                   <R n="NamespaceId" /> and an <R n="Area" />.<Alj>
                     TODO: specify and recommend a relation for Meadowcap
                   </Alj>
-                </Li>
+                </Li> */
+                }
 
-                <Li>
+                {
+                  /* <Li>
                   An <R n="encoding_relation" />{" "}
                   <DefFunction
                     n="EncodeDynamicToken"
@@ -2513,7 +2288,8 @@ export const sync = (
                     }
                   />{" "}
                   for <R n="DynamicToken" />.
-                </Li>
+                </Li> */
+                }
 
                 <Li>
                   An <R n="encoding_relation" />{" "}
@@ -2583,6 +2359,7 @@ export const sync = (
                 title="PioBindReadCapability"
                 noToc
               >
+                <Alj>headings turn green on hover, fix that</Alj>
                 <EncodingRelationTemplate
                   n="EncodePioBindReadCapability"
                   valType={<R n="PioBindReadCapability" />}
@@ -2666,48 +2443,6 @@ export const sync = (
                   <R n="CapabilityChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">3</M>
-                </P>
-              </Hsection>
-
-              <Hsection
-                n="sync_msg_enc_PioBindStaticToken"
-                title="PioBindStaticToken"
-                noToc
-              >
-                <Alj>heading turns green on hover, stop that</Alj>
-                <EncodingRelationTemplate
-                  n="EncodePioBindStaticToken"
-                  valType={<R n="PioBindStaticToken" />}
-                  preDefs={
-                    <>
-                      <P>
-                        Let <DefValue n="epbst_outer" r="outer" />{" "}
-                        denote the pair of the <R n="granted_namespace" />{" "}
-                        and the <R n="granted_area" /> of the{" "}
-                        <R n="ReadCapability" /> bound to{" "}
-                        <ValAccess field="PioBindStaticTokenReceiverClearance" />.
-                      </P>
-                    </>
-                  }
-                  bitfields={[]}
-                  contents={[
-                    <C64Standalone>
-                      <ValAccess field="PioBindStaticTokenReceiverClearance" />
-                    </C64Standalone>,
-                    <CodeFor
-                      enc="EncodeStaticToken"
-                      relativeTo={<R n="epbst_outer" />}
-                    >
-                      <ValAccess field="PioBindStaticTokenStaticToken" />
-                    </CodeFor>,
-                  ]}
-                />
-
-                <P>
-                  <R n="PioBindStaticToken" /> messages use the{" "}
-                  <R n="StaticTokenChannel" />, so they are transmitted via{" "}
-                  <Rs n="SendChannelFrame" /> with{" "}
-                  <R n="SendChannelFrameChannel" /> set to <M post=".">4</M>
                 </P>
               </Hsection>
             </Hsection>
@@ -2870,7 +2605,7 @@ export const sync = (
                                 "An ", r("AreaOfInterestHandle"), " ", def_value({id: "sync_enc_prev_receiver", singular: "prev_receiver_handle"}), ", which is updated every time after proccessing a <R n="ReconciliationSendFingerprint"/> or <R n="ReconciliationAnnounceEntries"/> message to the message’s ", r("ReconciliationSendFingerprintReceiverHandle"), ". The initial value is ", code("0"), "."
                             ],
                             [
-                                "An <R n="Entry"/> ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a <R n="ReconciliationSendEntry"/> message to the <R n="LengthyEntry"/> of the message’s <R n="ReconciliationSendEntryEntry"/>. The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
+                                "An <R n="Entry"/> ", def_value({id: "sync_enc_prev_entry", singular: "prev_entry"}), ", which is updated every time after proccessing a <R n="ReconciliationSendEntry"/> message to the <R n="LengthyAuthorisedEntry"/> of the message’s <R n="ReconciliationSendEntryEntry"/>. The initial value is ", code(function_call(r("default_entry"), r("sync_default_namespace_id"), r("sync_default_subspace_id"), r("sync_default_payload_digest"))), "."
                             ],
                             [
                                 "A <R n="StaticTokenHandle"/> ", def_value({id: "sync_enc_prev_token", singular: "prev_token"}), ", which is updated every time after proccessing a <R n="ReconciliationSendEntry"/> message to the message’s ", r("ReconciliationSendEntryStaticTokenHandle"), ". The initial value is ", code("0"), "."
