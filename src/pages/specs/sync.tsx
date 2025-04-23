@@ -2660,7 +2660,38 @@ export const sync = (
                 title="DataSetEagerness"
                 noToc
               >
-                <Alj inline>TODO</Alj>
+                <EncodingRelationTemplate
+                  n="EncodeDataSetEagerness"
+                  valType={<R n="DataSetEagerness" />}
+                  bitfields={[
+                    bitfieldConstant([1, 0]),
+                    bitfieldIff(
+                      <>
+                        <ValAccess field="DataSetEagernessSetEager" /> is not
+                        {" "}
+                        <R n="enum_cap_none" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "sender_handle",
+                      2,
+                      <>
+                        <ValAccess field="DataSetEagernessSenderHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "receiver_handle",
+                      3,
+                      <>
+                        <ValAccess field="DataSetEagernessReceiverHandle" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="sender_handle" />,
+                    <C64Encoding id="receiver_handle" />,
+                  ]}
+                />
 
                 <P>
                   <R n="DataSetEagerness" /> messages are{" "}
@@ -2671,7 +2702,47 @@ export const sync = (
             </Hsection>
 
             <Hsection n="sync_encode_handle" title="ResourceHandle">
-              <Alj inline>TODO</Alj>
+              <EncodingRelationTemplate
+                n="EncodeResourceHandleFree"
+                valType={<R n="ResourceHandleFree" />}
+                bitfields={[
+                  bitfieldConstant([1, 1]),
+                  bitfieldIff(
+                    <>
+                      <Code>
+                        <ValAccess field="ResourceHandleFreeHandleType" /> ==
+                        {" "}
+                        <R n="OverlapHandle" />
+                      </Code>
+                    </>,
+                  ),
+                  bitfieldIff(
+                    <>
+                      <Code>
+                        <ValAccess field="ResourceHandleFreeMine" />
+                      </Code>
+                    </>,
+                  ),
+                  c64Tag(
+                    "handle_id",
+                    2,
+                    <>
+                      <ValAccess field="ResourceHandleFreeHandleId" />
+                    </>,
+                  ),
+                  c64Tag(
+                    "reference_count",
+                    2,
+                    <>
+                      <ValAccess field="ResourceHandleFreeReferenceCount" />
+                    </>,
+                  ),
+                ]}
+                contents={[
+                  <C64Encoding id="handle_id" />,
+                  <C64Encoding id="reference_count" />,
+                ]}
+              />
 
               <P>
                 <R n="ResourceHandleFree" /> messages are{" "}
