@@ -1558,8 +1558,9 @@ export const sync = (
                               The index of the first (<R n="transform_payload">
                                 transformed
                               </R>) <R n="Payload" /> <R n="Chunk" />{" "}
-                              that will be transmitted for this entry. Can be
-                              set arbitrarily if no <Rs n="Chunk" />{" "}
+                              that will be transmitted for{" "}
+                              <R n="ReconciliationSendEntryEntry" />. Can be set
+                              arbitrarily if no <Rs n="Chunk" />{" "}
                               will be transmitted, <Em>should</Em> be set to
                               {" "}
                               <M>0</M> in that case.
@@ -1645,7 +1646,14 @@ export const sync = (
                               <R n="Payload" /> of the{" "}
                               <R n="ReconciliationSendEntry">previously sent</R>
                               {" "}
-                              <R n="Entry" />.
+                              <R n="Entry" />, starting at the{" "}
+                              <R n="ReconciliationSendEntryOffset" />{" "}
+                              of the corresponding{" "}
+                              <R n="ReconciliationSendEntry" />{" "}
+                              message plus the number of <Rs n="Chunk" />{" "}
+                              for the current <R n="Entry" />{" "}
+                              that were already transmitted by prior{" "}
+                              <R n="ReconciliationSendPayload" /> messages.
                             </>
                           ),
                           dedicatedLine: true,
@@ -1668,7 +1676,7 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="ReconciliationSendEntry" /> messages use the{" "}
+                  <Rb n="ReconciliationSendPayload" /> messages use the{" "}
                   <R n="ReconciliationChannel" />.
                 </P>
               </Hsection>
@@ -1776,7 +1784,9 @@ export const sync = (
                   <Rs n="AuthorisedEntry" />{" "}
                   outside of set reconciliation. Receiving a{" "}
                   <R n="DataSendEntry" /> sets the receiver’s{" "}
-                  <R n="currently_received_entry" />.
+                  <R n="currently_received_entry" />.<Alj>
+                    Add chunk offset here, remove from the SendPayload messages?
+                  </Alj>
                 </P>
 
                 <Pseudocode n="sync_defs_DataSendEntry">
@@ -1808,6 +1818,32 @@ export const sync = (
                               "entries",
                             ],
                             <R n="AuthorisedEntry" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The index of the first (<R n="transform_payload">
+                                transformed
+                              </R>) <R n="Payload" /> <R n="Chunk" />{" "}
+                              that will be transmitted for{" "}
+                              <R n="DataSendEntryEntry" />. Can be set
+                              arbitrarily if no <Rs n="Chunk" />{" "}
+                              will be transmitted, <Em>should</Em> be set to
+                              {" "}
+                              <M>0</M> in that case.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "offset",
+                              "DataSendEntryOffset",
+                              "offset",
+                            ],
+                            <R n="U64" />,
                           ],
                         },
                       },
@@ -1852,25 +1888,6 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              The <R n="Chunk" />{" "}
-                              index at which the data starts.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "offset",
-                              "DataSendPayloadOffset",
-                              "offset",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
                               The number of transmitted <Rs n="Chunk" />.
                             </>
                           ),
@@ -1891,13 +1908,19 @@ export const sync = (
                             <>
                               The bytes to transmit, the concatenation of the
                               {" "}
-                              <R n="DataSendPayloadAmount" /> many{" "}
-                              <Rs n="Chunk" /> — starting at index{" "}
-                              <R n="DataSendPayloadOffset" />{" "}
-                              — obtained by applying <R n="transform_payload" />
+                              <Rs n="Chunk" /> obtained by applying{" "}
+                              <R n="transform_payload" /> to the{" "}
+                              <R n="Payload" /> of the receiver’s{" "}
+                              <R n="currently_received_entry" />
+                              <R n="Entry" />, starting at the{" "}
+                              <R n="DataSendEntryOffset" /> of the corresponding
                               {" "}
-                              to the <R n="Payload" /> of the receiver’s{" "}
-                              <R n="currently_received_entry" />.
+                              <R n="DataSendEntry" /> message plus the number of
+                              {" "}
+                              <Rs n="Chunk" /> for the current <R n="Entry" />
+                              {" "}
+                              that were already transmitted by prior{" "}
+                              <R n="DataSendPayload" /> messages.
                             </>
                           ),
                           dedicatedLine: true,
