@@ -1264,10 +1264,10 @@ export const private_interest_overlap = (
             <P>
               Imagine two peers, with the exact same 400{" "}
               <Rs n="PrivateInterest" />, but they can each submit only 20 into
-              the private overlap detection process due to resource limits. If they
-              each selected 20 of their interests at random, they would likely
-              part ways thinking they don't share any common interests. If they
-              both sorted their <Rs n="PrivateInterest" />{" "}
+              the private overlap detection process due to resource limits. If
+              they each selected 20 of their interests at random, they would
+              likely part ways thinking they don't share any common interests.
+              If they both sorted their <Rs n="PrivateInterest" />{" "}
               (say, lexicographically according to some agreed-upon encoding)
               and transmitted the first 20 ones, then observers might be able to
               reconstruct some information about their interests.
@@ -1377,8 +1377,10 @@ export const private_interest_overlap = (
                 }
               >
                 information
-              </Sidenote>. The other peer replies to the{" "}
-              <R n="overlap_announcement" /> only if the{" "}
+              </Sidenote>{" "}
+              (i.e., typically, the <R n="NamespaceId" /> of the{" "}
+              <R n="enumeration_granted_namespace" />). The other peer replies
+              to the <R n="overlap_announcement" /> only if the{" "}
               <R n="enumeration_receiver" /> matches the <R n="ini_pk" /> or the
               {" "}
               <R n="res_pk" /> (depending on role) and the{" "}

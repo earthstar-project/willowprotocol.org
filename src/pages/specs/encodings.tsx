@@ -2010,23 +2010,11 @@ export const encodings = (
               valType={<R n="McEnumerationCapability" />}
               relToDescription={
                 <>
-                  <R n="PersonalPrivateInterest" /> with{" "}
-                  <Code>
-                    <AccessStruct field="pi_ss">
-                      <RelAccess field="ppi_pi" />
-                    </AccessStruct>{" "}
-                    == <R n="ss_any" />
-                  </Code>{" "}
-                  and{" "}
-                  <Code>
-                    <AccessStruct field="pi_ns">
-                      <RelAccess field="ppi_pi" />
-                    </AccessStruct>{" "}
-                    == <ValAccess field="enumcap_namespace" />
-                  </Code>
+                  pair of <ValAccess field="enumcap_namespace" /> and the{" "}
+                  <R n="enumeration_receiver" /> of <ValName />
                 </>
               }
-              shortRelToDescription={<R n="PersonalPrivateInterest" />}
+              shortRelToDescription={<>pair</>}
               bitfields={[
                 c64Tag(
                   "delegation_count",

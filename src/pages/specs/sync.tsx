@@ -23,6 +23,7 @@ import { Pseudocode } from "macromania-pseudocode";
 import { Bib } from "macromania-bib/mod.tsx";
 import {
   bitfieldArbitrary,
+  bitfieldConstant,
   bitfieldIff,
   C64Encoding,
   C64Standalone,
@@ -33,7 +34,8 @@ import {
   RelAccess,
   ValAccess,
 } from "../../encoding_macros.tsx";
-import { ValName } from "../../encoding_macros.tsx";
+import { EncConditional, ValName } from "../../encoding_macros.tsx";
+import { RelName } from "../../encoding_macros.tsx";
 
 export const sync = (
   <Dir name="sync">
@@ -1784,9 +1786,7 @@ export const sync = (
                   <Rs n="AuthorisedEntry" />{" "}
                   outside of set reconciliation. Receiving a{" "}
                   <R n="DataSendEntry" /> sets the receiver’s{" "}
-                  <R n="currently_received_entry" />.<Alj>
-                    Add chunk offset here, remove from the SendPayload messages?
-                  </Alj>
+                  <R n="currently_received_entry" />.
                 </P>
 
                 <Pseudocode n="sync_defs_DataSendEntry">
@@ -2059,7 +2059,7 @@ export const sync = (
                               "DataSetEagernessSetEager",
                               "set_eager",
                             ],
-                            <R n="U64" />,
+                            <R n="Bool" />,
                           ],
                         },
                       },
@@ -2242,31 +2242,14 @@ export const sync = (
                   />{" "}
                   encoding <Rs n="EnumerationCapability" />{" "}
                   <DefValue noPreview n="sync_enc_enum_cap" r="val" />{" "}
-                  relative to <Rs n="PersonalPrivateInterest" />{" "}
-                  <DefValue noPreview n="sync_enc_enum_private" r="rel" /> with
-                  {" "}
-                  <Code>
-                    <AccessStruct field="pi_ss">
-                      <AccessStruct field="ppi_pi">
-                        <R n="sync_enc_enum_private" />
-                      </AccessStruct>
-                    </AccessStruct>{" "}
-                    == <R n="ss_any" />
-                  </Code>{" "}
-                  and{" "}
-                  <Code>
-                    <AccessStruct field="pi_ns">
-                      <AccessStruct field="ppi_pi">
-                        <R n="sync_enc_enum_private" />
-                      </AccessStruct>
-                    </AccessStruct>{" "}
-                    =={" "}
-                    <AccessStruct field="enumcap_namespace">
-                      <R n="sync_enc_enum_cap" />
-                    </AccessStruct>
-                  </Code>. Note that the information in the{" "}
-                  <R n="PersonalPrivateInterest" /> must not appear in the{" "}
-                  <Rs n="rel_code" />,{" "}
+                  relative to the pair of the{" "}
+                  <R n="enumeration_granted_namespace" /> and the{" "}
+                  <R n="enumeration_receiver" /> of{" "}
+                  <AccessStruct field="PioAnnounceOverlapEnumerationCapability">
+                    <R n="sync_enc_enum_cap" />
+                  </AccessStruct>. Note that
+                  the<R n="enumeration_granted_namespace" />{" "}
+                  must not appear in the <Rs n="rel_code" />,{" "}
                   <R n="pio_caps">to protect against active eavesdroppers</R>.
                 </Li>
 
@@ -2393,7 +2376,71 @@ export const sync = (
                 title="PioAnnounceOverlap"
                 noToc
               >
-                <Alj inline>TODO</Alj>
+                <EncodingRelationTemplate
+                  n="EncodePioAnnounceOverlap"
+                  valType={<R n="PioAnnounceOverlap" />}
+                  preDefs={
+                    <>
+                      <P>
+                        If{" "}
+                        <ValAccess field="PioAnnounceOverlapEnumerationCapability" />
+                        {" "}
+                        is not <R n="enum_cap_none" />, let{" "}
+                        <DefValue n="epao_pair" r="pair" /> denote the{" "}
+                        pair of the <R n="enumeration_granted_namespace" />{" "}
+                        and the <R n="enumeration_receiver" /> of{" "}
+                        <ValAccess field="PioAnnounceOverlapEnumerationCapability" />.
+                      </P>
+                    </>
+                  }
+                  bitfields={[
+                    bitfieldConstant([0]),
+                    bitfieldIff(
+                      <>
+                        <ValAccess field="PioAnnounceOverlapEnumerationCapability" />
+                        {" "}
+                        is not <R n="enum_cap_none" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "sender_handle",
+                      3,
+                      <>
+                        <ValAccess field="PioAnnounceOverlapSenderHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "receiver_handle",
+                      3,
+                      <>
+                        <ValAccess field="PioAnnounceOverlapReceiverHandle" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="sender_handle" />,
+                    <C64Encoding id="receiver_handle" />,
+                    <RawBytes>
+                      <ValAccess field="PioAnnounceOverlapAuthentication" />
+                    </RawBytes>,
+                    <EncConditional
+                      condition={
+                        <>
+                          <ValAccess field="PioAnnounceOverlapEnumerationCapability" />
+                          {" "}
+                          is not <R n="enum_cap_none" />
+                        </>
+                      }
+                    >
+                      <CodeFor
+                        enc="EncodeEnumerationCapability"
+                        relativeTo={<R n="epao_pair" />}
+                      >
+                        <ValAccess field="PioAnnounceOverlapEnumerationCapability" />
+                      </CodeFor>
+                    </EncConditional>,
+                  ]}
+                />
 
                 <P>
                   <R n="PioAnnounceOverlap" /> messages are{" "}
