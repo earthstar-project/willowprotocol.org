@@ -274,7 +274,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("sync_default_subspace_id"), " is the ", r("es6_identity"), " whose ", r("cinn_shortname"), " is ", code("a000"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
+						"The <R n="sync_default_subspace_id"/> is the ", r("es6_identity"), " whose ", r("cinn_shortname"), " is ", code("a000"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
 					),
 
 					pinformative(
@@ -306,7 +306,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The total order on <R n="SubspaceId"/> (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
+						"The total order on <R n="SubspaceId"/> (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and <R n="sync_default_subspace_id"/> is indeed the unique least element.",
 					),
 
 					pinformative(

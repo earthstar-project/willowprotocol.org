@@ -21,6 +21,19 @@ import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Bib } from "macromania-bib/mod.tsx";
+import {
+  bitfieldArbitrary,
+  bitfieldIff,
+  C64Encoding,
+  C64Standalone,
+  c64Tag,
+  CodeFor,
+  EncodingRelationTemplate,
+  RawBytes,
+  RelAccess,
+  ValAccess,
+} from "../../encoding_macros.tsx";
+import { ValName } from "../../encoding_macros.tsx";
 
 export const sync = (
   <Dir name="sync">
@@ -257,13 +270,24 @@ export const sync = (
               </R>{" "}
               require a type{" "}
               <DefType n="ReadCapability" rs="ReadCapabilities" /> of{" "}
-              <Rs n="read_capability" />, a type{" "}
-              <DefType n="sync_receiver" r="Receiver" rs="Receivers" /> of{" "}
-              <Rs n="access_receiver" />, and a type{" "}
+              <Rs n="read_capability" />,<Marginale>
+                We recommend the <R n="meadowcap" /> <Rs n="Capability" />{" "}
+                with an <R n="cap_mode" /> of <R n="access_read" />{" "}
+                as the type of <Rs n="ReadCapability" />.
+              </Marginale>{" "}
+              a type <DefType n="sync_receiver" r="Receiver" rs="Receivers" />
+              {" "}
+              of <Rs n="access_receiver" />, and a type{" "}
               <DefType n="EnumerationCapability" rs="EnumerationCapabilities" />
               {" "}
-              of <Rs n="enumeration_capability" /> whose{" "}
-              <Rs n="enumeration_receiver" /> are of type{" "}
+              of <Rs n="enumeration_capability" />
+              <Marginale>
+                We recommend the{" "}
+                <R n="mc_enumeration_cap">meadowcap-compatible</R>{" "}
+                <Rs n="McEnumerationCapability" /> as the type of{" "}
+                <Rs n="EnumerationCapability" />.
+              </Marginale>{" "}
+              whose <Rs n="enumeration_receiver" /> are of type{" "}
               <R n="sync_receiver" />. We require a hash function{" "}
               <DefFunction n="sync_h" r="hash_interests" /> to hash salted{" "}
               <Rs n="PrivateInterest" /> to bytestrings of the fixed width{" "}
@@ -443,9 +467,12 @@ export const sync = (
           <P>
             After this initial transmissions, the protocol becomes a purely
             message-based protocol, built on top of{" "}
-            <R n="lcmux" />. There are several kinds of messages, which the
-            peers create, encode as byte strings, and transmit mostly
-            independently from each other.
+            <R n="lcmux" />. Both peers act as an{" "}
+            <R n="lcmux_c">LCMUX client</R> and an{" "}
+            <R n="lcmux_s">LCMUX server</R>{" "}
+            simultaneously. There are several kinds of messages, which the peers
+            create, encode as byte strings, and then transmit via LCMUX{" "}
+            <Rs n="SendChannelFrame" /> and <Rs n="SendGlobalFrame" />.
           </P>
 
           <P>
@@ -499,30 +526,14 @@ export const sync = (
                 {
                   tuple: true,
                   id: [
-                    "PayloadRequestHandle",
-                    "PayloadRequestHandle",
-                    "PayloadRequestHandles",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="resource_handle" /> that controls the matching from
-                      {" "}
-                      <R n="Payload" /> transmissions to <R n="Payload" />{" "}
-                      requests.
-                    </>
-                  ),
-                },
-                {
-                  tuple: true,
-                  id: [
                     "StaticTokenHandle",
                     "StaticTokenHandle",
                     "StaticTokenHandles",
                   ],
                   comment: (
                     <>
-                      <Rb n="resource_handle" />{" "}
-                      for ", rs("StaticToken"), " that peers need to transmit.
+                      <Rb n="resource_handle" /> for <Rs n="StaticToken" />{" "}
+                      that peers need to transmit.
                     </>
                   ),
                 },
@@ -559,7 +570,9 @@ export const sync = (
                   comment: (
                     <>
                       <Rb n="logical_channel" /> for performing{" "}
-                      <R n="d3rbsr" />.
+                      <R n="d3rbsr" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">0</M>
                     </>
                   ),
                 },
@@ -574,7 +587,9 @@ export const sync = (
                     <>
                       <Rb n="logical_channel" /> for transmitting{" "}
                       <Rs n="Entry" /> and <Rs n="Payload" /> outside of{" "}
-                      <R n="d3rbsr" />.
+                      <R n="d3rbsr" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">1</M>
                     </>
                   ),
                 },
@@ -589,7 +604,9 @@ export const sync = (
                     <>
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="OverlapHandle" />.
+                      <Rs n="OverlapHandle" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">2</M>
                     </>
                   ),
                 },
@@ -604,22 +621,9 @@ export const sync = (
                     <>
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="ReadCapabilityHandle" />.
-                    </>
-                  ),
-                },
-                {
-                  tuple: true,
-                  id: [
-                    "PayloadRequestChannel",
-                    "PayloadRequestChannel",
-                    "PayloadRequestChannels",
-                  ],
-                  comment: (
-                    <>
-                      <Rb n="logical_channel" /> for controlling the{" "}
-                      <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="PayloadRequestHandle" />.
+                      <Rs n="ReadCapabilityHandle" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">3</M>
                     </>
                   ),
                 },
@@ -634,7 +638,9 @@ export const sync = (
                     <>
                       <Rb n="logical_channel" /> for controlling the{" "}
                       <R n="handle_bind">binding</R> of new{" "}
-                      <Rs n="StaticTokenHandle" />.
+                      <Rs n="StaticTokenHandle" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">4</M>
                     </>
                   ),
                 },
@@ -1919,15 +1925,6 @@ export const sync = (
                 </P>
               </PreviewScope>
 
-              <P>
-                Peers can further explicitly request the <Rs n="Payload" /> of
-                {" "}
-                <Rs n="Entry" />. Requested <Rs n="Payload" />{" "}
-                are delivered by setting the requestor’s{" "}
-                <R n="currently_received_entry" /> with a{" "}
-                <R n="DataReplyPayload" /> message.
-              </P>
-
               <Hsection
                 n="sync_msg_DataSendEntry"
                 title={<Code>DataSendEntry</Code>}
@@ -2255,223 +2252,6 @@ export const sync = (
                   <Rs n="global_message" />.
                 </P>
               </Hsection>
-
-              <Hsection
-                n="sync_msg_DataBindPayloadRequest"
-                title={<Code>DataBindPayloadRequest</Code>}
-                noToc
-              >
-                <P>
-                  <Marginale>
-                    When the receiver of a <R n="DataBindPayloadRequest" />{" "}
-                    message does not have a requested <R n="Payload" />{" "}
-                    and does not plan to obtain it in the future, it should
-                    signal so by <R n="handle_free">freeing</R> the{" "}
-                    <R n="PayloadRequestHandle" />.
-                  </Marginale>
-                  The <R n="DataBindPayloadRequest" />{" "}
-                  messages let peers request the <R n="Payload" /> of an{" "}
-                  <R n="Entry" />.
-                </P>
-
-                <Pseudocode n="sync_defs_DataBindPayloadRequest">
-                  <StructDef
-                    comment={
-                      <>
-                        <Rb n="handle_bind" /> an <R n="Entry" /> to a{" "}
-                        <R n="PayloadRequestHandle" />, requesting its{" "}
-                        <R n="Payload" />.
-                      </>
-                    }
-                    id={[
-                      "DataBindPayloadRequest",
-                      "DataBindPayloadRequest",
-                    ]}
-                    fields={[
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The <R n="Entry" /> whose <R n="Payload" />{" "}
-                              to request.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "entry",
-                              "DataBindPayloadRequestEntry",
-                              "entry",
-                            ],
-                            <R n="Entry" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The <R n="Chunk" />{" "}
-                              index at which the response should start.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "offset",
-                              "DataBindPayloadRequestOffset",
-                              "offset",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              A <R n="ReadCapabilityHandle" />{" "}
-                              <R n="handle_bind">bound</R> by the{" "}
-                              <Em>receiver</Em> of this message. The{" "}
-                              <R n="granted_namespace" /> of the corresponding
-                              {" "}
-                              <R n="read_capability" /> must match the{" "}
-                              <R n="entry_namespace_id" /> of the{" "}
-                              <R n="Entry" /> which the{" "}
-                              <R n="DataBindPayloadRequestEntry" />{" "}
-                              authorises. The <R n="granted_area" />{" "}
-                              of the corresponding <R n="read_capability" />
-                              {" "}
-                              must <R n="area_include" /> the <R n="Entry" />
-                              {" "}
-                              which the <R n="DataBindPayloadRequestEntry" />
-                              {" "}
-                              authorises.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "receiver_clearance",
-                              "DataBindPayloadRequestReceiverClearance",
-                              "receiver_clearances",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              A <R n="ReadCapabilityHandle" />{" "}
-                              <R n="handle_bind">bound</R> by the{" "}
-                              <Em>sender</Em> of this message. The{" "}
-                              <R n="granted_namespace" /> of the corresponding
-                              {" "}
-                              <R n="read_capability" /> must match the{" "}
-                              <R n="entry_namespace_id" /> of the{" "}
-                              <R n="Entry" /> which the{" "}
-                              <R n="DataBindPayloadRequestEntry" />{" "}
-                              authorises. The <R n="granted_area" />{" "}
-                              of the corresponding <R n="read_capability" />
-                              {" "}
-                              must <R n="area_include" /> the <R n="Entry" />
-                              {" "}
-                              which the <R n="DataBindPayloadRequestEntry" />
-                              {" "}
-                              authorises.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "sender_clearance",
-                              "DataBindPayloadRequestSenderClearance",
-                              "sender_clearances",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                    ]}
-                  />
-                </Pseudocode>
-
-                <P>
-                  <Rb n="DataBindPayloadRequest" /> messages use the{" "}
-                  <R n="PayloadRequestChannel" />.
-                </P>
-              </Hsection>
-
-              <Hsection
-                n="sync_msg_DataReplyPayload"
-                title={<Code>DataReplyPayload</Code>}
-                noToc
-              >
-                <P>
-                  The <R n="DataReplyPayload" /> messages let peers reply to
-                  {" "}
-                  <R n="DataBindPayloadRequest" />{" "}
-                  messages by setting the requestor’s{" "}
-                  <R n="currently_received_entry" />. The actual transmission of
-                  the (<R n="transform_payload">transformed</R>){" "}
-                  <Rs n="Chunk" /> can then take place via{" "}
-                  <R n="DataSendPayload" /> messages.
-                </P>
-
-                <Pseudocode n="sync_defs_DataReplyPayload">
-                  <StructDef
-                    comment={
-                      <>
-                        Set the receivers <R n="currently_received_entry" />
-                        {" "}
-                        to the <R n="DataSendEntryEntry" /> of a{" "}
-                        <R n="DataSendEntry" /> message.
-                      </>
-                    }
-                    id={[
-                      "DataReplyPayload",
-                      "DataReplyPayload",
-                    ]}
-                    fields={[
-                      {
-                        commented: {
-                          comment: (
-                            <>
-                              The <R n="PayloadRequestHandle" />{" "}
-                              <R n="handle_bind">bound</R> by the{" "}
-                              <Em>receiver</Em> of this message that determines
-                              {" "}
-                              <R n="currently_received_entry" /> and{" "}
-                              <R n="Chunk" />{" "}
-                              <R n="DataBindPayloadRequestOffset" />{" "}
-                              of subsequent{" "}
-                              <R n="DataSendPayload">
-                                payload byte transmissions
-                              </R>.
-                            </>
-                          ),
-                          dedicatedLine: true,
-                          segment: [
-                            [
-                              "request",
-                              "DataReplyPayloadRequest",
-                              "request",
-                            ],
-                            <R n="U64" />,
-                          ],
-                        },
-                      },
-                    ]}
-                  />
-                </Pseudocode>
-
-                <P>
-                  <Rb n="DataReplyPayload" /> messages use the{" "}
-                  <R n="DataChannel" />.
-                </P>
-              </Hsection>
             </Hsection>
 
             <Hsection n="sync_resource_handle" title="ResourceHandle">
@@ -2584,319 +2364,496 @@ export const sync = (
               </P>
             </Hsection>
           </Hsection>
+
+          <Hsection n="sync_encodings" title="Encodings">
+            <P>
+              We now describe how to encode the various messages of the WGPS.
+              When a peer receives bytes it cannot decode, this is an error.
+            </P>
+
+            <Hsection n="sync_encoding_params" title="Parameters">
+              <P>
+                To be able to encode messages, we require certain properties
+                from the <R n="sync_parameters">protocol parameters</R>:
+              </P>
+
+              <Ul>
+                <Li>
+                  <Marginale>
+                    When using <R n="Capability" /> as the type of{" "}
+                    <Rs n="ReadCapability" />, you can use{" "}
+                    <R n="EncodeMcCapabilityRelativePrivateInterest" />.
+                  </Marginale>
+                  A <R n="relative_encoding_relation" />{" "}
+                  <DefType
+                    n="EncodeReadCapability"
+                    preview={
+                      <P>
+                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        <R n="relative_encoding_relation" /> for encoding{" "}
+                        <Rs n="ReadCapability" />.
+                      </P>
+                    }
+                  />{" "}
+                  encoding <Rs n="ReadCapability" /> relative to{" "}
+                  <Rs n="PersonalPrivateInterest" />. Note that the information
+                  in the <R n="PersonalPrivateInterest" />{" "}
+                  must not appear in the <Rs n="rel_code" />,{" "}
+                  <R n="pio_caps">to protect against active eavesdroppers</R>.
+                </Li>
+
+                <Li>
+                  <Marginale>
+                    When using <R n="McEnumerationCapability" /> as the type of
+                    {" "}
+                    <Rs n="EnumerationCapability" />, you can use{" "}
+                    <R n="EncodeMcEnumerationCapabilityRelativePrivateInterest" />.
+                  </Marginale>
+                  A <R n="relative_encoding_relation" />{" "}
+                  <DefType
+                    n="EncodeEnumerationCapability"
+                    preview={
+                      <P>
+                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        <R n="relative_encoding_relation" /> for encoding{" "}
+                        <Rs n="EnumerationCapability" />.
+                      </P>
+                    }
+                  />{" "}
+                  encoding <Rs n="EnumerationCapability" />{" "}
+                  <DefValue noPreview n="sync_enc_enum_cap" r="val" />{" "}
+                  relative to <Rs n="PersonalPrivateInterest" />{" "}
+                  <DefValue noPreview n="sync_enc_enum_private" r="rel" /> with
+                  {" "}
+                  <Code>
+                    <AccessStruct field="pi_ss">
+                      <AccessStruct field="ppi_pi">
+                        <R n="sync_enc_enum_private" />
+                      </AccessStruct>
+                    </AccessStruct>{" "}
+                    == <R n="ss_any" />
+                  </Code>{" "}
+                  and{" "}
+                  <Code>
+                    <AccessStruct field="pi_ns">
+                      <AccessStruct field="ppi_pi">
+                        <R n="sync_enc_enum_private" />
+                      </AccessStruct>
+                    </AccessStruct>{" "}
+                    =={" "}
+                    <AccessStruct field="enumcap_namespace">
+                      <R n="sync_enc_enum_cap" />
+                    </AccessStruct>
+                  </Code>. Note that the information in the{" "}
+                  <R n="PersonalPrivateInterest" /> must not appear in the{" "}
+                  <Rs n="rel_code" />,{" "}
+                  <R n="pio_caps">to protect against active eavesdroppers</R>.
+                </Li>
+
+                <Li>
+                  <Marginale>
+                    Used indirectly when encoding <Rs n="Entry" />,{" "}
+                    <Rs n="Area" />, and <Rs n="D3Range" />.
+                  </Marginale>
+                  An <R n="encoding_function" /> for <R n="SubspaceId" />.
+                </Li>
+
+                <Li>
+                  <Marginale>
+                    The total order makes <Rs n="D3Range" />{" "}
+                    meaningful, the least element and successors ensure that
+                    every <R n="Area" /> can be expressed as an equivalent{" "}
+                    <R n="D3Range" />.
+                  </Marginale>
+                  A{" "}
+                  <AE href="https://en.wikipedia.org/wiki/Total_order">
+                    total order
+                  </AE>{" "}
+                  on <R n="SubspaceId" /> with least element{" "}
+                  <R n="sync_default_subspace_id" />, in which for every
+                  non-maximal <R n="SubspaceId" />{" "}
+                  <DefValue noPreview n="subspace_successor_s" r="s" />{" "}
+                  there exists a successor{" "}
+                  <DefValue noPreview n="subspace_successor_t" r="t" />{" "}
+                  such that <R n="subspace_successor_s" /> is less than{" "}
+                  <R n="subspace_successor_t" /> and no other{" "}
+                  <R n="SubspaceId" /> is greater than{" "}
+                  <R n="subspace_successor_s" /> and less than{" "}
+                  <R n="subspace_successor_t" />.
+                </Li>
+
+                <Li>
+                  A <R n="relative_encoding_relation" />{" "}
+                  <DefFunction
+                    n="EncodeStaticToken"
+                    preview={
+                      <P>
+                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        <R n="relative_encoding_relation" /> for encoding{" "}
+                        <Rs n="StaticToken" />.
+                      </P>
+                    }
+                  />{" "}
+                  encoding <Rs n="StaticToken" /> relative to pairs of a{" "}
+                  <R n="NamespaceId" /> and an <R n="Area" />.<Alj>
+                    TODO: specify and recommend a relation for Meadowcap
+                  </Alj>
+                </Li>
+
+                <Li>
+                  An <R n="encoding_relation" />{" "}
+                  <DefFunction
+                    n="EncodeDynamicToken"
+                    preview={
+                      <P>
+                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        <R n="encoding_relation" /> for encoding{" "}
+                        <Rs n="DynamicToken" />.
+                      </P>
+                    }
+                  />{" "}
+                  for <R n="DynamicToken" />.
+                </Li>
+
+                <Li>
+                  An <R n="encoding_relation" />{" "}
+                  <DefFunction
+                    n="EncodeFingerprint"
+                    preview={
+                      <P>
+                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        <R n="encoding_relation" /> for encoding{" "}
+                        <Rs n="Fingerprint" />.
+                      </P>
+                    }
+                  />{" "}
+                  for <R n="Fingerprint" />.
+                </Li>
+              </Ul>
+
+              <P>
+                We can now define the encodings for all messages, to the be
+                transmitted via LCMUX <Rs n="SendChannelFrame" /> and{" "}
+                <Rs n="SendGlobalFrame" />.
+              </P>
+            </Hsection>
+
+            <Hsection n="sync_encode_pio" title="Private Interest Overlap">
+              <Hsection n="sync_msg_enc_PioBindHash" title="PioBindHash" noToc>
+                <EncodingRelationTemplate
+                  n="EncodePioBindHash"
+                  valType={<R n="PioBindHash" />}
+                  bitfields={[
+                    bitfieldIff(
+                      <ValAccess field="PioBindHashActuallyInterested" />,
+                    ),
+                    bitfieldArbitrary(7),
+                  ]}
+                  contents={[
+                    <RawBytes>
+                      <ValAccess field="PioBindHashHash" />
+                    </RawBytes>,
+                  ]}
+                />
+
+                <P>
+                  <R n="PioBindHash" /> messages use the{" "}
+                  <R n="OverlapChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">2</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_PioAnnounceOverlap"
+                title="PioAnnounceOverlap"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="PioAnnounceOverlap" /> messages are{" "}
+                  <Rs n="global_message" />, so they are transmitted via{" "}
+                  <Rs n="SendGlobalFrame" />.
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_PioBindReadCapability"
+                title="PioBindReadCapability"
+                noToc
+              >
+                <EncodingRelationTemplate
+                  n="EncodePioBindReadCapability"
+                  valType={<R n="PioBindReadCapability" />}
+                  preDefs={
+                    <>
+                      <P>
+                        Let <DefValue n="epbrc_ppi" r="ppi" /> denote the{" "}
+                        <R n="PersonalPrivateInterest" /> whose
+                      </P>
+
+                      <Ul>
+                        <Li>
+                          <R n="ppi_user" /> is<Ul>
+                            <Li>
+                              <R n="ini_pk" /> if the sender of <ValName /> is
+                              {" "}
+                              <R n="alfie" />,
+                            </Li>
+                            <Li>
+                              or <R n="res_pk" /> if the sender of <ValName />
+                              {" "}
+                              is <R n="betty" />, and whose
+                            </Li>
+                          </Ul>
+                        </Li>
+
+                        <Li>
+                          <R n="ppi_pi" /> is the <R n="PrivateInterest" />{" "}
+                          whose hash is bound to{" "}
+                          <ValAccess field="PioBindReadCapabilitySenderHandle" />.
+                        </Li>
+                      </Ul>
+                    </>
+                  }
+                  bitfields={[
+                    c64Tag(
+                      "sender_handle",
+                      2,
+                      <>
+                        <ValAccess field="PioBindReadCapabilitySenderHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "receiver_handle",
+                      2,
+                      <>
+                        <ValAccess field="PioBindReadCapabilityReceiverHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "max_count",
+                      2,
+                      <>
+                        <ValAccess field="PioBindReadCapabilityMaxCount" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "max_size",
+                      2,
+                      <>
+                        <ValAccess field="PioBindReadCapabilityMaxSize" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="sender_handle" />,
+                    <C64Encoding id="receiver_handle" />,
+                    <C64Encoding id="max_count" />,
+                    <C64Encoding id="max_size" />,
+                    <CodeFor
+                      enc="EncodeReadCapability"
+                      relativeTo={<R n="epbrc_ppi" />}
+                    >
+                      <ValAccess field="PioBindReadCapabilityCapability" />
+                    </CodeFor>,
+                  ]}
+                />
+
+                <P>
+                  <R n="PioBindReadCapability" /> messages use the{" "}
+                  <R n="CapabilityChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">3</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_PioBindStaticToken"
+                title="PioBindStaticToken"
+                noToc
+              >
+                <Alj>heading turns green on hover, stop that</Alj>
+                <EncodingRelationTemplate
+                  n="EncodePioBindStaticToken"
+                  valType={<R n="PioBindStaticToken" />}
+                  preDefs={
+                    <>
+                      <P>
+                        Let <DefValue n="epbst_outer" r="outer" />{" "}
+                        denote the pair of the <R n="granted_namespace" />{" "}
+                        and the <R n="granted_area" /> of the{" "}
+                        <R n="ReadCapability" /> bound to{" "}
+                        <ValAccess field="PioBindStaticTokenReceiverClearance" />.
+                      </P>
+                    </>
+                  }
+                  bitfields={[]}
+                  contents={[
+                    <C64Standalone>
+                      <ValAccess field="PioBindStaticTokenReceiverClearance" />
+                    </C64Standalone>,
+                    <CodeFor
+                      enc="EncodeStaticToken"
+                      relativeTo={<R n="epbst_outer" />}
+                    >
+                      <ValAccess field="PioBindStaticTokenStaticToken" />
+                    </CodeFor>,
+                  ]}
+                />
+
+                <P>
+                  <R n="PioBindStaticToken" /> messages use the{" "}
+                  <R n="StaticTokenChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">4</M>
+                </P>
+              </Hsection>
+            </Hsection>
+
+            <Hsection n="sync_encode_rec" title="Reconciliation">
+              <Hsection
+                n="sync_msg_enc_ReconciliationSendFingerprint"
+                title="ReconciliationSendFingerprint"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="ReconciliationSendFingerprint" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_ReconciliationAnnounceEntries"
+                title="ReconciliationAnnounceEntries"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="ReconciliationAnnounceEntries" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_ReconciliationSendEntry"
+                title="ReconciliationSendEntry"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="ReconciliationSendEntry" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_ReconciliationSendPayload"
+                title="ReconciliationSendPayload"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="ReconciliationSendPayload" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_ReconciliationTerminatePayload"
+                title="ReconciliationTerminatePayload"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="ReconciliationTerminatePayload" /> messages use the{" "}
+                  <R n="ReconciliationChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                </P>
+              </Hsection>
+            </Hsection>
+
+            <Hsection n="sync_encode_data" title="Data">
+              <Hsection
+                n="sync_msg_enc_DataSendEntry"
+                title="DataSendEntry"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="DataSendEntry" /> messages use the{" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_DataSendPayload"
+                title="DataSendPayload"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="DataSendPayload" /> messages use the{" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
+                </P>
+              </Hsection>
+
+              <Hsection
+                n="sync_msg_enc_DataSetEagerness"
+                title="DataSetEagerness"
+                noToc
+              >
+                <Alj inline>TODO</Alj>
+
+                <P>
+                  <R n="DataSetEagerness" /> messages are{" "}
+                  <Rs n="global_message" />, so they are transmitted via{" "}
+                  <Rs n="SendGlobalFrame" />.
+                </P>
+              </Hsection>
+            </Hsection>
+
+            <Hsection n="sync_encode_handle" title="ResourceHandle">
+              <Alj inline>TODO</Alj>
+
+              <P>
+                <R n="ResourceHandleFree" /> messages are{" "}
+                <Rs n="global_message" />, so they are transmitted via{" "}
+                <Rs n="SendGlobalFrame" />.
+              </P>
+            </Hsection>
+          </Hsection>
         </Hsection>
 
         {
           /*
-
-            hsection("sync_encodings", "Encodings", [
-                pinformative("We now describe how to encode the various messages of the WGPS. When a peer receives bytes it cannot decode, this is an error."),
-
-                hsection("sync_encoding_params", "Parameters", [
-                    pinformative("To be able to encode messages, we require certain properties from the ", link_name("sync_parameters", "protocol parameters"), ":"),
-
-                    lis(
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_group_member"}), " for ", r("PsiGroup"), ".",
-                        ),
-                        preview_scope(
-                            marginale(["When using the <R n="McEnumerationCapability"/> type, you can use ", r("encode_mc_subspace_capability"), ", but omitting the encoding of the <R n="enumcap_namespace"/>."]),
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_subspace_capability"}), " for ", rs("SubspaceCapability"), " of known ", r("subspace_granted_namespace"), ".",
-                        ),
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_subspace_signature"}), " for ", r("sync_subspace_signature"), ".",
-                        ),
-                        preview_scope(
-                            marginale(["When using the <R n="Capability"/> type, you can use ", r("encode_mc_capability"), ", but omitting the encoding of the ", r("communal_cap_namespace"), "."]),
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_read_capability"}), " for <Rs n="ReadCapability"/> of known <R n="granted_namespace"/> and whose <R n="granted_area"/> is <R n="area_include_area">included</R> in some known <R n="Area"/>.",
-                        ),
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_sync_signature"}), " for ", r("sync_signature"), ".",
-                        ),
-                        preview_scope(
-                            marginale(["Used indirectly when encoding <Rs n="Entry"/>, <Rs n="Area"/>, and <Rs n="D3Range"/>."]),
-                            "An <R n="encoding_function"/> for <R n="SubspaceId"/>.",
-                        ),
-                        preview_scope(
-                            marginale(["The total order makes <Rs n="D3Range"/> meaningful, the least element and successors ensure that every <R n="Area"/> can be expressed as an equivalent <R n="D3Range"/>."]),
-                            "A ", link("total order", "https://en.wikipedia.org/wiki/Total_order"), " on <R n="SubspaceId"/> with least element ", r("sync_default_subspace_id"), ", in which for every non-maximal <R n="SubspaceId"/> ", def_value({id: "subspace_successor_s", singular: "s"}), " there exists a successor ", def_value({id: "subspace_successor_t", singular: "t"}), " such that ", r("subspace_successor_s"), " is less than ", r("subspace_successor_t"), " and no other <R n="SubspaceId"/> is greater than ", r("subspace_successor_s"), " and less than ", r("subspace_successor_t"), ".",
-                        ),
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_static_token"}), " for <R n="StaticToken"/>.",
-                        ),
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_dynamic_token"}), " for <R n="DynamicToken"/>.",
-                        ),
-                        preview_scope(
-                            "An <R n="encoding_function"/> ", def_parameter_fn({id: "encode_fingerprint"}), " for <R n="Fingerprint"/>.",
-                        ),
-                    ),
-
-                    pinformative("We can now define the encodings for all messages."),
-                ]),
-
-                hsection("sync_encode_commitment", "Commitment Scheme and Private Area Intersection", [
-                    pinformative(
-                        "The encoding of a ", r("CommitmentReveal"), " message ", def_value({id: "enc_commitment_reveal", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(2),
-                            ),
-                            [[
-                                field_access(r("enc_commitment_reveal"), "CommitmentRevealNonce"), " as a big-endian, unsigned, ", r("challenge_length"), "-byte integer"
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("PaiBindFragment"), " message ", def_value({id: "enc_pai_bind_fragment", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("001")],
-                                    ["message kind"],
-                                ),
-                                new BitfieldRow(
-                                    1,
-                                    [
-                                        code("1"), " ", r("iff"), " ", field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentIsSecondary"),
-                                    ]
-                                ),
-                                bitfieldrow_unused(1),
-                            ),
-                            [[
-                                code(function_call(r("encode_group_member"), field_access(r("enc_pai_bind_fragment"), "PaiBindFragmentGroupMember"))),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("PaiReplyFragment"), " message ", def_value({id: "enc_pai_reply_fragment", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("010")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle")),
-                            ),
-                            [[
-                                field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentHandle"))), "-byte integer",
-                            ]],
-                            [[
-                                code(function_call(r("encode_group_member"), field_access(r("enc_pai_reply_fragment"), "PaiReplyFragmentGroupMember"))),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("PaiRequestSubspaceCapability"), " message ", def_value({id: "enc_pai_request_cap", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("011")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle")),
-                            ),
-                            [[
-                                field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_request_cap"), "PaiRequestSubspaceCapabilityHandle"))), "-byte integer",
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("PaiReplySubspaceCapability"), " message ", def_value({id: "enc_pai_reply_cap", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("000")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    3,
-                                    [code("100")],
-                                    ["message kind"],
-                                ),
-                                two_bit_int(6, field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle")),
-                            ),
-                            [[
-                                field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"))), "-byte integer",
-                            ]],
-                            [[
-                                code(function_call(r("encode_subspace_capability"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityCapability"))), " — the known <R n="granted_namespace"/> is the <R n="NamespaceId"/> of the ", r("fragment"), " corresponding to ", field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilityHandle"),
-                            ]],
-                            [[
-                                code(function_call(r("encode_sync_subspace_signature"), field_access(r("enc_pai_reply_cap"), "PaiReplySubspaceCapabilitySignature"))),
-                            ]],
-                        ),
-                    ),
-
-                ]),
-
-                hsection("sync_encode_setup", "Setup", [
-                    pinformative(
-                        "Let ", def_value({id: "enc_setup_read", singular: "m"}), " be a ", r("SetupBindReadCapability"), " message, let ", def_value({id: "enc_setup_read_granted_area", singular: "granted_area"}), " be the <R n="granted_area"/> of ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"), ", let ", def_value({id: "enc_setup_read_frag", singular: "frag"}), " be the ", r("fragment"), " corresponding to ", field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", and let ", def_value({id: "enc_setup_read_pre", singular: "pre"}), " be the <R n="Path"/> of ", r("enc_setup_read_frag"), ".",
-                    ),
-
-                    pinformative("Define ", def_value({id: "enc_setup_read_outer", singular: "out"}), " as the <R n="Area"/> with", lis(
-                        [
-                            field_access(r("enc_setup_read_outer"), "AreaSubspace"), " is ", field_access(r("enc_setup_read_granted_area"), "AreaSubspace"), " if ", r("enc_setup_read_frag"), " is a ", r("fragment_primary"), " ", r("fragment"), ", and ", r("area_any"), ", otherwise,"
-                        ],
-                        [
-                            field_access(r("enc_setup_read_outer"), "AreaPath"), " is ", r("enc_setup_read_pre"), ", and"
-                        ],
-                        [
-                            field_access(r("enc_setup_read_outer"), "AreaTime"), " is an ", r("open_range", "open"), " ", r("TimeRange"), " of ", r("TimeRangeStart"), " zero."
-                        ],
-                    )),
-
-                    pinformative(
-                        "Then, the encoding of ", r("enc_setup_read"), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("001")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("00")],
-                                    ["message kind"],
-                                ),
-                                bitfieldrow_unused(1),
-                                two_bit_int(6, field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle")),
-                            ),
-                            [[
-                                field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityHandle"))), "-byte integer",
-                            ]],
-                            [[
-                                code(function_call(r("encode_read_capability"), field_access(r("enc_setup_read"), "SetupBindReadCapabilityCapability"))), " — the known <R n="granted_namespace"/> is the <R n="NamespaceId"/> of ", r("enc_setup_read_frag"), ", and the known ", r("area_include_area", "including"), " <R n="Area"/> is ", r("enc_setup_read_outer"),
-                            ]],
-                            [[
-                                code(function_call(r("encode_sync_signature"), field_access(r("enc_setup_read"), "SetupBindReadCapabilitySignature"))),
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("SetupBindAreaOfInterest"), " message ", def_value({id: "enc_setup_aoi", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("001")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("01")],
-                                    ["message kind"],
-                                ),
-                                new BitfieldRow(
-                                    1,
-                                    [
-                                        code("1"), " ", r("iff"), " ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " != 0"), " or ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " != 0"),
-                                    ],
-                                    [
-                                        inclusion_flag_remark([field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " and ", field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size")]),
-                                    ],
-                                ),
-                                two_bit_int(6, field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability")),
-                            ),
-                            [[
-                                field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"))), "-byte integer",
-                            ]],
-                            [[
-                                function_call(
-                                    r("encode_area_in_area"),
-                                    field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_area"),
-                                    r("enc_setup_aoi_outer"),
-                                ), ", where ", def_value({id: "enc_setup_aoi_outer", singular: "out"}), " is the <R n="granted_area"/> of the <R n="read_capability"/> to which ", field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestCapability"), " is ", r("handle_bind", "bound"),
-                            ]],
-                        ),
-                        "If ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), " != 0"), " or ", code(field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), " != 0"), ", this is followed by the concatenation of:",
-
-                        encodingdef(
-                            new Bitfields(
-                                two_bit_int(0, field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count")),
-                                two_bit_int(2, field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size")),
-                                bitfieldrow_unused(4),
-                            ),
-                            [[
-                                field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_count"))), "-byte integer",
-                            ]],
-                            [[
-                                field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"), ", encoded as an unsigned, big-endian ", code(function_call(r("compact_width"), field_access(field_access(r("enc_setup_aoi"), "SetupBindAreaOfInterestAOI"), "aoi_size"))), "-byte integer",
-                            ]],
-                        ),
-                    ),
-
-                    hr(),
-
-                    pinformative(
-                        "The encoding of a ", r("SetupBindStaticToken"), " message ", def_value({id: "enc_setup_static", singular: "m"}), " is the concatenation of:",
-                        encodingdef(
-                            new Bitfields(
-                                new BitfieldRow(
-                                    3,
-                                    [code("001")],
-                                    ["message category"],
-                                ),
-                                new BitfieldRow(
-                                    2,
-                                    [code("10")],
-                                    ["message kind"],
-                                ),
-                               bitfieldrow_unused(3),
-                            ),
-                            [[
-                                function_call(r("encode_static_token"), field_access(r("enc_setup_static"), "SetupBindStaticTokenToken")),
-                            ]],
-                        ),
-                    ),
-
-                ]),
 
                 hsection("sync_encode_recon", "Reconciliation", [
                     pinformative(

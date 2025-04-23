@@ -1225,7 +1225,7 @@ export const encodings = (
               }
               preDefs={
                 <P>
-                  Let{"  "}<DefValue n="eppep_rel_count" r="rel_count" />{" "}
+                  Let <DefValue n="eppep_rel_count" r="rel_count" />{" "}
                   be the number of components in{" "}
                   <RelAccess field="PrivatePathContextRel" />. Let{" "}
                   <DefValue n="eppep_private_count" r="private_count" />{" "}
