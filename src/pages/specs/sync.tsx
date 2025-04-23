@@ -1551,6 +1551,31 @@ export const sync = (
                           ],
                         },
                       },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The index of the first (<R n="transform_payload">
+                                transformed
+                              </R>) <R n="Payload" /> <R n="Chunk" />{" "}
+                              that will be transmitted for this entry. Can be
+                              set arbitrarily if no <Rs n="Chunk" />{" "}
+                              will be transmitted, <Em>should</Em> be set to
+                              {" "}
+                              <M>0</M> in that case.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "offset",
+                              "ReconciliationSendEntryOffset",
+                              "offsets",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
                     ]}
                   />
                 </Pseudocode>
