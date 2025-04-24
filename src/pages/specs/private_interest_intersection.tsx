@@ -16,6 +16,8 @@ import {
   Details,
   Div,
   Em,
+  Figcaption,
+  Figure,
   Hr,
   Img,
   Li,
@@ -49,6 +51,7 @@ import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Expression, Expressions } from "macromaniajsx/jsx-dev-runtime";
 import { CodeFor, Encoding } from "../../encoding_macros.tsx";
+import { ResolveAsset } from "macromania-assets";
 
 function PiiExample(
   {
@@ -58,6 +61,7 @@ function PiiExample(
     leftSs,
     rightSs,
     overlap,
+    imageName,
   }: {
     children?: Expressions;
     leftPath: Expression[];
@@ -65,41 +69,52 @@ function PiiExample(
     leftSs?: Expressions;
     rightSs?: Expressions;
     overlap?: boolean;
+    imageName: string;
   },
 ): Expression {
   return (
-    <Div clazz="piiExample" style="padding: 1rem;">
-      <Div clazz="piiExampleLeft">
-        {leftSs === undefined ? <R n="ss_any" /> : (
-          <Purple>
-            <exps x={leftSs} />
-          </Purple>
-        )}
-        <Path components={leftPath} />
-      </Div>
-      <Div clazz="piiExampleRight">
-        {rightSs === undefined ? <R n="ss_any" /> : (
-          <Purple>
-            <exps x={rightSs} />
-          </Purple>
-        )}
-        <Path components={rightPath} />
-      </Div>
-      <Alj inline>🖼️ visualise this example.</Alj>
-      <Div clazz="piiExampleCaption">
-        {overlap
-          ? (
-            <>
-              The <Rs n="PrivateInterest" /> are not <R n="pi_disjoint" />.
-            </>
-          )
-          : (
-            <>
-              The <Rs n="PrivateInterest" /> are <R n="pi_disjoint" />.
-            </>
-          )} <exps x={children} />
-      </Div>
-    </Div>
+    <Figure>
+      <Img
+        src={
+          <ResolveAsset
+            asset={["pio", "overlap_examples", `${imageName}.png`]}
+          />
+        }
+      />
+      <Figcaption>
+        <Div clazz="piiExample" style="padding: 1rem;">
+          <Div clazz="piiExampleLeft">
+            {leftSs === undefined ? <R n="ss_any" /> : (
+              <Purple>
+                <exps x={leftSs} />
+              </Purple>
+            )}
+            <Path components={leftPath} />
+          </Div>
+          <Div clazz="piiExampleRight">
+            {rightSs === undefined ? <R n="ss_any" /> : (
+              <Purple>
+                <exps x={rightSs} />
+              </Purple>
+            )}
+            <Path components={rightPath} />
+          </Div>
+          <Div clazz="piiExampleCaption">
+            {overlap
+              ? (
+                <>
+                  The <Rs n="PrivateInterest" /> are not <R n="pi_disjoint" />.
+                </>
+              )
+              : (
+                <>
+                  The <Rs n="PrivateInterest" /> are <R n="pi_disjoint" />.
+                </>
+              )} <exps x={children} />
+          </Div>
+        </Div>
+      </Figcaption>
+    </Figure>
   );
 }
 
@@ -114,10 +129,12 @@ export const private_interest_intersection = (
         bibliography
       >
         <P>
-          <Gwil>
-            🖼️ a capability which has been outlined with a red pen by a gleeful,
-            malicious writer.
-          </Gwil>
+          <Marginale>
+            <Img
+              src={<ResolveAsset asset={["pio", "capability_gotcha.png"]} />}
+              alt={"A ticket representing a capability, detailing the capability's receiver (Betty), and that it grants write access to a path named 'organising'. Someone has circled these details messily with a red marker."}
+            />
+          </Marginale>
           This document details a mechanism for implementing capability-enforced
           read-access-control when synchronising data between two Willow peers.
           This is more complex than simply defining a type of read access
@@ -560,9 +577,14 @@ export const private_interest_intersection = (
 
           <Hsection n="pii_private_interests" title="Private Interests">
             <P>
-              <Gwil>
-                🖼️ a redacted capability with some red pen with question marks
-              </Gwil>
+              <Marginale>
+                <Img
+                  src={
+                    <ResolveAsset asset={["pio", "capability_redacted.png"]} />
+                  }
+                  alt={"A ticket representing a capability, detailing the capability's receiver (Betty), and that it grants write access to a path named 'organising'. Someone has circled these details messily with a red marker."}
+                />
+              </Marginale>
               Before we go into further details, we introduce some compact
               terminology around the data we want to keep confidential
               (<Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and{" "}
@@ -1034,15 +1056,29 @@ export const private_interest_intersection = (
                 for <Rs n="pi_path" />).<Alj>TODO: example styling</Alj>
               </P>
 
-              <PiiExample leftPath={["a"]} rightPath={["b"]}>
+              <PiiExample
+                leftPath={["a"]}
+                rightPath={["b"]}
+                imageName="any-a_any-b"
+              >
                 None of the hashes match.
               </PiiExample>
 
-              <PiiExample leftPath={["a"]} rightPath={["a", "b"]} overlap>
+              <PiiExample
+                leftPath={["a"]}
+                rightPath={["a", "b"]}
+                overlap
+                imageName="any-a_any-a-b"
+              >
                 The right peer detects an overlap.
               </PiiExample>
 
-              <PiiExample leftPath={["a"]} rightPath={["b"]} rightSs="Gemma">
+              <PiiExample
+                leftPath={["a"]}
+                rightPath={["b"]}
+                rightSs="Gemma"
+                imageName="any-a_gemma-b"
+              >
                 None of the hashes match.
               </PiiExample>
 
@@ -1051,6 +1087,7 @@ export const private_interest_intersection = (
                 rightPath={["a", "b"]}
                 rightSs="Gemma"
                 overlap
+                imageName="any-a_gemma-a-b"
               >
                 The right peer detects an overlap.
               </PiiExample>
@@ -1060,6 +1097,7 @@ export const private_interest_intersection = (
                 rightPath={["a"]}
                 rightSs="Gemma"
                 overlap
+                imageName="any-a-b_gemma-a"
               >
                 The left peer detects an overlap. This example represents the
                 case of <R n="pi_awkward" />{" "}
@@ -1073,6 +1111,7 @@ export const private_interest_intersection = (
                 leftSs="Gemma"
                 rightPath={["b"]}
                 rightSs="Gemma"
+                imageName="gemma-a_gemma-b"
               >
                 None of the hashes match.
               </PiiExample>
@@ -1083,6 +1122,7 @@ export const private_interest_intersection = (
                 rightPath={["a", "b"]}
                 rightSs="Gemma"
                 overlap
+                imageName="gemma-a_gemma-a-b"
               >
                 The right peer detects an overlap.
               </PiiExample>
@@ -1092,6 +1132,7 @@ export const private_interest_intersection = (
                 leftSs="Gemma"
                 rightPath={["b"]}
                 rightSs="Dalton"
+                imageName="gemma-a_dalton-b"
               >
                 None of the hashes match.
               </PiiExample>
@@ -1101,6 +1142,7 @@ export const private_interest_intersection = (
                 leftSs="Gemma"
                 rightPath={["a", "b"]}
                 rightSs="Dalton"
+                imageName="gemma-a_dalton-a-b"
               >
                 The only matching hashes are <Em>both</Em>{" "}
                 accompanied by a boolean of <Code>false</Code>.
