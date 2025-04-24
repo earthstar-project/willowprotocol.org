@@ -1008,6 +1008,144 @@ export const encodings = (
                 </CodeFor>,
               ]}
             />
+
+            <Hr />
+
+            <EncodingRelationRelativeTemplate
+              n="EncodeEntryInNamespace3dRange"
+              valType={<R n="Entry" />}
+              relToDescription={
+                <>
+                  <R n="D3Range" /> <R n="d3_range_include">including</R>{" "}
+                  it, and the <R n="Entry" />’s <R n="entry_namespace_id" />
+                </>
+              }
+              shortRelToDescription={
+                <>
+                  <R n="D3Range" />
+                </>
+              }
+              preDefs={
+                <>
+                  <P>
+                    Let{" "}
+                    <DefValue n="ein3dr_path_rel" r="path_relative_to_start" />
+                    {" "}
+                    be an arbitrary <R n="Bool" />.<Br />
+                    Let{" "}
+                    <DefValue n="ein3dr_time_rel" r="time_relative_to_start" />
+                    {" "}
+                    be <Code>true</Code> if{" "}
+                    <Code>
+                      <RelAccess field="D3RangeTime" />
+                    </Code>{" "}
+                    is an <R n="open_range" />, and an arbitrary <R n="Bool" />
+                    {" "}
+                    otherwise.
+                    <Br />Let <DefValue n="ein3dr_time_diff" r="time_diff" /> be
+                    {" "}
+                    <Code>
+                      <ValAccess field="entry_timestamp" /> -{" "}
+                      <AccessStruct field="TimeRangeStart">
+                        <RelAccess field="D3RangeTime" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    if{" "}
+                    <Code>
+                      <R n="ein3dr_time_rel" />
+                    </Code>, and{" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <RelAccess field="D3RangeTime" />
+                      </AccessStruct>{" "}
+                      - <ValAccess field="entry_timestamp" />
+                    </Code>{" "}
+                    otherwise.
+                  </P>
+                </>
+              }
+              bitfields={[
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="entry_subspace_id" /> !={" "}
+                    <AccessStruct field="SubspaceRangeStart">
+                      <RelAccess field="D3RangeSubspace" />
+                    </AccessStruct>
+                  </Code>,
+                ),
+                bitfieldIff(<R n="ein3dr_path_rel" />),
+                bitfieldIff(<R n="ein3dr_time_rel" />),
+                c64Tag(
+                  "time_diff",
+                  2,
+                  <R n="ein3dr_time_diff" />,
+                ),
+                c64Tag(
+                  "payload_length",
+                  3,
+                  <ValAccess field="entry_payload_length" />,
+                ),
+              ]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="entry_subspace_id" /> !={" "}
+                      <RelAccess field="entry_subspace_id" />
+                    </Code>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    <ValAccess field="entry_subspace_id" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <Code>
+                      <R n="ein3dr_path_rel" />
+                    </Code>
+                  }
+                  otherwise={
+                    <>
+                      <CodeFor
+                        notStandalone
+                        enc="EncodePathRelativePath"
+                        relativeTo={
+                          <AccessStruct field="PathRangeEnd">
+                            <RelAccess field="D3RangePath" />
+                          </AccessStruct>
+                        }
+                      >
+                        <ValAccess field="entry_path" />
+                      </CodeFor>
+                    </>
+                  }
+                >
+                  <CodeFor
+                    notStandalone
+                    enc="EncodePathRelativePath"
+                    relativeTo={
+                      <AccessStruct field="PathRangeStart">
+                        <RelAccess field="D3RangePath" />
+                      </AccessStruct>
+                    }
+                  >
+                    <ValAccess field="entry_path" />
+                  </CodeFor>
+                </EncConditional>,
+                <C64Encoding id="time_diff" />,
+                <C64Encoding id="payload_length" />,
+                <CodeFor
+                  enc="EncodePathRelativePath"
+                  relativeTo={<RelAccess field="entry_path" />}
+                >
+                  <ValAccess field="entry_path" />
+                </CodeFor>,
+                <CodeFor enc="encode_payload_digest">
+                  <ValAccess field="entry_payload_digest" />
+                </CodeFor>,
+              ]}
+            />
           </Hsection>
 
           <Hsection n="area_encodings" title="Area Encoding" shortTitle="area">
