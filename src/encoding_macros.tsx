@@ -913,6 +913,22 @@ export function bitfieldIff(
 }
 
 /**
+ * Returns a `BitfieldDef` for `count` many bits that can be set arbitrarily.
+ */
+export function bitfieldArbitrary(
+  count: number,
+): BitfieldDef {
+  return {
+    count,
+    content: (
+      <>
+        Bits can be set arbitrarily.
+      </>
+    ),
+  };
+}
+
+/**
  * Creates an encoding content that is an 8-bit c64 tag for some value (the children), followed by the corresponding c64 encoding.
  */
 export function C64Standalone(

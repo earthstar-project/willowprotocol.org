@@ -200,6 +200,10 @@ export type HsectionProps =
      * Defaults to the normal `title`.
      */
     shortTitle?: Expressions;
+    /**
+     * Do not include this section in the rendered table of contents.
+     */
+    noToc?: boolean;
   }
   & DefProps
   & { children?: Expressions };
@@ -229,15 +233,17 @@ interface HSectionState {
 interface SectionStructure {
   id: string;
   short_title: Expression | null;
+  noToc: boolean;
   level: number;
   children: SectionStructure[];
   child_id_to_index: Map<string, number>;
 }
 
-function new_section_structure(id: string, short_title: Expression | null, level: number): SectionStructure {
+function new_section_structure(id: string, short_title: Expression | null, noToc: boolean, level: number): SectionStructure {
   return {
     id,
     short_title,
+    noToc,
     level,
     children: [],
     child_id_to_index: new Map(),
@@ -276,7 +282,7 @@ const [getState, _setState] = createSubstate<HSectionState>(() => {
     creationRound: -1,
     level: -1,
     finger: [0],
-    structure: new_section_structure("", "", 0),
+    structure: new_section_structure("", "", false, 0),
     current_breadcrumbs: [],
     counterH1,
     counterH2,
@@ -424,7 +430,7 @@ export function Hsection(props: HsectionProps): Expression {
         structure = structure.children[state.finger[level]];
       }
 
-      structure.children.push(new_section_structure(id, props.shortTitle === undefined ? null : <exps x={props.shortTitle}/>, state.level));
+      structure.children.push(new_section_structure(id, props.shortTitle === undefined ? null : <exps x={props.shortTitle}/>, props.noToc === undefined ? false : props.noToc, state.level));
       structure.child_id_to_index.set(id, structure.children.length - 1);
 
       state.finger.push(0);
@@ -499,6 +505,10 @@ function TocStructure(
   },
 ): Expression {
   const data = { hsection: structure.id, hlevel: `${structure.level}` };
+
+  if (structure.noToc) {
+    return "";
+  }
 
   return (
     <Li data={data}>

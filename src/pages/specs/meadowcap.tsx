@@ -1633,7 +1633,7 @@ export const meadowcap = (
 
             <P>
               We describe the details in a capability-system-agnostic way{" "}
-              <R n="private_interest_intersection">here</R>. To use Meadowcap
+              <R n="private_interest_overlap">here</R>. To use Meadowcap
               for this approach, simply choose the type of <R n="cap_valid" />
               {" "}
               <Rs n="Capability" /> with <R n="cap_mode" />{" "}

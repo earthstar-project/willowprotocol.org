@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, Curly, MarginCaption, NoWrap, Path } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Br, Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -41,6 +41,16 @@ export const sideloading = (
       >
         <PreviewScope>
           <P>
+            <Marginale inlineable>
+              <Img
+                src={<ResolveAsset asset={["sideload", "sideload_spot.png"]} />}
+                alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
+              />
+              <MarginCaption>
+                You really <Em>could</Em>{" "}
+                transport Willow data using any of the means above.
+              </MarginCaption>
+            </Marginale>
             The <R n="sync">WGPS</R>{" "}
             presents a way for two peers with an established connection to
             efficiently exchange data. But running the necessary infrastructure
@@ -76,15 +86,7 @@ export const sideloading = (
           <P>
             <Rsb n="drop" />{" "}
             are then shared via the informal ad-hoc infrastructure we refer to
-            as the <Def n="sidenet" r="Sidenet" rs="Sidenets" />:<Marginale>
-              In contrast with{" "}
-              <AE href="https://en.wikipedia.org/wiki/Sneakernet">
-                sneakernets
-              </AE>{" "}
-              which only use physically transported storage devices, the{" "}
-              <R n="sidenet" />{" "}
-              also includes the internet and other established networks.
-            </Marginale>
+            as the <Def n="sidenet" r="Sidenet" rs="Sidenets" />:
           </P>
           <Ul>
             <Li>USB keys</Li>
@@ -97,6 +99,15 @@ export const sideloading = (
               Or <Em>whatever means users have at hand</Em>.
             </Li>
           </Ul>
+          <P>
+            In contrast with{" "}
+            <AE href="https://en.wikipedia.org/wiki/Sneakernet">
+              sneakernets
+            </AE>{" "}
+            which only use physically transported storage devices, the{" "}
+            <R n="sidenet" />{" "}
+            also includes the internet and other established networks.
+          </P>
         </PreviewScope>
 
         <P>
@@ -112,7 +123,7 @@ export const sideloading = (
         <P>
           Finally, given that this protocol cannot interactively authorise users
           (e.g. via{" "}
-          <R n="private_interest_intersection">
+          <R n="private_interest_overlap">
             private interest intersection
           </R>), drops are always fully encrypted.
         </P>

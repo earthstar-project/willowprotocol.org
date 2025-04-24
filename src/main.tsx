@@ -10,7 +10,7 @@ import { rbsr } from "./pages/specs/rbsr.tsx";
 import { sync } from "./pages/specs/sync.tsx";
 import { sideloading } from "./pages/specs/sideloading.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
-import { private_interest_intersection } from "./pages/specs/private_interest_intersection.tsx";
+import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
@@ -115,13 +115,7 @@ const exp = (
             return (
               <>
                 <File name="todos.html">
-                  {/* <PageTemplate
-                    htmlTitle="TODO Notes"
-                    headingId="todo_notes"
-                    heading={"TODO Notes"}
-                  > */}
-                    <RenderAllWips />
-                  {/* </PageTemplate> */}
+                  <RenderAllWips />
                 </File>
                 {evaled}
               </>
@@ -147,7 +141,7 @@ const exp = (
               {rbsr}
               {lcmux}
               {grouping_entries}
-              {private_interest_intersection}
+              {private_interest_overlap}
             </Dir>
 
             <Dir name="more">

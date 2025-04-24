@@ -36,7 +36,7 @@ import { CanonicSubencodings } from "../../encoding_macros.tsx";
 import { RawBytes } from "../../encoding_macros.tsx";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Def, R, Rs } from "macromania-defref";
-import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
+import { Br, Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { Dir, File } from "macromania-outfs";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
@@ -646,278 +646,547 @@ export const encodings = (
           </PreviewScope>
 
           <Hsection n="enc_path" title="Path Encoding" shortTitle="path">
-            <EncodingRelationTemplate
-              n="EncodePath"
-              valType={<R n="Path" />}
-              bitfields={[
-                c64Tag(
-                  "total_length",
-                  4,
-                  <>
-                    the sum of the lengths of the <Rs n="Component" /> of{" "}
-                    <ValName />
-                  </>,
-                ),
-                c64Tag(
-                  "component_count",
-                  4,
-                  <>
-                    the number of <Rs n="Component" /> of <ValName />
-                  </>,
-                ),
-              ]}
-              contents={[
-                <C64Encoding id="total_length" />,
-                <C64Encoding id="component_count" />,
-                <EncIterator
-                  val={
-                    <>
-                      <R n="Component" /> <DefValue n="encpath_comp" r="comp" />
-                    </>
-                  }
-                  iter={<ValName />}
-                  skipLast
-                >
-                  <Encoding
-                    idPrefix="EncodePath_nested"
-                    bitfields={[
-                      c64Tag(
-                        "component_len",
-                        8,
-                        <>
-                          the length of <R n="encpath_comp" />
-                        </>,
-                      ),
-                    ]}
-                    contents={[
-                      <C64Encoding id="component_len" />,
-                      <RawBytes>
-                        <R n="encpath_comp" />
-                      </RawBytes>,
-                    ]}
-                  />
-                </EncIterator>,
-                {
-                  content: (
-                    <>
-                      <RawBytes noPeriod>
-                        the final <R n="Component" /> of <ValName />
-                      </RawBytes>, or the empty string if <ValName />{" "}
-                      has zero components.
-                    </>
-                  ),
-                  comment: (
-                    <>
-                      The length of the final <R n="Component" />{" "}
-                      can be reconstructed from the total length and the lengths
-                      of all prior <Rs n="Component" />.
-                    </>
-                  ),
-                },
-              ]}
-              canonic={{
-                n: "encode_path",
-                how: [<MinTags />],
-              }}
-            />
-
             <P>
-              <Alj>
-                Either make this visually more pleasing or remove it again.
-              </Alj>
-              An example: encoding the <R n="Path" />{" "}
-              <Path components={["blog", "ideas", "fun"]} /> with{" "}
-              <R n="encode_path" /> yields
+              Encodings for <Rs n="Path" />.
             </P>
 
-            <P>
-              <Code>
-                <Orange>0C</Orange> <SkyBlue>03</SkyBlue> <Green>00 04</Green>
-                {" "}
-                <Purple>62 6C 6F 67</Purple> <Yellow>00 05</Yellow>{" "}
-                <Blue>69 64 65 61 73</Blue> <Vermillion>66 75 6E</Vermillion>
-              </Code>, because
-            </P>
-            <Ul>
-              <Li>
-                <Code>
-                  <Orange>0C</Orange>
-                </Code>{" "}
-                is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
-                <R n="c64_width" /> <M>4</M>{" "}
-                for the total path length (<M>12</M>),
-              </Li>
-              <Li>
-                <Code>
-                  <SkyBlue>03</SkyBlue>
-                </Code>{" "}
-                is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
-                <R n="c64_width" /> <M>4</M> for the number of{" "}
-                <Rs n="Component" />,
-              </Li>
-              <Li>
-                the <Rs n="c64_corresponding" />{" "}
-                for both are the empty string, so they do not appear in the{" "}
-                <R n="code" />,
-              </Li>
-              <Li>
-                <Code>
-                  <Green>00 04</Green>
-                </Code>{" "}
-                is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
-                <R n="c64_width" /> <M>8</M> for the length of{" "}
-                <Code>"blog"</Code>,
-              </Li>
-              <Li>
-                the <Rs n="c64_corresponding" /> of the length of{" "}
-                <Code>"blog"</Code>{" "}
-                is the empty string, so it does not appear in the{" "}
-                <R n="code" />,
-              </Li>
-              <Li>
-                <Code>
-                  <Purple>62 6C 6F 67</Purple>
-                </Code>{" "}
-                is the ASCII encoding of <Code>"blog"</Code>,
-              </Li>
-              <Li>
-                <Code>
-                  <Yellow>00 05</Yellow>
-                </Code>{" "}
-                is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
-                <R n="c64_width" /> <M>8</M> for the length of{" "}
-                <Code>"ideas"</Code>,
-              </Li>
-              <Li>
-                the <Rs n="c64_corresponding" /> of the length of{" "}
-                <Code>"ideas"</Code>{" "}
-                is the empty string, so it does not appear in the{" "}
-                <R n="code" />,
-              </Li>
-              <Li>
-                <Code>
-                  <Blue>69 64 65 61 73</Blue>
-                </Code>{" "}
-                is the ASCII encoding of <Code>"ideas"</Code>,
-              </Li>
-              <Li>
-                the length of <Code>"fun"</Code>{" "}
-                is not encoded (it can be reconstructed as{" "}
-                <M>12 - (4 + 5) = 3</M>), and
-              </Li>
-              <Li>
-                <Code>
-                  <Vermillion>66 75 6E</Vermillion>
-                </Code>{" "}
-                is the ASCII encoding of <Code>"fun"</Code>.
-              </Li>
-            </Ul>
+            <Hsection
+              n="encsec_EncodePath"
+              title={<Code>EncodePath</Code>}
+              noToc
+            >
+              <EncodingRelationTemplate
+                n="EncodePath"
+                valType={<R n="Path" />}
+                bitfields={[
+                  c64Tag(
+                    "total_length",
+                    4,
+                    <>
+                      the sum of the lengths of the <Rs n="Component" /> of{" "}
+                      <ValName />
+                    </>,
+                  ),
+                  c64Tag(
+                    "component_count",
+                    4,
+                    <>
+                      the number of <Rs n="Component" /> of <ValName />
+                    </>,
+                  ),
+                ]}
+                contents={[
+                  <C64Encoding id="total_length" />,
+                  <C64Encoding id="component_count" />,
+                  <EncIterator
+                    val={
+                      <>
+                        <R n="Component" />{" "}
+                        <DefValue n="encpath_comp" r="comp" />
+                      </>
+                    }
+                    iter={<ValName />}
+                    skipLast
+                  >
+                    <Encoding
+                      idPrefix="EncodePath_nested"
+                      bitfields={[
+                        c64Tag(
+                          "component_len",
+                          8,
+                          <>
+                            the length of <R n="encpath_comp" />
+                          </>,
+                        ),
+                      ]}
+                      contents={[
+                        <C64Encoding id="component_len" />,
+                        <RawBytes>
+                          <R n="encpath_comp" />
+                        </RawBytes>,
+                      ]}
+                    />
+                  </EncIterator>,
+                  {
+                    content: (
+                      <>
+                        <RawBytes noPeriod>
+                          the final <R n="Component" /> of <ValName />
+                        </RawBytes>, or the empty string if <ValName />{" "}
+                        has zero components.
+                      </>
+                    ),
+                    comment: (
+                      <>
+                        The length of the final <R n="Component" />{" "}
+                        can be reconstructed from the total length and the
+                        lengths of all prior <Rs n="Component" />.
+                      </>
+                    ),
+                  },
+                ]}
+                canonic={{
+                  n: "encode_path",
+                  how: [<MinTags />],
+                }}
+              />
 
-            <Hr />
+              <P>
+                <Alj>
+                  Either make this visually more pleasing or remove it again.
+                </Alj>
+                An example: encoding the <R n="Path" />{" "}
+                <Path components={["blog", "ideas", "fun"]} /> with{" "}
+                <R n="encode_path" /> yields
+              </P>
 
-            <EncodingRelationRelativeTemplate
-              n="EncodePathRelativePath"
-              valType={<R n="Path" />}
-              relToDescription={
-                <>
-                  <R n="Path" />
-                </>
-              }
-              preDefs={
-                <P>
-                  Let{" "}
-                  <DefValue
-                    n="EncodePathRelativePath_prefix_count"
-                    r="prefix_count"
-                  />{" "}
-                  be a natural number such that the first{" "}
-                  <R n="EncodePathRelativePath_prefix_count" />{" "}
-                  <Rs n="Component" /> of <ValName /> are equal to the first
+              <P>
+                <Code>
+                  <Orange>0C</Orange> <SkyBlue>03</SkyBlue> <Green>00 04</Green>
                   {" "}
-                  <R n="EncodePathRelativePath_prefix_count" />{" "}
-                  <Rs n="Component" /> of <RelName />.
-                </P>
-              }
-              bitfields={[
-                c64Tag(
-                  "prefix_count",
-                  8,
+                  <Purple>62 6C 6F 67</Purple> <Yellow>00 05</Yellow>{" "}
+                  <Blue>69 64 65 61 73</Blue> <Vermillion>66 75 6E</Vermillion>
+                </Code>, because
+              </P>
+              <Ul>
+                <Li>
+                  <Code>
+                    <Orange>0C</Orange>
+                  </Code>{" "}
+                  is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
+                  <R n="c64_width" /> <M>4</M>{" "}
+                  for the total path length (<M>12</M>),
+                </Li>
+                <Li>
+                  <Code>
+                    <SkyBlue>03</SkyBlue>
+                  </Code>{" "}
+                  is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
+                  <R n="c64_width" /> <M>4</M> for the number of{" "}
+                  <Rs n="Component" />,
+                </Li>
+                <Li>
+                  the <Rs n="c64_corresponding" />{" "}
+                  for both are the empty string, so they do not appear in the
+                  {" "}
+                  <R n="code" />,
+                </Li>
+                <Li>
+                  <Code>
+                    <Green>00 04</Green>
+                  </Code>{" "}
+                  is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
+                  <R n="c64_width" /> <M>8</M> for the length of{" "}
+                  <Code>"blog"</Code>,
+                </Li>
+                <Li>
+                  the <Rs n="c64_corresponding" /> of the length of{" "}
+                  <Code>"blog"</Code>{" "}
+                  is the empty string, so it does not appear in the{" "}
+                  <R n="code" />,
+                </Li>
+                <Li>
+                  <Code>
+                    <Purple>62 6C 6F 67</Purple>
+                  </Code>{" "}
+                  is the ASCII encoding of <Code>"blog"</Code>,
+                </Li>
+                <Li>
+                  <Code>
+                    <Yellow>00 05</Yellow>
+                  </Code>{" "}
+                  is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
+                  <R n="c64_width" /> <M>8</M> for the length of{" "}
+                  <Code>"ideas"</Code>,
+                </Li>
+                <Li>
+                  the <Rs n="c64_corresponding" /> of the length of{" "}
+                  <Code>"ideas"</Code>{" "}
+                  is the empty string, so it does not appear in the{" "}
+                  <R n="code" />,
+                </Li>
+                <Li>
+                  <Code>
+                    <Blue>69 64 65 61 73</Blue>
+                  </Code>{" "}
+                  is the ASCII encoding of <Code>"ideas"</Code>,
+                </Li>
+                <Li>
+                  the length of <Code>"fun"</Code>{" "}
+                  is not encoded (it can be reconstructed as{" "}
+                  <M>12 - (4 + 5) = 3</M>), and
+                </Li>
+                <Li>
+                  <Code>
+                    <Vermillion>66 75 6E</Vermillion>
+                  </Code>{" "}
+                  is the ASCII encoding of <Code>"fun"</Code>.
+                </Li>
+              </Ul>
+            </Hsection>
+            <Hsection
+              n="encsec_EncodePathRelativePath"
+              title={<Code>EncodePathRelativePath</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodePathRelativePath"
+                valType={<R n="Path" />}
+                relToDescription={
                   <>
-                    <R n="EncodePathRelativePath_prefix_count" />
-                  </>,
-                ),
-              ]}
-              contents={[
-                <C64Encoding id="prefix_count" />,
-                <CodeFor enc="EncodePath">
-                  the <R n="path_difference" /> from <RelName /> to <ValName />
-                </CodeFor>,
-              ]}
-              canonic={{
-                n: "path_rel_path",
-                how: [
-                  <ChooseMaximal n="EncodePathRelativePath_prefix_count" />,
-                  <MinTags />,
-                  <CanonicSubencodings />,
-                ],
-              }}
-            />
-
-            <Hr />
-
-            <EncodingRelationRelativeTemplate
-              n="EncodePathExtendsPath"
-              valType={<R n="Path" />}
-              relToDescription={
-                <>
-                  <R n="Path" /> which is a <R n="path_prefix" /> of <ValName />
-                </>
-              }
-              bitfields={[]}
-              contents={[
-                <CodeFor enc="EncodePath">
-                  the <R n="path_difference" /> from <RelName /> to <ValName />
-                </CodeFor>,
-              ]}
-              canonic={{
-                n: "path_extends_path",
-                how: [
-                  <CanonicSubencodings />,
-                ],
-              }}
-            />
+                    <R n="Path" />
+                  </>
+                }
+                preDefs={
+                  <P>
+                    Let{" "}
+                    <DefValue
+                      n="EncodePathRelativePath_prefix_count"
+                      r="prefix_count"
+                    />{" "}
+                    be a natural number such that the first{" "}
+                    <R n="EncodePathRelativePath_prefix_count" />{" "}
+                    <Rs n="Component" /> of <ValName /> are equal to the first
+                    {" "}
+                    <R n="EncodePathRelativePath_prefix_count" />{" "}
+                    <Rs n="Component" /> of <RelName />.
+                  </P>
+                }
+                bitfields={[
+                  c64Tag(
+                    "prefix_count",
+                    8,
+                    <>
+                      <R n="EncodePathRelativePath_prefix_count" />
+                    </>,
+                  ),
+                ]}
+                contents={[
+                  <C64Encoding id="prefix_count" />,
+                  <CodeFor enc="EncodePath">
+                    the <R n="path_difference" /> from <RelName /> to{" "}
+                    <ValName />
+                  </CodeFor>,
+                ]}
+                canonic={{
+                  n: "path_rel_path",
+                  how: [
+                    <ChooseMaximal n="EncodePathRelativePath_prefix_count" />,
+                    <MinTags />,
+                    <CanonicSubencodings />,
+                  ],
+                }}
+              />
+            </Hsection>
+            <Hsection
+              n="encsec_EncodePathExtendsPath"
+              title={<Code>EncodePathExtendsPath</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodePathExtendsPath"
+                valType={<R n="Path" />}
+                relToDescription={
+                  <>
+                    <R n="Path" /> which is a <R n="path_prefix" /> of{" "}
+                    <ValName />
+                  </>
+                }
+                bitfields={[]}
+                contents={[
+                  <CodeFor enc="EncodePath">
+                    the <R n="path_difference" /> from <RelName /> to{" "}
+                    <ValName />
+                  </CodeFor>,
+                ]}
+                canonic={{
+                  n: "path_extends_path",
+                  how: [
+                    <CanonicSubencodings />,
+                  ],
+                }}
+              />
+            </Hsection>
           </Hsection>
 
           <Hsection n="enc_entry" title="Entry Encoding" shortTitle="entry">
-            <EncodingRelationTemplate
-              n="EncodeEntry"
-              valType={<R n="Entry" />}
-              bitfields={[]}
-              contents={[
-                <CodeFor isFunction enc="encode_namespace_id">
-                  <ValAccess field="entry_namespace_id" />
-                </CodeFor>,
-                <CodeFor isFunction enc="encode_subspace_id">
-                  <ValAccess field="entry_subspace_id" />
-                </CodeFor>,
-                <CodeFor enc="EncodePath">
-                  <ValAccess field="entry_path" />
-                </CodeFor>,
-                <C64Standalone>
-                  <ValAccess field="entry_timestamp" />
-                </C64Standalone>,
-                <C64Standalone>
-                  <ValAccess field="entry_payload_length" />
-                </C64Standalone>,
-                <CodeFor isFunction enc="encode_payload_digest">
-                  <ValAccess field="entry_payload_digest" />
-                </CodeFor>,
-              ]}
-              canonic={{
-                n: "encode_entry",
-                how: [<MinTags />, <CanonicSubencodings />],
-              }}
-            />
+            <P>
+              Encodings for <Rs n="Entry" />.
+            </P>
+
+            <Hsection
+              n="encsec_EncodeEntry"
+              title={<Code>EncodeEntry</Code>}
+              noToc
+            >
+              <EncodingRelationTemplate
+                n="EncodeEntry"
+                valType={<R n="Entry" />}
+                bitfields={[]}
+                contents={[
+                  <CodeFor isFunction enc="encode_namespace_id">
+                    <ValAccess field="entry_namespace_id" />
+                  </CodeFor>,
+                  <CodeFor isFunction enc="encode_subspace_id">
+                    <ValAccess field="entry_subspace_id" />
+                  </CodeFor>,
+                  <CodeFor enc="EncodePath">
+                    <ValAccess field="entry_path" />
+                  </CodeFor>,
+                  <C64Standalone>
+                    <ValAccess field="entry_timestamp" />
+                  </C64Standalone>,
+                  <C64Standalone>
+                    <ValAccess field="entry_payload_length" />
+                  </C64Standalone>,
+                  <CodeFor isFunction enc="encode_payload_digest">
+                    <ValAccess field="entry_payload_digest" />
+                  </CodeFor>,
+                ]}
+                canonic={{
+                  n: "encode_entry",
+                  how: [<MinTags />, <CanonicSubencodings />],
+                }}
+              />
+            </Hsection>
+            <Hsection
+              n="encsec_EncodeEntryRelativeEntry"
+              title={<Code>EncodeEntryRelativeEntry</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodeEntryRelativeEntry"
+                valType={<R n="Entry" />}
+                relToDescription={
+                  <>
+                    <R n="Entry" />
+                  </>
+                }
+                preDefs={
+                  <>
+                    <P>
+                      Let <DefValue n="ere_diff" r="time_diff" />{" "}
+                      be the absolute value of{" "}
+                      <Code>
+                        <ValAccess field="entry_timestamp" /> -{" "}
+                        <RelAccess field="entry_timestamp" />
+                      </Code>
+                    </P>
+                  </>
+                }
+                bitfields={[
+                  bitfieldIff(
+                    <Code>
+                      <ValAccess field="entry_namespace_id" /> !={" "}
+                      <RelAccess field="entry_namespace_id" />
+                    </Code>,
+                  ),
+                  bitfieldIff(
+                    <Code>
+                      <ValAccess field="entry_subspace_id" /> !={" "}
+                      <RelAccess field="entry_subspace_id" />
+                    </Code>,
+                  ),
+                  bitfieldIff(
+                    <Code>
+                      <R n="ere_diff" /> {">"} 0
+                    </Code>,
+                  ),
+                  c64Tag(
+                    "time_diff",
+                    2,
+                    <R n="ere_diff" />,
+                  ),
+                  c64Tag(
+                    "payload_length",
+                    3,
+                    <ValAccess field="entry_payload_length" />,
+                  ),
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <ValAccess field="entry_namespace_id" /> !={" "}
+                        <RelAccess field="entry_namespace_id" />
+                      </Code>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_namespace_id">
+                      <ValAccess field="entry_namespace_id" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <ValAccess field="entry_subspace_id" /> !={" "}
+                        <RelAccess field="entry_subspace_id" />
+                      </Code>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <ValAccess field="entry_subspace_id" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <C64Encoding id="time_diff" />,
+                  <C64Encoding id="payload_length" />,
+                  <CodeFor
+                    enc="EncodePathRelativePath"
+                    relativeTo={<RelAccess field="entry_path" />}
+                  >
+                    <ValAccess field="entry_path" />
+                  </CodeFor>,
+                  <CodeFor enc="encode_payload_digest">
+                    <ValAccess field="entry_payload_digest" />
+                  </CodeFor>,
+                ]}
+              />
+            </Hsection>
+            <Hsection
+              n="encsec_EncodeEntryInNamespace3dRange"
+              title={<Code>EncodeEntryInNamespace3dRange</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodeEntryInNamespace3dRange"
+                valType={<R n="Entry" />}
+                relToDescription={
+                  <>
+                    <R n="D3Range" /> <R n="d3_range_include">including</R>{" "}
+                    it, and the <R n="Entry" />’s <R n="entry_namespace_id" />
+                  </>
+                }
+                shortRelToDescription={
+                  <>
+                    <R n="D3Range" />
+                  </>
+                }
+                preDefs={
+                  <>
+                    <P>
+                      Let{" "}
+                      <DefValue
+                        n="ein3dr_path_rel"
+                        r="path_relative_to_start"
+                      />{" "}
+                      be an arbitrary <R n="Bool" />.<Br />
+                      Let{" "}
+                      <DefValue
+                        n="ein3dr_time_rel"
+                        r="time_relative_to_start"
+                      />{" "}
+                      be <Code>true</Code> if{" "}
+                      <Code>
+                        <RelAccess field="D3RangeTime" />
+                      </Code>{" "}
+                      is an <R n="open_range" />, and an arbitrary{" "}
+                      <R n="Bool" /> otherwise.
+                      <Br />Let <DefValue n="ein3dr_time_diff" r="time_diff" />
+                      {" "}
+                      be{" "}
+                      <Code>
+                        <ValAccess field="entry_timestamp" /> -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      if{" "}
+                      <Code>
+                        <R n="ein3dr_time_rel" />
+                      </Code>, and{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        - <ValAccess field="entry_timestamp" />
+                      </Code>{" "}
+                      otherwise.
+                    </P>
+                  </>
+                }
+                bitfields={[
+                  bitfieldIff(
+                    <Code>
+                      <ValAccess field="entry_subspace_id" /> !={" "}
+                      <AccessStruct field="SubspaceRangeStart">
+                        <RelAccess field="D3RangeSubspace" />
+                      </AccessStruct>
+                    </Code>,
+                  ),
+                  bitfieldIff(<R n="ein3dr_path_rel" />),
+                  bitfieldIff(<R n="ein3dr_time_rel" />),
+                  c64Tag(
+                    "time_diff",
+                    2,
+                    <R n="ein3dr_time_diff" />,
+                  ),
+                  c64Tag(
+                    "payload_length",
+                    3,
+                    <ValAccess field="entry_payload_length" />,
+                  ),
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <ValAccess field="entry_subspace_id" /> !={" "}
+                        <RelAccess field="entry_subspace_id" />
+                      </Code>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <ValAccess field="entry_subspace_id" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <R n="ein3dr_path_rel" />
+                      </Code>
+                    }
+                    otherwise={
+                      <>
+                        <CodeFor
+                          notStandalone
+                          enc="EncodePathRelativePath"
+                          relativeTo={
+                            <AccessStruct field="PathRangeEnd">
+                              <RelAccess field="D3RangePath" />
+                            </AccessStruct>
+                          }
+                        >
+                          <ValAccess field="entry_path" />
+                        </CodeFor>
+                      </>
+                    }
+                  >
+                    <CodeFor
+                      notStandalone
+                      enc="EncodePathRelativePath"
+                      relativeTo={
+                        <AccessStruct field="PathRangeStart">
+                          <RelAccess field="D3RangePath" />
+                        </AccessStruct>
+                      }
+                    >
+                      <ValAccess field="entry_path" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <C64Encoding id="time_diff" />,
+                  <C64Encoding id="payload_length" />,
+                  <CodeFor
+                    enc="EncodePathRelativePath"
+                    relativeTo={<RelAccess field="entry_path" />}
+                  >
+                    <ValAccess field="entry_path" />
+                  </CodeFor>,
+                  <CodeFor enc="encode_payload_digest">
+                    <ValAccess field="entry_payload_digest" />
+                  </CodeFor>,
+                ]}
+              />
+            </Hsection>
           </Hsection>
 
           <Hsection n="area_encodings" title="Area Encoding" shortTitle="area">
@@ -1119,7 +1388,7 @@ export const encodings = (
           <P>
             We now define some relative encodings which take care to not reveal
             certain parts of the values being encoded. We use these in the{" "}
-            <R n="private_interest_intersection" /> parts of the{" "}
+            <R n="private_interest_overlap" /> parts of the{" "}
             <R n="sync">WGPS</R>.
           </P>
 
@@ -1225,7 +1494,7 @@ export const encodings = (
               }
               preDefs={
                 <P>
-                  Let{"  "}<DefValue n="eppep_rel_count" r="rel_count" />{" "}
+                  Let <DefValue n="eppep_rel_count" r="rel_count" />{" "}
                   be the number of components in{" "}
                   <RelAccess field="PrivatePathContextRel" />. Let{" "}
                   <DefValue n="eppep_private_count" r="private_count" />{" "}
@@ -2010,23 +2279,11 @@ export const encodings = (
               valType={<R n="McEnumerationCapability" />}
               relToDescription={
                 <>
-                  <R n="PersonalPrivateInterest" /> with{" "}
-                  <Code>
-                    <AccessStruct field="pi_ss">
-                      <RelAccess field="ppi_pi" />
-                    </AccessStruct>{" "}
-                    == <R n="ss_any" />
-                  </Code>{" "}
-                  and{" "}
-                  <Code>
-                    <AccessStruct field="pi_ns">
-                      <RelAccess field="ppi_pi" />
-                    </AccessStruct>{" "}
-                    == <ValAccess field="enumcap_namespace" />
-                  </Code>
+                  pair of <ValAccess field="enumcap_namespace" /> and the{" "}
+                  <R n="enumeration_receiver" /> of <ValName />
                 </>
               }
-              shortRelToDescription={<R n="PersonalPrivateInterest" />}
+              shortRelToDescription={<>pair</>}
               bitfields={[
                 c64Tag(
                   "delegation_count",

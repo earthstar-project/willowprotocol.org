@@ -1,7 +1,22 @@
 import { Dir, File } from "macromania-outfs";
 import { AE, Alj, Curly, NoWrap, Path, Vermillion } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  Code,
+  Figcaption,
+  Figure,
+  Hr,
+  Img,
+  Li,
+  P,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -21,6 +36,7 @@ import { Bib } from "macromania-bib/mod.tsx";
 import { Purple } from "../../macros.tsx";
 import { Orange } from "../../macros.tsx";
 import { Blue } from "../../macros.tsx";
+import { Expression } from "macromaniajsx/jsx-runtime";
 
 export const rbsr = (
   <Dir name="rbsr">
@@ -35,51 +51,56 @@ export const rbsr = (
           When two peers wish to synchronise data, they typically first exchange
           which <Rs n="Area" /> in which <Rs n="namespace" />{" "}
           they are interested in. Intersecting these <Rs n="Area" />{" "}
-          yields the sets of <Rs n="Entry" />{" "}
+          yields the sets of <Rs n="AuthorisedEntry" />{" "}
           for which they then need to bring each other up to speed. In this
           document, we present a strategy for doing so efficiently.
         </P>
 
         <P>
-          Given the <Rs n="Entry" />{" "}
+          Given the <Rs n="AuthorisedEntry" />{" "}
           that the peers have available, there can be two cases that necessitate
-          data exchange. First, one peer might have an <R n="Entry" />{" "}
+          data exchange. First, one peer might have an <R n="AuthorisedEntry" />
+          {" "}
           that the other does not have, and second, the peers might hold
           nonequal parts of the <R n="Payload" /> of some common{" "}
-          <R n="Entry" />.
+          <R n="AuthorisedEntry" />.
         </P>
 
         <P>
           As a first step to solving the problem, we simplify it. If{" "}
-          <Rs n="Entry" /> contained information about locally available{" "}
-          <R n="Payload" />{" "}
+          <Rs n="AuthorisedEntry" />{" "}
+          contained information about locally available <R n="Payload" />{" "}
           bytes, then both cases would merge into a single case: one peer might
           have a datum that the other lacks. Hence, we do not synchronise{" "}
-          <Rs n="Entry" /> directly, but <Rs n="LengthyEntry" />:
+          <Rs n="AuthorisedEntry" /> directly, but <Rs n="LengthyAuthorisedEntry" />:
         </P>
 
         <Pseudocode n="lengthy_entry_definition">
           <StructDef
             comment={
               <>
-                An <R n="Entry" />{" "}
+                An <R n="AuthorisedEntry" />{" "}
                 together with information about how much of its{" "}
                 <R n="Payload" /> a peer holds.
               </>
             }
-            id={["LengthyEntry", "LengthyEntry", "LengthyEntries"]}
+            id={[
+              "LengthyAuthorisedEntry",
+              "LengthyAuthorisedEntry",
+              "LengthyAuthorisedEntries",
+            ]}
             fields={[
               {
                 commented: {
                   comment: (
                     <>
-                      The <R n="Entry" /> in question.
+                      The <R n="AuthorisedEntry" /> in question.
                     </>
                   ),
                   dedicatedLine: true,
                   segment: [
                     ["entry", "lengthy_entry_entry", "entries"],
-                    <R n="Entry" />,
+                    <R n="AuthorisedEntry" />,
                   ],
                 },
               },
@@ -107,8 +128,8 @@ export const rbsr = (
           <P>
             The task of the two peers then becomes conceptually simple: they
             each have a set of{" "}
-            <Rs n="LengthyEntry" />, and they need to inform each other about
-            all <Rs n="LengthyEntry" />{" "}
+            <Rs n="LengthyAuthorisedEntry" />, and they need to inform each other about
+            all <Rs n="LengthyAuthorisedEntry" />{" "}
             the other party does not have, that is, they each need to compute
             the union of their two sets. In the scientific literature, this
             problem is known as{" "}
@@ -120,7 +141,7 @@ export const rbsr = (
         <P>
           Once the two peers have reconciled their sets, they can filter out
           {" "}
-          <Rs n="Entry" />{" "}
+          <Rs n="AuthorisedEntry" />{" "}
           that overwrite each other, and they can separately request any missing
           (suffixes of){" "}
           <Rs n="Payload" />. Going forward, we thus concentrate on the set
@@ -150,9 +171,9 @@ export const rbsr = (
           />
           <Figcaption>
             <Purple>Alfie</Purple> and <Orange>Betty</Orange>{" "}
-            produce equal fingerprints for all their <Rs n="Entry" /> in a given
+            produce equal fingerprints for all their <Rs n="AuthorisedEntry" />
             {" "}
-            <R n="D3Range" />.
+            in a given <R n="D3Range" />.
           </Figcaption>
         </Figure>
 
@@ -176,7 +197,8 @@ export const rbsr = (
             produce non-equal fingerprints. <Purple>Alfie</Purple> splits the
             {" "}
             <R n="D3Range" /> in two, yielding a <R n="D3Range" />{" "}
-            <R n="d3_range_include">including</R> <Rs n="Entry" />{" "}
+            <R n="d3_range_include">including</R> <Rs n="AuthorisedEntry" />
+            {" "}
             <Code>A</Code> and <Code>B</Code>, and another <R n="D3Range" />
             {" "}
             <R n="d3_range_include">including</R>{" "}
@@ -185,12 +207,12 @@ export const rbsr = (
             <Orange>Betty</Orange> produces a matching fingerprint for the first
             {" "}
             <R n="D3Range" />. As the other, mismatched <R n="D3Range" />{" "}
-            includes so few <Rs n="Entry" />, <Orange>Betty</Orange> sends her
+            includes so few <Rs n="AuthorisedEntry" />, <Orange>Betty</Orange>
             {" "}
-            <Rs n="Entry" /> <Code>Q</Code> and <Code>Y</Code> to{" "}
-            <Purple>Alfie</Purple>. In response, <Purple>Alfie</Purple> sends
-            {" "}
-            <R n="Entry" /> <Code>C</Code> to <Orange>Betty</Orange>.
+            sends her <Rs n="AuthorisedEntry" /> <Code>Q</Code> and{" "}
+            <Code>Y</Code> to <Purple>Alfie</Purple>. In response,{" "}
+            <Purple>Alfie</Purple> sends <R n="AuthorisedEntry" />{" "}
+            <Code>C</Code> to <Orange>Betty</Orange>.
           </Figcaption>
         </Figure>
 
@@ -227,35 +249,41 @@ export const rbsr = (
                 {" "}
                 is an algorithm for letting two peers compute the union of their
                 {" "}
-                <Rs n="LengthyEntry" /> in some <R n="D3Range" /> by exchanging
+                <Rs n="LengthyAuthorisedEntry" /> in some <R n="D3Range" /> by exchanging
                 {" "}
                 <Rs n="D3RangeFingerprint" /> and <Rs n="D3RangeEntrySet" />.
               </>
             }
           />{" "}
           takes these ideas and applies them to Willow. The core design decision
-          is to delimit sets of <Rs n="LengthyEntry" /> via{" "}
+          is to delimit sets of <Rs n="LengthyAuthorisedEntry" /> via{" "}
           <Rs n="D3Range" />. When a peer splits its{" "}
           <Rs n="D3Range" />, it is crucial for overall efficiency to not split
           based on volume (for example, by splitting the <Rs n="D3RangeTime" />
           {" "}
-          in half numerically)", ", but to split into subranges in which the
-          peer holds roughly the same number of <Rs n="Entry" />.
+          in half numerically), but to split into subranges in which the peer
+          holds roughly the same number of <Rs n="AuthorisedEntry" />.
         </P>
 
-        <P>
-          Let <DefType n="d3rbsr_fp" r="Fingerprint" rs="Fingerprints" />{" "}
-          denote the type of hashes of <Rs n="LengthyEntry" />{" "}
-          that the peers exchange. Then the precise pieces of information that
-          the peers need to exchange are the following:
-          <Alj>The styling of alternating line colours feels a bit weird, especially with the pretty thin empty line of code between the two structs.</Alj>
-        </P>
+        <PreviewScope>
+          <P>
+            Let <DefType n="d3rbsr_fp" r="Fingerprint" rs="Fingerprints" />{" "}
+            denote the type of hashes of <Rs n="LengthyAuthorisedEntry" />{" "}
+            that the peers exchange. Then the precise pieces of information that
+            the peers need to exchange are the following:
+            <Alj>
+              The styling of alternating line colours feels a bit weird,
+              especially with the pretty thin empty line of code between the two
+              structs.
+            </Alj>
+          </P>
+        </PreviewScope>
 
         <Pseudocode n="rbsr_message_defs">
           <StructDef
             comment={
               <>
-                The <R n="d3rbsr_fp" /> over all <Rs n="LengthyEntry" />{" "}
+                The <R n="d3rbsr_fp" /> over all <Rs n="LengthyAuthorisedEntry" />{" "}
                 a peer holds in some <R n="D3Range" />.
               </>
             }
@@ -283,7 +311,7 @@ export const rbsr = (
                 commented: {
                   comment: (
                     <>
-                      The <R n="d3rbsr_fp" /> over the <Rs n="LengthyEntry" />
+                      The <R n="d3rbsr_fp" /> over the <Rs n="LengthyAuthorisedEntry" />
                       {" "}
                       that the sender holds in the{" "}
                       <R n="D3RangeFingerprintRange" />.
@@ -303,12 +331,12 @@ export const rbsr = (
             ]}
           />
 
-          <Loc/>
+          <Loc />
 
           <StructDef
             comment={
               <>
-                The set of <Rs n="LengthyEntry" /> a peer holds in some{" "}
+                The set of <Rs n="LengthyAuthorisedEntry" /> a peer holds in some{" "}
                 <R n="D3Range" />.
               </>
             }
@@ -332,7 +360,7 @@ export const rbsr = (
                 commented: {
                   comment: (
                     <>
-                      The <Rs n="LengthyEntry" /> that the sender holds in the
+                      The <Rs n="LengthyAuthorisedEntry" /> that the sender holds in the
                       {" "}
                       <R n="D3RangeEntrySetRange" />.
                     </>
@@ -341,7 +369,7 @@ export const rbsr = (
                   segment: [
                     ["entries", "D3RangeEntrySetEntries", "entries"],
                     <SliceType>
-                      <R n="LengthyEntry" />
+                      <R n="LengthyAuthorisedEntry" />
                     </SliceType>,
                   ],
                 },
@@ -376,91 +404,304 @@ export const rbsr = (
           <R n="D3RangeFingerprint" />. Upon receiving a{" "}
           <R n="D3RangeFingerprint" />, a peer computes the <R n="d3rbsr_fp" />
           {" "}
-          over its local <Rs n="LengthyEntry" /> in the same range.
+          over its local <Rs n="LengthyAuthorisedEntry" /> in the same range.
         </P>
+
+        <P>
+          If it does not match, the peer either sends a number of{" "}
+          <Rs n="D3RangeFingerprint" /> whose <Rs n="D3Range" /> cover the{" "}
+          <R n="D3Range" /> for which it received the mismatching{" "}
+          <R n="d3rbsr_fp" />. Or it replies with its <R n="D3RangeEntrySet" />
+          {" "}
+          for that <R n="D3Range" />, with the{" "}
+          <R n="D3RangeEntrySetWantResponse" /> flag set to <Code>true</Code>.
+        </P>
+
+        <P>
+          To any such <R n="D3RangeEntrySet" />, a peer replies with its own
+          {" "}
+          <R n="D3RangeEntrySet" />, setting the{" "}
+          <R n="D3RangeEntrySetWantResponse" /> flag to{" "}
+          <Code>false</Code>, and omitting all <Rs n="LengthyAuthorisedEntry" />{" "}
+          it had just received in the other peer’s <R n="D3RangeEntrySet" />.
+        </P>
+
+        <P>
+          When a peer receives a <R n="D3RangeFingerprint" /> that matches the
+          {" "}
+          <R n="d3rbsr_fp" /> over its local <Rs n="LengthyAuthorisedEntry" /> in the same
+          {" "}
+          <R n="D3Range" />, the peer should reply with an empty{" "}
+          <R n="D3RangeEntrySet" /> for that <R n="D3Range" />, setting the{" "}
+          <R n="D3RangeEntrySetWantResponse" /> flag to{" "}
+          <Code>false</Code>. This notifies the sender of the{" "}
+          <R n="D3RangeFingerprint" />{" "}
+          that reconciliation has successfully concluded for the{" "}
+          <R n="D3Range" />.
+        </P>
+
+        <Hr />
+
+        <P>
+          The peers might be interested in when they have successfully completed
+          reconciliation of a particular{" "}
+          <R n="D3Range" />. Unfortunately, tracking all the <Rs n="D3Range" />
+          {" "}
+          that you receive and determining whether their union covers the
+          particular <R n="D3Range" />{" "}
+          you are interested in is a comparatively expensive (and annoying)
+          algorithmic problem. To circumvent this problem, peers can attach
+          small bits of metadata to their messages: whenever a peer splits a
+          {" "}
+          <R n="D3Range" /> into a set of covering{" "}
+          <Rs n="D3Range" />, the peer can simply attach some metadata to the
+          final such subrange that it sends that indicates which of the{" "}
+          <Rs n="D3Range" />{" "}
+          sent by the other peer has now been fully covered by subranges.
+        </P>
+
+        <P>
+          As long as both peers are accurate in supplying this metadata, they
+          can maintain perfect information about the progress of reconciliation
+          without the need for any sophisticated data structures. Peers should
+          be cautious that a malicious peer could provide wildly inadequate
+          metadata, but in general this is tolerable: a malicious peer can
+          sabotage reconciliation in all sorts of interesting ways regardless.
+        </P>
+
+        <Hsection n="d3rbsr_parameters" title="Fingerprinting">
+          <P>
+            <Rb n="d3rbsr" /> requires the ability to hash arbitrary sets of
+            {" "}
+            <Rs n="LengthyAuthorisedEntry" /> into values of some type{" "}
+            <R n="d3rbsr_fp" />. We now describe the technique described in the
+            paper for computing these efficiently. The key idea is to ensure
+            that the <R n="d3rbsr_fp" /> for a <R n="D3Range" />{" "}
+            can be assembled from precomputed <Rs n="d3rbsr_fp" />{" "}
+            of other, smaller{" "}
+            <Rs n="D3Range" />. What we describe now is not mandatory for
+            Willow, but it probably is a good idea.
+          </P>
+
+          <PreviewScope>
+            <P>
+              We define the fingerprinting function in terms of some building
+              blocks: <Rs n="LengthyAuthorisedEntry" /> are mapped into a set{" "}
+              <DefType
+                n="d3rbsr_prefp"
+                r="PreFingerprint"
+                rs="PreFingerprints"
+              />{" "}
+              with a function that satisfies certain algebraic properties that
+              allow for incremental computation, and <Rs n="d3rbsr_prefp" />
+              {" "}
+              are then converted<Marginale>
+                The split into <Rs n="d3rbsr_prefp" /> and <Rs n="d3rbsr_fp" />
+                {" "}
+                allows for compression: the <Rs n="d3rbsr_prefp" />{" "}
+                might be efficient to compute but rather large, so you would not
+                want to exchange them over the network. Converting a{" "}
+                <R n="d3rbsr_prefp" /> into a <R n="d3rbsr_fp" />{" "}
+                can be as simple as hashing it with a typical, secure hash
+                function, thus preserving collision resistance but yielding
+                smaller final fingerprints.
+              </Marginale>{" "}
+              into the final <R n="d3rbsr_fp" />.
+            </P>
+
+            <P>
+              First, we require a function{" "}
+              <DefFunction n="d3rbsr_fp_singleton" r="fingerprint_singleton" />
+              {" "}
+              that hashes individual <Rs n="LengthyAuthorisedEntry" /> into the set{" "}
+              <R n="d3rbsr_prefp" />. This hash function should take into
+              account all aspects of the <R n="LengthyAuthorisedEntry" />: modifying its
+              {" "}
+              <R n="entry_namespace_id" />, <R n="entry_subspace_id" />,{" "}
+              <R n="entry_path" />, <R n="entry_timestamp" />,{" "}
+              <R n="entry_payload_digest" />,{" "}
+              <R n="entry_payload_length" />, or its number of{" "}
+              <R n="lengthy_entry_available" />{" "}
+              bytes, should result in a completely different{" "}
+              <R n="d3rbsr_prefp" />.
+            </P>
+
+            <P>
+              Second, we require an{" "}
+              <AE href="https://en.wikipedia.org/wiki/Associative_property">
+                associative
+              </AE>{" "}
+              and{" "}
+              <Sidenote
+                note={
+                  <>
+                    Classic range-based set reconciliation does not require
+                    commutativity. We require it because we do not wish to
+                    prescribe how to linearise three-dimensional data into a
+                    single order.
+                  </>
+                }
+              >
+                <AE href="https://en.wikipedia.org/wiki/Commutative_property">
+                  commutative
+                </AE>
+              </Sidenote>{" "}
+              function{" "}
+              <DefFunction n="d3rbsr_fp_combine" r="fingerprint_combine" />{" "}
+              that maps two <Rs n="d3rbsr_prefp" /> to a single new{" "}
+              <R n="d3rbsr_prefp" />. The <R n="d3rbsr_fp_combine" />{" "}
+              function must further have a{" "}
+              <AE href="https://en.wikipedia.org/wiki/Identity_element">
+                neutral element
+              </AE>{" "}
+              <DefValue n="d3rbsr_neutral" r="fingerprint_neutral" />.
+            </P>
+
+            <P>
+              Third, we require a function{" "}
+              <DefFunction n="d3rbsr_fp_finalise" r="fingerprint_finalise" />
+              {" "}
+              that maps each <R n="d3rbsr_prefp" /> to the corresponding{" "}
+              <R n="d3rbsr_fp" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              Given these building blocks, we define the function{" "}
+              <DefFunction n="ddrbsr_fingerprint" r="fingerprint" />{" "}
+              from sets of <Rs n="LengthyAuthorisedEntry" /> to <R n="d3rbsr_fp" />:
+            </P>
+            <Ul>
+              <Li>
+                applying <R n="ddrbsr_fingerprint" /> to the empty set yields
+                {" "}
+                <Code>
+                  <R n="d3rbsr_fp_finalise" />(<R n="d3rbsr_neutral" />)
+                </Code>,
+              </Li>
+              <Li>
+                applying <R n="ddrbsr_fingerprint" />{" "}
+                to a set containing exactly one <R n="LengthyAuthorisedEntry" />{" "}
+                yields the same result as applying <R n="d3rbsr_fp_singleton" />
+                {" "}
+                to that <R n="LengthyAuthorisedEntry" /> and then applying{" "}
+                <R n="d3rbsr_fp_finalise" />, and
+              </Li>
+              <Li>
+                applying <R n="ddrbsr_fingerprint" /> to any other set of{" "}
+                <Rs n="LengthyAuthorisedEntry" /> yields the result of applying{" "}
+                <R n="d3rbsr_fp_singleton" />{" "}
+                to all members of the set individually, then combining the
+                resulting <Rs n="d3rbsr_fp" /> with <R n="d3rbsr_fp_combine" />
+                {" "}
+                (grouping and ordering do not matter because of associativity
+                and commutativity), and then applying{" "}
+                <R n="d3rbsr_fp_finalise" />.
+              </Li>
+            </Ul>
+          </PreviewScope>
+
+          <Figure>
+            <Table>
+              <Thead>
+                <Tr>
+                  <Th>Set</Th>
+                  <Th>Fingerprint</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                <Tr>
+                  <Td>
+                    {`{ }`}
+                  </Td>
+                  <Td>
+                    <SmallImg asset={["3d_rbsr", "fp_bottle_empty.png"]}>
+                      An empty bottle.
+                    </SmallImg>
+                  </Td>
+                </Tr>
+              </Tbody>
+              <Tbody>
+                <Td>
+                  {`{ `}
+                  <SmallImg asset={["3d_rbsr", "fp_apple.png"]}>
+                    A red apple.
+                  </SmallImg>
+                  {` }`}
+                </Td>
+                <Td>
+                  <SmallImg asset={["3d_rbsr", "fp_bottle_yellow.png"]}>
+                    A bottle of apple juice.
+                  </SmallImg>
+                </Td>
+              </Tbody>
+              <Tbody>
+                <Td>
+                  {`{ `}
+                  <SmallImg asset={["3d_rbsr", "fp_apple.png"]}>
+                    A red apple.
+                  </SmallImg>
+                  <SmallImg asset={["3d_rbsr", "fp_celery.png"]}>
+                    A celery.
+                  </SmallImg>
+                  <SmallImg asset={["3d_rbsr", "fp_lemon.png"]}>
+                    A lemon.
+                  </SmallImg>
+                  {` }`}
+                </Td>
+                <Td>
+                  <SmallImg asset={["3d_rbsr", "fp_bottle_green.png"]}>
+                    A bottle of apple-celery-lemon smoothie. Yum?
+                  </SmallImg>
+                </Td>
+              </Tbody>
+            </Table>
+            <Figcaption>
+              A metaphorical juicing fingerprint. Although the number of
+              ingredients in the set may change, the size of the bottle does
+              not. Each bottle’s juice inherits its unique flavour from its
+              ingredients.
+            </Figcaption>
+          </Figure>
+
+          <P>
+            For <R n="d3rbsr" /> to work correctly, <R n="ddrbsr_fingerprint" />
+            {" "}
+            must map distinct sets of <Rs n="LengthyAuthorisedEntry" /> to distinct{" "}
+            <Rs n="d3rbsr_fp" />{" "}
+            with high probability, even when facing maliciously crafted input
+            sets. The "range-based set reconciliation paper surveys suitable,
+            cryptographically secure hash functions in section
+            5B<Bib item="meyer2023range" />. All but the Cayley hashes use
+            commutative <R n="d3rbsr_fp_combine" />{" "}
+            functions, and are thus suitable for <R n="d3rbsr" />. Further,{" "}
+            <R n="d3rbsr_fp_finalise" />{" "}
+            must not map distinct inpus to equal outpts; suitable choices are
+            the identity function (if no compression is needed) or traditional,
+            secure hash functions.
+          </P>
+        </Hsection>
 
         {
           /*
 
-    pinformative("If it does not match, the peer either sends a number of <Rs n="D3RangeFingerprint"/> whose <Rs n="D3Range"/> cover the <R n="D3Range"/> for which it received the mismatching <R n="d3rbsr_fp"/>. Or it replies with its <R n="D3RangeEntrySet"/> for that <R n="D3Range"/>, with the ", r("D3RangeEntrySetWantResponse"), " flag set to ", code("true"), "."),
-
-    pinformative("To any such <R n="D3RangeEntrySet"/>, a peer replies with its own <R n="D3RangeEntrySet"/>, setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ", and omitting all <Rs n="LengthyEntry"/> it had just received in the other peer’s <R n="D3RangeEntrySet"/>."),
-
-    pinformative("When a peer receives a <R n="D3RangeFingerprint"/> that matches the <R n="d3rbsr_fp"/> over its local <Rs n="LengthyEntry"/> in the same <R n="D3Range"/>, the peer should reply with an empty <R n="D3RangeEntrySet"/> for that <R n="D3Range"/>, setting the ", r("D3RangeEntrySetWantResponse"), " flag to ", code("false"), ". This notifies the sender of the <R n="D3RangeFingerprint"/> that reconciliation has successfully concluded for the <R n="D3Range"/>."),
-
-    hr(),
-
-    pinformative("The peers might be interested in when they have successfully reconciled a particular <R n="D3Range"/>. Unfortunately, tracking all the <Rs n="D3Range"/> that you receive and determining whether their union covers the particular <R n="D3Range"/> you are interested in is a comparatively expensive (and annoying) algorithmic problem. To circumvent this problem, peers can attach small bits of metadata to their messages: whenever a peer splits a <R n="D3Range"/> into a set of covering <Rs n="D3Range"/>, the peer can simply attach some metadata to the final such subrange that it sends that indicates which of the <Rs n="D3Range"/> sent by the other peer has now been fully covered by subranges."),
-
-    pinformative("As long as both peers are accurate in supplying this metadata, they can maintain perfect information about the progress of reconciliation without the need for any sophisticated data structures. Peers should be cautious that a malicious peer could provide wildly inadequate metadata, but in general this is tolerable: a malicious peer can sabotage reconciliation in all sorts of interesting ways regardless."),
-
-    hsection("d3rbsr_parameters", "Fingerprinting", [
-      pinformative(R("d3rbsr"), " requires the ability to hash arbitrary sets of <Rs n="LengthyEntry"/> into values of some type <R n="d3rbsr_fp"/>. To quickly compute ", rs("d3rbsr_fp"), ", it helps if the <R n="d3rbsr_fp"/> for a <R n="D3Range"/> can be assembled from precomputed ", rs("d3rbsr_fp"), " of other, smaller <Rs n="D3Range"/>. For this reason, we define the fingerprinting function in terms of some building blocks: <Rs n="LengthyEntry"/> are mapped into a set ", def_type({id: "d3rbsr_prefp", singular: "PreFingerprint"}), " with a function that satisfies certain algebraic properties that allow for incremental computation, and ", rs("d3rbsr_prefp"), " are then converted", marginale(["The split into ", rs("d3rbsr_prefp"), " and ", rs("d3rbsr_fp"), " allows for compression: the ", rs("d3rbsr_prefp"), " might be efficient to compute but rather large, so you would not want to exchange them over the network. Converting a ", r("d3rbsr_prefp"), " into a <R n="d3rbsr_fp"/> can be as simple as hashing it with a typical, secure hash function, thus preserving collision resistance but yielding smaller final fingerprints."]), " into the final <R n="d3rbsr_fp"/>."),
-
-      pinformative("First, we require a function ", def_parameter_fn({id: "d3rbsr_fp_singleton", singular: "fingerprint_singleton"}), " that hashes individual <Rs n="LengthyEntry"/> into the set ", r("d3rbsr_prefp"), ". This hash function should take into account all aspects of the ",  r("LengthyEntry"), ": modifying its ", r("entry_namespace_id"), ", <R n="entry_subspace_id"/>, <R n="entry_path"/>, <R n="entry_timestamp"/>, <R n="entry_payload_digest"/>, <R n="entry_payload_length"/>, or its number of ", r("lengthy_entry_available"), " bytes, should result in a completely different ", r("d3rbsr_prefp"), "."),
-
-      pinformative("Second, we require an ", link("associative", "https://en.wikipedia.org/wiki/Associative_property"), " and ", sidenote(link("commutative", "https://en.wikipedia.org/wiki/Commutative_property"), ["Classic range-based set reconciliation does not require commutativity. We require it because we do not wish to prescribe how to linearise three-dimensional data into a single order."]), " function ", def_parameter_fn({id: "d3rbsr_fp_combine", singular: "fingerprint_combine"}), " that maps two ", rs("d3rbsr_prefp"), " to a single new ", r("d3rbsr_prefp"), ". The ", r("d3rbsr_fp_combine"), " function must further have a ", link("neutral element", "https://en.wikipedia.org/wiki/Identity_element"), " ", def_parameter_value({ id: "d3rbsr_neutral", singular: "fingerprint_neutral"}), "."),
-
-      pinformative("Third, we require a function ", def_parameter_fn({id: "d3rbsr_fp_finalise", singular: "fingerprint_finalise"}), " that maps each ", r("d3rbsr_prefp"), " into the corresponding <R n="d3rbsr_fp"/>."),
-
-      marginale_inlineable(
-        figure(
-          table(
-            thead(
-              tr(
-                th("Set"),
-                th("Fingerprint"),
-              ),
-            ),
-            tbody(
-              tr(
-                td("{ }"),
-                td(small_img(asset("3d_rbsr/fp_bottle_empty.png"), `An empty bottle.`)),
-              ),
-            ),
-            tbody(
-              td([
-                "{ ",
-                small_img(asset("3d_rbsr/fp_apple.png"), `A red apple.`, {
-                  style: "vertical-align:middle",
-                }),
-                " }",
-              ]),
-              td(small_img(asset("3d_rbsr/fp_bottle_yellow.png"), `A bottle of apple juice.`)),
-            ),
-            tbody(
-              td([
-                "{ ",
-                small_img(asset("3d_rbsr/fp_apple.png"), `A red apple.`, {
-                  style: "vertical-align:middle",
-                }),
-                " ",
-                small_img(asset("3d_rbsr/fp_celery.png"), `A celery.`, {
-                  style: "vertical-align:middle",
-                }),
-                " ",
-                small_img(asset("3d_rbsr/fp_lemon.png"), `A lemon.`, {
-                  style: "vertical-align:middle",
-                }),
-                " }",
-              ]),
-              td(small_img(asset("3d_rbsr/fp_bottle_green.png"), `A bottle of apple-celery-lemon smoothie. Yum?`)),
-            ),
-          ),
-          figcaption("A metaphorical juicing fingerprint. Although the number of ingredients in the set may change, the size of the bottle does not. Each bottle’s juice inherits its unique flavour from its ingredients.")
-        ),
-      ),
-
-      pinformative("Given these building blocks, we define the function ", def_fn({id: "ddrbsr_fingerprint", singular: "fingerprint"}), " from sets of <Rs n="LengthyEntry"/> to <R n="d3rbsr_fp"/>:", lis(
-        ["applying ", r("ddrbsr_fingerprint"), " to the empty set yields ", function_call(r("d3rbsr_fp_finalise"), r("d3rbsr_neutral")), ","],
-        ["applying ", r("ddrbsr_fingerprint"), " to a set containing exactly one ", r("LengthyEntry"), " yields the same result as applying ", r("d3rbsr_fp_singleton"), " to that ", r("LengthyEntry"), " and then applying ", r("d3rbsr_fp_finalise"), ", and"],
-        ["applying ", r("ddrbsr_fingerprint"), " to any other set of <Rs n="LengthyEntry"/> yields the result of applying ", r("d3rbsr_fp_singleton"), " to all members of the set individually, then combining the resulting ", rs("d3rbsr_fp"), " with ", r("d3rbsr_fp_combine"), " (grouping and ordering do not matter because of associativity and commutativity), and then applying ", r("d3rbsr_fp_finalise"), "."],
-      )),
-
-      pinformative("For <R n="d3rbsr"/> to work correctly, ", r("ddrbsr_fingerprint"), " must map distinct sets of <Rs n="LengthyEntry"/> to distinct ", rs("d3rbsr_fp"), " with high probability, even when facing maliciously crafted input sets. The ", link("range-based set reconciliation paper", "https://github.com/AljoschaMeyer/rbsr_short/blob/main/main.pdf"), " surveys suitable, cryptographically secure hash functions in section 5B. All but the Cayley hashes use commutative ", r("d3rbsr_fp_combine"), " functions, and are thus suitable for <R n="d3rbsr"/>. Further, ", r("d3rbsr_fp_finalise"), " must not map distinct inpus to equal outpts; suitable choices are the identity function (if no compression is needed) or traditional, secure hash functions."),
+      pinformative(""),
    */
         }
       </PageTemplate>
     </File>
   </Dir>
 );
+
+function SmallImg(
+  { children, asset }: { children: Expression; asset: string[] },
+): Expression {
+  return (
+    <Img
+      style="height: 32px; vertical-align: middle;"
+      src={<ResolveAsset asset={asset} />}
+      alt={children}
+    />
+  );
+}

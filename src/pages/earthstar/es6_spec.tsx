@@ -140,7 +140,7 @@ export const es6_spec = (
 					"The <R n="max_component_length"/> is 64, the ", r("max_component_count"), " is 16, and the ", r("max_path_length"), " is 1024."),
 
 				pinformative(
-					"The type ", r("PayloadDigest"), " is the type of unsigned 256-bit integers, the total order we use is the numeric one."
+					"The type <R n="PayloadDigest"/> is the type of unsigned 256-bit integers, the total order we use is the numeric one."
 				),
 
 				pinformative(
@@ -178,7 +178,7 @@ export const es6_spec = (
 				),
 
 				pinformative(
-					"The ", r("is_communal"), " function maps a ", r("es6_namespace"), " to ", code("true"), " if and only if the least significant bit of its ", r("cinn_pk_pk"), " is ", code("0"), "."
+					"The ", r("is_communal"), " function maps a ", r("es6_namespace"), " to <Code>true</Code> if and only if the least significant bit of its ", r("cinn_pk_pk"), " is ", code("0"), "."
 				),
 
 				pinformative(
@@ -239,14 +239,14 @@ export const es6_spec = (
 
 				hsection("es6_wgps_reconciliation", "3d Range-Based Set Reconciliation", [
 					pinformative(
-						"The type ", r("Fingerprint"), " is the type of 32 byte arrays that are valid ", link("encodings of Edwards25519 curve points", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ", the type ", r("PreFingerprint"), " is the type of Edwards25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point according to ", link("RFC 8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ".",
+						"The type <R n="Fingerprint"/> is the type of 32 byte arrays that are valid ", link("encodings of Edwards25519 curve points", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ", the type ", r("PreFingerprint"), " is the type of Edwards25519 curve points with ", quotes(link("cleared cofactor", "https://www.rfc-editor.org/rfc/rfc9380#name-clearing-the-cofactor")), " (i.e., the codomain of ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), "), and the ", r("fingerprint_finalise"), " function encodes a curve point according to ", link("RFC 8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), ".",
 					),
 
 					pinformative(
-						"The ", r("fingerprint_singleton"), " function encodes a ", r("LengthyEntry"), " using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
+						"The ", r("fingerprint_singleton"), " function encodes a <R n="LengthyEntry"/> using the ", r("es6_encode_le"), " function that we define below, then uses the encoding as input to ", link("edwards25519_XMD:SHA-512_ELL2_RO_", "https://www.rfc-editor.org/rfc/rfc9380#name-suites-for-curve25519-and-e"), " with the ascii encoding of the string ", code("earthstar6u"), " as the ", link("domain separation tag", "https://www.rfc-editor.org/rfc/rfc9380#name-domain-separation-requireme"), "."
 					),
 
-					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a ", r("LengthyEntry"), " ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
+					pinformative("We define the ", def_fn({id: "es6_encode_le", singular: "encode_lengthy_entry"}), " function as mapping a <R n="LengthyEntry"/> ", def_value({id: "es6_le", singular: "le"}), " to the concatenation of:", lis(
 						[encode_two_bit_int(field_access(r("es6_le"), "lengthy_entry_available")),],
 						[function_call(r("encode_entry"), field_access(r("es6_le"), "lengthy_entry_entry")), "."],
 					)),
@@ -262,7 +262,7 @@ export const es6_spec = (
 
 				hsection("es6_wgps_other", "Other Parameters", [
 					pinformative(
-						"The decomposition of <Rs n="AuthorisationToken"/> into ", r("StaticToken"), " and ", r("DynamicToken"), " is as recommended for Meadowcap in the WGPS: ", r("StaticToken"), " is the type ", r("Capability"), ", and ", r("DynamicToken"), " is the type of ", r("user_signature_scheme"), " signatures."
+						"The decomposition of <Rs n="AuthorisationToken"/> into <R n="StaticToken"/> and <R n="DynamicToken"/> is as recommended for Meadowcap in the WGPS: <R n="StaticToken"/> is the type <R n="Capability"/>, and <R n="DynamicToken"/> is the type of ", r("user_signature_scheme"), " signatures."
 					),
 
 					pinformative(
@@ -274,7 +274,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("sync_default_subspace_id"), " is the ", r("es6_identity"), " whose ", r("cinn_shortname"), " is ", code("a000"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
+						"The <R n="sync_default_subspace_id"/> is the ", r("es6_identity"), " whose ", r("cinn_shortname"), " is ", code("a000"), " and whose ", r("cinn_pk_pk"), " consists of zero-bytes only.",
 					),
 
 					pinformative(
@@ -306,7 +306,7 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The total order on <R n="SubspaceId"/> (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and ", r("sync_default_subspace_id"), " is indeed the unique least element.",
+						"The total order on <R n="SubspaceId"/> (i.e., on ", r("es6_identity"), ") orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and <R n="sync_default_subspace_id"/> is indeed the unique least element.",
 					),
 
 					pinformative(
@@ -314,11 +314,11 @@ export const es6_spec = (
 					),
 
 					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each ", r("DynamicToken"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
+						"The ", r("encode_dynamic_token"), " function maps each <R n="DynamicToken"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
 					),
 
 					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each ", r("Fingerprint"), " (which is already a sequence of bytes) to itself."
+						"The ", r("encode_fingerprint"), " function maps each <R n="Fingerprint"/> (which is already a sequence of bytes) to itself."
 					),
 				]),
 

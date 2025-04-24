@@ -1284,25 +1284,6 @@ export const lcmux = (
             </P>
 
             <P>
-              <Marginale>
-                When Alfie receives a message from Betty that she wants to free
-                a{" "}
-                <R n="resource_handle" />, he can note how many bytes are
-                currently buffered on all <Rs n="logical_channel" />{" "}
-                (easy optimisation: only consider those whose{" "}
-                <Rs n="channel_message" /> can legally reference{" "}
-                <Rs n="resource_handle" /> of the <R n="handle_type" />{" "}
-                in question). Once all these bytes have been processed,
-                releasing the data is safe. Alternatively, when moving data into
-                an LCMUX buffer, a peer can scan that data for{" "}
-                <Rs n="resource_handle" />, and increment a reference count for
-                each{" "}
-                <R n="resource_handle" />. Processing such a message reduces the
-                reference count; a reference count of zero allows for releasing
-                the data. This approach allows for more timely data release, but
-                requires prior knowledge of the <Rs n="channel_message" />{" "}
-                in question.
-              </Marginale>
               When a peer has both sent <Em>and</Em> received a message to{" "}
               <R n="handle_free" /> a <R n="resource_handle" />, it{" "}
               <Em>still cannot</Em>{" "}
@@ -1314,18 +1295,27 @@ export const lcmux = (
               can it release the data.
             </P>
 
-            <P>
-              To this end, every peer counts how many messages it sends that
-              refer to any one <R n="resource_handle" />. When a peer whishes to
-              {" "}
-              <R n="handle_free" /> a{" "}
-              <R n="resource_handle">handle</R>, it includes its (then final)
-              count with that message. Similarly, every peer counts how many
-              messages it receives that pertain to any one{" "}
-              <R n="resource_handle" />. Only once that count matches the count
-              in the <R n="handle_free">freeing message</R>{" "}
-              does it release the bound data.
-            </P>
+            <PreviewScope>
+              <P>
+                To this end, every peer counts how many messages it sends that
+                refer to any one{" "}
+                <R n="resource_handle" />. When a peer whishes to{" "}
+                <R n="handle_free" /> a{" "}
+                <R n="resource_handle">handle</R>, it includes its (then final)
+                {" "}
+                <Def
+                  n="handle_refcount"
+                  r="reference count"
+                  rs="reference counts"
+                />{" "}
+                with that message. Similarly, every peer counts how many
+                messages it receives that pertain to any one{" "}
+                <R n="resource_handle" />. Only once that count matches the
+                received <R n="handle_refcount" />
+                in the <R n="handle_free">freeing message</R>{" "}
+                does it release the bound data.
+              </P>
+            </PreviewScope>
 
             <PreviewScope>
               <P>
