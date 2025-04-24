@@ -36,7 +36,7 @@ import { CanonicSubencodings } from "../../encoding_macros.tsx";
 import { RawBytes } from "../../encoding_macros.tsx";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Def, R, Rs } from "macromania-defref";
-import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
+import { Br, Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { Dir, File } from "macromania-outfs";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
@@ -917,6 +917,96 @@ export const encodings = (
                 n: "encode_entry",
                 how: [<MinTags />, <CanonicSubencodings />],
               }}
+            />
+
+            <Hr />
+
+            <EncodingRelationRelativeTemplate
+              n="EncodeEntryRelativeEntry"
+              valType={<R n="Entry" />}
+              relToDescription={
+                <>
+                  <R n="Entry" />
+                </>
+              }
+              preDefs={
+                <>
+                  <P>
+                    Let <DefValue n="ere_diff" r="time_diff" />{" "}
+                    be the absolute value of{" "}
+                    <Code>
+                      <ValAccess field="entry_timestamp" /> -{" "}
+                      <RelAccess field="entry_timestamp" />
+                    </Code>
+                  </P>
+                </>
+              }
+              bitfields={[
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="entry_namespace_id" /> !={" "}
+                    <RelAccess field="entry_namespace_id" />
+                  </Code>,
+                ),
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="entry_subspace_id" /> !={" "}
+                    <RelAccess field="entry_subspace_id" />
+                  </Code>,
+                ),
+                bitfieldIff(
+                  <Code>
+                    <R n="ere_diff" /> {">"} 0
+                  </Code>,
+                ),
+                c64Tag(
+                  "time_diff",
+                  2,
+                  <R n="ere_diff" />,
+                ),
+                c64Tag(
+                  "payload_length",
+                  3,
+                  <ValAccess field="entry_payload_length" />,
+                ),
+              ]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="entry_namespace_id" /> !={" "}
+                      <RelAccess field="entry_namespace_id" />
+                    </Code>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_namespace_id">
+                    <ValAccess field="entry_namespace_id" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="entry_subspace_id" /> !={" "}
+                      <RelAccess field="entry_subspace_id" />
+                    </Code>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    <ValAccess field="entry_subspace_id" />
+                  </CodeFor>
+                </EncConditional>,
+                <C64Encoding id="time_diff" />,
+                <C64Encoding id="payload_length" />,
+                <CodeFor
+                  enc="EncodePathRelativePath"
+                  relativeTo={<RelAccess field="entry_path" />}
+                >
+                  <ValAccess field="entry_path" />
+                </CodeFor>,
+                <CodeFor enc="encode_payload_digest">
+                  <ValAccess field="entry_payload_digest" />
+                </CodeFor>,
+              ]}
             />
           </Hsection>
 

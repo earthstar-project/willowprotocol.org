@@ -366,11 +366,22 @@ export const sync = (
                 r="default_namespace_id"
               />, a <R n="SubspaceId" />{" "}
               <DefValue n="sync_default_subspace_id" r="default_subspace_id" />,
-              and a <R n="PayloadDigest" />{" "}
+              a <R n="PayloadDigest" />{" "}
               <DefValue
                 n="sync_default_payload_digest"
                 r="default_payload_digest"
-              />.
+              />, and an <R n="AuthorisationToken" />{" "}
+              <DefValue
+                n="sync_default_authorisation_token"
+                r="default_authorisation_token"
+              />{" "}
+              which <R n="is_authorised_write">authorises</R>{" "}
+              <Code>
+                <R n="default_entry" />(<R n="sync_default_namespace_id" />,
+                {" "}
+                <R n="sync_default_subspace_id" />,{" "}
+                <R n="sync_default_payload_digest" />)
+              </Code>.
             </P>
           </PreviewScope>
         </Hsection>
@@ -1760,19 +1771,23 @@ export const sync = (
               <PreviewScope>
                 <P>
                   To map transmitted chunks of <Rs n="Payload" /> to their{" "}
-                  <Rs n="Entry" />, each peer maintains a piece of state, its
+                  <Rs n="Entry" />, each peer maintains a piece of state, an
                   {" "}
+                  <R n="AuthorisedEntry" /> called its{" "}
                   <DefValue n="currently_received_entry" />. It is initialised
-                  to{" "}
+                  to the pair of{"  "}
                   <Code>
                     <R n="default_entry" />(<R n="sync_default_namespace_id" />,
                     {" "}
                     <R n="sync_default_subspace_id" />,{" "}
                     <R n="sync_default_payload_digest" />)
-                  </Code>. Upon receiving a <R n="DataSendEntry" />{" "}
-                  message, a peer sets its <R n="currently_received_entry" />
+                  </Code>{" "}
+                  and the{" "}
+                  <R n="sync_default_authorisation_token" />. Upon receiving a
                   {" "}
-                  to the received <R n="DataSendEntryEntry" />.
+                  <R n="DataSendEntry" /> message, a peer sets its{" "}
+                  <R n="currently_received_entry" /> to the received{" "}
+                  <R n="DataSendEntryEntry" />.
                 </P>
               </PreviewScope>
 
@@ -2285,42 +2300,22 @@ export const sync = (
                   <R n="subspace_successor_t" />.
                 </Li>
 
-                {
-                  /* <Li>
+                <Li>
                   A <R n="relative_encoding_relation" />{" "}
-                  <DefFunction
-                    n="EncodeStaticToken"
+                  <DefType
+                    n="EncodeAuthorisationToken"
                     preview={
                       <P>
                         A protocol parameter of the <R n="wgps" />, the{" "}
                         <R n="relative_encoding_relation" /> for encoding{" "}
-                        <Rs n="StaticToken" />.
+                        <Rs n="AuthorisationToken" />.
                       </P>
                     }
                   />{" "}
-                  encoding <Rs n="StaticToken" /> relative to pairs of a{" "}
-                  <R n="NamespaceId" /> and an <R n="Area" />.<Alj>
-                    TODO: specify and recommend a relation for Meadowcap
-                  </Alj>
-                </Li> */
-                }
-
-                {
-                  /* <Li>
-                  An <R n="encoding_relation" />{" "}
-                  <DefFunction
-                    n="EncodeDynamicToken"
-                    preview={
-                      <P>
-                        A protocol parameter of the <R n="wgps" />, the{" "}
-                        <R n="encoding_relation" /> for encoding{" "}
-                        <Rs n="DynamicToken" />.
-                      </P>
-                    }
-                  />{" "}
-                  for <R n="DynamicToken" />.
-                </Li> */
-                }
+                  encoding <Rs n="AuthorisationToken" /> relative to pairs of an
+                  {" "}
+                  <R n="AuthorisedEntry" /> and an <R n="Entry" />.
+                </Li>
 
                 <Li>
                   An <R n="encoding_relation" />{" "}
@@ -2630,7 +2625,42 @@ export const sync = (
                 title="DataSendEntry"
                 noToc
               >
-                <Alj inline>TODO</Alj>
+                <EncodingRelationTemplate
+                  n="EncodeDataSendEntry"
+                  valType={<R n="DataSendEntry" />}
+                  bitfields={[
+                    bitfieldConstant([0]),
+                    c64Tag(
+                      "offset",
+                      7,
+                      <>
+                        <ValAccess field="DataSendEntryOffset" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="offset" />,
+                    <CodeFor
+                      enc="EncodeEntryRelativeEntry"
+                      relativeTo={<R n="currently_received_entry" />}
+                    >
+                      the <R n="Entry" /> of{" "}
+                      <ValAccess field="DataSendEntryEntry" />
+                    </CodeFor>,
+                    <CodeFor
+                      enc="EncodeAuthorisationToken"
+                      relativeTo={
+                        <>
+                          <R n="currently_received_entry" /> and{" "}
+                          <ValAccess field="DataSendEntryEntry" />
+                        </>
+                      }
+                    >
+                      the <R n="AuthorisationToken" /> of{" "}
+                      <ValAccess field="DataSendEntryEntry" />
+                    </CodeFor>,
+                  ]}
+                />
 
                 <P>
                   <R n="DataSendEntry" /> messages use the{" "}
@@ -2645,7 +2675,26 @@ export const sync = (
                 title="DataSendPayload"
                 noToc
               >
-                <Alj inline>TODO</Alj>
+                <EncodingRelationTemplate
+                  n="EncodeDataSendPayload"
+                  valType={<R n="DataSendPayload" />}
+                  bitfields={[
+                    bitfieldConstant([0]),
+                    c64Tag(
+                      "amount",
+                      7,
+                      <>
+                        <ValAccess field="DataSendPayloadAmount" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="amount" />,
+                    <RawBytes>
+                      <ValAccess field="DataSendPayloadBytes" />
+                    </RawBytes>,
+                  ]}
+                />
 
                 <P>
                   <R n="DataSendPayload" /> messages use the{" "}
