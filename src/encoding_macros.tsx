@@ -896,6 +896,69 @@ export function bitfieldConstant(
   };
 }
 
+export function bitfieldConditional(
+  count: number,
+  choices: {
+    code: Expressions;
+    condition: Expressions;
+  }[],
+  otherwise?: Expressions,
+): BitfieldDef {
+  const lis = choices.map((branch) => {
+    return (
+      <Li>
+        If <exps x={branch.condition} />: <exps x={branch.code} />
+      </Li>
+    );
+  });
+
+  if (otherwise !== undefined) {
+    lis.push(
+      <Li>
+        Otherwise: <exps x={otherwise} />
+      </Li>,
+    );
+  }
+
+  return {
+    count: count,
+    content: (
+      <Ul>
+        {lis}
+      </Ul>
+    ),
+  };
+}
+
+/**
+ * Returns a `BitfieldDef` for a conditionally selected bitstring.
+ */
+export function bitfieldConditionalString(
+  choices: {
+    bits: number[];
+    condition: Expressions;
+  }[],
+  otherwise?: number[],
+): BitfieldDef {
+  return bitfieldConditional(
+    choices[0].bits.length,
+    choices.map((branch) => ({
+      code: (
+        <>
+          the bitstring{" "}
+          <Code>{branch.bits.map((b) => `${b}`).join("")}</Code>.
+        </>
+      ),
+      condition: branch.condition,
+    })),
+    otherwise === undefined ? undefined : (
+      <>
+        the bitstring <Code>{otherwise.map((b) => `${b}`).join("")}</Code>.
+      </>
+    ),
+  );
+}
+
 /**
  * Returns a `BitfieldDef` for a `1` bit if and only if some condition holds.
  */
