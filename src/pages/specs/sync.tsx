@@ -2753,11 +2753,24 @@ export const sync = (
                 <EncodingRelationTemplate
                   n="EncodeReconciliationSendEntry"
                   valType={<R n="ReconciliationSendEntry" />}
+                  preDefs={
+                    <>
+                      <P>
+                        Let{" "}
+                        <DefValue
+                          n="erse_mode"
+                          r="relative_to_entry"
+                        />{" "}
+                        be an arbitrary <R n="Bool" />.
+                      </P>
+                    </>
+                  }
                   bitfields={[
                     bitfieldConstant([0]),
+                    bitfieldIff(<R n="erse_mode" />),
                     c64Tag(
                       "offset",
-                      7,
+                      6,
                       <>
                         <ValAccess field="ReconciliationSendEntryOffset" />
                       </>,
@@ -2765,13 +2778,44 @@ export const sync = (
                   ]}
                   contents={[
                     <C64Encoding id="offset" />,
-                    <CodeFor
-                      enc="EncodeEntryRelativeEntry"
-                      relativeTo={<R n="data_current_entry" />}
+                    <EncConditional
+                      condition={
+                        <Code>
+                          <R n="erse_mode" />
+                        </Code>
+                      }
+                      otherwise={
+                        <>
+                          <CodeFor
+                            notStandalone
+                            enc="EncodeEntryInNamespace3dRange"
+                            relativeTo={
+                              <>
+                                the pair of{" "}
+                                <R n="previously_received_3drange" /> and the
+                                {" "}
+                                <R n="granted_namespace" /> of the{" "}
+                                <R n="ReconciliationAnnounceEntriesInfo" />{" "}
+                                of the preceding{" "}
+                                <R n="ReconciliationAnnounceEntries" /> message
+                              </>
+                            }
+                          >
+                            the <R n="Entry" /> of{" "}
+                            <ValAccess field="ReconciliationSendEntryEntry" />
+                          </CodeFor>
+                        </>
+                      }
                     >
-                      the <R n="Entry" /> of{" "}
-                      <ValAccess field="ReconciliationSendEntryEntry" />
-                    </CodeFor>,
+                      <CodeFor
+                        notStandalone
+                        enc="EncodeEntryRelativeEntry"
+                        relativeTo={<R n="data_current_entry" />}
+                      >
+                        the <R n="Entry" /> of{" "}
+                        <ValAccess field="ReconciliationSendEntryEntry" />
+                      </CodeFor>
+                    </EncConditional>,
                     <CodeFor
                       enc="EncodeAuthorisationToken"
                       relativeTo={
