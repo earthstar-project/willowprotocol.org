@@ -301,8 +301,8 @@ export const sync = (
               </R>). The handshake and encryption of the communication channel
               are out of scope of the WGPS, but the <R n="ini_pk" /> and{" "}
               <R n="res_pk" /> must be of type <R n="sync_receiver" />.<Alj>
-                TODO: link to our recommended handshake and encryption document
-                here.
+                We recommend a handshake and subsequent encryption scheme{" "}
+                <R n="handshake_and_encryption">here</R>.
               </Alj>
             </P>
           </PreviewScope>

@@ -63,6 +63,9 @@ export const specs = (
             </R>
           </Li>
           <Li>
+            <R n="handshake_and_encryption">Handshake and Encryption</R>
+          </Li>
+          <Li>
             <R n="d3_range_based_set_reconciliation">
               3d Range-Based Set Reconciliation
             </R>

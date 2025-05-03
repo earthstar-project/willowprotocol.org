@@ -11,6 +11,7 @@ import { sync } from "./pages/specs/sync.tsx";
 import { sideloading } from "./pages/specs/sideloading.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
+import { handshake_and_encryption } from "./pages/specs/handshake_and_encryption.tsx";
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
@@ -142,6 +143,7 @@ const exp = (
               {lcmux}
               {grouping_entries}
               {private_interest_overlap}
+              {handshake_and_encryption}
             </Dir>
 
             <Dir name="more">
