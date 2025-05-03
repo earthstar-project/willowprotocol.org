@@ -100,7 +100,7 @@ export const handshake_and_encryption = (
                     }
                   >
                     revision 34
-                  </A>. <Alj inline>TODO: fix link colouring.</Alj>
+                  </A>. <Gwil inline>TODO: fix link colouring.</Gwil>
                 </>
               }
             >

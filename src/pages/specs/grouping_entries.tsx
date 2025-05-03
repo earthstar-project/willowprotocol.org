@@ -19,6 +19,7 @@ import {
   Alj,
   Blue,
   Green,
+  Gwil,
   MarginCaption,
   Orange,
   Purple,
@@ -124,7 +125,7 @@ export const grouping_entries = (
                 <R n="open_range" />
               </Green>.
             </Figcaption>
-            <Alj>TODO: fix colouring of refs here</Alj>
+            <Gwil>TODO: fix colouring of refs here</Gwil>
           </Figure>
 
           <P>

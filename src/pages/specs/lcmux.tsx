@@ -538,10 +538,10 @@ export const lcmux = (
             tighten the limit. Any bounds that would allow the <R n="lcmux_c" />
             {" "}
             to send more bytes than promised in a previous bound are forbidden.
-            <Alj>
+            <Gwil>
               To preserve the flow of the document so far, we'd need a diagram
               here.
-            </Alj>
+            </Gwil>
           </P>
 
           <P>
@@ -557,10 +557,10 @@ export const lcmux = (
             <R n="lcmux_s" />{" "}
             may communicate new upper bounds over time, but only if they stictly
             tighten the limit.
-            <Alj>
+            <Gwil>
               Another diagram here? Or perhaps only one here for the three
               paragraphs above?
-            </Alj>
+            </Gwil>
           </P>
 
           <P>
@@ -1380,9 +1380,9 @@ export const lcmux = (
             </PreviewScope>
 
             <Figure>
-              <Gwil>
+              <Alj>
                 We need to define what 'flush' means somewhere.
-              </Gwil>
+              </Alj>
               <Img
                 src={
                   <ResolveAsset

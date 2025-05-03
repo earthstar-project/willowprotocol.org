@@ -1,5 +1,13 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path, Vermillion } from "../../macros.tsx";
+import {
+  AE,
+  Alj,
+  Curly,
+  Gwil,
+  NoWrap,
+  Path,
+  Vermillion,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Code,
@@ -72,7 +80,8 @@ export const rbsr = (
           contained information about locally available <R n="Payload" />{" "}
           bytes, then both cases would merge into a single case: one peer might
           have a datum that the other lacks. Hence, we do not synchronise{" "}
-          <Rs n="AuthorisedEntry" /> directly, but <Rs n="LengthyAuthorisedEntry" />:
+          <Rs n="AuthorisedEntry" /> directly, but{" "}
+          <Rs n="LengthyAuthorisedEntry" />:
         </P>
 
         <Pseudocode n="lengthy_entry_definition">
@@ -128,8 +137,8 @@ export const rbsr = (
           <P>
             The task of the two peers then becomes conceptually simple: they
             each have a set of{" "}
-            <Rs n="LengthyAuthorisedEntry" />, and they need to inform each other about
-            all <Rs n="LengthyAuthorisedEntry" />{" "}
+            <Rs n="LengthyAuthorisedEntry" />, and they need to inform each
+            other about all <Rs n="LengthyAuthorisedEntry" />{" "}
             the other party does not have, that is, they each need to compute
             the union of their two sets. In the scientific literature, this
             problem is known as{" "}
@@ -249,9 +258,9 @@ export const rbsr = (
                 {" "}
                 is an algorithm for letting two peers compute the union of their
                 {" "}
-                <Rs n="LengthyAuthorisedEntry" /> in some <R n="D3Range" /> by exchanging
-                {" "}
-                <Rs n="D3RangeFingerprint" /> and <Rs n="D3RangeEntrySet" />.
+                <Rs n="LengthyAuthorisedEntry" /> in some <R n="D3Range" />{" "}
+                by exchanging <Rs n="D3RangeFingerprint" /> and{" "}
+                <Rs n="D3RangeEntrySet" />.
               </>
             }
           />{" "}
@@ -271,11 +280,11 @@ export const rbsr = (
             denote the type of hashes of <Rs n="LengthyAuthorisedEntry" />{" "}
             that the peers exchange. Then the precise pieces of information that
             the peers need to exchange are the following:
-            <Alj>
-              The styling of alternating line colours feels a bit weird,
+            <Gwil>
+              The styling of alternating line colours feels a bit weird to Alj,
               especially with the pretty thin empty line of code between the two
               structs.
-            </Alj>
+            </Gwil>
           </P>
         </PreviewScope>
 
@@ -283,8 +292,9 @@ export const rbsr = (
           <StructDef
             comment={
               <>
-                The <R n="d3rbsr_fp" /> over all <Rs n="LengthyAuthorisedEntry" />{" "}
-                a peer holds in some <R n="D3Range" />.
+                The <R n="d3rbsr_fp" /> over all{" "}
+                <Rs n="LengthyAuthorisedEntry" /> a peer holds in some{" "}
+                <R n="D3Range" />.
               </>
             }
             id={[
@@ -311,8 +321,8 @@ export const rbsr = (
                 commented: {
                   comment: (
                     <>
-                      The <R n="d3rbsr_fp" /> over the <Rs n="LengthyAuthorisedEntry" />
-                      {" "}
+                      The <R n="d3rbsr_fp" /> over the{" "}
+                      <Rs n="LengthyAuthorisedEntry" />{" "}
                       that the sender holds in the{" "}
                       <R n="D3RangeFingerprintRange" />.
                     </>
@@ -336,8 +346,8 @@ export const rbsr = (
           <StructDef
             comment={
               <>
-                The set of <Rs n="LengthyAuthorisedEntry" /> a peer holds in some{" "}
-                <R n="D3Range" />.
+                The set of <Rs n="LengthyAuthorisedEntry" />{" "}
+                a peer holds in some <R n="D3Range" />.
               </>
             }
             id={["3dRangeEntrySet", "D3RangeEntrySet", "3dRangeEntrySets"]}
@@ -360,8 +370,8 @@ export const rbsr = (
                 commented: {
                   comment: (
                     <>
-                      The <Rs n="LengthyAuthorisedEntry" /> that the sender holds in the
-                      {" "}
+                      The <Rs n="LengthyAuthorisedEntry" />{" "}
+                      that the sender holds in the{" "}
                       <R n="D3RangeEntrySetRange" />.
                     </>
                   ),
@@ -422,16 +432,18 @@ export const rbsr = (
           {" "}
           <R n="D3RangeEntrySet" />, setting the{" "}
           <R n="D3RangeEntrySetWantResponse" /> flag to{" "}
-          <Code>false</Code>, and omitting all <Rs n="LengthyAuthorisedEntry" />{" "}
+          <Code>false</Code>, and omitting all <Rs n="LengthyAuthorisedEntry" />
+          {" "}
           it had just received in the other peer’s <R n="D3RangeEntrySet" />.
         </P>
 
         <P>
           When a peer receives a <R n="D3RangeFingerprint" /> that matches the
           {" "}
-          <R n="d3rbsr_fp" /> over its local <Rs n="LengthyAuthorisedEntry" /> in the same
+          <R n="d3rbsr_fp" /> over its local <Rs n="LengthyAuthorisedEntry" />
           {" "}
-          <R n="D3Range" />, the peer should reply with an empty{" "}
+          in the same <R n="D3Range" />, the peer should reply with an empty
+          {" "}
           <R n="D3RangeEntrySet" /> for that <R n="D3Range" />, setting the{" "}
           <R n="D3RangeEntrySetWantResponse" /> flag to{" "}
           <Code>false</Code>. This notifies the sender of the{" "}
@@ -486,7 +498,8 @@ export const rbsr = (
           <PreviewScope>
             <P>
               We define the fingerprinting function in terms of some building
-              blocks: <Rs n="LengthyAuthorisedEntry" /> are mapped into a set{" "}
+              blocks: <Rs n="LengthyAuthorisedEntry" /> are mapped into a set
+              {" "}
               <DefType
                 n="d3rbsr_prefp"
                 r="PreFingerprint"
@@ -513,10 +526,11 @@ export const rbsr = (
               First, we require a function{" "}
               <DefFunction n="d3rbsr_fp_singleton" r="fingerprint_singleton" />
               {" "}
-              that hashes individual <Rs n="LengthyAuthorisedEntry" /> into the set{" "}
+              that hashes individual <Rs n="LengthyAuthorisedEntry" />{" "}
+              into the set{" "}
               <R n="d3rbsr_prefp" />. This hash function should take into
-              account all aspects of the <R n="LengthyAuthorisedEntry" />: modifying its
-              {" "}
+              account all aspects of the{" "}
+              <R n="LengthyAuthorisedEntry" />: modifying its{" "}
               <R n="entry_namespace_id" />, <R n="entry_subspace_id" />,{" "}
               <R n="entry_path" />, <R n="entry_timestamp" />,{" "}
               <R n="entry_payload_digest" />,{" "}
@@ -570,7 +584,8 @@ export const rbsr = (
             <P>
               Given these building blocks, we define the function{" "}
               <DefFunction n="ddrbsr_fingerprint" r="fingerprint" />{" "}
-              from sets of <Rs n="LengthyAuthorisedEntry" /> to <R n="d3rbsr_fp" />:
+              from sets of <Rs n="LengthyAuthorisedEntry" /> to{" "}
+              <R n="d3rbsr_fp" />:
             </P>
             <Ul>
               <Li>
@@ -582,7 +597,8 @@ export const rbsr = (
               </Li>
               <Li>
                 applying <R n="ddrbsr_fingerprint" />{" "}
-                to a set containing exactly one <R n="LengthyAuthorisedEntry" />{" "}
+                to a set containing exactly one <R n="LengthyAuthorisedEntry" />
+                {" "}
                 yields the same result as applying <R n="d3rbsr_fp_singleton" />
                 {" "}
                 to that <R n="LengthyAuthorisedEntry" /> and then applying{" "}
@@ -590,7 +606,8 @@ export const rbsr = (
               </Li>
               <Li>
                 applying <R n="ddrbsr_fingerprint" /> to any other set of{" "}
-                <Rs n="LengthyAuthorisedEntry" /> yields the result of applying{" "}
+                <Rs n="LengthyAuthorisedEntry" /> yields the result of applying
+                {" "}
                 <R n="d3rbsr_fp_singleton" />{" "}
                 to all members of the set individually, then combining the
                 resulting <Rs n="d3rbsr_fp" /> with <R n="d3rbsr_fp_combine" />
@@ -668,8 +685,8 @@ export const rbsr = (
           <P>
             For <R n="d3rbsr" /> to work correctly, <R n="ddrbsr_fingerprint" />
             {" "}
-            must map distinct sets of <Rs n="LengthyAuthorisedEntry" /> to distinct{" "}
-            <Rs n="d3rbsr_fp" />{" "}
+            must map distinct sets of <Rs n="LengthyAuthorisedEntry" />{" "}
+            to distinct <Rs n="d3rbsr_fp" />{" "}
             with high probability, even when facing maliciously crafted input
             sets. The "range-based set reconciliation paper surveys suitable,
             cryptographically secure hash functions in section

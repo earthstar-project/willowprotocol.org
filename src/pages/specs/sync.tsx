@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import { AE, Alj, Curly, Gwil, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -1078,10 +1078,10 @@ export const sync = (
                   reconciliation-related messages relative to each other is
                   restricted
                 </Marginale>{" "}
-                that may be sent:<Alj>
+                that may be sent:<Gwil>
                   This needs a diagram. See
                   https://discord.com/channels/780542716940517407/1360172897162756116/1362867145129590976
-                </Alj>
+                </Gwil>
               </P>
 
               <Ul>
@@ -2478,7 +2478,7 @@ export const sync = (
                 title="PioBindReadCapability"
                 noToc
               >
-                <Alj>headings turn green on hover, fix that</Alj>
+                <Gwil>FIXME: headings turn green on hover</Gwil>
                 <EncodingRelationTemplate
                   n="EncodePioBindReadCapability"
                   valType={<R n="PioBindReadCapability" />}

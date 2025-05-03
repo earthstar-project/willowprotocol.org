@@ -1,4 +1,4 @@
-import { Curly, NoWrap, Path } from "../../macros.tsx";
+import { Curly, Gwil, NoWrap, Path } from "../../macros.tsx";
 import {
   ArbitraryBitsAreZero,
   Bitfield,
@@ -452,11 +452,11 @@ export const encodings = (
 
           <PreviewScope>
             <P>
-              <Alj>
+              <Gwil>
                 How are the DefRef references inside math mode not coloured
                 directly? How? (When fixing this, also consider hover colouring.
                 No change is ok, but bright green is not.)
-              </Alj>
+              </Gwil>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}
               <DefValue n="c64_tw" r="tag_width" math={`tag\\_width`} />{" "}
               be a natural number between two and eight inclusive. Then the
@@ -734,9 +734,9 @@ export const encodings = (
               />
 
               <P>
-                <Alj>
+                <Gwil>
                   Either make this visually more pleasing or remove it again.
-                </Alj>
+                </Gwil>
                 An example: encoding the <R n="Path" />{" "}
                 <Path components={["blog", "ideas", "fun"]} /> with{" "}
                 <R n="encode_path" /> yields
@@ -2964,9 +2964,9 @@ export const encodings = (
                   iter={<ValAccess field="enumcap_delegations" />}
                   skipLast
                 >
-                  <Alj inline>
+                  <Gwil inline>
                     TODO fix styling of nested encoding without bitfields
-                  </Alj>
+                  </Gwil>
                   <Encoding
                     idPrefix="enc_sscap_rel_nested"
                     bitfields={[]}

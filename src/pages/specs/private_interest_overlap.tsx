@@ -417,7 +417,7 @@ export const private_interest_overlap = (
             that they have shared knowledge. For this reason, each peer is
             assigned a random bitstring to use as a salt for the hash function.
             A peer <Em>transmits</Em>
-            <Alj>This would be nice to have an illustration for.</Alj>{" "}
+            <Gwil>This would be nice to have an illustration for.</Gwil>{" "}
             hashes salted with <Em>its own</Em> salt, but compares the hashes it
             {" "}
             <Em>receives</Em> against hashes that it computes locally with the
@@ -427,10 +427,10 @@ export const private_interest_overlap = (
 
           <AsideBlock>
             <P>
-              <Alj>
-                I think the aside styling could/should scream a lot more loudly
-                that this is an aside.
-              </Alj>
+              <Gwil>
+                Alj thinks the aside styling could/should scream a lot more
+                loudly that this is an aside.
+              </Gwil>
               A reader well-versed in the literature on{" "}
               <AE href="https://en.wikipedia.org/wiki/Private_set_intersection">
                 private set intersection (PSI)
@@ -439,7 +439,7 @@ export const private_interest_overlap = (
               that point out the exchange of (salted) hashes as a rookie
               mistake. A fairly representative example{" "}
               <Bib item="freedman2016efficient" />:
-              <Alj>More obvious blockquote styling</Alj>
+              <Gwil>More obvious blockquote styling</Gwil>
             </P>
 
             <Blockquote>
@@ -912,10 +912,11 @@ export const private_interest_overlap = (
                         <R n="pio_initiator" />{" "}
                         send the same pairs, except they salt differently.
                       </Marginale>{" "}
-                      <Alj>
-                        TODO: fix li widths and effects on marginale
-                        positioning.
-                      </Alj>
+                      <Gwil>
+                        TODO: fix li widths and effects on marginale positioning
+                        (use paddings for indentation instead of margins, that
+                        should fix it, thinks Alj).
+                      </Gwil>
                       transmits the pair{" "}
                       <Code>
                         (<R n="pio_h" />(<R n="pio_res_salt" />,{" "}
@@ -1020,9 +1021,9 @@ export const private_interest_overlap = (
               that did not give rise to any matching pair, the peer knows it to
               be <R n="pi_disjoint" /> from all <Rs n="PrivateInterest" />{" "}
               of the other peer.
-              <Alj>
+              <Gwil>
                 TODO <Code>details</Code> tag styling
-              </Alj>
+              </Gwil>
             </P>
 
             <Details>
@@ -1053,7 +1054,7 @@ export const private_interest_overlap = (
                 for <Rs n="pi_ss" />, <R n="path_prefix" />,{" "}
                 <R n="path_extension" />, or <R n="path_related">unrelated</R>
                 {" "}
-                for <Rs n="pi_path" />).<Alj>TODO: example styling</Alj>
+                for <Rs n="pi_path" />).<Gwil>TODO: example styling</Gwil>
               </P>
 
               <PiiExample
@@ -1508,10 +1509,10 @@ export const private_interest_overlap = (
               We now list the information we wish to keep confidential. We group
               it in four levels, based on which kind of peer or attacker is
               allowed to glean which information.
-              <Alj>
-                Worst table styling ever, please send help. Might need multiple
+              <Gwil>
+                Worst table styling ever, Alj asks for help. Might need multiple
                 rows instead of nested lists?
-              </Alj>
+              </Gwil>
             </P>
 
             <PreviewScope>
