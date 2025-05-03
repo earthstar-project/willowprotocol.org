@@ -406,16 +406,47 @@ export const handshake_and_encryption = (
                 single handshake.
               </Marginale>
               The presentation is in a deliberately different style than the
-              Noise spec: minimal abstractions (no helper functions beyond{" "}
-              <R n="hs_hkdf" />), sequential reading, a birds-eye view of both
-              peers. The variable names are derived from those of the Noise
-              spec, with <Code>ini</Code> or <Code>res</Code> prefixes{" "}
+              Noise spec: minimal abstractions, sequential reading, a birds-eye
+              view of both peers. The variable names are derived from those of
+              the Noise spec, with <Code>ini</Code> or <Code>res</Code> prefixes
+              {" "}
               to indicate variables maintained by the <R n="hs_initiator" />
               {" "}
               or the <R n="hs_responder" /> respectively, and with{" "}
               <Code>pk</Code> and <Code>sk</Code>{" "}
               suffixes to indicate public keys and secret keys respectively.
             </P>
+
+            <PreviewScope>
+              <P>
+                We denote by{" "}
+                <Code>
+                  <DefFunction n="hs_hkdf" r="hkdf" />(chaining_key:{" "}
+                  <ArrayType count={<R n="hs_hashlen" />}>
+                    <R n="U8" />
+                  </ArrayType>, input_key_material: <R n="hs_pk" />):{" "}
+                  <TupleType
+                    types={[
+                      <ArrayType count={<R n="hs_hashlen" />}>
+                        <R n="U8" />
+                      </ArrayType>,
+                      <ArrayType count={<R n="hs_hashlen" />}>
+                        <R n="U8" />
+                      </ArrayType>,
+                    ]}
+                  />
+                </Code>{" "}
+                the function that produces two OKMs with the <Code>HKDF</Code>
+                {" "}
+                (<AE href="https://www.ietf.org/rfc/rfc5869.txt">RFC 5869</AE>)
+                function, using <R n="hs_hash" /> as the{" "}
+                <Code>HMAC-Hash</Code>. This corresponds directly to the{" "}
+                <Code>HKDF</Code> function of the{" "}
+                <AE href="https://noiseprotocol.org/noise.html#hash-functions">
+                  Noise spec
+                </AE>, with <Code>num_outputs</Code> set to two.
+              </P>
+            </PreviewScope>
 
             <Style>
               {`#handshake_container {
