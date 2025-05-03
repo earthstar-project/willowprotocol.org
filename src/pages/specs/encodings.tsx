@@ -991,7 +991,8 @@ export const encodings = (
                   ),
                   bitfieldIff(
                     <Code>
-                      <R n="ere_diff" /> {">"} 0
+                      <ValAccess field="entry_timestamp" /> {">"}{" "}
+                      <RelAccess field="entry_timestamp" />
                     </Code>,
                   ),
                   c64Tag(
