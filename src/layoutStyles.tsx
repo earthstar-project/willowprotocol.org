@@ -121,6 +121,10 @@ body:not(.isPreview) {
         > ul, section > ul {
           max-width: calc(${maxMain}rem - 1.25em);
         }
+        
+        section {
+          max-width: ${maxMain}rem;
+        }
     }
 
     .marginale {
