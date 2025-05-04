@@ -912,11 +912,6 @@ export const private_interest_overlap = (
                         <R n="pio_initiator" />{" "}
                         send the same pairs, except they salt differently.
                       </Marginale>{" "}
-                      <Gwil>
-                        TODO: fix li widths and effects on marginale positioning
-                        (use paddings for indentation instead of margins, that
-                        should fix it, thinks Alj).
-                      </Gwil>
                       transmits the pair{" "}
                       <Code>
                         (<R n="pio_h" />(<R n="pio_res_salt" />,{" "}
