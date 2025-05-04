@@ -405,4 +405,37 @@ export const bib: BibItemDeclaration[] = [
       </>
     ),
   },
+  {
+    item: `@inproceedings{boldyreva2012security,
+  title={Security of symmetric encryption in the presence of ciphertext fragmentation},
+  author={Boldyreva, Alexandra and Degabriele, Jean Paul and Paterson, Kenneth G and Stam, Martijn},
+  booktitle={Annual International Conference on the Theory and Applications of Cryptographic Techniques},
+  pages={682--699},
+  year={2012},
+  organization={Springer}
+}
+
+`,
+    asset: ["references", "boldyreva2012security.pdf"],
+    blurb: (
+      <>
+        <P>
+          In recent years, a number of standardized symmetric encryption schemes
+          have fallen foul of attacks exploiting the fact that in some real
+          world scenarios ciphertexts can be delivered in a fragmented fashion.
+          We initiate the first general and formal study of the security of
+          symmetric encryption against such attacks. We extend the SSH-specific
+          work of Paterson and Watson (Eurocrypt 2010) to develop security
+          models for the fragmented setting. We also develop security models to
+          formalize the additional desirable properties of ciphertext boundary
+          hiding and robustness against Denial-of-Service (DoS) attacks for
+          schemes in this setting. We illustrate the utility of each of our
+          models via efficient constructions for schemes using only standard
+          cryptographic components, including constructions that simultaneously
+          achieve confidentiality, ciphertext boundary hiding and DoS
+          robustness.
+        </P>
+      </>
+    ),
+  },
 ];

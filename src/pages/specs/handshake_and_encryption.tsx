@@ -66,7 +66,7 @@ export const handshake_and_encryption = (
         headingId="handshake_and_encryption"
         heading={"A Recommended Handshake and Encryption Scheme"}
         toc
-        // bibliography
+        bibliography
       >
         <P>
           The specification of{" "}
@@ -108,15 +108,6 @@ export const handshake_and_encryption = (
                 noise protocol framework
               </AE>
             </Sidenote>, with a few modifications:
-            {
-              /* with a{" "}
-            <AE href="https://noiseprotocol.org/noise.html#prologueprologue">
-              prologue
-            </AE>{" "}
-            but no payloads. The only difference is that noise only supports a
-            limited set of cryptographic primitives, whereas we — analogous to
-            all the other Willow specs — allow for arbitrary parameters. */
-            }
           </P>
 
           <Ul>
@@ -1331,6 +1322,104 @@ export const handshake_and_encryption = (
             {" "}
             respectively) serving as the shared secrets for symmetric
             encryption.
+          </P>
+        </Hsection>
+
+        <Hsection n="transport_encryption" title="Transport Encryption">
+          <PreviewScope>
+            <P>
+              When sending data after the handshake, the data is encrypted with
+              {" "}
+              <R n="hs_encrypt" />. To this end, each peer needs a{" "}
+              <DefValue n="hs_sending_key" r="sending_key" />: for the{" "}
+              <R n="hs_initiator" />, it is <R n="ini_aeadk1" />, and for the
+              {" "}
+              <R n="hs_responder" />, it is{" "}
+              <R n="ini_aeadk2" />. Each peer also maintains a 64-bit integer
+              {" "}
+              <DefValue n="sending_nonce" />, initialised to zero.
+            </P>
+
+            <P>
+              For decryption (which we do not specify explicitly), the peers
+              also require a <DefValue n="receiving_nonce" />{" "}
+              (initialised to zero) and a{" "}
+              <DefValue n="hs_receiving_key" r="receiving_key" />{" "}
+              (<R n="ini_aeadk2" /> for the <R n="hs_initiator" />, and{" "}
+              <R n="ini_aeadk1" /> for the <R n="hs_responder" />).
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              <Marginale>
+                This aproach to encryption is a generalisation of Dominic Tarr’s
+                {" "}
+                <AE href="https://github.com/dominictarr/pull-box-stream">
+                  Box Stream
+                </AE>, and it is compatible with how Noise specifies{" "}
+                <AE href="https://noiseprotocol.org/noise.html#processing-rules">
+                  transport message transmission
+                </AE>.
+              </Marginale>
+              After the handshake, data can be sent in chunks of length at least
+              one and at most <M>4096</M> (both inclusive). To send a chunk{" "}
+              <DefValue n="hs_chunk" /> of length{" "}
+              <DefValue n="hs_chunklen" r="len" />, a peer first transmits{" "}
+              <Code>
+                <R n="hs_encrypt" />(<R n="hs_sending_key" />,{" "}
+                <R n="sending_nonce" />, <R n="zerolen_left" />,{" "}
+                <R n="be_chunklen" />)
+              </Code>, where <DefValue n="be_chunklen" /> is{" "}
+              <R n="hs_chunklen" />{" "}
+              encoded as a big-endian two-byte integer. Then, the peer
+              increments <R n="sending_nonce" />. Then, the peer transmits{" "}
+              <Code>
+                <R n="hs_encrypt" />(<R n="hs_sending_key" />,{" "}
+                <R n="sending_nonce" />, <R n="zerolen_left" />,{" "}
+                <R n="hs_chunk" />)
+              </Code>, and finally increments <R n="sending_nonce" /> again.
+            </P>
+
+            <P>
+              If incrementing the <R n="sending_nonce" />{" "}
+              would result in an overflow, an error must be emitted instead and
+              no further bytes may be sent.
+            </P>
+          </PreviewScope>
+
+          <P>
+            Instead of sending a chunk, a peer can also signal the end of all
+            transmissions, by transmitting{" "}
+            <Code>
+              <R n="hs_encrypt" />(<R n="hs_sending_key" />,{" "}
+              <R n="sending_nonce" />, <R n="zerolen_left" />, 0x0000)
+            </Code>.
+          </P>
+
+          <P>
+            This approach to encrypting and sending data authenticates the end
+            of the stream, and it makes chunk boundaries less obvious than when
+            sending them in plaintext. Note that chunk boundaries are still not
+            fully obscured either: for one, physically sending off a chunk
+            leaks where it ends; and also, active attackers can induce
+            bitflips and then observe where exactly decoding{" "}
+            <Sidenote
+              note={
+                <>
+                  For a detailed discussion of the theoretical security notions
+                  at play here, see the InterMAC
+                  paper<Bib item="boldyreva2012security" />.
+                </>
+              }
+            >
+              fails
+            </Sidenote>. Paranoid peers that wish to achieve better theoretical
+            security guarantees can do so by only using a single chunk length,
+            padding shorter chunks if necessary. When using{" "}
+            <R n="lcmux" />, you can pad with with <Rs n="SendGlobalFrame" />
+            {" "}
+            of empty <R n="SendGlobalFrameContent" />, for example.
           </P>
         </Hsection>
       </PageTemplate>
