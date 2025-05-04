@@ -117,6 +117,10 @@ body:not(.isPreview) {
           max-width: ${maxMain + paddingMarginalia + marginalia}rem;
           clear: right;
         }
+        
+        > ul, section > ul {
+          max-width: calc(${maxMain}rem - 1.25em);
+        }
     }
 
     .marginale {
