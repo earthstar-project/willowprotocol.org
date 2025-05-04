@@ -423,7 +423,7 @@ th {
   font-size: 1rem;
   font-weight: normal;
   text-align: center;
-  padding: 0.5em;
+  padding: 0.5em 0;
   vertical-align: middle;
 }
 
@@ -434,10 +434,14 @@ figure {
 /* encodingdef styling */
 
 table.encodingdef table.encodingdef {
-  margin: 0.5rem;
+  margin: 0.5rem 0.5rem 0.5rem 0;
   width: initial;
   background-color: #00000008;
   border-radius: 0px;
+}
+
+table.encodingdef table.encodingdef td, th {
+  padding: 0.5rem;
 }
 
 .encodingdef tbody {
@@ -482,6 +486,7 @@ table.encodingdef table.encodingdef {
   white-space: nowrap;
   border: none;
   text-align: right;
+  padding: 0.5em 0.5em 0.5em 0;
 }
 
 .bitDef .aside,

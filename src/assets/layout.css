@@ -40,17 +40,25 @@ body:not(.isPreview) {
 
 /* Start implementing L3 */
 
-@media (min-width:868.2px) {
+@media (min-width:874.6px) {
     #wrapContent {
-        width: 51.6rem;
+        width: 52rem;
 
         >*:not(section, main), section>*:not(section, main)  {
             max-width: 32rem;
         }
 
         .wide {
-          max-width: 51.6rem;
+          max-width: 52rem;
           clear: right;
+        }
+        
+        > ul, section > ul {
+          max-width: calc(32rem - 1.25em);
+        }
+        
+        section {
+          max-width: 32rem;
         }
     }
 
@@ -60,7 +68,7 @@ body:not(.isPreview) {
       clear: right;
       position: relative;
       width: 18rem;
-      margin-right: -19.6rem;
+      margin-right: -20rem;
     }
 
     .sidenoteCounter {
@@ -70,7 +78,7 @@ body:not(.isPreview) {
 
 /* Start implementing L4 */
 
-@media (min-width:1335.4px) {
+@media (min-width:1341.8px) {
     .toc {
         display: initial;
         width: 13rem;
@@ -87,9 +95,9 @@ body:not(.isPreview) {
   max-width: min(33.6rem, 100vw);
 }
 
-@media (min-width:868.2px) {
+@media (min-width:874.6px) {
   .previewContainer.wide {
-    max-width: min(calc(53.2rem + 18px), 100vw);
+    max-width: min(calc(53.6rem + 18px), 100vw);
   }
 }
 
