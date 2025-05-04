@@ -911,7 +911,7 @@ export const encodings = (
             </Hsection>
           </Hsection>
 
-          <Hsection n="enc_entry" title="Entry Encoding" shortTitle="entry">
+          <Hsection n="enc_entry" title="Entry Encoding" shortTitle="Entry">
             <P>
               Encodings for <Rs n="Entry" />.
             </P>
@@ -1045,6 +1045,7 @@ export const encodings = (
                 ]}
               />
             </Hsection>
+
             <Hsection
               n="encsec_EncodeEntryInNamespace3dRange"
               title={<Code>EncodeEntryInNamespace3dRange</Code>}
@@ -1183,12 +1184,6 @@ export const encodings = (
                   </EncConditional>,
                   <C64Encoding id="time_diff" />,
                   <C64Encoding id="payload_length" />,
-                  <CodeFor
-                    enc="EncodePathRelativePath"
-                    relativeTo={<RelAccess field="entry_path" />}
-                  >
-                    <ValAccess field="entry_path" />
-                  </CodeFor>,
                   <CodeFor enc="encode_payload_digest">
                     <ValAccess field="entry_payload_digest" />
                   </CodeFor>,
