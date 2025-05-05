@@ -127,6 +127,11 @@ export const handshake_and_encryption = (
               <Code>Noise</Code>.
             </Li>
             <Li>
+              The <Code>h</Code>{" "}
+              variables of the peers are always initialised to the hash of the
+              protocol name, instead of zero-padding sufficiently short names.
+            </Li>
+            <Li>
               The{" "}
               <AE href="https://noiseprotocol.org/noise.html#cryptographic-algorithm-name-sections">
                 algorithm names
@@ -577,18 +582,10 @@ export const handshake_and_encryption = (
                   <HandshakeRow
                     left={
                       <>
-                        If <R n="hs_protocol_name" /> is less than or equal to
-                        {" "}
-                        <R n="hs_hashlen" /> bytes long, initialise{" "}
-                        <DefValue n="ini_h" /> (type{" "}
+                        Initialise <DefValue n="ini_h" /> (type{" "}
                         <ArrayType count={<R n="hs_hashlen" />}>
                           <R n="U8" />
-                        </ArrayType>) to <R n="hs_protocol_name" />{" "}
-                        with zero bytes appended to make <R n="hs_hashlen" />
-                        {" "}
-                        bytes. Otherwise, initialise <DefValue fake n="ini_h" />
-                        {" "}
-                        to{" "}
+                        </ArrayType>) to to{" "}
                         <Code>
                           <R n="hs_hash" />(<R n="hs_protocol_name" />)
                         </Code>.
@@ -596,18 +593,10 @@ export const handshake_and_encryption = (
                     }
                     right={
                       <>
-                        If <R n="hs_protocol_name" /> is less than or equal to
-                        {" "}
-                        <R n="hs_hashlen" /> bytes long, initialise{" "}
-                        <DefValue n="res_h" /> (type{" "}
+                        Initialise <DefValue n="res_h" /> (type{" "}
                         <ArrayType count={<R n="hs_hashlen" />}>
                           <R n="U8" />
-                        </ArrayType>) to <R n="hs_protocol_name" />{" "}
-                        with zero bytes appended to make <R n="hs_hashlen" />
-                        {" "}
-                        bytes. Otherwise, initialise <DefValue fake n="res_h" />
-                        {" "}
-                        to{" "}
+                        </ArrayType>) to to{" "}
                         <Code>
                           <R n="hs_hash" />(<R n="hs_protocol_name" />)
                         </Code>.
