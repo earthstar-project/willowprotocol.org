@@ -679,7 +679,6 @@ span.katex {
 .toc li > a {
   display: inline-block;
   text-decoration: none;
-  color: var(--nearly-black);
   transition: all 0.125s ease-in-out;
 }
 
@@ -689,7 +688,7 @@ span.katex {
   color: var(--nearly-black);
 }
 
-.toc li:has(li.tocVisible):nth-last-child(1 of .tocVisible) > a {
+.toc li:has(li.tocVisible):nth-last-child(1 of .tocVisible) > a, li:has(+ li.tocVisible) li.tocVisible:nth-last-child(1 of .tocVisible) > a {
   color: var(--dark-green);
   transform: none;
 }
