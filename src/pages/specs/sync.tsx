@@ -2478,13 +2478,13 @@ export const sync = (
                 title="PioBindReadCapability"
                 noToc
               >
-                <Gwil>FIXME: headings turn green on hover</Gwil>
                 <EncodingRelationTemplate
                   n="EncodePioBindReadCapability"
                   valType={<R n="PioBindReadCapability" />}
                   preDefs={
                     <>
                       <P>
+                        <Gwil>FIXME: headings turn green on hover (see just above)</Gwil>
                         Let <DefValue n="epbrc_ppi" r="ppi" /> denote the{" "}
                         <R n="PersonalPrivateInterest" /> whose
                       </P>
