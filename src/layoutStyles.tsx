@@ -147,10 +147,10 @@ body:not(.isPreview) {
     .toc {
         display: initial;
         width: ${toc}rem;
-
         position: fixed;
-        top: 0.5rem;
+        top: 6.5rem;
         transform: translateX(-${paddingToc + toc}rem);
+        padding-left: 0;
     }
 }
 
