@@ -579,9 +579,8 @@ export const handshake_and_encryption = (
                       <>
                         If <R n="hs_protocol_name" /> is less than or equal to
                         {" "}
-                        <R n="hs_hashlen" />, initialise <DefValue n="ini_h" />
-                        {" "}
-                        (type{" "}
+                        <R n="hs_hashlen" /> bytes long, initialise{" "}
+                        <DefValue n="ini_h" /> (type{" "}
                         <ArrayType count={<R n="hs_hashlen" />}>
                           <R n="U8" />
                         </ArrayType>) to <R n="hs_protocol_name" />{" "}
@@ -599,9 +598,8 @@ export const handshake_and_encryption = (
                       <>
                         If <R n="hs_protocol_name" /> is less than or equal to
                         {" "}
-                        <R n="hs_hashlen" />, initialise <DefValue n="res_h" />
-                        {" "}
-                        (type{" "}
+                        <R n="hs_hashlen" /> bytes long, initialise{" "}
+                        <DefValue n="res_h" /> (type{" "}
                         <ArrayType count={<R n="hs_hashlen" />}>
                           <R n="U8" />
                         </ArrayType>) to <R n="hs_protocol_name" />{" "}
