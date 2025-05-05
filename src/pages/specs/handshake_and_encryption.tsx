@@ -243,6 +243,12 @@ export const handshake_and_encryption = (
                   </Code>, and
                 </Li>
                 <Li>
+                  <Marginale>
+                    We do not reflect this on the type level to keep things
+                    simple, but <R n="hs_decrypt" />{" "}
+                    also needs a way of signalling decryption failures. Any
+                    decryption failure immediately aborts the connection.
+                  </Marginale>
                   <Code>
                     <DefFunction n="hs_decrypt" r="decrypt" />(pk:{" "}
                     <R n="hs_aeadk" />, nonce: <R n="hs_nonce" />, ad:{" "}
@@ -299,8 +305,8 @@ export const handshake_and_encryption = (
                 <DefValue n="hs_blocklen" r="blocklen" /> to serve as the{" "}
                 <Code>B</Code> parameter of{" "}
                 <AE href="https://www.ietf.org/rfc/rfc2104.txt">HMAC</AE>{" "}
-                (i.e., it should be the block length of{" "}
-                <R n="hs_hash" />). We further require a{" "}
+                (i.e., it should be the block length of <R n="hs_hash" />{" "}
+                in bytes). We further require a{" "}
                 <Sidenote
                   note={
                     <>
@@ -311,8 +317,9 @@ export const handshake_and_encryption = (
                 >
                   function
                 </Sidenote>{" "}
-                <DefFunction n="hs_hash_to_aeadkey" r="hash_to_aeadkey" /> from
+                <DefFunction n="hs_digest_to_aeadkey" r="digest_to_aeadkey" />
                 {" "}
+                from{" "}
                 <Code>
                   <ArrayType count={<R n="hs_hashlen" />}>
                     <R n="U8" />
@@ -787,7 +794,7 @@ export const handshake_and_encryption = (
                         Initialise <DefValue n="res_k" /> (type{" "}
                         <R n="hs_aeadk" />) to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k1" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k1" />)
                         </Code>.
                       </>
                     }
@@ -866,7 +873,7 @@ export const handshake_and_encryption = (
                       <>
                         Set <R n="res_k" /> to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k2" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k2" />)
                         </Code>.
                       </>
                     }
@@ -947,7 +954,7 @@ export const handshake_and_encryption = (
                         Initialise <DefValue n="ini_k" /> (type{" "}
                         <R n="hs_aeadk" />) to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k3" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k3" />)
                         </Code>.
                       </>
                     }
@@ -1026,7 +1033,7 @@ export const handshake_and_encryption = (
                       <>
                         Set <R n="ini_k" /> to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k4" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k4" />)
                         </Code>.
                       </>
                     }
@@ -1109,7 +1116,7 @@ export const handshake_and_encryption = (
                       <>
                         Set <R n="ini_k" /> to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k5" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k5" />)
                         </Code>.
                       </>
                     }
@@ -1188,7 +1195,7 @@ export const handshake_and_encryption = (
                       <>
                         Set <R n="res_k" /> to{" "}
                         <Code>
-                          <R n="hs_hash_to_aeadkey" />(<R n="tmp_k6" />)
+                          <R n="hs_digest_to_aeadkey" />(<R n="tmp_k6" />)
                         </Code>.
                       </>
                     }
@@ -1249,7 +1256,7 @@ export const handshake_and_encryption = (
                     Initialise <DefValue n="ini_aeadk1" /> (type{" "}
                     <R n="hs_aeadk" />) to{" "}
                     <Code>
-                      <R n="hs_hash_to_aeadkey" />(<R n="tmp_k8" />)
+                      <R n="hs_digest_to_aeadkey" />(<R n="tmp_k8" />)
                     </Code>.
                   </>
                 }
@@ -1258,7 +1265,7 @@ export const handshake_and_encryption = (
                     Initialise <DefValue n="res_aeadk1" /> (type{" "}
                     <R n="hs_aeadk" />) to{" "}
                     <Code>
-                      <R n="hs_hash_to_aeadkey" />(<R n="tmp_k10" />)
+                      <R n="hs_digest_to_aeadkey" />(<R n="tmp_k10" />)
                     </Code>.
                   </>
                 }
@@ -1269,7 +1276,7 @@ export const handshake_and_encryption = (
                     Initialise <DefValue n="ini_aeadk2" /> (type{" "}
                     <R n="hs_aeadk" />) to{" "}
                     <Code>
-                      <R n="hs_hash_to_aeadkey" />(<R n="tmp_k9" />)
+                      <R n="hs_digest_to_aeadkey" />(<R n="tmp_k9" />)
                     </Code>.
                   </>
                 }
@@ -1278,7 +1285,7 @@ export const handshake_and_encryption = (
                     Initialise <DefValue n="res_aeadk2" /> (type{" "}
                     <R n="hs_aeadk" />) to{" "}
                     <Code>
-                      <R n="hs_hash_to_aeadkey" />(<R n="tmp_k11" />)
+                      <R n="hs_digest_to_aeadkey" />(<R n="tmp_k11" />)
                     </Code>.
                   </>
                 }
@@ -1401,9 +1408,9 @@ export const handshake_and_encryption = (
             This approach to encrypting and sending data authenticates the end
             of the stream, and it makes chunk boundaries less obvious than when
             sending them in plaintext. Note that chunk boundaries are still not
-            fully obscured either: for one, physically sending off a chunk
-            leaks where it ends; and also, active attackers can induce
-            bitflips and then observe where exactly decoding{" "}
+            fully obscured either: for one, physically sending off a chunk leaks
+            where it ends; and also, active attackers can induce bitflips and
+            then observe where exactly decoding{" "}
             <Sidenote
               note={
                 <>
