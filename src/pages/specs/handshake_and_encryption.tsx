@@ -427,7 +427,10 @@ export const handshake_and_encryption = (
                   <DefFunction n="hs_hkdf" r="hkdf" />(chaining_key:{" "}
                   <ArrayType count={<R n="hs_hashlen" />}>
                     <R n="U8" />
-                  </ArrayType>, input_key_material: <R n="hs_pk" />):{" "}
+                  </ArrayType>, input_key_material:{" "}
+                  <SliceType>
+                    <R n="U8" />
+                  </SliceType>):{" "}
                   <TupleType
                     types={[
                       <ArrayType count={<R n="hs_hashlen" />}>
