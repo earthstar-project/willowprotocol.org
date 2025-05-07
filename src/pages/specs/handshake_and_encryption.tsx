@@ -966,10 +966,11 @@ export const handshake_and_encryption = (
                   <HandshakeRow
                     left={
                       <>
-                        Set <R n="ini_h" /> to{" "}
+                        Initialise <DefValue n="ini_rspk" /> (type{" "}
+                        <R n="hs_pk" />) to{" "}
                         <Code>
-                          <R n="hs_hash" />(concat(<R n="ini_h" />,{" "}
-                          <R n="tmp_cypher1" />))
+                          <R n="hs_decode_pk" />(<R n="hs_decrypt" />(<R n="ini_k" />,
+                          0, <R n="ini_h" />, <R n="tmp_cypher1" />))
                         </Code>.
                       </>
                     }
@@ -977,11 +978,10 @@ export const handshake_and_encryption = (
                   <HandshakeRow
                     left={
                       <>
-                        Initialise <DefValue n="ini_rspk" /> (type{" "}
-                        <R n="hs_pk" />) to{" "}
+                        Set <R n="ini_h" /> to{" "}
                         <Code>
-                          <R n="hs_decode_pk" />(<R n="hs_decrypt" />(<R n="ini_k" />,
-                          0, <R n="ini_h" />, <R n="tmp_cypher1" />))
+                          <R n="hs_hash" />(concat(<R n="ini_h" />,{" "}
+                          <R n="tmp_cypher1" />))
                         </Code>.
                       </>
                     }
@@ -1128,10 +1128,11 @@ export const handshake_and_encryption = (
                   <HandshakeRow
                     right={
                       <>
-                        Set <R n="res_h" /> to{" "}
+                        Initialise <DefValue n="res_rspk" /> (type{" "}
+                        <R n="hs_pk" />) to{" "}
                         <Code>
-                          <R n="hs_hash" />(concat(<R n="res_h" />,{" "}
-                          <R n="tmp_cypher2" />))
+                          <R n="hs_decode_pk" />(<R n="hs_decrypt" />(<R n="res_k" />,
+                          0, <R n="res_h" />, <R n="tmp_cypher2" />))
                         </Code>.
                       </>
                     }
@@ -1139,11 +1140,10 @@ export const handshake_and_encryption = (
                   <HandshakeRow
                     right={
                       <>
-                        Initialise <DefValue n="res_rspk" /> (type{" "}
-                        <R n="hs_pk" />) to{" "}
+                        Set <R n="res_h" /> to{" "}
                         <Code>
-                          <R n="hs_decode_pk" />(<R n="hs_decrypt" />(<R n="res_k" />,
-                          0, <R n="res_h" />, <R n="tmp_cypher2" />))
+                          <R n="hs_hash" />(concat(<R n="res_h" />,{" "}
+                          <R n="tmp_cypher2" />))
                         </Code>.
                       </>
                     }
