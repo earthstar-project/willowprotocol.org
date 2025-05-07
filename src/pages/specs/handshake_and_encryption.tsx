@@ -67,6 +67,7 @@ export const handshake_and_encryption = (
         heading={"A Recommended Handshake and Encryption Scheme"}
         toc
         bibliography
+        parentId="specifications"
       >
         <P>
           The specification of{" "}

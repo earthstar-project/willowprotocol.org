@@ -59,6 +59,7 @@ export const lcmux = (
         status="proposal"
         statusDate="24.01.2025"
         toc
+        parentId="specifications"
       >
         <StylesheetDependency dep={["lcmux", "icon_defs.css"]} />
         <P>

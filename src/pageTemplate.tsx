@@ -62,6 +62,10 @@ export type PageTemplateProps = {
    * Render a bibliography?
    */
   bibliography?: boolean;
+  /** The ID of this page's parent page, to be used if the TOC is enabled.
+   * Falls back to the homepage if not provided.
+   */
+  parentId?: string;
 };
 
 export function PageTemplate(
@@ -75,6 +79,7 @@ export function PageTemplate(
     statusDate,
     toc,
     bibliography,
+    parentId,
   }: PageTemplateProps & {
     children?: Expressions;
   },
@@ -151,7 +156,11 @@ export function PageTemplate(
           <Div id="wrapContent">
             <Main>
               <Hsection title={<exps x={heading} />} n={headingId}>
-                {toc ? <TableOfContents stopLevel={99} /> : ""}
+                {toc ? <TableOfContents headerExprs={
+                  <Nav>
+                    <Li>⇡ <R n={parentId || "willow"}/></Li>
+                    <Li><R n={headingId}/></Li>
+                  </Nav>} stopLevel={99} /> : ""}
                 {status
                   ? (
                     <P>

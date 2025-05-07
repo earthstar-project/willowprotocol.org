@@ -27,6 +27,7 @@ export const data_model = (
         heading={"Data Model"}
         status="final"
         toc
+        parentId="specifications"
       >
         <P>
           Willow is a system for giving meaningful, hierarchical names to

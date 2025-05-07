@@ -49,6 +49,7 @@ export const sync = (
         bibliography
         status="candidate"
         statusDate="10.04.2025"
+        parentId="specifications"
       >
         <PreviewScope>
           <P>

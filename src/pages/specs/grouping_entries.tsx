@@ -38,6 +38,7 @@ export const grouping_entries = (
         headingId="grouping_entries"
         heading={"Grouping Entries"}
         toc
+        parentId="specifications"
       >
         <P>
           <Marginale inlineable>
