@@ -406,6 +406,12 @@ export const private_interest_overlap = (
           </P>
 
           <P>
+            <Marginale>
+              <Img
+                src={<ResolveAsset asset={["pio", "which_salt.png"]} />}
+                alt={"A comic showing two characters creating hashes of a common piece of information using their own salt. When they receive each others' hashes, they compare it with a hash generated using their partner's salt."}
+              />
+            </Marginale>
             Telling a peer directly about which <Rs n="Area" /> in which{" "}
             <Rs n="namespace" /> you are interested in leaks{" "}
             <Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and{" "}
@@ -417,7 +423,7 @@ export const private_interest_overlap = (
             that they have shared knowledge. For this reason, each peer is
             assigned a random bitstring to use as a salt for the hash function.
             A peer <Em>transmits</Em>
-            <Gwil>This would be nice to have an illustration for.</Gwil>{" "}
+            {" "}
             hashes salted with <Em>its own</Em> salt, but compares the hashes it
             {" "}
             <Em>receives</Em> against hashes that it computes locally with the

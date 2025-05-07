@@ -538,11 +538,21 @@ export const lcmux = (
             tighten the limit. Any bounds that would allow the <R n="lcmux_c" />
             {" "}
             to send more bytes than promised in a previous bound are forbidden.
-            <Gwil>
-              To preserve the flow of the document so far, we'd need a diagram
-              here.
-            </Gwil>
           </P>
+          
+          <Figure>
+            <Img
+              src={
+                <ResolveAsset
+                  asset={["lcmux", "client_limiting.png"]}
+                />
+              }
+              alt={`A server-client diagram. The server starts with five empty buffer slots and zero issuable guarantees, and the client starts with five remaining guarantees. In the first step, the client sends a message to the server that it will only send two more bytes. In the second step, the server has blocked off three of its buffer's slots, leaving only two available. The client's original five remaining guarantees have been reduced to the two it limited itself to. The client sends a two-byte message. In the third step, the server has filled the open slots of its buffer, and the client has zero remaining guarantees.`}
+            />
+            <Figcaption>
+              The <R n="lcmux_c"/> communicates an upper bound on the number of bytes it will communicate to the <R n="lcmux_s" /> in the future.
+            </Figcaption>
+          </Figure>
 
           <P>
             Fully analogously, the <R n="lcmux_s" />{" "}
@@ -557,11 +567,23 @@ export const lcmux = (
             <R n="lcmux_s" />{" "}
             may communicate new upper bounds over time, but only if they stictly
             tighten the limit.
-            <Gwil>
-              Another diagram here? Or perhaps only one here for the three
-              paragraphs above?
-            </Gwil>
           </P>
+          
+          <Figure>
+            <Img
+              src={
+                <ResolveAsset
+                  asset={["lcmux", "server_limiting.png"]}
+                />
+              }
+              alt={`A server-client diagram. The server starts with five empty buffer slots and zero issuable guarantees, and the client starts with five remaining guarantees. In the first step, the server sends a message to the client that it will only accept two more bytes. In the second step, the server has blocked off three of its buffer's slots, leaving only two available. The client's original five remaining guarantees have been reduced to the two the server indicated it would limit itself to. The client sends a two-byte message. In the third step, the server has filled the open slots of its buffer, and the client has zero remaining guarantees.`}
+            />
+            <Figcaption>
+              <Figcaption>
+                The <R n="lcmux_s"/> communicates an upper bound on the number of bytes it will communicate to the <R n="lcmux_c" /> in the future.
+              </Figcaption>
+            </Figcaption>
+          </Figure>
 
           <P>
             Taken together, these techniques make for a stable system where the
