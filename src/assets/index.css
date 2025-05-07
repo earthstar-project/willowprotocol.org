@@ -120,9 +120,10 @@ h3,
 h4,
 h5,
 h6 {
+  /* this unusual arrangement is so that navigating to anchor links leaves some nice whitespace above it. */
   padding-top: 0.5em;
-  margin-bottom: 0.5em;
-
+  margin-bottom: 0.5em; 
+  
   >a[data-ref].hsection {
     color: var(--nearly-black);
     text-decoration: none;
@@ -504,22 +505,6 @@ table.encodingdef table.encodingdef td, th {
   border-bottom: 1px solid var(--light-green);
 }
 
-ol.toc_children {
-  padding-left: 1em;
-}
-
-.toc a {
-  text-decoration: none !important;
-}
-
-.toc li {
-  margin: 0.35em 0;
-}
-
-.toc_top {
-  display: none;
-}
-
 .clearright {
   clear: right;
 }
@@ -674,30 +659,57 @@ span.katex {
 /*********************/
 
 .toc {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   text-align: left;
 
   ol {
     margin: 0;
   }
+  
+  a[data-ref].hsection {
+    text-decoration: none;
+  }
 }
 
 .toc li {
   list-style: none;
-  line-height: 1.1;
-  margin-top: 0.3rem;
+  line-height: 1.3;
 }
 
-.toc li>a {
+.toc li > a {
+  display: inline-block;
   text-decoration: none;
-  color: var(--nearly-black);
-  transition: color 0.5s ease-in-out;
+  transition: all 0.125s ease-in-out;
 }
 
-li.tocVisible>a,
-.toc li>a:hover {
+.toc li:nth-last-child(1 of .tocVisible) > a {
+  transform: scale(1.05);
+  transform-origin: left;
+  color: var(--nearly-black);
+}
+
+.toc li:has(li.tocVisible):nth-last-child(1 of .tocVisible) > a, li:has(+ li.tocVisible) li.tocVisible:nth-last-child(1 of .tocVisible) > a {
+  color: var(--dark-green);
+  transform: none;
+}
+
+.toc li > a:hover {
   color: var(--main-fg);
 }
+
+.toc li {
+  margin: 0.5em 0;
+}
+
+.toc ol {
+  padding-left: 1em;
+  margin: 0.5em 0;
+}
+
+.toc_top {
+  display: none;
+}
+
 
 /********************************/
 /* Bibliographies and Citations */
