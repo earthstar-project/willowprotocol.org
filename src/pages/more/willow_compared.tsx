@@ -1,21 +1,10 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import { AE, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Img, Li, P, Ul } from "macromania-html";
-import { ResolveAsset } from "macromania-assets";
+import { Code, Em, P } from "macromania-html";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
-import { Def, R, Rb, Rs } from "macromania-defref";
-import {
-  AccessStruct,
-  DefFunction,
-  DefType,
-  DefValue,
-  StructDef,
-} from "macromania-rustic";
-import { M } from "macromania-katex";
-import { PreviewScope } from "macromania-previews";
-import { Pseudocode } from "macromania-pseudocode";
+import { R, Rs } from "macromania-defref";
 
 export const willow_compared = (
   <Dir name="willow_compared">
@@ -23,7 +12,7 @@ export const willow_compared = (
       <PageTemplate
         htmlTitle="Comparison to Other Protocols"
         headingId="willow_compared"
-        heading={"Comparison to Other Protocols"}
+        heading="Comparison to Other Protocols"
         toc
         parentId="more"
       >
@@ -219,6 +208,30 @@ export const willow_compared = (
               to integrate a proper set reconciliation protocol.
             </Marginale>, despite ultimately being a protocol for exchanging
             sets of events.
+          </P>
+        </Hsection>
+
+        <Hsection n="compare_fediverse" title="ActivityPub and the Fediverse">
+          <P>
+            <AE href="https://en.wikipedia.org/wiki/ActivityPub">
+              ActivityPub
+            </AE>, like Willow, provides proper mutability by referring to data
+            via user-selected names. Unlike Willow, however, these names work by
+            addressing a particular server that supplies the data. This
+            introduces a certain brittleness into the system, and forces server
+            operators to take on responsibilities that can be hard to properly
+            assess in advance. The projects are similar in spirit, but Willow
+            deliberately aims to eliminate the bottleneck of server operators.
+          </P>
+
+          <P>
+            The <Rs n="owned_namespace" />{" "}
+            of Meadowcap were designed to mimic the curative function of a
+            fediverse instance host without tying it to computational resources
+            (and capability delegation makes it simple to delegate and spread
+            the cognitive load). Beyond this, <Rs n="communal_namespace" />{" "}
+            provide a model that cannot realistically be replicated in the
+            fediverse (unless everybody ran their own server).
           </P>
         </Hsection>
 
