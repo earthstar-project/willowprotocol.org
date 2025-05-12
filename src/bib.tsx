@@ -438,4 +438,67 @@ export const bib: BibItemDeclaration[] = [
       </>
     ),
   },
+  {
+    item: `@book{mehta2004handbook,
+  title={Handbook of data structures and applications},
+  author={Mehta, Dinesh P and Sahni, Sartaj},
+  year={2004},
+  publisher={Chapman and Hall/CRC}
+}
+
+`,
+    href: "http://www.ir.juit.ac.in:8080/jspui/handle/123456789/5332?mode=full",
+    blurb: (
+      <>
+        <P>
+        </P>
+      </>
+    ),
+  },
+  {
+    item: `@inproceedings{procopiuc2003bkd,
+  title={Bkd-tree: A dynamic scalable kd-tree},
+  author={Procopiuc, Octavian and Agarwal, Pankaj K and Arge, Lars and Vitter, Jeffrey Scott},
+  booktitle={Advances in Spatial and Temporal Databases: 8th International Symposium, SSTD 2003, Santorini Island, Greece, July 2003. Proceedings 8},
+  pages={46--65},
+  year={2003},
+  organization={Springer}
+}
+
+`,
+    asset: ["references", "procopiuc2003bkd.pdf"],
+    blurb: (
+      <>
+        <P>
+          In this paper we propose a new data structure, called the Bkd-tree,
+          for indexing large multi-dimensional point data sets. The Bkd-tree is
+          an I/O-efficient dynamic data structure based on the kd-tree. We
+          present the results of an extensive experimental study showing that
+          unlike previous attempts on making external versions of the kd-tree
+          dynamic, the Bkd-tree maintains its high space utilization and
+          excellent query and update performance regardless of the number of
+          updates performed on it.
+        </P>
+      </>
+    ),
+  },
+  {
+    item: `@inproceedings{punnoose2012rya,
+  title={Rya: a scalable RDF triple store for the clouds},
+  author={Punnoose, Roshan and Crainiceanu, Adina and Rapp, David},
+  booktitle={Proceedings of the 1st International Workshop on Cloud Intelligence},
+  pages={1--8},
+  year={2012}
+}
+
+`,
+    asset: ["references", "punnoose2012rya.pdf"],
+    blurb: (
+      <>
+        <P>
+        Resource Description Framework (RDF) was designed with the initial goal of developing metadata for the Internet. While the Internet is a conglomeration of many interconnected networks and computers, most of today's best RDF storage solutions are confined to a single node. Working on a single node has significant scalability issues, especially considering the magnitude of modern day data. In this paper we introduce a scalable RDF data management system that uses Accumulo, a Google Bigtable variant. We introduce storage methods, indexing schemes, and query processing techniques that scale to billions of triples across multiple nodes, while providing fast and easy access to the data through conventional query mechanisms such as SPARQL. Our performance evaluation shows that in most cases, our system outperforms existing distributed RDF solutions, even systems much more complex than ours.
+        </P>
+      </>
+    ),
+  },
 ];

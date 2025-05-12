@@ -78,7 +78,6 @@ export const encodings = (
         </P>
 
         <P>
-          <Alj>TODO: improve the TOC rendering (styling, top, Home?)</Alj>
           <Alj>TODO: fix preview iframe height</Alj>
           A perhaps curious feature of the Willow data model is that its
           specification does not talk about encodings.{" "}
