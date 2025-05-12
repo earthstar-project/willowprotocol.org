@@ -78,10 +78,10 @@ body:not(.isPreview) {
     .toc {
         display: initial;
         width: 13rem;
-
         position: fixed;
-        top: 0.5rem;
+        top: 6.5rem;
         transform: translateX(-14.6rem);
+        padding-left: 0;
     }
 }
 

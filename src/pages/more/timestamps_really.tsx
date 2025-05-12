@@ -26,6 +26,7 @@ export const timestamps_really = (
         headingId="timestamps_really"
         heading={"Timestamps, Really?"}
         toc
+        parentId="more"
       >
         <P>
           Willow implements a key-value store (up to prefix-based overwrites),

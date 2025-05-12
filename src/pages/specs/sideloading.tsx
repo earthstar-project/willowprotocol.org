@@ -38,6 +38,7 @@ export const sideloading = (
         heading={"Willow Sideloading Protocol"}
         toc
         status="proposal"
+        parentId="specifications"
       >
         <PreviewScope>
           <P>

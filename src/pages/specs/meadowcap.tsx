@@ -42,6 +42,7 @@ export const meadowcap = (
         status="candidate"
         statusDate="17.01.2024"
         toc
+        parentId="specifications"
       >
         <P>
           Meadowcap is a capability system for use with Willow. In this

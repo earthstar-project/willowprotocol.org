@@ -456,7 +456,7 @@ export function Hsection(props: HsectionProps): Expression {
 }
 
 export function TableOfContents(
-  { stopLevel }: { stopLevel: number },
+  { stopLevel, headerExprs }: { stopLevel: number, headerExprs?: Expressions },
 ): Expression {
   return (
     <impure
@@ -483,8 +483,9 @@ export function TableOfContents(
         }
 
         return (
+          <Div clazz="toc onlyLeft">
+          <exps x={headerExprs} />
           <Ol
-            clazz="toc onlyLeft"
             children={structure.children.map((child) => (
               <TocStructure
                 structure={child}
@@ -492,6 +493,7 @@ export function TableOfContents(
               />
             ))}
           />
+          </Div>
         );
       }}
     />

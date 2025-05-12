@@ -54,6 +54,8 @@ export const rbsr = (
         headingId="d3_range_based_set_reconciliation"
         heading={"3d Range-Based Set Reconciliation"}
         bibliography
+        toc
+        parentId="specifications"
       >
         <P>
           When two peers wish to synchronise data, they typically first exchange

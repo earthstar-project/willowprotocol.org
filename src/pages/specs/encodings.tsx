@@ -65,6 +65,7 @@ export const encodings = (
         status="proposal"
         statusDate="17.01.2024"
         toc
+        parentId="specifications"
       >
         <P>
           <Em>
