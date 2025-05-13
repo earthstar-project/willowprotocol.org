@@ -69,39 +69,40 @@ function PiiExample(
           />
         }
       />
-      <Figcaption>
-        <Div clazz="piiExample" style="padding: 1rem;">
-          <Div clazz="piiExampleLeft">
-            {leftSs === undefined ? <R n="ss_any" /> : (
-              <Purple>
-                <exps x={leftSs} />
-              </Purple>
-            )}
-            <Path components={leftPath} />
+      <Marginale inlineable>
+        <Figcaption>
+          <Div clazz="piiExample">
+            <Div clazz="piiExampleLeft">
+              Left: {leftSs === undefined ? <R n="ss_any" /> : (
+                <Purple>
+                  <exps x={leftSs} />
+                </Purple>
+              )} subspace, path <Path components={leftPath} />
+            </Div>
+            <Div clazz="piiExampleRight">
+              Right: {rightSs === undefined ? <R n="ss_any" /> : (
+                <Purple>
+                  <exps x={rightSs} />
+                </Purple>
+              )} subspace, path <Path components={rightPath} />
+            </Div>
+            <Div clazz="piiExampleCaption">
+              {overlap
+                ? (
+                  <>
+                    The <Rs n="PrivateInterest" /> are not{" "}
+                    <R n="pi_disjoint" />.
+                  </>
+                )
+                : (
+                  <>
+                    The <Rs n="PrivateInterest" /> are <R n="pi_disjoint" />.
+                  </>
+                )} <exps x={children} />
+            </Div>
           </Div>
-          <Div clazz="piiExampleRight">
-            {rightSs === undefined ? <R n="ss_any" /> : (
-              <Purple>
-                <exps x={rightSs} />
-              </Purple>
-            )}
-            <Path components={rightPath} />
-          </Div>
-          <Div clazz="piiExampleCaption">
-            {overlap
-              ? (
-                <>
-                  The <Rs n="PrivateInterest" /> are not <R n="pi_disjoint" />.
-                </>
-              )
-              : (
-                <>
-                  The <Rs n="PrivateInterest" /> are <R n="pi_disjoint" />.
-                </>
-              )} <exps x={children} />
-          </Div>
-        </Div>
-      </Figcaption>
+        </Figcaption>
+      </Marginale>
     </Figure>
   );
 }
@@ -1034,7 +1035,7 @@ export const private_interest_overlap = (
                 for <Rs n="pi_ss" />, <R n="path_prefix" />,{" "}
                 <R n="path_extension" />, or <R n="path_related">unrelated</R>
                 {" "}
-                for <Rs n="pi_path" />).<Gwil>TODO: example styling</Gwil>
+                for <Rs n="pi_path" />).
               </P>
 
               <PiiExample
