@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, AsideBlock, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, AsideBlock, Curly, NoWrap, Path, MarginCaption } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -30,6 +30,13 @@ export const e2e = (
         parentId="specifications"
       >
         <P>
+          <Marginale inlineable>
+            <Img
+              src={<ResolveAsset asset={["encryption", "blind_peer.png"]} />}
+              alt={`An ornamental drawing of Alfie and Betty passing sheets of encrypted information to each other via a robot who has no idea what to make of the documents being passed between them. Alfie and Betty seem pretty happy though.`}
+            />
+            
+          </Marginale>
           Willow has no built-in mechanisms for encrypting data. Still, it would
           be nice if peers (say, an always-on server in the cloud) could
           facilitate data exchange without being privy to the data they share.
@@ -279,6 +286,22 @@ export const e2e = (
             </P>
 
             <Ul>
+              <Marginale inlineable>
+                <Img
+                  src={<ResolveAsset asset={["encryption", "encrypting_path.png"]} />}
+                  alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
+                />
+                <MarginCaption>
+                  A <R n="Path"/> is encrypted <R n="Component"/> by <R n="Component"/>.
+                </MarginCaption>
+                <Img
+                  src={<ResolveAsset asset={["encryption", "decrypting_path.png"]} />}
+                  alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
+                />
+                <MarginCaption>
+                  A <R n="Path"/> is decrypted <R n="Component"/> by <R n="Component"/>.
+                </MarginCaption>
+              </Marginale>
               <Li>
                 Encrypting the empty <R n="Path" /> yields the empty{" "}
                 <R n="Path" /> again.
