@@ -289,14 +289,14 @@ export const e2e = (
               <Marginale inlineable>
                 <Img
                   src={<ResolveAsset asset={["encryption", "encrypting_path.png"]} />}
-                  alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
+                  alt={`A comic of how the encryption process works. In the first panel, a character considers an unencrypted path. In the second panel, they break off the first component of the path. In the third panel, they produce a key for encryption. In the fourth panel, they insert the key into the unencrypted component to derive a new key from it, which falls onto the floor. In the fifth panel, they turn the key again to encrypt the the path component. In the sixth panel, they discard they key they have been using, and walk over to the key they derived in the fourth panel. In the seventh and final panel, they walk over to the remaining path components with the new key to repeat the process.`}
                 />
                 <MarginCaption>
                   A <R n="Path"/> is encrypted <R n="Component"/> by <R n="Component"/>.
                 </MarginCaption>
                 <Img
                   src={<ResolveAsset asset={["encryption", "decrypting_path.png"]} />}
-                  alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
+                  alt={`A comic of how the decryption process works. In the first panel, a character considers an encrypted path. In the second panel, they break off the first component of the path. In the third panel, they produce a key for decryption. In the fourth panel, they insert the key into the unencrypted component to decrypt the component. In the fifth panel, they turn the key again to derive a new key from the decrypted component, which falls onto the floor. In the sixth panel, they discard they key they have been using, and walk over to the key they derived in the fifth panel. In the seventh and final panel, they walk over to the remaining path components with the new key to repeat the process.`}
                 />
                 <MarginCaption>
                   A <R n="Path"/> is decrypted <R n="Component"/> by <R n="Component"/>.
