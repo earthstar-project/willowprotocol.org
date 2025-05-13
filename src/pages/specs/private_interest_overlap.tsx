@@ -1,14 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import {
-  AE,
-  Alj,
-  AsideBlock,
-  Curly,
-  Gwil,
-  NoWrap,
-  Path,
-  Purple,
-} from "../../macros.tsx";
+import { AE, AsideBlock, Gwil, Path, Purple } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Blockquote,
@@ -18,7 +9,6 @@ import {
   Em,
   Figcaption,
   Figure,
-  Hr,
   Img,
   Li,
   Ol,
@@ -34,16 +24,14 @@ import {
 import { Bib } from "macromania-bib";
 import { Marginale, Sidenote, Sidenotes } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
-import { Def, R, Rb, Rs } from "macromania-defref";
+import { Def, R, Rs } from "macromania-defref";
 import {
   AccessStruct,
   ChoiceType,
   DefFunction,
-  DefType,
   DefValue,
   SliceType,
   StructDef,
-  Tuple,
   TupleType,
 } from "macromania-rustic";
 import { M } from "macromania-katex";
@@ -124,7 +112,7 @@ export const private_interest_overlap = (
       <PageTemplate
         htmlTitle="Read Access and Confidentiality"
         headingId="private_interest_overlap"
-        heading={"Read Access and Confidentiality"}
+        heading="Read Access and Confidentiality"
         toc
         bibliography
         parentId="specifications"
@@ -133,7 +121,7 @@ export const private_interest_overlap = (
           <Marginale>
             <Img
               src={<ResolveAsset asset={["pio", "capability_gotcha.png"]} />}
-              alt={"A ticket representing a capability, detailing the capability's receiver (Betty), and that it grants write access to a path named 'organising'. Someone has circled these details messily with a red marker."}
+              alt="A ticket representing a capability, detailing the capability's receiver (Betty), and that it grants write access to a path named 'organising'. Someone has circled these details messily with a red marker."
             />
           </Marginale>
           This document details a mechanism for implementing capability-enforced
@@ -423,12 +411,9 @@ export const private_interest_overlap = (
             mirror back hashes sent by the other, tricking them into beleaving
             that they have shared knowledge. For this reason, each peer is
             assigned a random bitstring to use as a salt for the hash function.
-            A peer <Em>transmits</Em>
-            {" "}
-            hashes salted with <Em>its own</Em> salt, but compares the hashes it
-            {" "}
-            <Em>receives</Em> against hashes that it computes locally with the
-            {" "}
+            A peer <Em>transmits</Em> hashes salted with <Em>its own</Em>{" "}
+            salt, but compares the hashes it <Em>receives</Em>{" "}
+            against hashes that it computes locally with the{" "}
             <Em>other peer’s salt</Em>.
           </P>
 
@@ -1023,16 +1008,9 @@ export const private_interest_overlap = (
               that did not give rise to any matching pair, the peer knows it to
               be <R n="pi_disjoint" /> from all <Rs n="PrivateInterest" />{" "}
               of the other peer.
-              <Gwil>
-                TODO <Code>details</Code> tag styling
-              </Gwil>
             </P>
 
-            <Details>
-              <Summary>
-                Examples and Proof Sketch
-              </Summary>
-
+            <Hsection n="pio_examples" title="Examples and proof sketches">
               <P>
                 The following examples show which data the peers compute and
                 exchange in various situations. We assume the{" "}
@@ -1150,7 +1128,7 @@ export const private_interest_overlap = (
                 The only matching hashes are <Em>both</Em>{" "}
                 accompanied by a boolean of <Code>false</Code>.
               </PiiExample>
-            </Details>
+            </Hsection>
           </Hsection>
 
           <Hsection n="pio_caps" title="Exchanging Capabilities">

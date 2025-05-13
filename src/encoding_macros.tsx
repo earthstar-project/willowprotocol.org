@@ -9,8 +9,6 @@ import {
   DefFunction,
   DefType,
   DefValue,
-  FreshId,
-  RenderFreshValue,
 } from "macromania-rustic";
 import { Def, R, Rs } from "macromania-defref";
 import { M } from "macromania-katex";
@@ -945,8 +943,7 @@ export function bitfieldConditionalString(
     choices.map((branch) => ({
       code: (
         <>
-          the bitstring{" "}
-          <Code>{branch.bits.map((b) => `${b}`).join("")}</Code>.
+          the bitstring <Code>{branch.bits.map((b) => `${b}`).join("")}</Code>.
         </>
       ),
       condition: branch.condition,
