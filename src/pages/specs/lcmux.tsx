@@ -540,7 +540,7 @@ export const lcmux = (
             {" "}
             to send more bytes than promised in a previous bound are forbidden.
           </P>
-          
+
           <Figure>
             <Img
               src={
@@ -551,7 +551,9 @@ export const lcmux = (
               alt={`A server-client diagram. The server starts with five empty buffer slots and zero issuable guarantees, and the client starts with five remaining guarantees. In the first step, the client sends a message to the server that it will only send two more bytes. In the second step, the server has blocked off three of its buffer's slots, leaving only two available. The client's original five remaining guarantees have been reduced to the two it limited itself to. The client sends a two-byte message. In the third step, the server has filled the open slots of its buffer, and the client has zero remaining guarantees.`}
             />
             <Figcaption>
-              The <R n="lcmux_c"/> communicates an upper bound on the number of bytes it will communicate to the <R n="lcmux_s" /> in the future.
+              The <R n="lcmux_c" />{" "}
+              communicates an upper bound on the number of bytes it will
+              communicate to the <R n="lcmux_s" /> in the future.
             </Figcaption>
           </Figure>
 
@@ -569,7 +571,7 @@ export const lcmux = (
             may communicate new upper bounds over time, but only if they stictly
             tighten the limit.
           </P>
-          
+
           <Figure>
             <Img
               src={
@@ -581,7 +583,9 @@ export const lcmux = (
             />
             <Figcaption>
               <Figcaption>
-                The <R n="lcmux_s"/> communicates an upper bound on the number of bytes it will communicate to the <R n="lcmux_c" /> in the future.
+                The <R n="lcmux_s" />{" "}
+                communicates an upper bound on the number of bytes it will
+                communicate to the <R n="lcmux_c" /> in the future.
               </Figcaption>
             </Figcaption>
           </Figure>
@@ -784,7 +788,7 @@ export const lcmux = (
               LCMUX are called <Def n="frame" rs="frames">frames</Def>. Some
               {" "}
               <Rs n="frame" /> encapsulate <Rs n="global_message" /> or{" "}
-              <R n="channel_message" />, while others transmit metadata only.
+              <Rs n="channel_message" />, while others transmit metadata only.
             </P>
           </PreviewScope>
 
@@ -991,13 +995,21 @@ export const lcmux = (
           </Pseudocode>
 
           <P>
-            Note that the bytes in a <R n="SendChannelFrame" /> or{" "}
-            <R n="SendGlobalFrame" />{" "}
-            need not form a full message of a higher-level protocol. LCMUX can
-            be used to transparently fragment and interleave arbitrarily large
-            higher-level messages by splitting their transmission over several
-            {" "}
-            <Rs n="frame" />.
+            Note that the bytes in a <R n="SendGlobalFrame" />{" "}
+            must correspond exactly to one full message of a higher-level
+            protocol. The bytes in a <R n="SendChannelFrame" />{" "}
+            in contrast need not form a full message of a higher-level protocol;
+            LCMUX can be used to transparently fragment and interleave
+            arbitrarily large higher-level <Rs n="channel_message" />
+            <Marginale>
+              <Rsb n="global_message" />{" "}
+              cannot be fragmented this way because then decoding would require
+              memory allocation, which in turn would imply a need for resource
+              control.
+            </Marginale>{" "}
+            by splitting their transmission over several <Rs n="frame" />{" "}
+            (or it may even send multiple small <Rs n="channel_message" />{" "}
+            in a single <R n="SendChannelFrame" />).
           </P>
 
           <P>
