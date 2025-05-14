@@ -74,7 +74,7 @@ export const meadowcap = (
             data created by Alfie in a <R n="subspace" />{" "}
             owned by Gemma, unless the data is accompanied by a capability
             proving that Gemma gave write access to Alfie.
-          </P>^
+          </P>
 
           <Img
             src={
@@ -1634,9 +1634,8 @@ export const meadowcap = (
 
             <P>
               We describe the details in a capability-system-agnostic way{" "}
-              <R n="private_interest_overlap">here</R>. To use Meadowcap
-              for this approach, simply choose the type of <R n="cap_valid" />
-              {" "}
+              <R n="private_interest_overlap">here</R>. To use Meadowcap for
+              this approach, simply choose the type of <R n="cap_valid" />{" "}
               <Rs n="Capability" /> with <R n="cap_mode" />{" "}
               <R n="access_read" /> as the <Rs n="read_capability" />.
             </P>
