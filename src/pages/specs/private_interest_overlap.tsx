@@ -1044,8 +1044,9 @@ export const private_interest_overlap = (
                 leftSs="Gemma"
                 rightSs="Gemma"
                 imageName="gemma-a_gemma-a"
+                overlap
               >
-                The PrivateInterests are equal. Both peers detect an overlap.
+                Both peers detect an overlap.
               </PiiExample>
 
               <PiiExample
