@@ -9,6 +9,7 @@ import {
   Em,
   Figcaption,
   Figure,
+  Hr,
   Img,
   Li,
   Ol,
@@ -103,6 +104,7 @@ function PiiExample(
           </Div>
         </Figcaption>
       </Marginale>
+      <Hr />
     </Figure>
   );
 }
