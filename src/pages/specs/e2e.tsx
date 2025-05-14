@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, AsideBlock, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, AsideBlock, Curly, NoWrap, Path, MarginCaption } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -30,6 +30,13 @@ export const e2e = (
         parentId="specifications"
       >
         <P>
+          <Marginale inlineable>
+            <Img
+              src={<ResolveAsset asset={["encryption", "blind_peer.png"]} />}
+              alt={`An ornamental drawing of Alfie and Betty passing sheets of encrypted information to each other via a robot who has no idea what to make of the documents being passed between them. Alfie and Betty seem pretty happy though.`}
+            />
+            
+          </Marginale>
           Willow has no built-in mechanisms for encrypting data. Still, it would
           be nice if peers (say, an always-on server in the cloud) could
           facilitate data exchange without being privy to the data they share.
@@ -279,6 +286,22 @@ export const e2e = (
             </P>
 
             <Ul>
+              <Marginale inlineable>
+                <Img
+                  src={<ResolveAsset asset={["encryption", "encrypting_path.png"]} />}
+                  alt={`A comic of how the encryption process works. In the first panel, a character considers an unencrypted path. In the second panel, they break off the first component of the path. In the third panel, they produce a key for encryption. In the fourth panel, they insert the key into the unencrypted component to derive a new key from it, which falls onto the floor. In the fifth panel, they turn the key again to encrypt the the path component. In the sixth panel, they discard they key they have been using, and walk over to the key they derived in the fourth panel. In the seventh and final panel, they walk over to the remaining path components with the new key to repeat the process.`}
+                />
+                <MarginCaption>
+                  A <R n="Path"/> is encrypted <R n="Component"/> by <R n="Component"/>.
+                </MarginCaption>
+                <Img
+                  src={<ResolveAsset asset={["encryption", "decrypting_path.png"]} />}
+                  alt={`A comic of how the decryption process works. In the first panel, a character considers an encrypted path. In the second panel, they break off the first component of the path. In the third panel, they produce a key for decryption. In the fourth panel, they insert the key into the unencrypted component to decrypt the component. In the fifth panel, they turn the key again to derive a new key from the decrypted component, which falls onto the floor. In the sixth panel, they discard they key they have been using, and walk over to the key they derived in the fifth panel. In the seventh and final panel, they walk over to the remaining path components with the new key to repeat the process.`}
+                />
+                <MarginCaption>
+                  A <R n="Path"/> is decrypted <R n="Component"/> by <R n="Component"/>.
+                </MarginCaption>
+              </Marginale>
               <Li>
                 Encrypting the empty <R n="Path" /> yields the empty{" "}
                 <R n="Path" /> again.

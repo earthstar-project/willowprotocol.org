@@ -1,6 +1,6 @@
 import { Expression, Expressions } from "macromania";
 import { Wip } from "macromania-wip";
-import { A, Aside, Span } from "macromania-html";
+import { A, Aside, Span, Div } from "macromania-html";
 import { M } from "macromania-katex";
 import { Def } from "macromania-defref";
 
@@ -439,9 +439,9 @@ export function MarginCaption(
   { children }: { children: Expressions },
 ): Expression {
   return (
-    <Span clazz="margincaption">
+    <Div clazz="margincaption">
       <exps x={children} />
-    </Span>
+    </Div>
   );
 }
 
