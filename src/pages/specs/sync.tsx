@@ -300,11 +300,12 @@ export const sync = (
               <R n="private_interest_overlap">
                 privat area overlap detection sub-spec
               </R>). The handshake and encryption of the communication channel
-              are out of scope of the WGPS, but the <R n="ini_pk" /> and{" "}
-              <R n="res_pk" /> must be of type <R n="sync_receiver" />.<Alj>
+              are out of scope of the WGPS,<Marginale>
                 We recommend a handshake and subsequent encryption scheme{" "}
                 <R n="handshake_and_encryption">here</R>.
-              </Alj>
+              </Marginale>{" "}
+              but the <R n="ini_pk" /> and <R n="res_pk" /> must be of type{" "}
+              <R n="sync_receiver" />.
             </P>
           </PreviewScope>
 
@@ -2485,7 +2486,9 @@ export const sync = (
                   preDefs={
                     <>
                       <P>
-                        <Gwil>FIXME: headings turn green on hover (see just above)</Gwil>
+                        <Gwil>
+                          FIXME: headings turn green on hover (see just above)
+                        </Gwil>
                         Let <DefValue n="epbrc_ppi" r="ppi" /> denote the{" "}
                         <R n="PersonalPrivateInterest" /> whose
                       </P>

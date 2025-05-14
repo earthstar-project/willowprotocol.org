@@ -260,11 +260,11 @@ export const meadowcap = (
 
           <P>
             <Marginale>
-              If it helps to have some code to look at, there's also a{" "}
-              <AE href="https://github.com/earthstar-project/meadowcap-js">
+              If it helps to have some code to look at, there's also a Rust{" "}
+              <AE href="https://github.com/earthstar-project/willow-rs/tree/main/meadowcap/src">
                 reference implementation
               </AE>{" "}
-              of Meadowcap.<Alj inline>link to the rust code instead?</Alj>
+              of Meadowcap.
             </Marginale>
 
             This concludes the intuitive overview of Meadowcap. The remainder of
@@ -725,13 +725,11 @@ export const meadowcap = (
                     commented: {
                       comment: (
                         <>
-                          <Marginale>
-                            <Alj inline>fix marginale rendering</Alj>Remember
-                            that we assume <R n="SubspaceId" /> and{" "}
-                            <R n="UserPublicKey" /> to be the same types.
-                          </Marginale>
                           The <R n="subspace" /> <Em>for which</Em> and{" "}
-                          <Em>to whom</Em> this grants access.
+                          <Em>to whom</Em>{" "}
+                          this grants access (remember that we assume{" "}
+                          <R n="SubspaceId" /> and <R n="UserPublicKey" />{" "}
+                          to be the same types).
                         </>
                       ),
                       dedicatedLine: true,
@@ -1634,9 +1632,8 @@ export const meadowcap = (
 
             <P>
               We describe the details in a capability-system-agnostic way{" "}
-              <R n="private_interest_overlap">here</R>. To use Meadowcap
-              for this approach, simply choose the type of <R n="cap_valid" />
-              {" "}
+              <R n="private_interest_overlap">here</R>. To use Meadowcap for
+              this approach, simply choose the type of <R n="cap_valid" />{" "}
               <Rs n="Capability" /> with <R n="cap_mode" />{" "}
               <R n="access_read" /> as the <Rs n="read_capability" />.
             </P>

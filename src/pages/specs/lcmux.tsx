@@ -1415,9 +1415,6 @@ export const lcmux = (
             </PreviewScope>
 
             <Figure>
-              <Alj>
-                We need to define what 'flush' means somewhere.
-              </Alj>
               <Img
                 src={
                   <ResolveAsset
@@ -1437,7 +1434,9 @@ export const lcmux = (
                 <SkyBlue>
                   receiving (<Code>?</Code>)
                 </SkyBlue>{" "}
-                of messages.
+                of messages. <Code>FLUSH</Code>{" "}
+                indicates the moment the peer knows that the{" "}
+                <R n="resource_handle" /> cannot be referenced in the future.
               </Figcaption>
             </Figure>
           </Hsection>
