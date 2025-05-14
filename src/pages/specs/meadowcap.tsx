@@ -74,7 +74,7 @@ export const meadowcap = (
             data created by Alfie in a <R n="subspace" />{" "}
             owned by Gemma, unless the data is accompanied by a capability
             proving that Gemma gave write access to Alfie.
-          </P>^
+          </P>
 
           <Img
             src={
