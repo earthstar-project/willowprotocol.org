@@ -95,9 +95,9 @@ export const about_us = (
                 <Def n="gwil" r="gwil" rs="gwils" wide />. I’m a programmer,
                 illustrator, and parent living in the Hague, the Netherlands.
                 Despite my better judgement, I've been active in the
-                decentralised space for a couple of years now. I'm the core
-                maintainer of Earthstar and the Rust and TypeScript
-                implementations of Willow. <Rb n="aljoscha" />{" "}
+                decentralised space for a couple of years now. I'm a core a
+                maintainer for Earthstar and Willow's TypeScript and Rust
+                implementations. <Rb n="aljoscha" />{" "}
                 and I have really pushed each other to do our best work in
                 designing these protocols, though it's really all the wobbly
                 drawings for the site that have been the highlight of my
