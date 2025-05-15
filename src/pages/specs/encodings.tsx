@@ -454,7 +454,7 @@ export const encodings = (
             <P>
               <Gwil>
                 How are the DefRef references inside math mode not coloured
-                directly? How? (When fixing this, also consider hover colouring.
+                correctly? How? (When fixing this, also consider hover colouring.
                 No change is ok, but bright green is not.)
               </Gwil>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}

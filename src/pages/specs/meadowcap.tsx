@@ -615,10 +615,7 @@ export const meadowcap = (
           <PreviewScope>
             <P>
               A Meadowcap instantiation is{" "}
-              <Def n="mc_compatible" r="compatible" /> with Willow if<Alj>
-                TODO defref styling is broken in the preview of campatible for
-                some reason
-              </Alj>
+              <Def n="mc_compatible" r="compatible" /> with Willow if
               <Ul>
                 <Li>
                   the Willow parameter <R n="NamespaceId" />{" "}

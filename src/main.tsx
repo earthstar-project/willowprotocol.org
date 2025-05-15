@@ -37,6 +37,7 @@ import { Assets } from "macromania-assets";
 import { Div } from "macromania-html";
 import { PageTemplate } from "./pageTemplate.tsx";
 import { RenderAllWips } from "macromania-wip";
+import { ConfigRustic } from "macromania-rustic";
 
 const ctx = new Context();
 
@@ -68,7 +69,11 @@ const exp = (
       />,
       <ConfigPreviews
         previewPath={["build", "previews"]}
-        cssDeps={[{ dep: ["index.css"] }]}
+        cssDeps={[{ dep: ["index.css"] }, {
+          dep: [
+            "pseudocode.css",
+          ], /* The proper fix would be to add refDependency support to defref and configure macromania-rustic to use that feature */
+        }]}
         jsDeps={[prettyPreviewsInfo]}
       />,
       <ConfigDefref
