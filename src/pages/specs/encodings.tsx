@@ -3,13 +3,11 @@ import {
   ArbitraryBitsAreZero,
   Bitfield,
   bitfieldConditional,
-  bitfieldConditionalString,
   bitfieldIff,
   C64Encoding,
   C64Standalone,
   c64Tag,
   ChooseMaximal,
-  ChooseMinimal,
   CodeFor,
   EncConditional,
   Encoding,
@@ -43,13 +41,7 @@ import { Dir, File } from "macromania-outfs";
 import { Hsection } from "macromania-hsection";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
-import {
-  AccessStruct,
-  ChoiceType,
-  DefType,
-  DefValue,
-  StructDef,
-} from "macromania-rustic";
+import { AccessStruct, DefType, DefValue, StructDef } from "macromania-rustic";
 import { M } from "macromania-katex";
 import { EncIterator } from "../../encoding_macros.tsx";
 import { Tuple } from "macromania-rustic";
@@ -61,7 +53,7 @@ export const encodings = (
       <PageTemplate
         htmlTitle="On Encodings"
         headingId="encodings"
-        heading={"On Encodings"}
+        heading="On Encodings"
         status="proposal"
         statusDate="17.01.2024"
         toc
@@ -78,7 +70,6 @@ export const encodings = (
         </P>
 
         <P>
-          <Alj>TODO: fix preview iframe height</Alj>
           A perhaps curious feature of the Willow data model is that its
           specification does not talk about encodings.{" "}
           <Sidenote
@@ -454,8 +445,8 @@ export const encodings = (
             <P>
               <Gwil>
                 How are the DefRef references inside math mode not coloured
-                correctly? How? (When fixing this, also consider hover colouring.
-                No change is ok, but bright green is not.)
+                correctly? How? (When fixing this, also consider hover
+                colouring. No change is ok, but bright green is not.)
               </Gwil>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}
               <DefValue n="c64_tw" r="tag_width" math={`tag\\_width`} />{" "}

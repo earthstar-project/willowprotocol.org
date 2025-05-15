@@ -1300,7 +1300,7 @@ function _(e, t) {
     }),
       window.parent.postMessage({
         previewDimensions: {
-          height: document.body.scrollHeight,
+          height: document.body.scrollHeight + 40,
           frameCount: m,
         },
       }, "*");
