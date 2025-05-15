@@ -70,6 +70,10 @@ export const encodings = (
         </P>
 
         <P>
+          <Alj>
+            Add etags for pages, previews, and assets. Use content-addressed
+            urls for internal references (e.g. assets, possibly previews?)
+          </Alj>
           A perhaps curious feature of the Willow data model is that its
           specification does not talk about encodings.{" "}
           <Sidenote
@@ -942,6 +946,7 @@ export const encodings = (
                 }}
               />
             </Hsection>
+
             <Hsection
               n="encsec_EncodeEntryRelativeEntry"
               title={<Code>EncodeEntryRelativeEntry</Code>}
@@ -1995,18 +2000,322 @@ export const encodings = (
           <P>
             Encodings for <R n="meadowcap" /> and{" "}
             <Rs n="McEnumerationCapability" />.
-            <Alj>TODO add hsections to make for a useful TOC</Alj>
           </P>
 
-          <P>
-            <Alj inline>TODO mc subspace cap absolute</Alj>
-          </P>
+          <Hsection
+            n="encsec_EncodeCommunalCapability"
+            title={<Code>EncodeCommunalCapability</Code>}
+            shortTitle="Communal Capability"
+          >
+            <EncodingRelationTemplate
+              n="EncodeCommunalCapability"
+              valType={<R n="CommunalCapability" />}
+              preDefs={
+                <P>
+                  We denote the the <M>i</M>-th <R n="Area" /> in{" "}
+                  <ValAccess field="communal_cap_delegations" /> as{" "}
+                  <M post=".">
+                    <DefValue n="ccrpi_area_i" r="area_i" />
+                  </M>{" "}
+                  Further, let{"  "}
+                  <M>
+                    <DefValue n="ccrpia_area_base" r="area_{-1}" />
+                  </M>{" "}
+                  be the <R n="full_area" />.
+                </P>
+              }
+              bitfields={[
+                {
+                  ...bitfieldConditional(
+                    2,
+                    [
+                      {
+                        code: (
+                          <>
+                            the bitstring <Code>00</Code>.
+                          </>
+                        ),
+                        condition: (
+                          <>
+                            <Code>
+                              <ValAccess field="communal_cap_access_mode" /> ==
+                              {" "}
+                              <R n="access_read" />
+                            </Code>
+                          </>
+                        ),
+                      },
+                    ],
+                    <>
+                      the bitstring <Code>01</Code>.
+                    </>,
+                  ),
+                  id: "enc_access_mode",
+                },
+                c64Tag(
+                  "delegations_count",
+                  6,
+                  <>
+                    the length of <ValAccess field="communal_cap_delegations" />
+                  </>,
+                ),
+              ]}
+              contents={[
+                <CodeFor isFunction enc="encode_namespace_pk">
+                  <ValAccess field="communal_cap_namespace" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_user_pk">
+                  <ValAccess field="communal_cap_user" />
+                </CodeFor>,
+                <C64Encoding id="delegations_count" />,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_ccapa_rel_area" r="area" />,
+                          <DefValue n="enc_ccapa_rel_pk" r="pk" />,
+                          <DefValue n="enc_ccapa_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="communal_cap_delegations" />}
+                >
+                  <Encoding
+                    idPrefix="enc_ccapa_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="EncodeAreaInArea"
+                        relativeTo={
+                          <M>
+                            <R n="ccrpi_area_i">
+                              area_<Curly>i - 1</Curly>
+                            </R>
+                          </M>
+                        }
+                      >
+                        <R n="enc_ccapa_rel_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="enc_ccapa_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <R n="enc_ccapa_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+              ]}
+            />
+          </Hsection>
 
-          <Hr />
+          <Hsection
+            n="encsec_EncodeOwnedCapability"
+            title={<Code>EncodeOwnedCapability</Code>}
+            shortTitle="Owned Capability"
+          >
+            <EncodingRelationTemplate
+              n="EncodeOwnedCapability"
+              valType={<R n="OwnedCapability" />}
+              preDefs={
+                <P>
+                  We denote the the <M>i</M>-th <R n="Area" /> in{" "}
+                  <ValAccess field="owned_cap_delegations" /> as{" "}
+                  <M post=".">
+                    <DefValue n="ocrpi_area_i" r="area_i" />
+                  </M>{" "}
+                  Further, let{"  "}
+                  <M>
+                    <DefValue n="ocrpia_area_base" r="area_{-1}" />
+                  </M>{" "}
+                  be the <R n="full_area" />.
+                </P>
+              }
+              bitfields={[
+                {
+                  ...bitfieldConditional(
+                    2,
+                    [
+                      {
+                        code: (
+                          <>
+                            the bitstring <Code>10</Code>.
+                          </>
+                        ),
+                        condition: (
+                          <>
+                            <Code>
+                              <ValAccess field="owned_cap_access_mode" /> ==
+                              {" "}
+                              <R n="access_read" />
+                            </Code>
+                          </>
+                        ),
+                      },
+                    ],
+                    <>
+                      the bitstring <Code>11</Code>.
+                    </>,
+                  ),
+                  id: "enc_access_mode",
+                },
+                c64Tag(
+                  "delegations_count",
+                  6,
+                  <>
+                    the length of <ValAccess field="owned_cap_delegations" />
+                  </>,
+                ),
+              ]}
+              contents={[
+                <CodeFor isFunction enc="encode_namespace_pk">
+                  <ValAccess field="owned_cap_namespace" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_user_pk">
+                  <ValAccess field="owned_cap_user" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_namespace_sig">
+                  <ValAccess field="owned_cap_initial_authorisation" />
+                </CodeFor>,
+                <C64Encoding id="delegations_count" />,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_ocapa_rel_area" r="area" />,
+                          <DefValue n="enc_ocapa_rel_pk" r="pk" />,
+                          <DefValue n="enc_ocapa_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="owned_cap_delegations" />}
+                >
+                  <Encoding
+                    idPrefix="enc_ocapa_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor
+                        enc="EncodeAreaInArea"
+                        relativeTo={
+                          <M>
+                            <R n="ocrpi_area_i">
+                              area_<Curly>i - 1</Curly>
+                            </R>
+                          </M>
+                        }
+                      >
+                        <R n="enc_ocapa_rel_area" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="enc_ocapa_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <R n="enc_ocapa_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+              ]}
+            />
+          </Hsection>
 
-          <P>
-            <Alj inline>TODO mc cap absolute</Alj>
-          </P>
+          <Hsection
+            n="encsec_McCapability"
+            title="Meadowcap Capability Encoding"
+            shortTitle="Meadowcap Capability"
+          >
+            <EncodingRelationTemplate
+              n="EncodeMcCapability"
+              valType={<R n="Capability" />}
+              bitfields={[]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <ValAccess field="capability_inner" />
+                      </Code>{" "}
+                      is a <R n="CommunalCapability" />
+                    </>
+                  }
+                  otherwise={
+                    <CodeFor
+                      notStandalone
+                      enc="EncodeOwnedCapability"
+                    >
+                      <ValAccess field="capability_inner" />
+                    </CodeFor>
+                  }
+                >
+                  <CodeFor
+                    notStandalone
+                    enc="EncodeCommunalCapability"
+                  >
+                    <ValAccess field="capability_inner" />
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="encsec_EncodeEnumerationCapability"
+            title={<Code>EncodeEnumerationCapability</Code>}
+            shortTitle="Enumeration Capability"
+          >
+            <EncodingRelationTemplate
+              n="EncodeMcEnumerationCapability"
+              valType={<R n="McEnumerationCapability" />}
+              bitfields={[]}
+              contents={[
+                <CodeFor isFunction enc="encode_namespace_pk">
+                  <ValAccess field="enumcap_namespace" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_user_pk">
+                  <ValAccess field="enumcap_user" />
+                </CodeFor>,
+                <CodeFor isFunction enc="encode_namespace_sig">
+                  <ValAccess field="enumcap_initial_authorisation" />
+                </CodeFor>,
+                <C64Standalone>
+                  the length of <ValAccess field="enumcap_delegations" />
+                </C64Standalone>,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="enc_ecapa_rel_pk" r="pk" />,
+                          <DefValue n="enc_ecapa_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="enumcap_delegations" />}
+                >
+                  <Encoding
+                    idPrefix="enc_ocapa_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <CodeFor enc="encode_user_pk" isFunction>
+                        <R n="enc_ecapa_rel_pk" />
+                      </CodeFor>,
+                      <CodeFor enc="encode_user_sig" isFunction>
+                        <R n="enc_ecapa_rel_sig" />
+                      </CodeFor>,
+                    ]}
+                  />
+                </EncIterator>,
+              ]}
+            />
+          </Hsection>
         </Hsection>
 
         <Hsection n="enc_private" title="Private Encodings">
@@ -2574,7 +2883,7 @@ export const encodings = (
                   <ValAccess field="communal_cap_delegations" />. Further, we
                   define{" "}
                   <M>
-                    <Def n="ccrpi_ctx_base" r="ctx_{-1}" />
+                    <DefValue n="ccrpi_ctx_base" r="ctx_{-1}" />
                   </M>{" "}
                   as the <R n="PrivateAreaContext" /> whose{" "}
                   <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
@@ -2742,7 +3051,7 @@ export const encodings = (
                   <ValAccess field="owned_cap_delegations" />. Further, we
                   define{" "}
                   <M>
-                    <Def n="owrpi_ctx_base" r="ctx_{-1}" />
+                    <DefValue n="owrpi_ctx_base" r="ctx_{-1}" />
                   </M>{" "}
                   as the <R n="PrivateAreaContext" /> whose{" "}
                   <R n="PrivateAreaContextPrivate" /> is <RelName /> and whose
