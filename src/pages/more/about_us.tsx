@@ -14,7 +14,7 @@ export const about_us = (
       <PageTemplate
         htmlTitle="About Us"
         headingId="about"
-        heading={"About Us"}
+        heading="About Us"
       >
         <P>
           Willow started as a{" "}
@@ -95,7 +95,7 @@ export const about_us = (
                 <Def n="gwil" r="gwil" rs="gwils" wide />. I’m a programmer,
                 illustrator, and parent living in the Hague, the Netherlands.
                 Despite my better judgement, I've been active in the
-                decentralised space for a couple of years now. I'm a core a
+                decentralised space for a couple of years now. I'm a core
                 maintainer for Earthstar and Willow's TypeScript and Rust
                 implementations. <Rb n="aljoscha" />{" "}
                 and I have really pushed each other to do our best work in
