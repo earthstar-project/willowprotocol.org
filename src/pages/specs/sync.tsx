@@ -1,7 +1,17 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, Gwil, NoWrap, Path, Quotes } from "../../macros.tsx";
+import {
+  AE,
+  Alj,
+  Blue,
+  Curly,
+  Gwil,
+  NoWrap,
+  Path,
+  Quotes,
+  Vermillion,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Img, Li, P, Ul } from "macromania-html";
+import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -1074,18 +1084,15 @@ export const sync = (
                   messages
                 </Sidenote>{" "}
                 places strict constrains on the next reconciliation-related
-                messages<Marginale>
+                messages
+                <Marginale>
                   All other kinds of messages remain unaffected and can be
                   freely interleaved, only the ordering of
                   reconciliation-related messages relative to each other is
                   restricted
                 </Marginale>{" "}
-                that may be sent:<Gwil>
-                  This needs a diagram. See
-                  https://discord.com/channels/780542716940517407/1360172897162756116/1362867145129590976
-                </Gwil>
+                that may be sent:
               </P>
-
               <Ul>
                 <Li>
                   every <R n="ReconciliationAnnounceEntries" />{" "}
@@ -1109,6 +1116,13 @@ export const sync = (
                   <R n="ReconciliationTerminatePayload" />.
                 </Li>
               </Ul>
+
+              <Figure>
+                <Img
+                  src={<ResolveAsset asset={["sync", "message_flow.png"]} />}
+                  alt={`A contiguous range is recursively split into subranges. Some subranges are coloured blue to indicate matching fingerprints; these are not split further. The total picture is that of a thinning tree growing downwards, ending in the few areas that require actual data exchange.`}
+                />
+              </Figure>
 
               <P>
                 There is a second concern that spans multiple of the
