@@ -1,8 +1,10 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { Li, Nav, P, Ul } from "macromania-html";
+import { Img, Li, Nav, P, Ul } from "macromania-html";
 import { Alj } from "../macros.tsx";
 import { R } from "macromania-defref";
+import { ResolveAsset } from "macromania-assets";
+import { Marginale } from "macromania-marginalia";
 
 export const more = (
   <File name="index.html">
@@ -12,6 +14,12 @@ export const more = (
       heading={"More Information"}
     >
       <P>
+        <Marginale>
+          <Img
+            src={<ResolveAsset asset={["more", "more.png"]} />}
+            alt="Dalton gets ready to tuck into a triple mint chocolate ice cream slathered in chocolate sauce."
+          />
+        </Marginale>
         Information which you might want to know but that goes beyond purely
         technical specifications:
       </P>
