@@ -2109,6 +2109,13 @@ export const encodings = (
                   />
                 </EncIterator>,
               ]}
+              canonic={{
+                n: "encode_communal_capability",
+                how: [
+                  <MinTags />,
+                  <CanonicSubencodings />,
+                ],
+              }}
             />
           </Hsection>
 
@@ -2222,6 +2229,13 @@ export const encodings = (
                   />
                 </EncIterator>,
               ]}
+              canonic={{
+                n: "encode_owned_capability",
+                how: [
+                  <MinTags />,
+                  <CanonicSubencodings />,
+                ],
+              }}
             />
           </Hsection>
 
@@ -2261,6 +2275,12 @@ export const encodings = (
                   </CodeFor>
                 </EncConditional>,
               ]}
+              canonic={{
+                n: "encode_mc_capability",
+                how: [
+                  <CanonicSubencodings />,
+                ],
+              }}
             />
           </Hsection>
 

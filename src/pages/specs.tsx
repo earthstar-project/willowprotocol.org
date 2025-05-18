@@ -1,7 +1,7 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
 import { Img, Li, Nav, P, Ul } from "macromania-html";
-import { Alj } from "../macros.tsx";
+import { Alj, Gwil } from "../macros.tsx";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale } from "macromania-marginalia";
 import { R } from "macromania-defref";
@@ -40,6 +40,10 @@ export const specs = (
           <R n="sideloading">Sideloading</R>: A protocol for securely delivering
           Willow data by whatever means possible.
         </Li>
+        <Li>
+          <R n="willow25_spec">Willow’25</R>: A recommended set of parameters
+          for the four main specifications.
+        </Li>
       </Ul>
 
       <P>
@@ -63,7 +67,9 @@ export const specs = (
             </R>
           </Li>
           <Li>
-            <R n="handshake_and_encryption">Handshake and Transport Encryption</R>
+            <R n="handshake_and_encryption">
+              Handshake and Transport Encryption
+            </R>
           </Li>
           <Li>
             <R n="d3_range_based_set_reconciliation">
@@ -72,20 +78,6 @@ export const specs = (
           </Li>
           <Li>
             <R n="lcmux">Multiplexing and Flow Control</R>
-          </Li>
-        </Ul>
-      </Nav>
-
-      <P>
-        And until we build our own fancy cross-domain referencing system, this
-        site is the temporary home for:
-      </P>
-
-      <Nav>
-        <Ul>
-          <Li>
-            <R n="es6_spec">Earthstar</R>: a friendly set of parameters for the
-            Willow protocol.
           </Li>
         </Ul>
       </Nav>

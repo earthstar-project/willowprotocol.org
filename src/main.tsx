@@ -2,9 +2,9 @@ import { Context } from "macromania";
 import { LayoutStyles } from "./layoutStyles.tsx";
 import { index } from "./pages/index.tsx";
 import { misc_definitions } from "./pages/misc_definitions.tsx";
-import { es6_spec } from "./pages/earthstar/es6_spec.tsx";
 import { specs } from "./pages/specs.tsx";
 import { data_model } from "./pages/specs/data_model.tsx";
+import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
 import { sync } from "./pages/specs/sync.tsx";
@@ -35,9 +35,7 @@ import { Dir, File } from "macromania-outfs";
 import { ServerRoot } from "macromania-webserverroot";
 import { Assets } from "macromania-assets";
 import { Div } from "macromania-html";
-import { PageTemplate } from "./pageTemplate.tsx";
 import { RenderAllWips } from "macromania-wip";
-import { ConfigRustic } from "macromania-rustic";
 
 const ctx = new Context();
 
@@ -149,6 +147,7 @@ const exp = (
               {grouping_entries}
               {private_interest_overlap}
               {handshake_and_encryption}
+              {willow25}
             </Dir>
 
             <Dir name="more">
@@ -160,10 +159,6 @@ const exp = (
               {projects_and_communities}
               {timestamps_really}
               {why_willow}
-            </Dir>
-
-            <Dir name="earthstar">
-              {es6_spec}
             </Dir>
           </PreviewScopePushWrapper>
         </map>

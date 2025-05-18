@@ -1,13 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import {
-  AE,
-  Alj,
-  Curly,
-  Gwil,
-  NoWrap,
-  Path,
-  Vermillion,
-} from "../../macros.tsx";
+import { AE, Gwil, Vermillion } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Code,
@@ -30,14 +22,12 @@ import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
 import { Def, R, Rb, Rs } from "macromania-defref";
 import {
-  AccessStruct,
   DefFunction,
   DefType,
   DefValue,
   SliceType,
   StructDef,
 } from "macromania-rustic";
-import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Loc, Pseudocode } from "macromania-pseudocode";
 import { Bib } from "macromania-bib/mod.tsx";
@@ -52,7 +42,7 @@ export const rbsr = (
       <PageTemplate
         htmlTitle="3d Range-Based Set Reconciliation"
         headingId="d3_range_based_set_reconciliation"
-        heading={"3d Range-Based Set Reconciliation"}
+        heading="3d Range-Based Set Reconciliation"
         bibliography
         toc
         parentId="specifications"
@@ -119,8 +109,8 @@ export const rbsr = (
                 commented: {
                   comment: (
                     <>
-                      The number of consecutive bytes from the start of the ",
-                      r("lengthy_entry_entry"), "’s <R n="Payload" />{" "}
+                      The number of consecutive bytes from the start of the{" "}
+                      <R n="lengthy_entry_entry" />’s <R n="Payload" />{" "}
                       that the peer holds.
                     </>
                   ),

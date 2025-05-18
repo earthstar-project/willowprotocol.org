@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import { AE, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -24,7 +24,7 @@ export const data_model = (
       <PageTemplate
         htmlTitle="Data Model"
         headingId="data_model"
-        heading={"Data Model"}
+        heading="Data Model"
         status="final"
         toc
         parentId="specifications"
@@ -174,6 +174,9 @@ export const data_model = (
           </P>
 
           <P>
+            <Marginale>
+              See <R n="willow25" /> for a default recommendation of parameters.
+            </Marginale>
             This makes Willow a{" "}
             <Sidenote
               note={

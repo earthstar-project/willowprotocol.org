@@ -1,14 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import {
-  AE,
-  Alj,
-  AsideBlock,
-  Curly,
-  Gwil,
-  NoWrap,
-  Path,
-  Quotes,
-} from "../../macros.tsx";
+import { AE, AsideBlock, Gwil, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { Hsection } from "macromania-hsection";
@@ -30,7 +21,6 @@ import { ResolveAsset } from "macromania-assets";
 import { Tuple } from "macromania-rustic";
 import { CodeFor, Encoding, LiteralByte } from "../../encoding_macros.tsx";
 import { EncConditional } from "../../encoding_macros.tsx";
-import { RawBytes } from "../../encoding_macros.tsx";
 
 export const meadowcap = (
   <Dir name="meadowcap">
@@ -275,6 +265,9 @@ export const meadowcap = (
 
         <Hsection n="meadowcap_parameters" title="Parameters">
           <P>
+            <Marginale>
+              See <R n="willow25" /> for a default recommendation of parameters.
+            </Marginale>
             Like the Willow data model, Meadowcap is generic and needs to be
             instantiated with concrete choices for the parameters we describe in
             this section.

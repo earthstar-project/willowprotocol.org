@@ -1,22 +1,14 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, MarginCaption, NoWrap, Path } from "../../macros.tsx";
+import { AE, Curly, MarginCaption } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Br, Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
-import { Def, R, Rb, Rs, Rsb } from "macromania-defref";
-import {
-  AccessStruct,
-  DefFunction,
-  DefType,
-  DefValue,
-  StructDef,
-  Tuple,
-} from "macromania-rustic";
+import { Def, R, Rs, Rsb } from "macromania-defref";
+import { AccessStruct, DefFunction, DefValue, Tuple } from "macromania-rustic";
 import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
-import { Pseudocode } from "macromania-pseudocode";
 import { DefVariant } from "macromania-rustic";
 import {
   bitfieldIff,
@@ -132,6 +124,10 @@ export const sideloading = (
         <Hsection n="sideload_parameters" title="Parameters">
           <PreviewScope>
             <P>
+              <Marginale>
+                See <R n="willow25" />{" "}
+                for a default recommendation of parameters.
+              </Marginale>
               In order to use the sideloading protocol, one must first specify a
               full suite of instantiations of the{" "}
               <R n="willow_parameters">

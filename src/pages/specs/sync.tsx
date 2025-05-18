@@ -37,16 +37,13 @@ import {
   bitfieldConstant,
   bitfieldIff,
   C64Encoding,
-  C64Standalone,
   c64Tag,
   CodeFor,
   EncodingRelationTemplate,
   RawBytes,
-  RelAccess,
   ValAccess,
 } from "../../encoding_macros.tsx";
 import { EncConditional, ValName } from "../../encoding_macros.tsx";
-import { RelName } from "../../encoding_macros.tsx";
 
 export const sync = (
   <Dir name="sync">
@@ -269,6 +266,9 @@ export const sync = (
 
         <Hsection n="sync_parameters" title="Parameters">
           <P>
+            <Marginale>
+              See <R n="willow25" /> for a default recommendation of parameters.
+            </Marginale>
             The WGPS is generic over specific cryptographic primitives. In order
             to use it, one must first specify a full suite of instantiations of
             the{" "}
@@ -308,7 +308,7 @@ export const sync = (
               <DefValue n="interest_hash_length" /> (the <R n="pio_h" />{" "}
               function from the{" "}
               <R n="private_interest_overlap">
-                privat area overlap detection sub-spec
+                private area overlap detection sub-spec
               </R>). The handshake and encryption of the communication channel
               are out of scope of the WGPS,<Marginale>
                 We recommend a handshake and subsequent encryption scheme{" "}
@@ -324,9 +324,13 @@ export const sync = (
               <R n="d3_range_based_set_reconciliation">
                 3d range-based set reconciliation
               </R>{" "}
-              requires a type <DefType n="Fingerprint" rs="Fingerprints" />{" "}
-              of hashes of <Rs n="LengthyAuthorisedEntry" /> (i.e., of{" "}
-              <Rs n="d3rbsr_fp" />).
+              requires a type <DefType n="Fingerprint" rs="Fingerprints" /> of
+              {" "}
+              <Rs n="d3rbsr_fp" /> (i.e., of hashes of{" "}
+              <Rs n="LengthyAuthorisedEntry" />), and a hash function{" "}
+              <DefFunction n="hash_lengthy_authorised_entries" />{" "}
+              from finite sets of <Rs n="LengthyAuthorisedEntry" /> to{" "}
+              <R n="Fingerprint" />.
             </P>
           </PreviewScope>
 
@@ -365,7 +369,7 @@ export const sync = (
                   Bab baseline verifiable stream
                 </AE>.
               </Marginale>{" "}
-              Peers exchange concatenations of <Rs n="Chunk" />
+              Peers exchange concatenations of <Rs n="Chunk" />{" "}
               instead of actual payloads, and communicate offsets in that data
               in terms of <R n="Chunk" /> offsets.
             </P>
