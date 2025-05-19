@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, Curly, MarginCaption, NoWrap, Path } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Code, Em, Img, Li, P, S, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
@@ -244,6 +244,16 @@ export const timestamps_really = (
           </P>
 
           <P>
+            <Marginale inlineable>
+              <Img
+                src={
+                  <ResolveAsset
+                    asset={["timestamps_really", "backdate_bad.png"]}
+                  />
+                }
+                alt={`.`}
+              />
+            </Marginale>
             If you accidentally backdate an{" "}
             <R n="Entry" />, it will vanish once it comes into contact with your
             own non-buggy <Rs n="Entry" /> (whose <R n="entry_path" />{" "}
@@ -252,6 +262,16 @@ export const timestamps_really = (
           </P>
 
           <P>
+            <Marginale inlineable>
+              <Img
+                src={
+                  <ResolveAsset
+                    asset={["timestamps_really", "future_bad.png"]}
+                  />
+                }
+                alt={`.`}
+              />
+            </Marginale>
             If you accidentally assign a large{" "}
             <R n="entry_timestamp" />, things are more problematic: it will
             overwrite all non-buggy <Rs n="Entry" /> (whose <R n="entry_path" />
@@ -328,6 +348,16 @@ export const timestamps_really = (
           </P>
 
           <P>
+            <Marginale inlineable>
+              <Img
+                src={
+                  <ResolveAsset
+                    asset={["timestamps_really", "timerange_cap.png"]}
+                  />
+                }
+                alt={`.`}
+              />
+            </Marginale>
             If you give me a capability to write <Rs n="Entry" /> to your{" "}
             <R n="subspace" /> on the 18th of July 2024, I can still create{" "}
             <Rs n="Entry" /> in 2032 and add them to your{" "}
