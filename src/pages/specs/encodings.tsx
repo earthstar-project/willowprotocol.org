@@ -2338,6 +2338,586 @@ export const encodings = (
           </Hsection>
         </Hsection>
 
+        <Hsection n="enc_authorisation_tokens" title="Authorisation Tokens">
+          <P>
+            Relative encodings for{" "}
+            <Rs n="MeadowcapAuthorisationToken" />, suitable for the{" "}
+            <R n="EncodeAuthorisationToken" /> relation of the{" "}
+            <R n="sync">WGPS</R>. It encodes <Rs n="AuthorisationToken" />{" "}
+            relative to the previously transmitted <R n="AuthorisedEntry" />
+            {" "}
+            (in particular, its{" "}
+            <R n="AuthorisationToken" />) and relative to the <R n="Entry" />
+            {" "}
+            which is being authorised.
+          </P>
+
+          <Hsection
+            n="encsec_EncodeCommunalCapabilityRelative"
+            title={<Code>EncodeCommunalCapabilityRelative</Code>}
+            shortTitle="Communal Capability"
+          >
+            <EncodingRelationRelativeTemplate
+              n="EncodeCommunalCapabilityRelative"
+              valType={
+                <>
+                  <R n="CommunalCapability" /> with <R n="communal_cap_mode" />
+                  {" "}
+                  <R n="access_write" />
+                </>
+              }
+              relToDescription={
+                <>
+                  pair of a <R n="Capability" />{" "}
+                  <DefValue n="comcap_prior_cap" r="prior_cap" /> of{" "}
+                  <R n="cap_mode" /> <R n="access_write" /> and an{" "}
+                  <R n="Entry" /> <DefValue n="comcap_entry" r="entry" />{" "}
+                  such that{" "}
+                  <Code>
+                    <ValAccess field="communal_cap_namespace" /> =={" "}
+                    <AccessStruct field="entry_namespace_id">
+                      <R n="comcap_entry" />
+                    </AccessStruct>
+                  </Code>{" "}
+                  the <R n="communal_cap_granted_area" /> of <ValName />{" "}
+                  <R n="area_include">includes</R> <R n="owncap_entry" />
+                </>
+              }
+              preDefs={
+                <>
+                  <P>
+                    Let <DefValue n="comcap_shared" r="shared" /> be
+                    <Ul>
+                      <Li>
+                        zero, if <R n="comcap_prior_cap" /> is an{" "}
+                        <R n="OwnedCapability" />, or else
+                      </Li>
+                      <Li>
+                        a natural number (possibly zero) less than or equal to
+                        the lenght (i.e., the number of triplets) of the longest
+                        common prefix of{" "}
+                        <ValAccess field="communal_cap_delegations" /> and{" "}
+                        <AccessStruct field="communal_cap_delegations">
+                          <AccessStruct field="capability_inner">
+                            <R n="comcap_prior_cap" />
+                          </AccessStruct>
+                        </AccessStruct>.
+                      </Li>
+                    </Ul>
+                  </P>
+
+                  <P>
+                    Let <DefValue n="comcap_hack" r="nice_hack" /> be
+                    <Ul>
+                      <Li>
+                        zero, if <R n="comcap_prior_cap" /> is an{" "}
+                        <R n="OwnedCapability" />,
+                        {
+                          /* or if{" "}
+                        <Code>
+                          <ValAccess field="communal_cap_namespace" /> !={" "}
+                          <AccessStruct field="communal_cap_namespace">
+                            <AccessStruct field="capability_inner">
+                              <R n="comcap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, or if{" "}
+                        <Code>
+                          <ValAccess field="communal_cap_user" /> !={" "}
+                          <AccessStruct field="communal_cap_user">
+                            <AccessStruct field="capability_inner">
+                              <R n="comcap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, */
+                        }
+                        and else
+                      </Li>
+                      <Li>
+                        <Code>
+                          <R n="comcap_shared" /> + 1
+                        </Code>.
+                      </Li>
+                    </Ul>
+                  </P>
+
+                  <P>
+                    To efficiently encode the <Rs n="Area" /> in the{" "}
+                    <R n="communal_cap_delegations" /> of{" "}
+                    <ValName />, we define a sequence of{" "}
+                    <Rs n="PrivateAreaContext" />.{" "}
+                    <M>
+                      <DefValue n="comcapr_ctx_i" r="ctx_i" />
+                    </M>{" "}
+                    is the <R n="PrivateAreaContext" /> whose{" "}
+                    <R n="PrivateAreaContextPrivate" /> has
+                  </P>
+                  <Ul>
+                    <Li>
+                      a <R n="pi_ns" /> of{" "}
+                      <AccessStruct field="entry_namespace_id">
+                        <R n="comcap_entry" />
+                      </AccessStruct>,
+                    </Li>
+                    <Li>
+                      a <R n="pi_ss" /> of{" "}
+                      <AccessStruct field="entry_subspace_id">
+                        <R n="comcap_entry" />
+                      </AccessStruct>, and
+                    </Li>
+                    <Li>
+                      a <R n="pi_path" /> of{" "}
+                      <AccessStruct field="entry_path">
+                        <R n="comcap_entry" />
+                      </AccessStruct>,
+                    </Li>
+                  </Ul>
+                  <P>
+                    and whose <R n="PrivateAreaContextRel" /> is the <M>i</M>-th
+                    {" "}
+                    <R n="Area" /> in{" "}
+                    <ValAccess field="communal_cap_delegations" />. Further, we
+                    define{" "}
+                    <M>
+                      <DefValue n="comcapr_ctx_base" r="ctx_{-1}" />
+                    </M>{" "}
+                    as the <R n="PrivateAreaContext" /> whose{" "}
+                    <R n="PrivateAreaContextPrivate" />{" "}
+                    is given as above and whose <R n="PrivateAreaContextRel" />
+                    {" "}
+                    is the <R n="subspace_area" /> of <R n="SubspaceId" />{" "}
+                    <AccessStruct field="entry_subspace_id">
+                      <R n="comcap_entry" />
+                    </AccessStruct>.
+                  </P>
+                </>
+              }
+              shortRelToDescription={
+                <>
+                  pair of a <R n="Capability" /> and an <R n="Entry" />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <C64Standalone>
+                  <R n="comcap_hack" />
+                </C64Standalone>,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="comcapr_rel_area" r="area" />,
+                          <DefValue n="comcapr_rel_pk" r="pk" />,
+                          <DefValue n="comcapr_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="communal_cap_delegations" />}
+                >
+                  <Encoding
+                    idPrefix="enc_ccap_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="comcap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor
+                          enc="EncodePrivateAreaAlmostInArea"
+                          relativeTo={
+                            <M>
+                              <R n="ccrpi_ctx_i">
+                                ctx_<Curly>i - 1</Curly>
+                              </R>
+                            </M>
+                          }
+                        >
+                          <R n="enc_ccap_rel_area" />
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="comcap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor enc="encode_user_pk">
+                          <R n="enc_ccap_rel_pk" />
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="comcap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor enc="encode_user_sig">
+                          <R n="enc_ccap_rel_sig" />
+                        </CodeFor>
+                      </EncConditional>,
+                    ]}
+                  />
+                </EncIterator>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="encsec_EncodeOwnedCapabilityRelative"
+            title={<Code>EncodeOwnedCapabilityRelative</Code>}
+            shortTitle="Owned Capability"
+          >
+            <EncodingRelationRelativeTemplate
+              n="EncodeOwnedCapabilityRelative"
+              valType={
+                <>
+                  <R n="OwnedCapability" /> with <R n="owned_cap_mode" />{" "}
+                  <R n="access_write" />
+                </>
+              }
+              relToDescription={
+                <>
+                  pair of a <R n="Capability" />{" "}
+                  <DefValue n="owncap_prior_cap" r="prior_cap" /> of{" "}
+                  <R n="cap_mode" /> <R n="access_write" /> and an{" "}
+                  <R n="Entry" /> <DefValue n="owncap_entry" r="entry" />{" "}
+                  such that{" "}
+                  <Code>
+                    <ValAccess field="owned_cap_namespace" /> =={" "}
+                    <AccessStruct field="entry_namespace_id">
+                      <R n="owncap_entry" />
+                    </AccessStruct>
+                  </Code>{" "}
+                  and the <R n="owned_cap_granted_area" /> of <ValName />{" "}
+                  <R n="area_include">includes</R> <R n="owncap_entry" />
+                </>
+              }
+              preDefs={
+                <>
+                  <P>
+                    Let <DefValue n="owncap_shared" r="shared" /> be
+                    <Ul>
+                      <Li>
+                        zero, if <R n="owncap_prior_cap" /> is a{" "}
+                        <R n="CommunalCapability" />, or else
+                      </Li>
+                      <Li>
+                        a natural number (possibly zero) less than or equal to
+                        the lenght (i.e., the number of triplets) of the longest
+                        common prefix of{" "}
+                        <ValAccess field="owned_cap_delegations" /> and{" "}
+                        <AccessStruct field="owned_cap_delegations">
+                          <AccessStruct field="capability_inner">
+                            <R n="owncap_prior_cap" />
+                          </AccessStruct>
+                        </AccessStruct>.
+                      </Li>
+                    </Ul>
+                  </P>
+
+                  <P>
+                    Let <DefValue n="owncap_hack" r="nice_hack" /> be
+                    <Ul>
+                      <Li>
+                        zero, if <R n="owncap_prior_cap" /> is a{" "}
+                        <R n="CommunalCapability" />, or if{" "}
+                        <Code>
+                          <ValAccess field="owned_cap_user" /> !={" "}
+                          <AccessStruct field="owned_cap_user">
+                            <AccessStruct field="capability_inner">
+                              <R n="owncap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, or if{" "}
+                        <Code>
+                          <ValAccess field="owned_cap_initial_authorisation" />
+                          {" "}
+                          !={" "}
+                          <AccessStruct field="owned_cap_initial_authorisation">
+                            <AccessStruct field="capability_inner">
+                              <R n="owncap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, and else
+                      </Li>
+                      <Li>
+                        <Code>
+                          <R n="owncap_shared" /> + 1
+                        </Code>.
+                      </Li>
+                    </Ul>
+                  </P>
+
+                  <P>
+                    To efficiently encode the <Rs n="Area" /> in the{" "}
+                    <R n="owned_cap_delegations" /> of{" "}
+                    <ValName />, we define a sequence of{" "}
+                    <Rs n="PrivateAreaContext" />.{" "}
+                    <M>
+                      <DefValue n="owncapr_ctx_i" r="ctx_i" />
+                    </M>{" "}
+                    is the <R n="PrivateAreaContext" /> whose{" "}
+                    <R n="PrivateAreaContextPrivate" /> has
+                  </P>
+                  <Ul>
+                    <Li>
+                      a <R n="pi_ns" /> of{" "}
+                      <AccessStruct field="entry_namespace_id">
+                        <R n="owncap_entry" />
+                      </AccessStruct>,
+                    </Li>
+                    <Li>
+                      a <R n="pi_ss" /> of{" "}
+                      <AccessStruct field="entry_subspace_id">
+                        <R n="owncap_entry" />
+                      </AccessStruct>, and
+                    </Li>
+                    <Li>
+                      a <R n="pi_path" /> of{" "}
+                      <AccessStruct field="entry_path">
+                        <R n="owncap_entry" />
+                      </AccessStruct>,
+                    </Li>
+                  </Ul>
+                  <P>
+                    and whose <R n="PrivateAreaContextRel" /> is the <M>i</M>-th
+                    {" "}
+                    <R n="Area" /> in{" "}
+                    <ValAccess field="communal_cap_delegations" />. Further, we
+                    define{" "}
+                    <M>
+                      <DefValue n="owncapr_ctx_base" r="ctx_{-1}" />
+                    </M>{" "}
+                    as the <R n="PrivateAreaContext" /> whose{" "}
+                    <R n="PrivateAreaContextPrivate" />{" "}
+                    is given as above and whose <R n="PrivateAreaContextRel" />
+                    {" "}
+                    is the <R n="subspace_area" /> of <R n="SubspaceId" />{" "}
+                    <AccessStruct field="entry_subspace_id">
+                      <R n="owncap_entry" />
+                    </AccessStruct>.
+                  </P>
+                </>
+              }
+              shortRelToDescription={
+                <>
+                  pair of a <R n="Capability" /> and an <R n="Entry" />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <C64Standalone>
+                  <R n="owncap_hack" />
+                </C64Standalone>,
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <R n="owncap_hack" /> == 0
+                      </Code>
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_pk" isFunction notStandalone>
+                    <ValAccess field="owned_cap_user" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <R n="owncap_hack" /> == 0
+                      </Code>
+                    </>
+                  }
+                >
+                  <CodeFor enc="encode_user_sig" isFunction>
+                    <ValAccess field="owned_cap_initial_authorisation" />
+                  </CodeFor>
+                </EncConditional>,
+                <EncIterator
+                  val={
+                    <>
+                      <M>i</M>-th triplet{" "}
+                      <Tuple
+                        fields={[
+                          <DefValue n="owncapr_rel_area" r="area" />,
+                          <DefValue n="owncapr_rel_pk" r="pk" />,
+                          <DefValue n="owncapr_rel_sig" r="sig" />,
+                        ]}
+                      />
+                    </>
+                  }
+                  iter={<ValAccess field="communal_cap_delegations" />}
+                >
+                  <Encoding
+                    idPrefix="enc_ccap_rel_nested"
+                    bitfields={[]}
+                    contents={[
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="owncap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor
+                          enc="EncodePrivateAreaAlmostInArea"
+                          relativeTo={
+                            <M>
+                              <R n="ccrpi_ctx_i">
+                                ctx_<Curly>i - 1</Curly>
+                              </R>
+                            </M>
+                          }
+                        >
+                          <R n="enc_ccap_rel_area" />
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="owncap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor enc="encode_user_pk">
+                          <R n="enc_ccap_rel_pk" />
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <M>
+                              i {"\\geq"} <R n="owncap_shared" />
+                            </M>
+                          </>
+                        }
+                      >
+                        <CodeFor enc="encode_user_sig">
+                          <R n="enc_ccap_rel_sig" />
+                        </CodeFor>
+                      </EncConditional>,
+                    ]}
+                  />
+                </EncIterator>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection
+            n="encsec_EncodeMeadowcapAuthorisationTokenRelative"
+            title={<Code>EncodeMeadowcapAuthorisationTokenyRelative</Code>}
+            shortTitle="McAuthorisationToken"
+          >
+            <EncodingRelationRelativeTemplate
+              n="EncodeMeadowcapAuthorisationTokenRelative"
+              valType={
+                <>
+                  <R n="MeadowcapAuthorisationToken" />
+                </>
+              }
+              relToDescription={
+                <>
+                  pair of an <R n="AuthorisedEntry" />{" "}
+                  <DefValue n="mae_prior" r="prior_authorised_entry" /> and an
+                  {" "}
+                  <R n="Entry" /> <DefValue n="mae_entry" r="entry" />{" "}
+                  such that the <R n="cap_granted_namespace" /> of the{" "}
+                  <ValName /> is{" "}
+                  <AccessStruct field="entry_namespace_id">
+                    <R n="comcap_entry" />
+                  </AccessStruct>, and the <R n="cap_granted_area" />of{" "}
+                  <ValName /> <R n="area_include">includes</R>{" "}
+                  <R n="mae_entry" />
+                </>
+              }
+              shortRelToDescription={
+                <>
+                  pair of an <R n="AuthorisedEntry" /> and an <R n="Entry" />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <AccessStruct field="capability_inner">
+                        <ValAccess field="mcat_cap" />
+                      </AccessStruct>{" "}
+                      is a <R n="CommunalCapability" />
+                    </>
+                  }
+                  otherwise={
+                    <CodeFor
+                      enc="EncodeOwnedCapabilityRelative"
+                      notStandalone
+                      relativeTo={
+                        <>
+                          <RelName />
+                        </>
+                      }
+                    >
+                      <AccessStruct field="capability_inner">
+                        <ValAccess field="mcat_cap" />
+                      </AccessStruct>
+                    </CodeFor>
+                  }
+                >
+                  <CodeFor
+                    enc="EncodeCommunalCapabilityRelative"
+                    notStandalone
+                    relativeTo={
+                      <>
+                        <RelName />
+                      </>
+                    }
+                  >
+                    <AccessStruct field="capability_inner">
+                      <ValAccess field="mcat_cap" />
+                    </AccessStruct>
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      The <R n="comcap_shared" /> in the encoding of{" "}
+                      <AccessStruct field="capability_inner">
+                        <ValAccess field="mcat_cap" />
+                      </AccessStruct>{" "}
+                      was not equal to the number of triplets in the{" "}
+                      <R n="communal_cap_delegations" /> of the{" "}
+                      <R n="AuthorisationToken" /> of <R n="mae_prior" />.
+                    </>
+                  }
+                >
+                  <CodeFor notStandalone isFunction enc="encode_user_sig">
+                    <ValAccess field="mcat_sig" />
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
+        </Hsection>
+
         <Hsection n="enc_private" title="Private Encodings">
           <P>
             We now define some relative encodings which take care to not reveal

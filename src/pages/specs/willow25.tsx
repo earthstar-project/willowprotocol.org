@@ -479,9 +479,9 @@ export const willow25 = (
           </P>
 
           <P>
-            The <R n="EncodeAuthorisationToken " /> <R n="encoding_relation" />
+            The <R n="EncodeAuthorisationToken" /> <R n="encoding_relation" />
             {" "}
-            is <Alj inline>TODO</Alj>.
+            is <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
           </P>
         </Hsection>
 
