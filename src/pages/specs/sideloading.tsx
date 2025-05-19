@@ -77,6 +77,17 @@ export const sideloading = (
           </P>
 
           <P>
+            <Marginale inlineable>
+              <Img
+                src={<ResolveAsset asset={["sideload", "example_flow.png"]} />}
+                alt={`A diagram of a sidenet. An old computer connects to a newer desktop computer via a USB key. The newer desktop computer connects to a smartphone via email. The smartphone connects to another smartphone via a messaging app. And that smartphone connects to a laptop via a local wireless connection.`}
+              />
+              <MarginCaption>
+                An example flow of Willow data travelling through the{" "}
+                <R n="sidenet" />, first via USB key, then email, then a
+                messaging app, then local wireless.
+              </MarginCaption>
+            </Marginale>
             <Rsb n="drop" />{" "}
             are then shared via the informal ad-hoc infrastructure we refer to
             as the <Def n="sidenet" r="Sidenet" rs="Sidenets" />:
