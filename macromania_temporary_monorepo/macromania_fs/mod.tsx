@@ -446,6 +446,29 @@ export function ReadLink(
 }
 
 /**
+ * Reads and returns the entire contents of a file as a byte buffer.
+ * Reading a directory throws an error.
+ *
+ * https://deno.land/api@v1.40.3?unstable=true&s=Deno.readFile
+ * @returns The file contents.
+ */
+export async function readFile(
+  ctx: Context,
+  path: string | URL,
+): Promise<Uint8Array<ArrayBuffer>> {
+  try {
+    const ret = await Deno.readFile(path);
+    l.trace(ctx, `Read text file ${path.toString()}`);
+    return ret;
+  } catch (err) {
+    l.error(ctx, `Failed to read text file ${path.toString()}`);
+    l.logGroup(ctx, () => l.error(ctx, err));
+    ctx.halt();
+    return new Uint8Array();
+  }
+}
+
+/**
  * Reads and returns the entire contents of a file as an UTF-8 decoded string.
  * Reading a directory throws an error.
  *
@@ -797,6 +820,38 @@ export function Utime(
       }}
     />
   );
+}
+
+/**
+ * Write the content byte buffer to the given `path`, by default creating a new file
+ * if needed, else overwriting.
+ *
+ * See https://deno.land/api@v1.40.3?unstable=true&s=Deno.writeFile
+ */
+export async function writeFile(
+  ctx: Context,
+  path: string | URL,
+  content: Uint8Array,
+  options?: Deno.WriteFileOptions,
+) {
+  try {
+    await Deno.writeFile(path, content, options);
+    l.trace(ctx, `Wrote file ${path.toString()}`);
+    l.logGroup(ctx, () => {
+      if (options) {
+        l.trace(ctx, `Options: ${JSON.stringify(options)}`);
+      }
+    });
+  } catch (err) {
+    l.error(ctx, `Failed to write file ${path.toString()}`);
+    l.logGroup(ctx, () => {
+      if (options) {
+        l.error(ctx, `Options: ${JSON.stringify(options)}`);
+      }
+      l.error(ctx, err);
+    });
+    return ctx.halt();
+  }
 }
 
 /**

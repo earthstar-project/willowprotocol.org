@@ -33,9 +33,10 @@ import { ConfigDefref } from "macromania-defref";
 import { ConfigWip } from "macromania-wip";
 import { Dir, File } from "macromania-outfs";
 import { ServerRoot } from "macromania-webserverroot";
-import { Assets } from "macromania-assets";
+import { Assets, transformCopy } from "macromania-assets";
 import { Div } from "macromania-html";
 import { RenderAllWips } from "macromania-wip";
+import { contentAddress } from "./assetTransforms.tsx";
 
 const ctx = new Context();
 
@@ -110,7 +111,39 @@ const exp = (
       <ServerRoot url="">
         <Dir name="assets">
           {/* See https://github.com/worm-blossom/macromania-assets */}
-          <Assets input={["src", "assets"]} assets={{}} />
+          <Assets
+            input={["src", "assets"]}
+            assets={{
+              // Transform the names of all assets to content-derived ones...
+              transformation: contentAddress,
+
+              // ... witht he following exceptions:
+              children: {
+                "about": {
+                  children: {
+                    "soilsun.md": transformCopy,
+                  },
+                },
+                "fonts": {
+                  transformation: transformCopy,
+                },
+                "lcmux": {
+                  children: {
+                    "handles": {
+                      transformation: transformCopy,
+                    },
+                  },
+                },
+                "apple-touch-icon.png": transformCopy,
+                "authors.css": transformCopy,
+                "emblem.png": transformCopy,
+                "favicon.png": transformCopy,
+                "favicon.svg": transformCopy,
+                "layout.css": transformCopy,
+                "textFonts.css": transformCopy,
+              },
+            }}
+          />
         </Dir>
         <map
           fun={(evaled, _ctx) => {
