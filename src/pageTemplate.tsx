@@ -110,9 +110,11 @@ export function PageTemplate(
 
             return (
               <>
-                <File name="etag">
-                  {hash}
-                </File>
+                <omnomnom>
+                  <File name="etag">
+                    {hash}
+                  </File>
+                </omnomnom>
                 {rendered}
               </>
             );
