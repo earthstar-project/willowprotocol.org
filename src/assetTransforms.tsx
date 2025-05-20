@@ -1,6 +1,6 @@
 import { Context } from "macromaniajsx/jsx-runtime";
 import { PathInfo } from "macromania-assets";
-import { path } from "./deps.ts";
+import { extname, join } from "@std/path";
 import { ensureDir, readFile, writeFile } from "macromania-fs";
 
 import { encodeHex } from "jsr:@std/encoding/hex";
@@ -13,11 +13,11 @@ export async function contentAddress(
   pathInfo: PathInfo,
 ): Promise<string[]> {
   const allButLast = pathInfo.fileInAssets.slice(0, -1);
-  const outDir = path.join(pathInfo.outRoot, ...allButLast);
+  const outDir = join(pathInfo.outRoot, ...allButLast);
   await ensureDir(ctx, outDir);
 
-  const inputFile = path.join(pathInfo.assetsRoot, ...pathInfo.fileInAssets);
-  const extension = path.extname(inputFile);
+  const inputFile = join(pathInfo.assetsRoot, ...pathInfo.fileInAssets);
+  const extension = extname(inputFile);
 
   const inputFileBuffer = await readFile(ctx, inputFile);
   const hashBuffer = await crypto.subtle.digest(
@@ -31,7 +31,7 @@ export async function contentAddress(
     `${hash}${extension}`,
   ];
 
-  const outputFile = path.join(
+  const outputFile = join(
     pathInfo.outRoot,
     ...newLocation,
   );
