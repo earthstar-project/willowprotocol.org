@@ -2,6 +2,7 @@
   "version": "5",
   "specifiers": {
     "jsr:@aljoscha-meyer/logging-utils@1": "1.0.0",
+    "jsr:@std/encoding@*": "1.0.10",
     "jsr:@std/fmt@0.221": "0.221.0",
     "npm:citation-js@0.7.12": "0.7.12_@citation-js+core@0.7.11",
     "npm:citeproc@2.4.63": "2.4.63",
@@ -13,6 +14,9 @@
       "dependencies": [
         "jsr:@std/fmt"
       ]
+    },
+    "@std/encoding@1.0.10": {
+      "integrity": "8783c6384a2d13abd5e9e87a7ae0520a30e9f56aeeaa3bdf910a3eaaf5c811a1"
     },
     "@std/fmt@0.221.0": {
       "integrity": "379fed69bdd9731110f26b9085aeb740606b20428ce6af31ef6bd45ef8efa62a"
