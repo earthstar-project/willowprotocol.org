@@ -70,10 +70,6 @@ export const encodings = (
         </P>
 
         <P>
-          <Alj>
-            Add etags for pages, previews, and assets. Use content-addressed
-            urls for internal references (e.g. assets, possibly previews?)
-          </Alj>
           A perhaps curious feature of the Willow data model is that its
           specification does not talk about encodings.{" "}
           <Sidenote
