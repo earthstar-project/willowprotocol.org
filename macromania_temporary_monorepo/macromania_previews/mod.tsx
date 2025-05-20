@@ -114,7 +114,7 @@ const [getState, setState] = createSubstate<null | PreviewsState>(() => null);
  * A stack of wrapper functions. When creating a preview page, pass the preview expression through the last function, the result throught the second-to-last, etc, to generated the final expression that yields the preview page.
  */
 const [getStateWrapper, setStateWrapper] = createSubstate<
-  ((ctx: Context, p: Expression) => Expression)[]
+  ((ctx: Context, p: Expression, info: PreviewInfo) => Expression)[]
 >(() => []);
 
 /**
@@ -195,7 +195,7 @@ export function PreviewScope(
       const wrappers = getStateWrapper(ctx);
       let finalPreview: Expression = evaled;
       for (let i = wrappers.length - 1; i >= 0; i--) {
-        finalPreview = wrappers[i](ctx, finalPreview);
+        finalPreview = wrappers[i](ctx, finalPreview, p);
       }
 
       exps.push(
@@ -424,7 +424,7 @@ export function previewScopeDependencyJs(
  */
 export function PreviewScopePushWrapper(
   { wrapper, children }: {
-    wrapper: (ctx: Context, exp: Expression) => Expression;
+    wrapper: (ctx: Context, exp: Expression, info: PreviewInfo) => Expression;
     children?: Expressions;
   },
 ): Expression {
@@ -452,8 +452,9 @@ export function PreviewScopePopWrapper(
     children?: Expressions;
   },
 ): Expression {
-  let old: ((ctx: Context, exp: Expression) => Expression) | undefined =
-    undefined;
+  let old:
+    | ((ctx: Context, exp: Expression, info: PreviewInfo) => Expression)
+    | undefined = undefined;
   return (
     <lifecycle
       pre={(ctx) => {

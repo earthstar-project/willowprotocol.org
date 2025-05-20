@@ -31,12 +31,15 @@ import { ConfigHsection } from "macromania-hsection";
 import { ConfigPreviews, PreviewScopePushWrapper } from "macromania-previews";
 import { ConfigDefref } from "macromania-defref";
 import { ConfigWip } from "macromania-wip";
-import { Dir, File } from "macromania-outfs";
+import { Dir, File, outCwd, renderOutFsPath } from "macromania-outfs";
 import { ServerRoot } from "macromania-webserverroot";
 import { Assets, transformCopy } from "macromania-assets";
 import { Div } from "macromania-html";
 import { RenderAllWips } from "macromania-wip";
 import { contentAddress } from "./assetTransforms.tsx";
+import { addEtag, ServerOptimisations } from "./serverOptimisations.tsx";
+import { encodeHex } from "jsr:@std/encoding/hex";
+import { posixPath } from "./deps.ts";
 
 const ctx = new Context();
 
@@ -108,94 +111,121 @@ const exp = (
     </Dir>
 
     <Dir name="build">
-      <ServerRoot url="">
-        <Dir name="assets">
-          {/* See https://github.com/worm-blossom/macromania-assets */}
-          <Assets
-            input={["src", "assets"]}
-            assets={{
-              // Transform the names of all assets to content-derived ones...
-              transformation: contentAddress,
+      <ServerOptimisations>
+        <ServerRoot url="">
+          <Dir name="assets">
+            {/* See https://github.com/worm-blossom/macromania-assets */}
+            <Assets
+              input={["src", "assets"]}
+              assets={{
+                // Transform the names of all assets to content-derived ones...
+                transformation: contentAddress,
 
-              // ... witht he following exceptions:
-              children: {
-                "about": {
-                  children: {
-                    "soilsun.md": transformCopy,
-                  },
-                },
-                "fonts": {
-                  transformation: transformCopy,
-                },
-                "lcmux": {
-                  children: {
-                    "handles": {
-                      transformation: transformCopy,
+                // ... witht he following exceptions:
+                children: {
+                  "about": {
+                    children: {
+                      "soilsun.md": transformCopy,
                     },
                   },
+                  "fonts": {
+                    transformation: transformCopy,
+                  },
+                  "lcmux": {
+                    children: {
+                      "handles": {
+                        transformation: transformCopy,
+                      },
+                    },
+                  },
+                  "apple-touch-icon.png": transformCopy,
+                  "authors.css": transformCopy,
+                  "emblem.png": transformCopy,
+                  "favicon.png": transformCopy,
+                  "favicon.svg": transformCopy,
+                  "layout.css": transformCopy,
+                  "textFonts.css": transformCopy,
                 },
-                "apple-touch-icon.png": transformCopy,
-                "authors.css": transformCopy,
-                "emblem.png": transformCopy,
-                "favicon.png": transformCopy,
-                "favicon.svg": transformCopy,
-                "layout.css": transformCopy,
-                "textFonts.css": transformCopy,
-              },
-            }}
-          />
-        </Dir>
-        <map
-          fun={(evaled, _ctx) => {
-            // Not really mapping anything here, just ensuring that printing the list of all remaining todos is done after all todos have been evaluated.
+              }}
+            />
+          </Dir>
+          <map
+            fun={(evaled, _ctx) => {
+              // Not really mapping anything here, just ensuring that printing the list of all remaining todos is done after all todos have been evaluated.
 
-            return (
-              <>
-                <File name="todos.html">
-                  <RenderAllWips />
-                </File>
-                {evaled}
-              </>
-            );
-          }}
-        >
-          <PreviewScopePushWrapper
-            wrapper={(_ctx, preview) => {
-              return <Div id="wrapContent">{preview}</Div>;
+              return (
+                <>
+                  <File name="todos.html">
+                    <RenderAllWips />
+                  </File>
+                  {evaled}
+                </>
+              );
             }}
           >
-            {index}
-            {misc_definitions}
+            <PreviewScopePushWrapper
+              wrapper={(_ctx, rendered, previewInfo) => {
+                return (
+                  <map
+                    fun={async (rendered, ctx) => {
+                      const pageBuffer = new TextEncoder().encode(rendered);
+                      const hashBuffer = await crypto.subtle.digest(
+                        "SHA-256",
+                        pageBuffer,
+                      );
+                      const hash = encodeHex(hashBuffer);
 
-            <Dir name="specs">
-              {specs}
-              {data_model}
-              {e2e}
-              {meadowcap}
-              {encodings}
-              {sideloading}
-              {sync}
-              {rbsr}
-              {lcmux}
-              {grouping_entries}
-              {private_interest_overlap}
-              {handshake_and_encryption}
-              {willow25}
-            </Dir>
+                      const outPwd = outCwd(ctx);
+                      outPwd.components.shift(); // remove the leading `build` component.
+                      outPwd.components.push(`${previewInfo.name}.${"html"}`);
 
-            <Dir name="more">
-              {more}
-              {threedstorage}
-              {about_us}
-              {changes}
-              {willow_compared}
-              {projects_and_communities}
-              {timestamps_really}
-              {why_willow}
-            </Dir>
-          </PreviewScopePushWrapper>
-        </map>
-      </ServerRoot>
+                      addEtag(
+                        ctx,
+                        posixPath.join(renderOutFsPath(outPwd)),
+                        hash,
+                      );
+
+                      return rendered;
+                    }}
+                  >
+                    <Div id="wrapContent">{rendered}</Div>
+                  </map>
+                );
+              }}
+            >
+              {index}
+              {misc_definitions}
+
+              <Dir name="specs">
+                {specs}
+                {data_model}
+                {e2e}
+                {meadowcap}
+                {encodings}
+                {sideloading}
+                {sync}
+                {rbsr}
+                {lcmux}
+                {grouping_entries}
+                {private_interest_overlap}
+                {handshake_and_encryption}
+                {willow25}
+              </Dir>
+
+              <Dir name="more">
+                {more}
+                {threedstorage}
+                {about_us}
+                {changes}
+                {willow_compared}
+                {projects_and_communities}
+                {timestamps_really}
+                {why_willow}
+              </Dir>
+            </PreviewScopePushWrapper>
+          </map>
+        </ServerRoot>
+      </ServerOptimisations>
     </Dir>
   </Config>
 );

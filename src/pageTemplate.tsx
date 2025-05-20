@@ -10,7 +10,7 @@ The macromania_bib package reexports the citations styles from https://github.co
 import { bib } from "./bib.tsx";
 import { AE } from "./macros.tsx";
 import { Expression, Expressions } from "macromania";
-import { Dir, File } from "macromania-outfs";
+import { Dir, File, outCwd, renderOutFsPath } from "macromania-outfs";
 import { ConfigMarginalia, Marginale } from "macromania-marginalia";
 import { Counter } from "macromania-counters";
 import { Bibliography, BibScope } from "macromania-bib";
@@ -35,6 +35,8 @@ import { R } from "macromania-defref";
 import { ResolveAsset } from "macromania-assets";
 import { CssDependency, JsDependency } from "macromania-previews";
 import { encodeHex } from "jsr:@std/encoding/hex";
+import { addEtag } from "./serverOptimisations.tsx";
+import { posixPath } from "./deps.ts";
 
 export function Page(
   props: PageTemplateProps & { children?: Expressions; name: string },
@@ -100,7 +102,7 @@ export function PageTemplate(
         items={bib}
       >
         <map
-          fun={async (rendered, _ctx) => {
+          fun={async (rendered, ctx) => {
             const pageBuffer = new TextEncoder().encode(rendered);
             const hashBuffer = await crypto.subtle.digest(
               "SHA-256",
@@ -108,16 +110,13 @@ export function PageTemplate(
             );
             const hash = encodeHex(hashBuffer);
 
-            return (
-              <>
-                <omnomnom>
-                  <File name="etag">
-                    {hash}
-                  </File>
-                </omnomnom>
-                {rendered}
-              </>
-            );
+            const outPwd = outCwd(ctx);
+            outPwd.components.shift(); // remove the leading `build` component.
+            outPwd.components.push("index.html");
+
+            addEtag(ctx, posixPath.join(renderOutFsPath(outPwd)), hash);
+
+            return rendered;
           }}
         >
           <Html5

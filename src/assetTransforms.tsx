@@ -1,9 +1,10 @@
 import { Context } from "macromaniajsx/jsx-runtime";
 import { PathInfo } from "macromania-assets";
-import { path } from "./deps.ts";
+import { path, posixPath } from "./deps.ts";
 import { ensureDir, readFile, writeFile } from "macromania-fs";
 
 import { encodeHex } from "jsr:@std/encoding/hex";
+import { addContentAddressedFile } from "./serverOptimisations.tsx";
 
 /**
  * Copy the input file to the output directory, BUT change its name to a secure hash of its contents, followed by the original extension.
@@ -37,6 +38,8 @@ export async function contentAddress(
   );
 
   await writeFile(ctx, outputFile, inputFileBuffer);
+
+  addContentAddressedFile(ctx, `/assets/${posixPath.join(...newLocation)}`);
 
   return [...newLocation];
 }
