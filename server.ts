@@ -41,7 +41,7 @@ Deno.serve(async (req: Request) => {
   // Is the path for a willow emblem?
   //  then serve up a random one.
   if (url.pathname === "/assets/emblem.png") {
-    console.log(200, url);
+    console.log(200, "/assets/emblem.png");
 
     return new Response(await pickRandomEmblem(), {
       headers: {
