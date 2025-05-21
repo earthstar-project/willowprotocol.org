@@ -249,7 +249,7 @@ a[data-ref].hsection {
 }
 
 a[data-ref].hsection:hover {
-    color: var(--green);
+    color: var(--dark-green);
     text-decoration: underline;
 }
 

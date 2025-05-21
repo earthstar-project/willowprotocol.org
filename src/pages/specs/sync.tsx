@@ -2504,9 +2504,6 @@ export const sync = (
                   preDefs={
                     <>
                       <P>
-                        <Gwil>
-                          FIXME: headings turn green on hover (see just above)
-                        </Gwil>
                         Let <DefValue n="epbrc_ppi" r="ppi" /> denote the{" "}
                         <R n="PersonalPrivateInterest" /> whose
                       </P>
