@@ -987,9 +987,6 @@ export const meadowcap = (
           </Hsection>
 
           <Hsection n="owned_capabilities" title="Owned Namespaces">
-            <P>
-              <Gwil inline>Make the indentation bars seamless again.</Gwil>
-            </P>
             <Pseudocode n="owned_capability_definition">
               <StructDef
                 comment={
