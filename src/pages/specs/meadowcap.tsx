@@ -913,9 +913,7 @@ export const meadowcap = (
                     <R n="communal_prev_cap" />
                   </AccessStruct>{" "}
                   is empty, then <R n="communal_handover" />{" "}
-                  is the concatenation of the following bytestrings:<Gwil>
-                    make styling adjustments
-                  </Gwil>
+                  is the concatenation of the following bytestrings:
 
                   <Encoding
                     standalone
