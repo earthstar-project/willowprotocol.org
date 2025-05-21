@@ -140,7 +140,6 @@ const exp = (
                   },
                   "apple-touch-icon.png": transformCopy,
                   "authors.css": transformCopy,
-                  "emblem.png": transformCopy,
                   "favicon.png": transformCopy,
                   "favicon.svg": transformCopy,
                   "layout.css": transformCopy,
