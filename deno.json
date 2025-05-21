@@ -34,16 +34,14 @@
   "compilerOptions": {
     "jsx": "react-jsxdev",
     "jsxImportSource": "macromaniajsx",
-    "lib": [
-      "deno.ns",
-      "dom"
-    ],
+    "lib": ["deno.ns", "dom"],
     "strict": true
   },
   "tasks": {
     "build": "deno run -A ./src/main.tsx",
     "watch": "deno run --watch -A ./src/main.tsx",
-    "serve": "deno run -A ./server.ts"
+    "serve": "deno run -A ./server.ts",
+    "dev": "deno run -A ./server.ts --dev"
   },
   "include": ["src", "deps.ts", "devServer.ts"],
   "exclude": ["build"]
