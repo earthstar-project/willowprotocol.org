@@ -39,7 +39,7 @@ import { RenderAllWips } from "macromania-wip";
 import { contentAddress } from "./assetTransforms.tsx";
 import { addEtag, ServerOptimisations } from "./serverOptimisations.tsx";
 import { encodeHex } from "jsr:@std/encoding/hex";
-import { posixPath } from "./deps.ts";
+import { join as posixJoin } from "@std/path/posix";
 
 const ctx = new Context();
 
@@ -181,7 +181,7 @@ const exp = (
 
                       addEtag(
                         ctx,
-                        posixPath.join(renderOutFsPath(outPwd)),
+                        posixJoin(renderOutFsPath(outPwd)),
                         hash,
                       );
 
