@@ -144,15 +144,6 @@ p {
     margin: 1em 0;
 }
 
-.aside {
-    color: var(--nearly-nearly-black);
-}
-
-.aside.long {
-    border: 1px solid var(--light-green);
-    border-width: 1px 0;
-}
-
 /* since `important` is evil... */
 body .katex {
     font-size: inherit;
@@ -160,10 +151,13 @@ body .katex {
 }
 
 aside.long {
+    font-size: 0.9em;
+    box-sizing: border-box;
+    background: #00000008;
+    margin: 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
     border: 1px solid var(--light-green);
-    border-width: 1px 0;
-    padding: 1em 0.75em;
-    margin: 2em 0;
 }
 
 figcaption,

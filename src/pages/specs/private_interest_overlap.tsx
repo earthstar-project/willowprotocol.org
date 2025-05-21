@@ -422,10 +422,6 @@ export const private_interest_overlap = (
 
           <AsideBlock>
             <P>
-              <Gwil>
-                Alj thinks the aside styling could/should scream a lot more
-                loudly that this is an aside.
-              </Gwil>
               A reader well-versed in the literature on{" "}
               <AE href="https://en.wikipedia.org/wiki/Private_set_intersection">
                 private set intersection (PSI)
