@@ -217,7 +217,8 @@ a:hover {
     color: var(--green);
 }
 
-a.external {
+a.external,
+.marginale a {
     color: var(--dark-green);
     text-decoration: underline;
 }
