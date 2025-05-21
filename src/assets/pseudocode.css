@@ -61,8 +61,9 @@ code.pseudocode {
         line-height: 1.5em;
         display: inline-grid;
         grid-template-columns: auto minmax(10ch, 1fr);
-        
+
         >div {
+            min-height: 1.5em;
             padding-top: 0.25em;
             padding-bottom: 0.25em;
         }
@@ -70,7 +71,6 @@ code.pseudocode {
         >div:first-child {
             >.indent {
                 width: 2ch;
-                border-left: solid 1px var(--pseudo-fg-muted);
                 height: 100%;
                 user-select: none;
             }
@@ -81,12 +81,16 @@ code.pseudocode {
             grid-column-end: 3;
         }
 
+        >div:has(div.indent) {
+            border-left: solid 1px var(--pseudo-fg-muted);
+        }
+
         >div.comment,
         >div.lineComment {
             border-left: dotted var(--pseudo-fg-muted) 2px;
             color: var(--pseudo-fg-slightly-muted);
             padding-left: calc(1ch - 2px);
-   
+
             font-family: --var(font-mono)
 
             p:first-child {
@@ -120,7 +124,7 @@ code.pseudocode {
     background-color: rgba(0, 0, 0, 0.01);
 
     > :is(div:nth-child(4n + 1), div:nth-child(4n + 2)) {
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: rgba(0, 0, 0, 0.02);
     }
 
     > :is(.locGutter, .locContent).isFolded {

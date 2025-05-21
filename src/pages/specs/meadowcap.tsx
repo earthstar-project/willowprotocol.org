@@ -913,9 +913,7 @@ export const meadowcap = (
                     <R n="communal_prev_cap" />
                   </AccessStruct>{" "}
                   is empty, then <R n="communal_handover" />{" "}
-                  is the concatenation of the following bytestrings:<Gwil>
-                    make styling adjustments
-                  </Gwil>
+                  is the concatenation of the following bytestrings:
 
                   <Encoding
                     standalone
@@ -989,9 +987,6 @@ export const meadowcap = (
           </Hsection>
 
           <Hsection n="owned_capabilities" title="Owned Namespaces">
-            <P>
-              <Gwil inline>Make the indentation bars seamless again.</Gwil>
-            </P>
             <Pseudocode n="owned_capability_definition">
               <StructDef
                 comment={

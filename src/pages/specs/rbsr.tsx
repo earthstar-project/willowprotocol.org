@@ -272,11 +272,6 @@ export const rbsr = (
             denote the type of hashes of <Rs n="LengthyAuthorisedEntry" />{" "}
             that the peers exchange. Then the precise pieces of information that
             the peers need to exchange are the following:
-            <Gwil>
-              The styling of alternating line colours feels a bit weird to Alj,
-              especially with the pretty thin empty line of code between the two
-              structs.
-            </Gwil>
           </P>
         </PreviewScope>
 

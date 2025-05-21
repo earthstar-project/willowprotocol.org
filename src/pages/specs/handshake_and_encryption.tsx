@@ -101,7 +101,7 @@ export const handshake_and_encryption = (
                     }
                   >
                     revision 34
-                  </A>. <Gwil inline>TODO: fix link colouring.</Gwil>
+                  </A>.
                 </>
               }
             >
@@ -464,7 +464,7 @@ export const handshake_and_encryption = (
             margin: 0;
             flex: 1;
         }
-        
+
         >p:nth-child(even) {
             background: #ffbf001f;
         }
