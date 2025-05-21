@@ -434,7 +434,6 @@ export const private_interest_overlap = (
               that point out the exchange of (salted) hashes as a rookie
               mistake. A fairly representative example{" "}
               <Bib item="freedman2016efficient" />:
-              <Gwil>More obvious blockquote styling</Gwil>
             </P>
 
             <Blockquote>

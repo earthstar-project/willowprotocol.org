@@ -133,6 +133,12 @@ h6 {
     }
 }
 
+blockquote {
+    border-left: 1px solid var(--light-green);
+    margin-left: 1em;
+    padding-left: 1ch;
+}
+
 p {
     line-height: 1.45;
     margin: 1em 0;
