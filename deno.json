@@ -1,6 +1,7 @@
 {
   "imports": {
     "@aljoschameyer/loggingutils": "jsr:@aljoscha-meyer/logging-utils@^1.0.0",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "@std/path": "jsr:@std/path@^1.0.9",
     "std_fmt": "jsr:@std/fmt@^0.221.0",
     "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
