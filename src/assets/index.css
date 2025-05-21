@@ -258,7 +258,8 @@ dfn {
 }
 
 a.ref,
-.enclosing a {
+.enclosing a,
+.katex a {
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-color: rgb(112, 132, 132);
@@ -663,7 +664,7 @@ span.katex {
 }
 
 .katex a {
-    text-decoration: none;
+    color: var(--nearly-black);
 }
 
 /*********************/

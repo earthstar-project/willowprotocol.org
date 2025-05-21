@@ -443,11 +443,6 @@ export const encodings = (
 
           <PreviewScope>
             <P>
-              <Gwil>
-                How are the DefRef references inside math mode not coloured
-                correctly? How? (When fixing this, also consider hover
-                colouring. No change is ok, but bright green is not.)
-              </Gwil>
               Let <DefValue n="c64_n" r="n" /> be a <R n="U64" />, and let{" "}
               <DefValue n="c64_tw" r="tag_width" math={`tag\\_width`} />{" "}
               be a natural number between two and eight inclusive. Then the
