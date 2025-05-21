@@ -39,7 +39,7 @@ import { RenderAllWips } from "macromania-wip";
 import { contentAddress } from "./assetTransforms.tsx";
 import { addEtag, ServerOptimisations } from "./serverOptimisations.tsx";
 import { encodeHex } from "jsr:@std/encoding/hex";
-import { posixPath } from "./deps.ts";
+import { join as posixJoin } from "@std/path/posix";
 
 const ctx = new Context();
 
@@ -140,7 +140,6 @@ const exp = (
                   },
                   "apple-touch-icon.png": transformCopy,
                   "authors.css": transformCopy,
-                  "emblem.png": transformCopy,
                   "favicon.png": transformCopy,
                   "favicon.svg": transformCopy,
                   "layout.css": transformCopy,
@@ -181,7 +180,7 @@ const exp = (
 
                       addEtag(
                         ctx,
-                        posixPath.join(renderOutFsPath(outPwd)),
+                        posixJoin(renderOutFsPath(outPwd)),
                         hash,
                       );
 
