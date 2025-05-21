@@ -63,6 +63,7 @@ code.pseudocode {
         grid-template-columns: auto minmax(10ch, 1fr);
 
         >div {
+            min-height: 1.5em;
             padding-top: 0.25em;
             padding-bottom: 0.25em;
         }
@@ -123,7 +124,7 @@ code.pseudocode {
     background-color: rgba(0, 0, 0, 0.01);
 
     > :is(div:nth-child(4n + 1), div:nth-child(4n + 2)) {
-        background-color: rgba(0, 0, 0, 0.03);
+        background-color: rgba(0, 0, 0, 0.02);
     }
 
     > :is(.locGutter, .locContent).isFolded {
