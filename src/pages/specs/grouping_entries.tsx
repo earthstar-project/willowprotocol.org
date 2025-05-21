@@ -126,7 +126,6 @@ export const grouping_entries = (
                 <R n="open_range" />
               </Green>.
             </Figcaption>
-            <Gwil>TODO: fix colouring of refs here</Gwil>
           </Figure>
 
           <P>

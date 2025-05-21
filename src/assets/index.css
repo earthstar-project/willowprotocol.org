@@ -269,7 +269,7 @@ a.ref,
 .orange a.type,
 .orange a.value,
 .orange a.symbol,
-a[data-ref].orange {
+.orange a[data-ref] {
     color: var(--wong-orange);
 }
 
@@ -277,7 +277,7 @@ a[data-ref].orange {
 .sky-blue a.type,
 .sky-blue a.value,
 .sky-blue a.symbol,
-a[data-ref].sky-blue {
+.sky-blue a[data-ref] {
     color: var(--wong-blue);
 }
 
@@ -285,7 +285,7 @@ a[data-ref].sky-blue {
 .green a.type,
 .green a.value,
 .green a.symbol,
-a[data-ref].green {
+.green a[data-ref] {
     color: var(--wong-green);
 }
 
@@ -293,7 +293,7 @@ a[data-ref].green {
 .yellow a.type,
 .yellow a.value,
 .yellow a.symbol,
-a[data-ref].yellow {
+.yellow a[data-ref] {
     color: var(--wong-yellow);
 }
 
@@ -301,7 +301,7 @@ a[data-ref].yellow {
 .blue a.type,
 .blue a.value,
 .blue a.symbol,
-a[data-ref].blue {
+.blue a[data-ref] {
     color: var(--wong-blue);
 }
 
@@ -309,7 +309,7 @@ a[data-ref].blue {
 .vermillion a.type,
 .vermillion a.value,
 .vermillion a.symbol,
-a[data-ref].vermillion {
+.vermillion a[data-ref] {
     color: var(--wong-vermillion);
 }
 
@@ -317,7 +317,7 @@ a[data-ref].vermillion {
 .purple a.type,
 .purple a.value,
 .purple a.symbol,
-a[data-ref].purple {
+.purple a[data-ref] {
     color: var(--wong-purple);
 }
 
