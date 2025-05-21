@@ -38,6 +38,19 @@ Deno.serve(async (req: Request) => {
     normalisedPath = `${normalisedPath}index.html`;
   }
 
+  // Is the path for a willow emblem?
+  //  then serve up a random one.
+  if (url.pathname === "/assets/emblem.png") {
+    console.log(200, url);
+
+    return new Response(await pickRandomEmblem(), {
+      headers: {
+        "Content-Type": "image/png",
+        "Cache-Control": "s-max-age=3600,max-age=3600,public",
+      },
+    });
+  }
+
   // Formulate the corresponding file path.
   const fsPath = join(
     ".",
@@ -54,19 +67,6 @@ Deno.serve(async (req: Request) => {
 
     return new Response("No page found", {
       status: 404,
-    });
-  }
-
-  // Is the path for a willow emblem?
-  //  then serve up a random one.
-  if (url.pathname === "/emblem.png") {
-    console.log(200, url);
-
-    return new Response(await pickRandomEmblem(), {
-      headers: {
-        "Content-Type": "image/png",
-        "Cache-Control": "s-max-age=3600,max-age=3600,public",
-      },
     });
   }
 
