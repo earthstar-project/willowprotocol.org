@@ -3851,9 +3851,6 @@ export const encodings = (
                   iter={<ValAccess field="enumcap_delegations" />}
                   skipLast
                 >
-                  <Gwil inline>
-                    TODO fix styling of nested encoding without bitfields
-                  </Gwil>
                   <Encoding
                     idPrefix="enc_sscap_rel_nested"
                     bitfields={[]}
