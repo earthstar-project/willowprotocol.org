@@ -541,6 +541,11 @@ export const willow25 = (
 			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
 	 */
         }
+
+        <Img
+          src={<ResolveAsset asset={["willow_25", "emblem.png"]} />}
+          alt={`A Willow'25 emblem: A drawing of a simplified Willow emblem next to a large, red, '25.`}
+        />
       </PageTemplate>
     </File>
   </Dir>

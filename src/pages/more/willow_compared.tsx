@@ -1,10 +1,11 @@
 import { Dir, File } from "macromania-outfs";
 import { AE, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, P } from "macromania-html";
+import { Code, Em, Img, P } from "macromania-html";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
 import { R, Rs } from "macromania-defref";
+import { ResolveAsset } from "macromania-assets";
 
 export const willow_compared = (
   <Dir name="willow_compared">
@@ -17,6 +18,16 @@ export const willow_compared = (
         parentId="more"
       >
         <P>
+          <Marginale>
+            <Img
+              src={
+                <ResolveAsset
+                  asset={["comparison", "apples_oranges.png"]}
+                />
+              }
+              alt="An illustration of a red apple, a green apple, and an orange."
+            />
+          </Marginale>
           How does Willow compare conceptually and technically to other
           distributed systems and protocols? Here, we give an overview regarding
           some <Sidenote note={<>As of early 2025.</>}>popular</Sidenote>{" "}
