@@ -1,14 +1,39 @@
-import { Img, Li, Nav, P, Ul } from "macromania-html";
+import { H2, H3, Hr, Img, Li, Nav, P, Ul } from "macromania-html";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { R } from "macromania-defref";
+import { R, Rs } from "macromania-defref";
 import { Marginale } from "macromania-marginalia";
 import { File } from "macromania-outfs";
 import { ResolveAsset } from "macromania-assets";
+import { Expression } from "macromania";
+
+function SpecBreakdown(
+  { title, tagline, emblem, features }: {
+    title: Expression;
+    tagline: Expression;
+    emblem: Expression;
+    features: Expression[];
+  },
+): Expression {
+  return (
+    <>
+      <H3>{title}</H3>
+      <P clazz="spec-tagline">
+        <Marginale>
+          {emblem}
+        </Marginale>
+        {tagline}
+      </P>
+      <Ul clazz="spec-taglist">
+        {features.map((feature) => <Li>{feature}</Li>)}
+      </Ul>
+    </>
+  );
+}
 
 export const index = (
   <File name="index.html">
     <PageTemplate
-      htmlTitle="Willow"
+      htmlTitle="Home"
       headingId="willow"
       heading={
         <Img
@@ -17,27 +42,43 @@ export const index = (
         />
       }
     >
-      <P clazz="introductory">
-        Protocols for synchronisable data stores. The best parts? Fine-grained
-        permissions, a keen approach to privacy, destructive edits, and a dainty
-        bandwidth and memory footprint.
+      <P clazz="tagline wide">
+        Data storage which scales up, down, and sideways.
       </P>
 
-      <Nav>
+      <Ul clazz="taglist wide">
+        <Li>Works offline.</Li>
+        <Li>Store any kind of data.</Li>
+        <Li>Destructive edits.</Li>
+        <Li>Real deletion.</Li>
+        <Li>Fine-grained permissions.</Li>
+        <Li>Encrypted.</Li>
+        <Li>Private networks.</Li>
+        <Li>Public networks.</Li>
+        <Li>Live networking.</Li>
+        <Li>Sneakernets.</Li>
+        <Li>Rust implementations.</Li>
+        <Li>Free forever, in every sense.</Li>
+      </Ul>
+
+      <Nav clazz="ctas wide">
         <Ul>
           <Li>
-            <R n="why_willow">Why did we make Willow?</R>
-          </Li>
-          <Li>
             <R n="data_model">
-              If you read only one specification, let it be this one
+              Start here
             </R>
           </Li>
           <Li>
-            <R n="specifications">All of the specifications</R>
+            <R n="specifications">Specifications</R>
           </Li>
           <Li>
-            <R n="changes">News and updates</R>
+            <R n="changes">News</R>
+          </Li>
+          <Li>
+            <R n="projects_and_communities">Active projects</R>
+          </Li>
+          <Li>
+            <R n="more">More!</R>
           </Li>
         </Ul>
       </Nav>
@@ -50,10 +91,11 @@ export const index = (
           />
         </Marginale>
         Data storage which never goes offline. You get always-available storage
-        for arbitrary data (e.g. text, media). You can have as many of these
-        stores as you want, keyed to different namespaces. When stores from
-        different devices belong to the same namespace, they deterministically
-        sync with each other.
+        for arbitrary data (e.g. text, images, audio, video). You can have as
+        many of these <Rs n="store"></Rs> as you want, keyed to different{" "}
+        <Rs n="namespace" />. When stores from different devices belong to the
+        same namespace, they <R n="store_join">deterministically sync</R>{" "}
+        with each other.
       </P>
 
       <P>
@@ -63,10 +105,16 @@ export const index = (
             alt="A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall blocks the troll’s line of sight. The trool is deeply unhappy about this circumstance."
           />
         </Marginale>
-        Private and end-to-end encrypted. Other users can't find out what you’re
-        interested in unless they already know about it themselves. And if they
-        get that far, they still have to be able to decrypt synced data to make
-        any sense of it.
+        Private and{" "}
+        <R n="handshake_and_encryption">end-to-end encrypted</R>. Other users
+        can't find out what you’re interested in{" "}
+        <R n="private_interest_overlap">
+          unless they already know about it themselves
+        </R>. And if they get that far, they still have to be able to{" "}
+        <R n="e2e">
+          decrypt synced data
+        </R>{" "}
+        to make any sense of it.
       </P>
 
       <P>
@@ -77,9 +125,10 @@ export const index = (
           />
         </Marginale>
         Total erasure of data. Distributed systems use tombstones to communicate
-        deletes, but even these leave metadata behind. Prefix pruning deletes
-        many entries and all of their metadata in their entirety, leaving a
-        single tombstone in their place.
+        deletes, but even these leave metadata behind.{" "}
+        <R n="prefix_pruning">Prefix pruning</R>{" "}
+        deletes many entries and all of their metadata in their entirety,
+        leaving a single tombstone in their place.
       </P>
 
       <P>
@@ -89,9 +138,17 @@ export const index = (
             alt={`Two stylised admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`}
           />
         </Marginale>
-        Fine grained capabilities. Restrict read and write access by
-        semantically meaningful ranges of data, or time range. Use your
-        favourite existing capability system, or try our Meadowcap system.
+        Fine grained capabilities. Restrict read and write access by{" "}
+        <R n="Area">semantically meaningful areas of data</R>, and choose the
+        right kind of community topology for you with{" "}
+        <R n="meadowcap">Meadowcap</R>.
+      </P>
+
+      <P>
+        Exchange data in whatever way suits you using{" "}
+        <R n="sideloading">sideloading</R>. Go completely off-grid with USB keys
+        and dead drops, or send packages of data via your favourite existing
+        infrastructure. All completely encrypted.
       </P>
 
       <P>
@@ -135,8 +192,8 @@ export const index = (
             alt={`Five ants carry zeros and ones off to the right. The numbers are about as large as the hard-working insects.`}
           />
         </Marginale>
-        Peers can communicate resource budgets, so devices with very limited
-        memory can sync too.
+        <R n="lcmux">Peers can communicate resource budgets</R>, so devices with
+        very limited memory can sync too.
       </P>
 
       <P>
@@ -147,7 +204,8 @@ export const index = (
           />
         </Marginale>
         You choose the transport and cryptographic primitives suited to your
-        use-case.
+        use-case. Or use our{" "}
+        <R n="willow25">secure and efficient set of recommended parameters</R>.
       </P>
 
       <P>
@@ -159,6 +217,67 @@ export const index = (
         </Marginale>
         Authors can write from multiple devices concurrently. Yay.
       </P>
+
+      <SpecBreakdown
+        title={<R n="data_model">Willow</R>}
+        tagline={"Synchronisable data storage with destrucive editing."}
+        emblem={"Willow emblem here"}
+        features={[
+          "Works offline.",
+          "Store any kind of data.",
+          "Truly destructive editing.",
+          <>
+            Actually delete stuff with <R n="prefix_pruning" />.
+          </>,
+          "End-to-end encryptable.",
+          "Eventually consistent.",
+          "Rust implementation.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="meadowcap" />}
+        tagline={"A capability system for fine-grained access to Willow data."}
+        emblem={"Meadowcap emblem here"}
+        features={[
+          "No central authority needed.",
+          "No assumptions about what an identity is.",
+          "Owned namespaces for top-down moderation.",
+          "Communal namespaces for bottom-up networks.",
+          "Rust implementation.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="sync">W.G.P.S.</R>}
+        tagline={"Private and efficient synchronisation for Willow data."}
+        emblem={"WGPS emblem here."}
+        features={[
+          "Encrypted communication.",
+          "Only syncs what you're interested in.",
+          "Only syncs what others have access to.",
+          "Man-in-the-middle attack resistant.",
+          "Streaming sync.",
+          "Dainty bandwidth and memory usage.",
+          "Rust implementation in progress.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="sideloading">Sideloading</R>}
+        tagline={"Securely deliver Willow data by any means possible."}
+        emblem={"Sideloading emblem here."}
+        features={[
+          "Package Willow data in a single encrypted file.",
+          "Move it however you want.",
+          "Sneakernets.",
+          "Email.",
+          "FTP servers.",
+          "Messaging apps.",
+          "Dead drops.",
+          "Rust implementation in progress.",
+        ]}
+      />
     </PageTemplate>
   </File>
 );

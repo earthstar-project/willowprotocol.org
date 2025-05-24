@@ -124,7 +124,7 @@ export function PageTemplate(
             bodyProps={{
               clazz: `${status === "proposal" ? "proposal" : "bg"}`,
             }}
-            title={<>Willow Specifications - {<exps x={htmlTitle} />}</>}
+            title={<>Willow - {<exps x={htmlTitle} />}</>}
             headContents={
               <>
                 <Meta
