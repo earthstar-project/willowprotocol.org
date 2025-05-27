@@ -144,6 +144,13 @@ p {
     margin: 1em 0;
 }
 
+.splash-image {
+    width: 117%;
+    max-width: none;
+    position: relative;
+    left: -8.5%;
+}
+
 /* since `important` is evil... */
 body .katex {
     font-size: inherit;

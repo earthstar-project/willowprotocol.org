@@ -37,7 +37,8 @@ export const index = (
       headingId="willow"
       heading={
         <Img
-          src="/assets/emblem.png"
+          clazz="splash-image"
+          src={<ResolveAsset asset={["splash.png"]} />}
           alt={`A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\".`}
         />
       }
