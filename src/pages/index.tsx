@@ -121,6 +121,19 @@ export const index = (
       <P>
         <Marginale inlineable>
           <Img
+            src={<ResolveAsset asset={["landing", "sideload.png"]} />}
+            alt={`An envelope with a Willow-flavoured file inside. A Willow-flavoured USB stick. A bird carrying a Willow-flavoured file.`}
+          />
+        </Marginale>
+        Exchange data in whatever way suits you using{" "}
+        <R n="sideloading">sideloading</R>. Go completely off-grid with USB keys
+        and dead drops, or send packages of data via your favourite existing
+        infrastructure. All completely encrypted.
+      </P>
+
+      <P>
+        <Marginale inlineable>
+          <Img
             src={<ResolveAsset asset={["landing", "prefix-pruning.png"]} />}
             alt="Three stylised paper files hang off a tree branch. The branch is being cut off near its base by a pair of hedge clippers, in a way that all files will be pruned of the tree."
           />
@@ -145,12 +158,7 @@ export const index = (
         <R n="meadowcap">Meadowcap</R>.
       </P>
 
-      <P>
-        Exchange data in whatever way suits you using{" "}
-        <R n="sideloading">sideloading</R>. Go completely off-grid with USB keys
-        and dead drops, or send packages of data via your favourite existing
-        infrastructure. All completely encrypted.
-      </P>
+
 
       <P>
         <Marginale inlineable>
@@ -207,16 +215,6 @@ export const index = (
         You choose the transport and cryptographic primitives suited to your
         use-case. Or use our{" "}
         <R n="willow25">secure and efficient set of recommended parameters</R>.
-      </P>
-
-      <P>
-        <Marginale inlineable>
-          <Img
-            src={<ResolveAsset asset={["landing", "concurrent.png"]} />}
-            alt={`A happy little smiley face holding a laptop in one hand and a phone in the other hand. Yay.`}
-          />
-        </Marginale>
-        Authors can write from multiple devices concurrently. Yay.
       </P>
 
       <SpecBreakdown
