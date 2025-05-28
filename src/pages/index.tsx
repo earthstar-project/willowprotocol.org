@@ -84,6 +84,81 @@ export const index = (
         </Ul>
       </Nav>
 
+      <SpecBreakdown
+        title={<R n="data_model">Willow</R>}
+        tagline="Synchronisable data storage with destrucive editing."
+        emblem={<Img
+          src={<ResolveAsset asset={["landing", "spec_willow.png"]} />}
+          alt={`Emblem`}
+        />}
+        features={[
+          "Works offline.",
+          "Store any kind of data.",
+          "Truly destructive editing.",
+          <>
+            Actually delete stuff with <R n="prefix_pruning" />.
+          </>,
+          "End-to-end encryptable.",
+          "Eventually consistent.",
+          "Rust implementation.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="meadowcap" />}
+        tagline={"A capability system for fine-grained access to Willow data."}
+        emblem={<Img
+          src={<ResolveAsset asset={["landing", "spec_meadowcap.png"]} />}
+          alt={`Emblem`}
+        />}
+        features={[
+          "No central authority needed.",
+          "No assumptions about what an identity is.",
+          "Owned namespaces for top-down moderation.",
+          "Communal namespaces for bottom-up networks.",
+          "Rust implementation.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="sync">W.G.P.S.</R>}
+        tagline={"Private and efficient synchronisation for Willow data."}
+        emblem={<Img
+          src={<ResolveAsset asset={["landing", "spec_wgps.png"]} />}
+          alt={`Emblem`}
+        />}
+        features={[
+          "Encrypted communication.",
+          "Only syncs what you're interested in.",
+          "Only syncs what others have access to.",
+          "Man-in-the-middle attack resistant.",
+          "Streaming sync.",
+          "Dainty bandwidth and memory usage.",
+          "Rust implementation in progress.",
+        ]}
+      />
+
+      <SpecBreakdown
+        title={<R n="sideloading">Sideloading</R>}
+        tagline={"Securely deliver Willow data by any means possible."}
+        emblem={<Img
+          src={<ResolveAsset asset={["landing", "spec_sideloading.png"]} />}
+          alt={`Emblem`}
+        />}
+        features={[
+          "Package Willow data in a single encrypted file.",
+          "Move it however you want.",
+          "Sneakernets.",
+          "Email.",
+          "FTP servers.",
+          "Messaging apps.",
+          "Dead drops.",
+          "Rust implementation in progress.",
+        ]}
+      />
+
+      <H2>In a nutshell</H2>
+
       <P>
         <Marginale inlineable>
           <Img
@@ -217,66 +292,7 @@ export const index = (
         <R n="willow25">secure and efficient set of recommended parameters</R>.
       </P>
 
-      <SpecBreakdown
-        title={<R n="data_model">Willow</R>}
-        tagline={"Synchronisable data storage with destrucive editing."}
-        emblem={"Willow emblem here"}
-        features={[
-          "Works offline.",
-          "Store any kind of data.",
-          "Truly destructive editing.",
-          <>
-            Actually delete stuff with <R n="prefix_pruning" />.
-          </>,
-          "End-to-end encryptable.",
-          "Eventually consistent.",
-          "Rust implementation.",
-        ]}
-      />
 
-      <SpecBreakdown
-        title={<R n="meadowcap" />}
-        tagline={"A capability system for fine-grained access to Willow data."}
-        emblem={"Meadowcap emblem here"}
-        features={[
-          "No central authority needed.",
-          "No assumptions about what an identity is.",
-          "Owned namespaces for top-down moderation.",
-          "Communal namespaces for bottom-up networks.",
-          "Rust implementation.",
-        ]}
-      />
-
-      <SpecBreakdown
-        title={<R n="sync">W.G.P.S.</R>}
-        tagline={"Private and efficient synchronisation for Willow data."}
-        emblem={"WGPS emblem here."}
-        features={[
-          "Encrypted communication.",
-          "Only syncs what you're interested in.",
-          "Only syncs what others have access to.",
-          "Man-in-the-middle attack resistant.",
-          "Streaming sync.",
-          "Dainty bandwidth and memory usage.",
-          "Rust implementation in progress.",
-        ]}
-      />
-
-      <SpecBreakdown
-        title={<R n="sideloading">Sideloading</R>}
-        tagline={"Securely deliver Willow data by any means possible."}
-        emblem={"Sideloading emblem here."}
-        features={[
-          "Package Willow data in a single encrypted file.",
-          "Move it however you want.",
-          "Sneakernets.",
-          "Email.",
-          "FTP servers.",
-          "Messaging apps.",
-          "Dead drops.",
-          "Rust implementation in progress.",
-        ]}
-      />
     </PageTemplate>
   </File>
 );
