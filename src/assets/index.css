@@ -144,6 +144,13 @@ p {
     margin: 1em 0;
 }
 
+.splash-image {
+    width: 117%;
+    max-width: none;
+    position: relative;
+    left: -8.5%;
+}
+
 /* since `important` is evil... */
 body .katex {
     font-size: inherit;
@@ -167,8 +174,57 @@ figcaption,
     margin: 0 0 1em 0;
 }
 
-p.introductory {
+p.tagline {
+    font-size: 2rem;
+}
+
+ul.taglist {
     font-size: 1.5rem;
+}
+
+.spec-tagline {
+    font-style: italic;
+}
+
+ul.taglist,
+ul.spec-taglist {
+    padding: 0;
+}
+
+ul.taglist li,
+ul.spec-taglist li {
+    display: inline;
+    margin-right: 0.25em;
+}
+
+ul.taglist li:nth-child(odd),
+ul.spec-taglist li:nth-child(odd) {
+    color: var(--color-comment);
+}
+
+nav.ctas ul {
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+nav.ctas ul li {
+    display: inline-block;
+
+    margin-right: 0.5rem;
+}
+
+nav.ctas ul li a[data-ref] {
+    color: var(--dark-green);
+    text-decoration: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--dark-green);
+}
+
+nav.ctas ul li a[data-ref]:hover {
+    color: var(--green);
+    border: 1px solid var(--green);
+    text-decoration: none;
 }
 
 .path {
@@ -378,24 +434,6 @@ footer .funder img {
 
 footer .sponsor img {
     max-width: 4em;
-}
-
-main {
-    flex: 1;
-    margin-bottom: 2rem;
-}
-
-main nav ul li:has(> a) {
-    list-style-type: none;
-}
-
-main nav ul li:has(> a):after {
-    content: "→";
-    margin-left: 0.5ch;
-}
-
-main nav ul li:has(> a[aria-disabled="true"]):after {
-    content: "→";
 }
 
 ul {
