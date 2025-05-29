@@ -44,7 +44,7 @@ export const index = (
       }
     >
       <P clazz="tagline wide">
-        Data storage which scales up, down, and sideways.
+        Peer-to-peer storage which scales up, down, and sideways.
       </P>
 
       <Ul clazz="taglist wide">
