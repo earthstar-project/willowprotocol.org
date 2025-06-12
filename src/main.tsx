@@ -15,6 +15,8 @@ import { handshake_and_encryption } from "./pages/specs/handshake_and_encryption
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
+import { rust } from "./pages/rust.tsx";
+import { tutorials } from "./pages/rust/tutorials.tsx";
 import { more } from "./pages/more.tsx";
 import { about_us } from "./pages/more/about_us.tsx";
 import { threedstorage } from "./pages/more/3dstorage.tsx";
@@ -209,6 +211,11 @@ const exp = (
                 {private_interest_overlap}
                 {handshake_and_encryption}
                 {willow25}
+              </Dir>
+
+              <Dir name="rust">
+                {rust}
+                {tutorials}
               </Dir>
 
               <Dir name="more">

@@ -10,10 +10,11 @@ const JSON_VERSION = 46;
 type RustDocsProps = {
   crate: string;
   json: any;
+  prefix?: string;
 };
 
 export function DefsRustDocs(props: RustDocsProps): Expression {
-  const defsDict = createDefs(props.crate, props.json);
+  const defsDict = createDefs(props.crate, props.json, props.prefix);
 
   return (
     <omnomnom>
@@ -27,6 +28,7 @@ export function DefsRustDocs(props: RustDocsProps): Expression {
 type DocsRsProps = {
   crate: string;
   version?: string;
+  prefix?: string;
 };
 
 const logger = createLogger("LoggerDefDocsRs");
@@ -61,7 +63,13 @@ export function DefsDocsRs(props: DocsRsProps): Expression {
 
         const docsJson = JSON.parse(jsonString);
 
-        return <DefsRustDocs crate={props.crate} json={docsJson} />;
+        return (
+          <DefsRustDocs
+            crate={props.crate}
+            json={docsJson}
+            prefix={props.prefix}
+          />
+        );
       }}
     />
   );
@@ -234,7 +242,11 @@ function walkIndex(
   }
 }
 
-export function createDefs(crateName: string, docsJson: any) {
+export function createDefs(
+  crateName: string,
+  docsJson: any,
+  prefix?: string,
+): Record<string, { url: string; name: string }> {
   const crateVersion = docsJson["crate_version"];
   const rootId = docsJson["root"];
 
@@ -243,6 +255,18 @@ export function createDefs(crateName: string, docsJson: any) {
   const defs: Record<string, { url: string; name: string }> = {};
 
   walkIndex(docsJson, rootId, defs, [], rootUrl);
+
+  if (prefix) {
+    const prefixedDefs: Record<string, { url: string; name: string }> = {};
+
+    for (const key in defs) {
+      const val = defs[key];
+
+      prefixedDefs[`${prefix}${key}`] = val;
+    }
+
+    return prefixedDefs;
+  }
 
   return defs;
 }

@@ -9,6 +9,7 @@
     "jsr:@std/internal@^1.0.6": "1.0.8",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/path@^1.0.9": "1.0.9",
+    "npm:@bokuweb/zstd-wasm@^0.0.27": "0.0.27",
     "npm:citation-js@0.7.12": "0.7.12_@citation-js+core@0.7.11",
     "npm:citeproc@2.4.63": "2.4.63",
     "npm:katex@0.16.9": "0.16.9"
@@ -46,6 +47,9 @@
     }
   },
   "npm": {
+    "@bokuweb/zstd-wasm@0.0.27": {
+      "integrity": "sha512-GDm2uOTK3ESjnYmSeLQifJnBsRCWajKLvN32D2ZcQaaCIJI/Hse9s74f7APXjHit95S10UImsRGkTsbwHmrtmg=="
+    },
     "@citation-js/cli@0.7.12_@citation-js+core@0.7.11": {
       "integrity": "sha512-8DHibEwhFqaqwmlRD3LgvwLVQyHZltwcB8KHhmkW+N3FlSKaIts6KXtbkaZ+Uydn25JXPFNPqMWG9wAFAOajEw==",
       "dependencies": [
