@@ -429,13 +429,13 @@ export const tutorial_paths = (
               We added the <Code>willow_25</Code>{" "}
               crate as a dependency to a Rust project.
             </Li>
-            <Li>You constructed an empty path.</Li>
-            <Li>You appended component to an empty path.</Li>
-            <Li>You appended a slice of components to an empty path.</Li>
-            <Li>You constructed a new path with a slice of components.</Li>
-            <Li>You checked if one path was a prefix of another.</Li>
-            <Li>You iterated through all possible prefixes of a path.</Li>
-            <Li>You determined the longest common prefix of two paths.</Li>
+            <Li>We constructed an empty path.</Li>
+            <Li>We appended component to an empty path.</Li>
+            <Li>We appended a slice of components to an empty path.</Li>
+            <Li>We constructed a new path with a slice of components.</Li>
+            <Li>We checked if one path was a prefix of another.</Li>
+            <Li>We iterated through all possible prefixes of a path.</Li>
+            <Li>We determined the longest common prefix of two paths.</Li>
           </Ul>
 
           <P>
