@@ -3,7 +3,7 @@ import { Wip } from "macromania-wip";
 import { A, Aside, Code, Div, Span } from "macromania-html";
 import { M } from "macromania-katex";
 import { Def } from "macromania-defref";
-import { Shiki } from "macromania-shiki";
+import { Shiki, ShikiProps } from "macromania-shiki";
 
 ////////////////////////
 // Comments and TODOs //
@@ -462,10 +462,20 @@ export function AsideBlock(
 /**
  * A Rust code sample
  */
-export function RustSample({ path }: { path: string[] }): Expression {
+export function RustSample(
+  { path, decorations }: {
+    path: string[];
+    decorations?: ShikiProps["decorations"];
+  },
+): Expression {
   return (
     <Div clazz="wide code_sample">
-      <Shiki path={path} lang="rust" theme="dracula" />
+      <Shiki
+        path={path}
+        lang="rust"
+        theme="rose-pine-dawn"
+        decorations={decorations}
+      />
     </Div>
   );
 }
@@ -482,7 +492,7 @@ export function TerminalInput(
 export function TerminalOutput({ path }: { path: string[] }): Expression {
   return (
     <Div clazz="wide code_sample">
-      <Shiki path={path} lang="text" theme="dracula" />
+      <Shiki path={path} lang="text" theme="rose-pine-moon" />
     </Div>
   );
 }

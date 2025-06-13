@@ -831,11 +831,21 @@ a.bib {
 }
 
 .code_sample > .shiki {
+    overflow-x: scroll;
     padding: 1rem;
     border-radius: 0.2rem;
 }
 
-code.terminal-input {
-    color: var(--nearly-white);
-    background-color: var(--nearly-black);
+.code_sample > .shiki code {
+    background: none;
 }
+
+.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) {
+    opacity: 0.4;
+}
+
+code.terminal-input {
+    color: #e0def4;
+    background-color: #232136;
+}
+

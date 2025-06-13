@@ -2,24 +2,72 @@ import { decompress, init } from "npm:@bokuweb/zstd-wasm@^0.0.27";
 import { Expression } from "macromania";
 import { createLogger } from "macromania-logger";
 import { Def } from "macromania-defref";
+import { StylesheetDependencyInfo } from "macromania-html-utils";
 
 // Rustdoc JSON output is still unstable, so we need to pin the output version.
 // TODO: They don't actually seem to support this yet.
 const JSON_VERSION = 46;
 
+type SymbolKind = "type" | "fn" | "interface" | "constant" | "module";
+
 type RustDocsProps = {
   crate: string;
   json: any;
   prefix?: string;
+  typeClass?: string;
+  functionClass?: string;
+  interfaceClass?: string;
+  constantsClass?: string;
+  moduleClass?: string;
+  depsCss?: StylesheetDependencyInfo[];
+};
+
+const makeClassGetter = (
+  classes: {
+    typeClass?: string;
+    functionClass?: string;
+    interfaceClass?: string;
+    constantsClass?: string;
+    moduleClass?: string;
+  },
+) =>
+(kind: SymbolKind) => {
+  switch (kind) {
+    case "type":
+      return classes.typeClass;
+
+    case "fn":
+      return classes.functionClass;
+
+    case "interface":
+      return classes.interfaceClass;
+
+    case "constant":
+      return classes.constantsClass;
+
+    case "module":
+      return classes.moduleClass;
+
+    default:
+      return undefined;
+  }
 };
 
 export function DefsRustDocs(props: RustDocsProps): Expression {
   const defsDict = createDefs(props.crate, props.json, props.prefix);
 
+  const classGetter = makeClassGetter(props);
+
   return (
     <omnomnom>
-      {Object.entries(defsDict).map(([id, { url, name }]) => (
-        <Def n={id} r={name} href={url} />
+      {Object.entries(defsDict).map(([id, { url, name, kind }]) => (
+        <Def
+          n={id}
+          r={name}
+          href={url}
+          refClass={classGetter(kind)}
+          depsCssRef={props.depsCss}
+        />
       ))}
     </omnomnom>
   );
@@ -92,7 +140,7 @@ function walkIndex(
   /** The ID of the index node to walk */
   id: number,
   /** The record of defs */
-  defs: Record<string, { url: string; name: string }>,
+  defs: Record<string, { url: string; name: string; kind: SymbolKind }>,
   /** The module path which has been built up to this point.  */
   path: string[],
   /** The URL root to prefix to all URLs */
@@ -112,7 +160,7 @@ function walkIndex(
         const defId = [...path, name].join("-");
         const url = `${urlRoot}/${[...path, name].join("/")}/index.html`;
 
-        defs[defId] = { url, name };
+        defs[defId] = { url, name, kind: "module" };
 
         // Follow the items within.
         for (const id of item["inner"]["module"]["items"]) {
@@ -160,7 +208,11 @@ function walkIndex(
         path.join("/")
       }/${isChildOfInner}.${structName}.html#associatedtype.${item["name"]}`;
 
-      defs[defId] = { url, name: `${structName}::${item["name"]}` };
+      defs[defId] = {
+        url,
+        name: `${structName}::${item["name"]}`,
+        kind: "type",
+      };
 
       break;
     }
@@ -178,13 +230,13 @@ function walkIndex(
           path.join("/")
         }/${isChildOfInner}.${parentName}.html#${methodKind}.${itemName}`;
 
-        defs[defId] = { url, name: `${parentName}::${itemName}` };
+        defs[defId] = { url, name: `${parentName}::${itemName}`, kind: "fn" };
       } else {
         const url = `${urlRoot}/${path.join("/")}/${
           innerToUrlIdentifier[itemType]
         }.${itemName}.html`;
 
-        defs[defId] = { url, name: itemName };
+        defs[defId] = { url, name: itemName, kind: "fn" };
       }
 
       break;
@@ -197,7 +249,7 @@ function walkIndex(
         innerToUrlIdentifier[itemType]
       }.${itemName}.html`;
 
-      defs[defId] = { url, name: itemName };
+      defs[defId] = { url, name: itemName, kind: "interface" };
 
       for (const id of item["inner"]["trait"]["items"]) {
         walkIndex(rustdocs, id, defs, [...path, itemName], urlRoot, "trait");
@@ -213,7 +265,7 @@ function walkIndex(
         innerToUrlIdentifier[itemType]
       }.${itemName}.html`;
 
-      defs[defId] = { url, name: itemName };
+      defs[defId] = { url, name: itemName, kind: "type" };
 
       // And now follow the impls!
       for (const id of item["inner"]["struct"]["impls"]) {
@@ -231,7 +283,7 @@ function walkIndex(
         innerToUrlIdentifier[itemType]
       }.${itemName}.html`;
 
-      defs[defId] = { url, name: itemName };
+      defs[defId] = { url, name: itemName, kind: "type" };
       break;
     }
     default:
@@ -246,18 +298,22 @@ export function createDefs(
   crateName: string,
   docsJson: any,
   prefix?: string,
-): Record<string, { url: string; name: string }> {
+): Record<string, { url: string; name: string; kind: SymbolKind }> {
   const crateVersion = docsJson["crate_version"];
   const rootId = docsJson["root"];
 
   const rootUrl = `https://docs.rs/${crateName}/${crateVersion}`;
 
-  const defs: Record<string, { url: string; name: string }> = {};
+  const defs: Record<string, { url: string; name: string; kind: SymbolKind }> =
+    {};
 
   walkIndex(docsJson, rootId, defs, [], rootUrl);
 
   if (prefix) {
-    const prefixedDefs: Record<string, { url: string; name: string }> = {};
+    const prefixedDefs: Record<
+      string,
+      { url: string; name: string; kind: SymbolKind }
+    > = {};
 
     for (const key in defs) {
       const val = defs[key];

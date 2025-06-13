@@ -1,7 +1,7 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
 import { Li, P, Ul } from "macromania-html";
-import { Def, R, Rs } from "macromania-defref";
+import { R, Rs } from "macromania-defref";
 import { DefsRustDocs } from "macromania-defs-rustdocs";
 import { Hsection } from "macromania-hsection";
 import { Gwil } from "../macros.tsx";
@@ -21,14 +21,18 @@ export const rust = (
       <DefsRustDocs
         crate="willow_data_model"
         json={rustdocs_willow_data_model}
-        prefix={"rs-"}
+        prefix="rs-"
+        typeClass="rustic type"
+        functionClass="rustic function"
+        interfaceClass="rustic interface"
+        depsCss={[{ dep: ["pseudocode.css"] }]}
       />
 
       <P>
         <Gwil>
           Illustration of Betty with a cowboy hat on riding a giant crab here.
         </Gwil>
-        Implementations of Willow <Rs n="specifications" />{" "}
+        Implementations of Willow <R n="specifications" />{" "}
         are available through several Rust crates:
       </P>
       <Ul>

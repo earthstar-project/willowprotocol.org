@@ -69,6 +69,41 @@ export const tutorial_paths = (
             path={["src", "code_samples", "tut_paths", "01_output.txt"]}
           />
         </Hsection>
+
+        <Hsection title="Create a path with components" n="tut-path-2">
+          <P>
+            Add the following code to <Code>src/main.rs</Code>:
+          </P>
+
+          <RustSample
+            path={["src", "code_samples", "tut_paths", "02.rs"]}
+            decorations={[
+              {
+                start: {
+                  line: 6,
+                  character: 0,
+                },
+                end: {
+                  line: 12,
+                  character: 0,
+                },
+                properties: {
+                  class: "addition",
+                },
+              },
+            ]}
+          />
+
+          <P>
+            The output from running <TerminalInput>cargo run</TerminalInput>
+            {" "}
+            should be as follows:
+          </P>
+
+          <TerminalOutput
+            path={["src", "code_samples", "tut_paths", "02_output.txt"]}
+          />
+        </Hsection>
       </PageTemplate>
     </File>
   </Dir>
