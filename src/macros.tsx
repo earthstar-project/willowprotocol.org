@@ -489,10 +489,20 @@ export function TerminalInput(
 /**
  * Presentation used for terminal output
  */
-export function TerminalOutput({ path }: { path: string[] }): Expression {
+export function TerminalOutput(
+  { path, decorations }: {
+    path: string[];
+    decorations?: ShikiProps["decorations"];
+  },
+): Expression {
   return (
     <Div clazz="wide code_sample">
-      <Shiki path={path} lang="text" theme="rose-pine-moon" />
+      <Shiki
+        path={path}
+        lang="text"
+        theme="rose-pine-moon"
+        decorations={decorations}
+      />
     </Div>
   );
 }
