@@ -1,8 +1,9 @@
 import { Expression, Expressions } from "macromania";
 import { Wip } from "macromania-wip";
-import { A, Aside, Div, Span } from "macromania-html";
+import { A, Aside, Code, Div, Span } from "macromania-html";
 import { M } from "macromania-katex";
 import { Def } from "macromania-defref";
+import { Shiki } from "macromania-shiki";
 
 ////////////////////////
 // Comments and TODOs //
@@ -459,5 +460,29 @@ export function AsideBlock(
 }
 
 /**
- * A definition with a little icon preceding it.
+ * A Rust code sample
  */
+export function RustSample({ path }: { path: string[] }): Expression {
+  return (
+    <Div clazz="wide code_sample">
+      <Shiki path={path} lang="rust" theme="dracula" />
+    </Div>
+  );
+}
+
+export function TerminalInput(
+  { children }: { children: Expression },
+): Expression {
+  return <Code clazz="terminal-input">{children}</Code>;
+}
+
+/**
+ * Presentation used for terminal output
+ */
+export function TerminalOutput({ path }: { path: string[] }): Expression {
+  return (
+    <Div clazz="wide code_sample">
+      <Shiki path={path} lang="text" theme="dracula" />
+    </Div>
+  );
+}

@@ -31,7 +31,8 @@
     "macromania-bib/": "./macromania_temporary_monorepo/macromania_bib/",
     "macromania-wip": "./macromania_temporary_monorepo/macromania_wip/mod.tsx",
     "macromania-emit-latex": "./macromania_temporary_monorepo/macromania_emit_latex/mod.tsx",
-    "macromania-defs-rustdocs": "./macromania_temporary_monorepo/macromania-defs-rustdocs/mod.tsx"
+    "macromania-defs-rustdocs": "./macromania_temporary_monorepo/macromania-defs-rustdocs/mod.tsx",
+    "macromania-shiki": "./macromania_temporary_monorepo/macromania_shiki/mod.tsx"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",

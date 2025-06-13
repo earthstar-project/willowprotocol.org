@@ -1,9 +1,14 @@
 import { Dir, File } from "macromania-outfs";
 import { PageTemplate } from "../../../pageTemplate.tsx";
-import { Code, Li, Ol, P, Pre } from "macromania-html";
+import { Code, Li, Ol, P } from "macromania-html";
 import { R, Rs } from "macromania-defref";
 import { Hsection } from "macromania-hsection";
-import { Gwil } from "../../../macros.tsx";
+import {
+  Gwil,
+  RustSample,
+  TerminalInput,
+  TerminalOutput,
+} from "../../../macros.tsx";
 
 export const tutorial_paths = (
   <Dir name="path">
@@ -34,11 +39,13 @@ export const tutorial_paths = (
               like <Code>willow-paths</Code>.
             </Li>
             <Li>
-              Using your terminal, run <Code>cargo init</Code>{" "}
+              Using your terminal, run <TerminalInput>cargo init</TerminalInput>
+              {" "}
               within the newly created directory.
             </Li>
             <Li>
-              After than, run <Code>cargo add willow_25</Code>.
+              After than, run{" "}
+              <TerminalInput>cargo add willow_25</TerminalInput>.
             </Li>
           </Ol>
         </Hsection>
@@ -50,25 +57,17 @@ export const tutorial_paths = (
             following:
           </P>
 
-          <Code>
-            <Pre>
-              {`use willow_25::{Component, Path};
-
-fn main() {
-    let empty_path = Path::new_empty();
-    println!("A path with nothing in it: {:?}", empty_path);
-}`}
-            </Pre>
-          </Code>
+          <RustSample path={["src", "code_samples", "tut_paths", "01.rs"]} />
 
           <P>
             In your terminal, run{" "}
-            <Code>cargo run</Code>, and you should see the following output:
+            <TerminalInput>cargo run</TerminalInput>, and you should see the
+            following output:
           </P>
 
-          <Code>
-            <Pre>A path with nothing in it: Path([])</Pre>
-          </Code>
+          <TerminalOutput
+            path={["src", "code_samples", "tut_paths", "01_output.txt"]}
+          />
         </Hsection>
       </PageTemplate>
     </File>

@@ -111,10 +111,11 @@ strong {
 }
 
 code:not(.pseudocode) {
+    font-size: 1rem;
     background: rgba(0, 0, 0, 0.05);
-    padding: 0.12em;
-    border-radius: 10%;
+    padding: 0.12em 0.17em;
     word-break: break-word;
+    border-radius: 0.2rem;
 }
 
 h1,
@@ -823,4 +824,18 @@ a.bib {
 
 .piiExampleCaption {
     margin-top: 1em;
+}
+
+.code_sample {
+    font-size: 1rem;
+}
+
+.code_sample > .shiki {
+    padding: 1rem;
+    border-radius: 0.2rem;
+}
+
+code.terminal-input {
+    color: var(--nearly-white);
+    background-color: var(--nearly-black);
 }
