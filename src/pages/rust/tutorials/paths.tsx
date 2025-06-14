@@ -80,7 +80,8 @@ export const tutorial_paths = (
 
         <Hsection title="Append components to a path" n="tut-path-2">
           <P>
-            We'll now create two <R n="rs-willow_data_model-Component" />{" "}
+            We'll now create two{" "}
+            <R n="rs-willow_data_model-Component">Components</R>{" "}
             and append them to a <R n="rs-willow_data_model-Path" /> using{" "}
             <R n="rs-willow_data_model-Path-append" />.
           </P>
@@ -138,9 +139,9 @@ export const tutorial_paths = (
           n="tut-path-3"
         >
           <P>
-            We'll now append a slice of <R n="rs-willow_data_model-Component" />
-            {" "}
-            using <R n="rs-willow_data_model-Path-append_slice" />.
+            We'll now append a slice of{" "}
+            <R n="rs-willow_data_model-Component">Components</R> using{" "}
+            <R n="rs-willow_data_model-Path-append_slice" />.
           </P>
 
           <P>
@@ -419,8 +420,8 @@ export const tutorial_paths = (
 
         <Hsection title="Summary" n="tut-path-summary">
           <P>
-            In this tutorial we used the
-            <R n="rs-willow_data_model-Path" />{" "}
+            In this tutorial we used the <R n="rs-willow_data_model-Path" />
+            {" "}
             API to construct and compare paths:
           </P>
 

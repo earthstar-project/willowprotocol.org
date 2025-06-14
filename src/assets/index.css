@@ -832,7 +832,7 @@ a.bib {
 
 .code_sample > .shiki {
     overflow-x: scroll;
-    padding: 1rem;
+    padding: 1rem 0;
     border-radius: 0.2rem;
 }
 
@@ -840,8 +840,18 @@ a.bib {
     background: none;
 }
 
+.code_sample > .shiki .line {
+    padding: 0 1rem;
+}
+
 .code_sample > .shiki:has(.line.addition) .line:not(.line.addition) {
     opacity: 0.4;
+}
+
+.code_sample > .shiki .line.addition {
+    background: rgba(149, 255, 197, 0.2);
+    display: inline-block;
+    width: calc(100% - 2rem);
 }
 
 
