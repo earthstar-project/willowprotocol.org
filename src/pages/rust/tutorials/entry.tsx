@@ -152,7 +152,7 @@ export const tutorial_entry = (
           </P>
 
           <P>
-            <Rs n="Path" />{" "}
+            <Rs n="Entry" />{" "}
             come into their element when you have many of them. In the next
             tutorial, we will <R n="tut-groupings">work with groupings</R>.
           </P>
