@@ -87,9 +87,11 @@ export const rust = (
         </P>
         <Ul>
           <Li>
-            <R n="tut-create_a_path">Create a path</R>
+            <R n="tut-create_a_path">Create a Path</R>
           </Li>
-          <Li>Create an entry</Li>
+          <Li>
+            <R n="tut-entry">Create an Entry</R>
+          </Li>
           <Li>Work with groupings</Li>
           <Li>Create a capability</Li>
           <Li>Authorise an entry with Meadowcap</Li>
