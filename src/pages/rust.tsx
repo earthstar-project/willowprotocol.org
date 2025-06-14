@@ -7,11 +7,11 @@ import { Hsection } from "macromania-hsection";
 import { Gwil } from "../macros.tsx";
 
 const rustdocs_willow_data_model = JSON.parse(
-  await Deno.readTextFile("./rustdocs_json/willow_data_model.json"),
+  await Deno.readTextFile("./rustdocs/source_json/willow_data_model.json"),
 );
 
 const rustdocs_willow_25 = JSON.parse(
-  await Deno.readTextFile("./rustdocs_json/willow_25.json"),
+  await Deno.readTextFile("./rustdocs/source_json/willow_25.json"),
 );
 
 export const rust = (
@@ -29,6 +29,7 @@ export const rust = (
         functionClass="rustic function"
         interfaceClass="rustic interface"
         depsCss={[{ dep: ["pseudocode.css"] }]}
+        cachingPath={["rustdocs", "cached_defs"]}
       />
       <DefsRustDocs
         crate="willow_25"
@@ -38,6 +39,7 @@ export const rust = (
         functionClass="rustic function"
         interfaceClass="rustic interface"
         depsCss={[{ dep: ["pseudocode.css"] }]}
+        cachingPath={["rustdocs_defs", "cached_defs"]}
       />
 
       <P>

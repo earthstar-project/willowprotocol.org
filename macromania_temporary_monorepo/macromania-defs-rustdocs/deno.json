@@ -5,6 +5,8 @@
   "imports": {
     // "@bokuweb/zstd-wasm": "npm:@bokuweb/zstd-wasm@^0.0.27",
     "@std/assert": "jsr:@std/assert@^1.0.13",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
+    "@std/path": "jsr:@std/path@^1.1.0",
     "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
     "macromania-defref": "../macromania_defref/mod.tsx",
     "macromania-html-utils": "../macromania_html_utils/mod.tsx",

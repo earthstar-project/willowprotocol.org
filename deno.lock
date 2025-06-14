@@ -6,9 +6,11 @@
     "jsr:@std/cli@*": "1.0.17",
     "jsr:@std/encoding@*": "1.0.10",
     "jsr:@std/fmt@0.221": "0.221.0",
+    "jsr:@std/fs@^1.0.18": "1.0.18",
     "jsr:@std/internal@^1.0.6": "1.0.8",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
     "jsr:@std/path@^1.0.9": "1.0.9",
+    "jsr:@std/path@^1.1.0": "1.1.0",
     "npm:@bokuweb/zstd-wasm@^0.0.27": "0.0.27",
     "npm:citation-js@0.7.12": "0.7.12_@citation-js+core@0.7.11",
     "npm:citeproc@2.4.63": "2.4.63",
@@ -37,6 +39,12 @@
     "@std/fmt@0.221.0": {
       "integrity": "379fed69bdd9731110f26b9085aeb740606b20428ce6af31ef6bd45ef8efa62a"
     },
+    "@std/fs@1.0.18": {
+      "integrity": "24bcad99eab1af4fde75e05da6e9ed0e0dce5edb71b7e34baacf86ffe3969f3a",
+      "dependencies": [
+        "jsr:@std/path@^1.1.0"
+      ]
+    },
     "@std/internal@1.0.8": {
       "integrity": "fc66e846d8d38a47cffd274d80d2ca3f0de71040f855783724bb6b87f60891f5"
     },
@@ -45,6 +53,9 @@
     },
     "@std/path@1.0.9": {
       "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
+    },
+    "@std/path@1.1.0": {
+      "integrity": "ddc94f8e3c275627281cbc23341df6b8bcc874d70374f75fec2533521e3d6886"
     }
   },
   "npm": {
@@ -813,6 +824,7 @@
       "jsr:@aljoscha-meyer/logging-utils@1",
       "jsr:@std/assert@^1.0.13",
       "jsr:@std/fmt@0.221",
+      "jsr:@std/fs@^1.0.18",
       "jsr:@std/media-types@^1.1.0",
       "jsr:@std/path@^1.0.9"
     ]

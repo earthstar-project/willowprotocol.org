@@ -5,6 +5,7 @@
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "@std/path": "jsr:@std/path@^1.0.9",
     "std_fmt": "jsr:@std/fmt@^0.221.0",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
     "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
     "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
     "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
