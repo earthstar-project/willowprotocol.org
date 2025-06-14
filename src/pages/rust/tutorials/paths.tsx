@@ -23,7 +23,7 @@ export const tutorial_paths = (
         <P>
           <Gwil>And indicate that this'll take like ten minutes.</Gwil>
           In this tutorial you will construct and compare <Rs n="Path" />{" "}
-          using the <R n="rs-willow_data_model-Path" /> API.
+          using the <R n="rs-willow_25-Path" /> API.
         </P>
 
         <Hsection title="Prerequisites" n="tut-path-prereq">
@@ -54,8 +54,7 @@ export const tutorial_paths = (
 
         <Hsection title="Construct an empty path" n="tut-path-1">
           <P>
-            We'll now create an empty <R n="rs-willow_data_model-Path" /> using
-            {" "}
+            We'll now create an empty <R n="rs-willow_25-Path" /> using{" "}
             <R n="rs-willow_data_model-Path-new_empty" />.
           </P>
 
@@ -80,9 +79,9 @@ export const tutorial_paths = (
 
         <Hsection title="Append components to a path" n="tut-path-2">
           <P>
-            We'll now create two{" "}
-            <R n="rs-willow_data_model-Component">Components</R>{" "}
-            and append them to a <R n="rs-willow_data_model-Path" /> using{" "}
+            We'll now create two <R n="rs-willow_25-Component">Components</R>
+            {" "}
+            and append them to a <R n="rs-willow_25-Path" /> using{" "}
             <R n="rs-willow_data_model-Path-append" />.
           </P>
 
@@ -140,7 +139,7 @@ export const tutorial_paths = (
         >
           <P>
             We'll now append a slice of{" "}
-            <R n="rs-willow_data_model-Component">Components</R> using{" "}
+            <R n="rs-willow_25-Component">Components</R> using{" "}
             <R n="rs-willow_data_model-Path-append_slice" />.
           </P>
 
@@ -194,7 +193,7 @@ export const tutorial_paths = (
 
         <Hsection title="Create a new path with a slice" n="tut-path-4">
           <P>
-            We'll now create a new <R n="rs-willow_data_model-Path" />{" "}
+            We'll now create a new <R n="rs-willow_25-Path" />{" "}
             with a slice of many <R n="rs-willow_data_model-Component" />.
           </P>
 
@@ -252,7 +251,7 @@ export const tutorial_paths = (
         >
           <P>
             Next we'll use <R n="rs-willow_data_model-Path-is_prefix_of" />{" "}
-            to check if one <R n="rs-willow_data_model-Path" /> is a{" "}
+            to check if one <R n="rs-willow_25-Path" /> is a{" "}
             <R n="path_prefix" /> of another.
           </P>
 
@@ -307,7 +306,7 @@ export const tutorial_paths = (
         <Hsection title="Iterate through all prefixes of a path" n="tut-path-6">
           <P>
             Next we'll iterate through all of a{" "}
-            <R n="rs-willow_data_model-Path" />'s possible prefixes using{" "}
+            <R n="rs-willow_25-Path" />'s possible prefixes using{" "}
             <R n="rs-willow_data_model-Path-all_prefixes" />.
           </P>
 
@@ -367,7 +366,7 @@ export const tutorial_paths = (
             Finally we'll use{" "}
             <R n="rs-willow_data_model-Path-longest_common_prefix" />{" "}
             to determine the longest common prefix of two{" "}
-            <R n="rs-willow_data_model-Path" />s.
+            <R n="rs-willow_25-Path" />s.
           </P>
 
           <P>
@@ -420,23 +419,44 @@ export const tutorial_paths = (
 
         <Hsection title="Summary" n="tut-path-summary">
           <P>
-            In this tutorial we used the <R n="rs-willow_data_model-Path" />
-            {" "}
+            In this tutorial we used the <R n="rs-willow_25-Path" />{" "}
             API to construct and compare paths:
           </P>
 
           <Ul>
             <Li>
-              We added the <Code>willow_25</Code>{" "}
+              We added the <R n="rs-willow_25" />{" "}
               crate as a dependency to a Rust project.
             </Li>
-            <Li>We constructed an empty path.</Li>
-            <Li>We appended component to an empty path.</Li>
-            <Li>We appended a slice of components to an empty path.</Li>
-            <Li>We constructed a new path with a slice of components.</Li>
-            <Li>We checked if one path was a prefix of another.</Li>
-            <Li>We iterated through all possible prefixes of a path.</Li>
-            <Li>We determined the longest common prefix of two paths.</Li>
+            <Li>
+              We constructed an empty <R n="rs-willow_25-Path" />.
+            </Li>
+            <Li>
+              We appended <R n="rs-willow_25-Component">Components</R>{" "}
+              to an empty <R n="rs-willow_25-Path" />.
+            </Li>
+            <Li>
+              We appended a slice of{" "}
+              <R n="rs-willow_25-Component">Components</R> to an empty{" "}
+              <R n="rs-willow_25-Path" />.
+            </Li>
+            <Li>
+              We constructed a new <R n="rs-willow_25-Path" /> with a slice of
+              {" "}
+              <R n="rs-willow_25-Component">Components</R>.
+            </Li>
+            <Li>
+              We checked if one <R n="rs-willow_25-Path" />{" "}
+              was a prefix of another.
+            </Li>
+            <Li>
+              We iterated through all possible prefixes of a{" "}
+              <R n="rs-willow_25-Path" />.
+            </Li>
+            <Li>
+              We determined the longest common prefix of two{" "}
+              <R n="rs-willow_25-Path">Paths</R>.
+            </Li>
           </Ul>
 
           <P>

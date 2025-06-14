@@ -10,6 +10,10 @@ const rustdocs_willow_data_model = JSON.parse(
   await Deno.readTextFile("./rustdocs_json/willow_data_model.json"),
 );
 
+const rustdocs_willow_25 = JSON.parse(
+  await Deno.readTextFile("./rustdocs_json/willow_25.json"),
+);
+
 export const rust = (
   <File name="index.html">
     <PageTemplate
@@ -17,10 +21,18 @@ export const rust = (
       headingId="rust"
       heading="Willow in Rust"
     >
-      {/* Import willow crate rustdoc defs */}
       <DefsRustDocs
         crate="willow_data_model"
         json={rustdocs_willow_data_model}
+        prefix="rs-"
+        typeClass="rustic type"
+        functionClass="rustic function"
+        interfaceClass="rustic interface"
+        depsCss={[{ dep: ["pseudocode.css"] }]}
+      />
+      <DefsRustDocs
+        crate="willow_25"
+        json={rustdocs_willow_25}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"

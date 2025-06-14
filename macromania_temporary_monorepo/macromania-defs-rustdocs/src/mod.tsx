@@ -79,7 +79,7 @@ type DocsRsProps = {
   prefix?: string;
 };
 
-const logger = createLogger("LoggerDefDocsRs");
+const logger = createLogger("LoggerDefsRustdocs");
 
 export function DefsDocsRs(props: DocsRsProps): Expression {
   return (
@@ -131,6 +131,7 @@ const innerToUrlIdentifier: Record<string, string> = {
   "trait": "trait",
   "struct": "struct",
   "enum": "enum",
+  "constant": "constant",
 };
 
 /** This works with version 46 of the Rustdoc JSON schema */
@@ -149,6 +150,13 @@ function walkIndex(
   isChildOfInner?: string,
 ) {
   const item = rustdocs["index"][id];
+
+  if (!item) {
+    // This is probably a foreign type
+    // No easy way around it without crossreferencing multiple rustdoc JSON blobs.
+    // https://github.com/rust-lang/rust/issues/106697
+    return;
+  }
 
   const itemType = Object.keys(item["inner"])[0];
 
@@ -275,6 +283,7 @@ function walkIndex(
       break;
     }
     case "type_alias":
+    case "constant":
     case "enum": {
       const itemName = item["name"];
 
@@ -299,6 +308,14 @@ export function createDefs(
   docsJson: any,
   prefix?: string,
 ): Record<string, { url: string; name: string; kind: SymbolKind }> {
+  if (docsJson["format_version"] !== JSON_VERSION) {
+    throw Error(
+      `Expected Rustdoc format version ${JSON_VERSION}, got ${
+        docsJson["format_version"]
+      }`,
+    );
+  }
+
   const crateVersion = docsJson["crate_version"];
   const rootId = docsJson["root"];
 
