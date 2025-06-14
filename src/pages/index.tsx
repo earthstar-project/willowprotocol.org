@@ -73,10 +73,10 @@ export const index = (
             <R n="specifications">Specifications</R>
           </Li>
           <Li>
-            <R n="changes">News</R>
+            <R n="rust">Rust</R>
           </Li>
           <Li>
-            <R n="projects_and_communities">Active projects</R>
+            <R n="changes">News</R>
           </Li>
           <Li>
             <R n="more">More!</R>
@@ -87,10 +87,12 @@ export const index = (
       <SpecBreakdown
         title={<R n="data_model">Willow</R>}
         tagline="Synchronisable data storage with destrucive editing."
-        emblem={<Img
-          src={<ResolveAsset asset={["landing", "spec_willow.png"]} />}
-          alt={`Emblem`}
-        />}
+        emblem={
+          <Img
+            src={<ResolveAsset asset={["landing", "spec_willow.png"]} />}
+            alt={`Emblem`}
+          />
+        }
         features={[
           "Works offline.",
           "Store any kind of data.",
@@ -107,10 +109,12 @@ export const index = (
       <SpecBreakdown
         title={<R n="meadowcap" />}
         tagline={"A capability system for fine-grained access to Willow data."}
-        emblem={<Img
-          src={<ResolveAsset asset={["landing", "spec_meadowcap.png"]} />}
-          alt={`Emblem`}
-        />}
+        emblem={
+          <Img
+            src={<ResolveAsset asset={["landing", "spec_meadowcap.png"]} />}
+            alt={`Emblem`}
+          />
+        }
         features={[
           "No central authority needed.",
           "No assumptions about what an identity is.",
@@ -123,10 +127,12 @@ export const index = (
       <SpecBreakdown
         title={<R n="sync">W.G.P.S.</R>}
         tagline={"Private and efficient synchronisation for Willow data."}
-        emblem={<Img
-          src={<ResolveAsset asset={["landing", "spec_wgps.png"]} />}
-          alt={`Emblem`}
-        />}
+        emblem={
+          <Img
+            src={<ResolveAsset asset={["landing", "spec_wgps.png"]} />}
+            alt={`Emblem`}
+          />
+        }
         features={[
           "Encrypted communication.",
           "Only syncs what you're interested in.",
@@ -141,10 +147,12 @@ export const index = (
       <SpecBreakdown
         title={<R n="sideloading">Sideloading</R>}
         tagline={"Securely deliver Willow data by any means possible."}
-        emblem={<Img
-          src={<ResolveAsset asset={["landing", "spec_sideloading.png"]} />}
-          alt={`Emblem`}
-        />}
+        emblem={
+          <Img
+            src={<ResolveAsset asset={["landing", "spec_sideloading.png"]} />}
+            alt={`Emblem`}
+          />
+        }
         features={[
           "Package Willow data in a single encrypted file.",
           "Move it however you want.",
@@ -233,8 +241,6 @@ export const index = (
         <R n="meadowcap">Meadowcap</R>.
       </P>
 
-
-
       <P>
         <Marginale inlineable>
           <Img
@@ -291,8 +297,6 @@ export const index = (
         use-case. Or use our{" "}
         <R n="willow25">secure and efficient set of recommended parameters</R>.
       </P>
-
-
     </PageTemplate>
   </File>
 );

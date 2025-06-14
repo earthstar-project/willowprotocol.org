@@ -139,6 +139,14 @@ type DefInfo = {
   noHighlight?: boolean;
   href?: Expression;
   noTooltipOnDefHover?: boolean;
+  /**
+   * Css dependencies to add in all files that reference this def.
+   */
+  depsCssRef?: StylesheetDependencyInfo[];
+  /**
+   * Js dependencies to add in all files that reference this def.
+   */
+  depsJsRef?: ScriptDependencyInfo[];
 };
 
 function defInfoR(info: DefInfo, name: string): Expression {
@@ -404,6 +412,14 @@ export type DefProps = {
    */
   noHighlight?: boolean;
   /**
+   * Css dependencies to add in all files that reference this def.
+   */
+  depsCssRef?: StylesheetDependencyInfo[];
+  /**
+   * Js dependencies to add in all files that reference this def.
+   */
+  depsJsRef?: ScriptDependencyInfo[];
+  /**
    * A preview for this definition. If this is set, then the containing preview
    * scope (if any) will ignore this definition, and the explicit preview is used instead.
    */
@@ -495,6 +511,8 @@ export function Def(props: DefProps): Expression {
           noHighlight: props.noHighlight,
           href: props.href,
           noTooltipOnDefHover: props.noTooltipOnDefHover,
+          depsCssRef: props.depsCssRef,
+          depsJsRef: props.depsJsRef,
         };
 
         if (!props.fake) {
@@ -839,6 +857,16 @@ function linkTag(opts: {
 
   for (const dep of config.depsJsRef ?? []) {
     previewScopeDependencyJs(opts.ctx, dep, true);
+  }
+
+  if (opts.info !== undefined) {
+    for (const dep of opts.info.depsCssRef ?? []) {
+      previewScopeDependencyCss(opts.ctx, dep, true);
+    }
+
+    for (const dep of opts.info.depsJsRef ?? []) {
+      previewScopeDependencyJs(opts.ctx, dep, true);
+    }
   }
 
   if (opts.info === undefined) {

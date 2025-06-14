@@ -181,7 +181,7 @@ export function PreviewScope(
     for (const [p, weak] of previewsState.previews) {
       const htmlPropsTmp = p.htmlProps ?? {};
       const headPropsTmp = p.headProps ?? {};
-      const bodyPropsTmp = { ...p.bodyProps } ?? {};
+      const bodyPropsTmp = { ...p.bodyProps };
       if (bodyPropsTmp.clazz === undefined) {
         bodyPropsTmp.clazz = "isPreview";
       } else if (Array.isArray(bodyPropsTmp.clazz)) {

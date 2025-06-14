@@ -1,0 +1,4 @@
+A path with nothing in it: Path([])
+A path with two components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])])
+Another path with two components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])])
+A path with three components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101]), Component([100, 101, 115, 105, 103, 110])])
