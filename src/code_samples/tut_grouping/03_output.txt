@@ -1,0 +1,16 @@
+open_range includes 5: false
+open_range includes 15: true
+open range includes closed_range: true
+open range includes closed_range2: false
+The intersection of open_range and closed_range2 is:
+Range {
+    start: 10,
+    end: Closed(
+        15,
+    ),
+}
+early_blog_range includes alfie_early_blog_entry: $false
+early_blog_range includes alfie_late_blog_entry: $false
+any_late_blog_alfie includes alfie_late_blog_entry: $true
+alfie_music_area includes alfie_early_blog_entry: $false
+alfie_music_area includes alfie_late_blog_entry: $false

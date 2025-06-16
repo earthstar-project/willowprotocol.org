@@ -9,6 +9,7 @@ import {
   TerminalInput,
   TerminalOutput,
 } from "../../../macros.tsx";
+import { RustPrereq } from "../tutorials.tsx";
 
 export const tutorial_entry = (
   <Dir name="entry">
@@ -27,11 +28,7 @@ export const tutorial_entry = (
         </P>
 
         <Hsection title="Prerequisites" n="tut-entry-prereq">
-          <P>
-            A basic knowledge of the Rust programming language and executing
-            commands in the terminal will be helpful for completing this
-            tutorial
-          </P>
+          <RustPrereq />
 
           <P>
             Additionally, knowledge of the <R n="rs-willow_25-Path" />{" "}
@@ -214,7 +211,7 @@ export const tutorial_entry = (
           <P>
             <Rs n="Entry" />{" "}
             come into their element when you have many of them. In the next
-            tutorial, we will <R n="tut-groupings">work with groupings</R>.
+            tutorial, we will <R n="tut-grouping">work with groupings</R>.
           </P>
         </Hsection>
       </PageTemplate>

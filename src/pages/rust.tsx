@@ -92,7 +92,9 @@ export const rust = (
           <Li>
             <R n="tut-entry">Create an Entry</R>
           </Li>
-          <Li>Work with groupings</Li>
+          <Li>
+            <R n="tut-grouping">Work with groupings</R>
+          </Li>
           <Li>Create a capability</Li>
           <Li>Authorise an entry with Meadowcap</Li>
           <Li>Work with a store</Li>

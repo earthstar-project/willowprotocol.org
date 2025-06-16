@@ -9,6 +9,7 @@ import {
   TerminalInput,
   TerminalOutput,
 } from "../../../macros.tsx";
+import { RustPrereq } from "../tutorials.tsx";
 
 export const tutorial_paths = (
   <Dir name="path">
@@ -27,11 +28,7 @@ export const tutorial_paths = (
         </P>
 
         <Hsection title="Prerequisites" n="tut-path-prereq">
-          <P>
-            A basic knowledge of the Rust programming language and executing
-            commands in the terminal will be helpful for completing this
-            tutorial.
-          </P>
+          <RustPrereq />
         </Hsection>
 
         <Hsection title="Setup" n="tut-path-setup">
