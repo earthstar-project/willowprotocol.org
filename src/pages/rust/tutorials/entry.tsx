@@ -141,6 +141,66 @@ export const tutorial_entry = (
           />
         </Hsection>
 
+        <Hsection
+          title="Check if this entry would be pruned by another"
+          n="tut-entry-3"
+        >
+          <P>
+            Next, we'll compare two <R n="rs-willow_25-Entry">Entries</R> using
+            {" "}
+            <R n="rs-willow_data_model-Entry-is_pruned_by" />.
+          </P>
+
+          <P>
+            Add the following to
+            <Code>src/main.rs</Code>:
+          </P>
+
+          <RustSample
+            path={["src", "code_samples", "tut_entry", "03.rs"]}
+            decorations={[
+              {
+                start: {
+                  line: 43,
+                  character: 0,
+                },
+                end: {
+                  line: 61,
+                  character: 0,
+                },
+                properties: {
+                  class: "addition",
+                },
+              },
+            ]}
+          />
+
+          <P>
+            In your terminal, run{" "}
+            <TerminalInput>cargo run</TerminalInput>, and you should see the
+            following output:
+          </P>
+
+          <TerminalOutput
+            path={["src", "code_samples", "tut_entry", "03_output.txt"]}
+            decorations={[
+              {
+                start: {
+                  line: 7,
+                  character: 0,
+                },
+                end: {
+                  line: 7,
+                  character: 33,
+                },
+                properties: {
+                  class: "addition",
+                },
+              },
+            ]}
+          />
+        </Hsection>
+
         <Hsection title="Summary" n="tut-entry-summary">
           <P>
             In this tutorial we used the <R n="rs-willow_25-Entry" />{" "}
