@@ -89,7 +89,7 @@ export const rust = (
         </P>
         <Ul>
           <Li>
-            <R n="tut-create_a_path">Create a Path</R>
+            <R n="tut-path">Create a Path</R>
           </Li>
           <Li>
             <R n="tut-entry">Create an Entry</R>
