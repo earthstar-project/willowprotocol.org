@@ -22,7 +22,6 @@ import { about_us } from "./pages/more/about_us.tsx";
 import { threedstorage } from "./pages/more/3dstorage.tsx";
 import { changes } from "./pages/more/changes.tsx";
 import { willow_compared } from "./pages/more/willow_compared.tsx";
-import { projects_and_communities } from "./pages/more/projects_and_communities.tsx";
 import { timestamps_really } from "./pages/more/timestamps_really.tsx";
 import { why_willow } from "./pages/more/why_willow.tsx";
 import { ScriptDependencyInfo } from "macromania-html-utils";
@@ -224,7 +223,6 @@ const exp = (
                 {about_us}
                 {changes}
                 {willow_compared}
-                {projects_and_communities}
                 {timestamps_really}
                 {why_willow}
               </Dir>

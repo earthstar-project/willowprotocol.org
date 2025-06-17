@@ -203,6 +203,10 @@ ul.spec-taglist li:nth-child(odd) {
     color: var(--color-comment);
 }
 
+ul.taglist li.vermillion {
+    color: var(--wong-vermillion);
+}
+
 nav.ctas ul {
     padding: 0;
     margin-bottom: 2rem;
