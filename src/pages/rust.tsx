@@ -46,8 +46,9 @@ export const rust = (
         <Gwil>
           Illustration of Betty with a cowboy hat on riding a giant crab here.
         </Gwil>
-        Implementations of Willow <R n="specifications" />{" "}
-        are available through several Rust crates:
+        We've implemented Willow's <R n="specifications" />{"  "}
+        in Rust. You can add secure, efficient, peer-to-peer storage to your
+        applications by using these crates:
       </P>
       <Ul>
         <Li>
@@ -71,8 +72,8 @@ export const rust = (
           implementing the <R n="rs-willow_data_model-Store" /> trait.
         </Li>
         <Li>
-          <R n="rs-willow_25" />: All of the above, preconfigured with secure
-          and efficient parameters from <R n="willow25" />.
+          <R n="rs-willow_25" />: All of the above preconfigured with secure and
+          efficient parameters from <R n="willow25" />.
         </Li>
       </Ul>
 
@@ -83,7 +84,8 @@ export const rust = (
             saying that you could do all the tutorials in x minutes would be
             nice.
           </Gwil>
-          Learn the basics of our Rust APIs with step-by-step tutorials.
+          Learn everything you need to get started with these step-by-step
+          tutorials.
         </P>
         <Ul>
           <Li>
@@ -107,8 +109,8 @@ export const rust = (
 
       <Hsection n="rs_gudies" title="Guides">
         <P>
-          If you're already familiar with the basics, we've written some guides
-          to help you achieve some common tasks.
+          If you're already familiar with our APIs, we've written some guides to
+          help you achieve some common tasks.
         </P>
         <Ul>
           <Li>Create a drop and write it to disk</Li>
