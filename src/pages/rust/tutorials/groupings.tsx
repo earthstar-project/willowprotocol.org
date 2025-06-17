@@ -57,11 +57,12 @@ export const tutorial_groupings = (
         />
       </Hsection>
 
-      <Hsection title="Range3d" n="tut-grouping-2">
+      <Hsection title="Areas" n="tut-grouping-2">
         <P>
-          Next we'll create an <R n="rs-willow_25-Range3d" /> and some{" "}
+          Next we'll create some <R n="rs-willow_25-Area">Areas</R> and some
+          {" "}
           <R n="rs-willow_25-Entry">Entries</R>
-          to test against it.
+          to test against them.
         </P>
 
         <P>
@@ -91,7 +92,7 @@ export const tutorial_groupings = (
                 character: 0,
               },
               end: {
-                line: 74,
+                line: 85,
                 character: 0,
               },
               properties: {
@@ -116,78 +117,8 @@ export const tutorial_groupings = (
                 character: 0,
               },
               end: {
-                line: 12,
-                character: 55,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-          ]}
-        />
-      </Hsection>
-
-      <Hsection title="Area" n="tut-grouping-3">
-        <P>
-          Next we'll create an <R n="rs-willow_25-Area" />{" "}
-          and test it against the <R n="rs-willow_25-Entry">Entries</R>{" "}
-          we created before.
-        </P>
-
-        <P>
-          Make the following changes to
-          <Code>src/main.rs</Code>:
-        </P>
-
-        <RustSample
-          path={["src", "code_samples", "tut_grouping", "03.rs"]}
-          decorations={[
-            {
-              start: {
-                line: 0,
-                character: 0,
-              },
-              end: {
-                line: 3,
-                character: 0,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-            {
-              start: {
-                line: 75,
-                character: 0,
-              },
-              end: {
-                line: 103,
-                character: 0,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-          ]}
-        />
-
-        <P>
-          In your terminal, run{" "}
-          <TerminalInput>cargo run</TerminalInput>, and you should see the
-          following output:
-        </P>
-
-        <TerminalOutput
-          path={["src", "code_samples", "tut_grouping", "03_output.txt"]}
-          decorations={[
-            {
-              start: {
-                line: 13,
-                character: 0,
-              },
-              end: {
-                line: 15,
-                character: 55,
+                line: 14,
+                character: 59,
               },
               properties: {
                 class: "addition",
@@ -209,13 +140,7 @@ export const tutorial_groupings = (
             intersecting ranges from them.
           </Li>
           <Li>
-            Created some{" "}
-            <R n="rs-willow_25-Range3d" />, and tested if they included some
-            {" "}
-            <R n="rs-willow_25-Entry">Entries</R>.
-          </Li>
-          <Li>
-            Took those same{" "}
+            Created some{"  "}
             <R n="rs-willow_25-Entry">Entries</R>, and tested if they were
             included by some <R n="rs-willow_25-Area">Areas</R> we'd created.
           </Li>

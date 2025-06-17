@@ -1,5 +1,5 @@
-use willow_25::{Entry, NamespaceId25, Path, PayloadDigest25, Range, Range3d, SubspaceId25};
-use willow_data_model::{SubspaceId};
+use willow_25::{Area, Entry, NamespaceId25, Path, PayloadDigest25, Range, SubspaceId25};
+use willow_data_model::grouping::AreaSubspace;
 
 fn main() {
     // Ranges
@@ -30,20 +30,15 @@ fn main() {
         None => panic!("There is no intersection between open_range and closed_range2?!"),
     }
 
-    // Range3d
+    // Areas
 
-    // The subspace dimension
     let (alfie_subspace, _key) = SubspaceId25::new();
-    let only_alfie_range = alfie_subspace.singleton_range();
-
-    // The path dimension
+    let (betty_subspace, _key) = SubspaceId25::new();
     let blog_path = Path::from_slices(&["blog"]).unwrap();
-    let only_blog_range = blog_path.singleton_range();
 
-    // The time dimension
-    let early_range = Range::new_closed(0, 500).unwrap();
+    let late_time_range = Range::new_closed(500, 1000).unwrap();
 
-    let early_blog_range3d = Range3d::new(only_alfie_range, only_blog_range, early_range);
+    let any_late_blog_area = Area::new(AreaSubspace::Any, blog_path, late_time_range);
 
     let alfie_early_blog_entry = Entry::new(
         NamespaceId25::new_communal(),
@@ -54,14 +49,9 @@ fn main() {
         PayloadDigest25::default(),
     );
 
-    println!(
-        "early_blog_range includes alfie_early_blog_entry: ${:?}",
-        early_blog_range3d.includes_entry(&alfie_early_blog_entry)
-    );
-
-    let alfie_late_blog_entry = Entry::new(
+    let betty_late_blog_entry = Entry::new(
         NamespaceId25::new_communal(),
-        alfie_subspace.clone(),
+        betty_subspace.clone(),
         Path::from_slices(&["blog", "dinner"]).unwrap(),
         800,
         0,
@@ -69,7 +59,28 @@ fn main() {
     );
 
     println!(
-        "early_blog_range includes alfie_late_blog_entry: ${:?}",
-        early_blog_range3d.includes_entry(&alfie_late_blog_entry)
+        "any_late_blog_area includes alfie_early_blog_entry: {:?}",
+        any_late_blog_area.includes_entry(&alfie_early_blog_entry)
+    );
+
+    println!(
+        "any_late_blog_area includes betty_late_blog_entry: {:?}",
+        any_late_blog_area.includes_entry(&betty_late_blog_entry)
+    );
+
+    let alfie_everything_area = Area::new(
+        AreaSubspace::Id(alfie_subspace),
+        Path::new_empty(),
+        Range::new_open(0),
+    );
+
+    println!(
+        "alfie_everything_area includes alfie_early_blog_entry: {:?}",
+        alfie_everything_area.includes_entry(&alfie_early_blog_entry)
+    );
+
+    println!(
+        "alfie_everything_area includes betty_late_blog_entry: {:?}",
+        alfie_everything_area.includes_entry(&betty_late_blog_entry)
     );
 }

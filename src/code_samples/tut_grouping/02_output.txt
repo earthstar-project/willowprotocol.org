@@ -9,5 +9,7 @@ Range {
         15,
     ),
 }
-early_blog_range includes alfie_early_blog_entry: $false
-early_blog_range includes alfie_late_blog_entry: $false
+any_late_blog_area includes alfie_early_blog_entry: false
+any_late_blog_area includes betty_late_blog_entry: true
+alfie_everything_area includes alfie_early_blog_entry: true
+alfie_everything_area includes betty_late_blog_entry: false
