@@ -48,5 +48,13 @@
     "dev": "deno run -A ./server.ts --dev"
   },
   "include": ["src", "deps.ts", "devServer.ts"],
-  "exclude": ["build"]
+  "exclude": ["build"],
+
+  "lint": {
+    "include": ["src/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["jsx-no-useless-fragment", "jsx-key"]
+    }
+  }
 }
