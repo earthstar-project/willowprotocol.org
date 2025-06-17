@@ -86,7 +86,7 @@ export const index = (
 
       <SpecBreakdown
         title={<R n="data_model">Willow</R>}
-        tagline="Synchronisable data storage with destrucive editing."
+        tagline="Synchronisable data storage with destructive editing."
         emblem={
           <Img
             src={<ResolveAsset asset={["landing", "spec_willow.png"]} />}
@@ -108,7 +108,7 @@ export const index = (
 
       <SpecBreakdown
         title={<R n="meadowcap" />}
-        tagline={"A capability system for fine-grained access to Willow data."}
+        tagline="A capability system for fine-grained access control"
         emblem={
           <Img
             src={<ResolveAsset asset={["landing", "spec_meadowcap.png"]} />}
@@ -126,7 +126,7 @@ export const index = (
 
       <SpecBreakdown
         title={<R n="sync">W.G.P.S.</R>}
-        tagline={"Private and efficient synchronisation for Willow data."}
+        tagline="Private and efficient synchronisation"
         emblem={
           <Img
             src={<ResolveAsset asset={["landing", "spec_wgps.png"]} />}
@@ -146,7 +146,7 @@ export const index = (
 
       <SpecBreakdown
         title={<R n="sideloading">Sideloading</R>}
-        tagline={"Securely deliver Willow data by any means possible."}
+        tagline="Securely deliver data by any means possible."
         emblem={
           <Img
             src={<ResolveAsset asset={["landing", "spec_sideloading.png"]} />}
