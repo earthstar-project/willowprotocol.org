@@ -1,6 +1,6 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { Li, P, Ul } from "macromania-html";
+import { A, Li, P, Ul } from "macromania-html";
 import { R, Rs } from "macromania-defref";
 import { DefsRustDocs } from "macromania-defs-rustdocs";
 import { Hsection } from "macromania-hsection";
@@ -107,7 +107,7 @@ export const rust = (
         </Ul>
       </Hsection>
 
-      <Hsection n="rs_gudies" title="Guides">
+      <Hsection n="rs_guides" title="Guides">
         <P>
           If you're already familiar with our APIs, we've written some guides to
           help you achieve some common tasks.
@@ -117,6 +117,21 @@ export const rust = (
           <Li>Configure a WGPS session</Li>
           <Li>Run an always-online peer on a server</Li>
         </Ul>
+      </Hsection>
+
+      <Hsection n="rs-contribute" title="Contribute">
+        <P>
+          Willow's Rust implementations are open source and free for all to use
+          and modify. They are provided as a public good, and have been built
+          upon the hard work of volunteers, and the support of our donors. If
+          you'd like to contribute to our implementations, please see the{" "}
+          <A
+            clazz="external"
+            href="https://github.com/earthstar-project/willow-rs/"
+          >
+            willow-rs Git repository
+          </A>.
+        </P>
       </Hsection>
     </PageTemplate>
   </File>
