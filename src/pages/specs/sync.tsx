@@ -450,27 +450,8 @@ export const sync = (
             message that does not fulfil these criteria, that is an error.
           </P>
 
-          <PreviewScope>
-            <P>
-              The first byte each peer sends must be a natural number{" "}
-              <M post=".">x {`\\`}leq 64</M> This sets the{" "}
-              <DefValue n="peer_max_payload_size" r="maximum payload size" />
-              {" "}
-              of that peer to <M post=".">2^x</M> The{" "}
-              <R n="peer_max_payload_size" />{" "}
-              limits when the other peer may include <Rs n="Payload" />{" "}
-              directly when transmitting <Rs n="Entry" />: when an{" "}
-              <R n="Entry" />’s <R n="entry_payload_length" />{" "}
-              is strictly greater than the <R n="peer_max_payload_size" />, its
-              {" "}
-              <R n="Payload" />{" "}
-              may only be transmitted when explicitly requested.
-            </P>
-          </PreviewScope>
-
           <P>
-            After this initial transmissions, the protocol becomes a purely
-            message-based protocol, built on top of{" "}
+            The WGPS is a purely message-based protocol, built on top of{" "}
             <R n="lcmux" />. Both peers act as an{" "}
             <R n="lcmux_c">LCMUX client</R> and an{" "}
             <R n="lcmux_s">LCMUX server</R>{" "}
@@ -867,7 +848,15 @@ export const sync = (
                   <R n="granted_area" /> of the bound <R n="read_capability" />
                   {" "}
                   and a <R n="aoi_count" /> and <R n="aoi_size" />{" "}
-                  which are explicitly specified in the message.
+                  which are explicitly specified in the message. Further, these
+                  messages declare a maximum size for eager payload
+                  transmissions within the <R n="AreaOfInterest" />: when an
+                  {" "}
+                  <R n="aoi_include">included</R> <R n="Entry" />’s{" "}
+                  <R n="entry_payload_length" /> is strictly greater than the
+                  {" "}
+                  indicated size, its <R n="Payload" />{" "}
+                  may only be transmitted when explicitly requested.
                 </P>
 
                 <Pseudocode n="sync_defs_PioBindReadCapability">
@@ -976,7 +965,7 @@ export const sync = (
                             [
                               "max_count",
                               "PioBindReadCapabilityMaxCount",
-                              "max_count",
+                              "max_counts",
                             ],
                             <R n="U64" />,
                           ],
@@ -996,9 +985,42 @@ export const sync = (
                             [
                               "max_size",
                               "PioBindReadCapabilityMaxSize",
-                              "max_size",
+                              "max_sizes",
                             ],
                             <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <PreviewScope>
+                              When the receiver of this message eagerly
+                              transmits <Rs n="Entry" /> for the{" "}
+                              <R n="AreaOfInterest" />{" "}
+                              defined by this message, it must not include the
+                              {" "}
+                              <R n="Payload" /> of <Rs n="Entry" /> whose{" "}
+                              <R n="entry_payload_length" />{" "}
+                              is strictly greater than two to the power of the
+                              {" "}
+                              <R n="PioBindReadCapabilityMaxPayloadPower" />. We
+                              call the resulting number the sender’s{" "}
+                              <DefValue
+                                n="peer_max_payload_size"
+                                r="maximum payload size"
+                              />{" "}
+                              for this <R n="AreaOfInterest" />.
+                            </PreviewScope>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "max_payload_power",
+                              "PioBindReadCapabilityMaxPayloadPower",
+                              "max_payload_powers",
+                            ],
+                            <R n="U8" />,
                           ],
                         },
                       },
@@ -1668,8 +1690,7 @@ export const sync = (
                   immediately during range-based set reconciliation. The sender
                   can freely decide how many (including zero) <Rs n="Chunk" />
                   {" "}
-                  to eargerly transmit, and it must respect the receiver’s{" "}
-                  <R n="peer_max_payload_size" />.
+                  to eargerly transmit.
                 </P>
 
                 <Pseudocode n="sync_defs_ReconciliationSendPayload">
@@ -2567,6 +2588,9 @@ export const sync = (
                     <C64Encoding id="receiver_handle" />,
                     <C64Encoding id="max_count" />,
                     <C64Encoding id="max_size" />,
+                    <>
+                      <ValAccess field="PioBindReadCapabilityMaxPayloadPower" />.
+                    </>,
                     <CodeFor
                       enc="EncodeReadCapability"
                       relativeTo={<R n="epbrc_ppi" />}
