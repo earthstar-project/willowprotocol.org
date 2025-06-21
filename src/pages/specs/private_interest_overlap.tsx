@@ -422,10 +422,6 @@ export const private_interest_overlap = (
 
           <AsideBlock>
             <P>
-              <Gwil>
-                Alj thinks the aside styling could/should scream a lot more
-                loudly that this is an aside.
-              </Gwil>
               A reader well-versed in the literature on{" "}
               <AE href="https://en.wikipedia.org/wiki/Private_set_intersection">
                 private set intersection (PSI)
@@ -434,7 +430,6 @@ export const private_interest_overlap = (
               that point out the exchange of (salted) hashes as a rookie
               mistake. A fairly representative example{" "}
               <Bib item="freedman2016efficient" />:
-              <Gwil>More obvious blockquote styling</Gwil>
             </P>
 
             <Blockquote>

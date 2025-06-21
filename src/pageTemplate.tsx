@@ -36,7 +36,7 @@ import { ResolveAsset } from "macromania-assets";
 import { CssDependency, JsDependency } from "macromania-previews";
 import { encodeHex } from "jsr:@std/encoding/hex";
 import { addEtag } from "./serverOptimisations.tsx";
-import { posixPath } from "./deps.ts";
+import { join as posixJoin } from "@std/path";
 
 export function Page(
   props: PageTemplateProps & { children?: Expressions; name: string },
@@ -114,7 +114,7 @@ export function PageTemplate(
             outPwd.components.shift(); // remove the leading `build` component.
             outPwd.components.push("index.html");
 
-            addEtag(ctx, posixPath.join(renderOutFsPath(outPwd)), hash);
+            addEtag(ctx, posixJoin(renderOutFsPath(outPwd)), hash);
 
             return rendered;
           }}
@@ -124,7 +124,7 @@ export function PageTemplate(
             bodyProps={{
               clazz: `${status === "proposal" ? "proposal" : "bg"}`,
             }}
-            title={<>Willow Specifications - {<exps x={htmlTitle} />}</>}
+            title={<>Willow - {<exps x={htmlTitle} />}</>}
             headContents={
               <>
                 <Meta

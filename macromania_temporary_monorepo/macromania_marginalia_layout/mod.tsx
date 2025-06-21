@@ -93,7 +93,7 @@ export function LayoutMarginalia(
   return `
 
 
-  
+
 /*
 body {
     overflow-x: hidden;
@@ -122,7 +122,7 @@ body > * {
 }
 
 .wide {
-    width: 100%; 
+    width: 100%;
 }
 
 @media (min-width: ${wide_and_margins(opts_)}rem) {
@@ -132,7 +132,7 @@ body > * {
         max-width: calc(100vw - ${opts_.paddingLeft}rem - 2 * ${opts_.paddingRight}rem);
         clear: right;
     }
-  
+
     .wideIfPossible {
         position: relative;
         width: ${wide(opts_)}rem;
@@ -183,7 +183,7 @@ body > * {
 @media (max-width: ${wide_and_margins(opts_)}rem) {
   body > * {
     margin: auto;
-  } 
+  }
 }
 
 @media (min-width: ${wide_and_margins(opts_)}rem) {
@@ -229,7 +229,7 @@ type SidenoteState = {
 };
 
 const [getSidenoteState, setSidenoteState] = createSubstate<SidenoteState>(
-  () => ({ count: 0 })
+  () => ({ count: 0 }),
 );
 
 /**
@@ -253,36 +253,43 @@ export function Sidenote(
 export function Sidenotes(
   { children, notes }: { children?: Expressions; notes: Expressions[] },
 ) {
-  return <impure fun={(ctx) => {
-    const state = getSidenoteState(ctx);
+  return (
+    <impure
+      fun={(ctx) => {
+        const state = getSidenoteState(ctx);
 
-    const counters: Expression[] = [];
-    const theNotes: Expression[] = [];
+        const counters: Expression[] = [];
+        const theNotes: Expression[] = [];
 
-    for (let i = 0; i < notes.length; i++) {
-      const num = state.count;
-      state.count += 1;;
-  
-      counters.push(`${num}`);
-      theNotes.push(
-        <Span clazz="marginale">
-          <Span clazz="sidenoteCounter">{`${num}`}</Span>
-          <exps x={notes[i]}/>
-        </Span>
-      );
-  
-      if (i + 1 < notes.length) {
-        counters.push(",");
-      }
-    }
+        for (let i = 0; i < notes.length; i++) {
+          const num = state.count;
+          state.count += 1;
 
-    return <>
-      <Span clazz="nowrap">
-        <exps x={children}/>
-        <Span clazz="sidenoteCounter"><exps x={counters}/></Span>
-      </Span>
-      <exps x={theNotes}/>
-    </>
-  }}/>
-  
+          counters.push(`${num}`);
+          theNotes.push(
+            <Span clazz="marginale">
+              <Span clazz="sidenoteCounter">{`${num}`}</Span>
+              <exps x={notes[i]} />
+            </Span>,
+          );
+
+          if (i + 1 < notes.length) {
+            counters.push(",");
+          }
+        }
+
+        return (
+          <>
+            <Span clazz="nowrap">
+              <exps x={children} />
+              <Span clazz="sidenoteCounter">
+                <exps x={counters} />
+              </Span>
+            </Span>
+            <exps x={theNotes} />
+          </>
+        );
+      }}
+    />
+  );
 }

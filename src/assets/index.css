@@ -133,18 +133,22 @@ h6 {
     }
 }
 
+blockquote {
+    border-left: 1px solid var(--light-green);
+    margin-left: 1em;
+    padding-left: 1ch;
+}
+
 p {
     line-height: 1.45;
     margin: 1em 0;
 }
 
-.aside {
-    color: var(--nearly-nearly-black);
-}
-
-.aside.long {
-    border: 1px solid var(--light-green);
-    border-width: 1px 0;
+.splash-image {
+    width: 117%;
+    max-width: none;
+    position: relative;
+    left: -8.5%;
 }
 
 /* since `important` is evil... */
@@ -154,10 +158,13 @@ body .katex {
 }
 
 aside.long {
+    font-size: 0.9em;
+    box-sizing: border-box;
+    background: #00000008;
+    margin: 1em 0;
+    padding: 0.1em 1em;
+    border-radius: 5px;
     border: 1px solid var(--light-green);
-    border-width: 1px 0;
-    padding: 1em 0.75em;
-    margin: 2em 0;
 }
 
 figcaption,
@@ -167,8 +174,57 @@ figcaption,
     margin: 0 0 1em 0;
 }
 
-p.introductory {
+p.tagline {
+    font-size: 2rem;
+}
+
+ul.taglist {
     font-size: 1.5rem;
+}
+
+.spec-tagline {
+    font-style: italic;
+}
+
+ul.taglist,
+ul.spec-taglist {
+    padding: 0;
+}
+
+ul.taglist li,
+ul.spec-taglist li {
+    display: inline;
+    margin-right: 0.25em;
+}
+
+ul.taglist li:nth-child(odd),
+ul.spec-taglist li:nth-child(odd) {
+    color: var(--color-comment);
+}
+
+nav.ctas ul {
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+nav.ctas ul li {
+    display: inline-block;
+
+    margin-right: 0.5rem;
+}
+
+nav.ctas ul li a[data-ref] {
+    color: var(--dark-green);
+    text-decoration: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--dark-green);
+}
+
+nav.ctas ul li a[data-ref]:hover {
+    color: var(--green);
+    border: 1px solid var(--green);
+    text-decoration: none;
 }
 
 .path {
@@ -217,7 +273,8 @@ a:hover {
     color: var(--green);
 }
 
-a.external {
+a.external,
+.marginale a {
     color: var(--dark-green);
     text-decoration: underline;
 }
@@ -249,7 +306,7 @@ a[data-ref].hsection {
 }
 
 a[data-ref].hsection:hover {
-    color: var(--green);
+    color: var(--dark-green);
     text-decoration: underline;
 }
 
@@ -258,7 +315,8 @@ dfn {
 }
 
 a.ref,
-.enclosing a {
+.enclosing a,
+.katex a {
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-color: rgb(112, 132, 132);
@@ -268,7 +326,7 @@ a.ref,
 .orange a.type,
 .orange a.value,
 .orange a.symbol,
-a[data-ref].orange {
+.orange a[data-ref] {
     color: var(--wong-orange);
 }
 
@@ -276,7 +334,7 @@ a[data-ref].orange {
 .sky-blue a.type,
 .sky-blue a.value,
 .sky-blue a.symbol,
-a[data-ref].sky-blue {
+.sky-blue a[data-ref] {
     color: var(--wong-blue);
 }
 
@@ -284,7 +342,7 @@ a[data-ref].sky-blue {
 .green a.type,
 .green a.value,
 .green a.symbol,
-a[data-ref].green {
+.green a[data-ref] {
     color: var(--wong-green);
 }
 
@@ -292,7 +350,7 @@ a[data-ref].green {
 .yellow a.type,
 .yellow a.value,
 .yellow a.symbol,
-a[data-ref].yellow {
+.yellow a[data-ref] {
     color: var(--wong-yellow);
 }
 
@@ -300,7 +358,7 @@ a[data-ref].yellow {
 .blue a.type,
 .blue a.value,
 .blue a.symbol,
-a[data-ref].blue {
+.blue a[data-ref] {
     color: var(--wong-blue);
 }
 
@@ -308,7 +366,7 @@ a[data-ref].blue {
 .vermillion a.type,
 .vermillion a.value,
 .vermillion a.symbol,
-a[data-ref].vermillion {
+.vermillion a[data-ref] {
     color: var(--wong-vermillion);
 }
 
@@ -316,7 +374,7 @@ a[data-ref].vermillion {
 .purple a.type,
 .purple a.value,
 .purple a.symbol,
-a[data-ref].purple {
+.purple a[data-ref] {
     color: var(--wong-purple);
 }
 
@@ -378,24 +436,6 @@ footer .sponsor img {
     max-width: 4em;
 }
 
-main {
-    flex: 1;
-    margin-bottom: 2rem;
-}
-
-main nav ul li:has(> a) {
-    list-style-type: none;
-}
-
-main nav ul li:has(> a):after {
-    content: "→";
-    margin-left: 0.5ch;
-}
-
-main nav ul li:has(> a[aria-disabled="true"]):after {
-    content: "→";
-}
-
 ul {
     padding-inline-start: 1.25em;
 }
@@ -415,7 +455,7 @@ h1 img {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 0.5em;
+    margin: 0.5em 0;
     border-radius: 4px;
 }
 
@@ -445,7 +485,8 @@ figure {
 
 table.encodingdef table.encodingdef {
     margin: 0.5rem 0.5rem 0.5rem 0;
-    width: initial;
+    box-sizing: border-box;
+    width: calc(100% - 0.5rem);
     background-color: #00000008;
     border-radius: 0px;
 }
@@ -663,7 +704,7 @@ span.katex {
 }
 
 .katex a {
-    text-decoration: none;
+    color: var(--nearly-black);
 }
 
 /*********************/
