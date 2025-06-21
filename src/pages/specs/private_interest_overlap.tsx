@@ -1936,7 +1936,7 @@ export const private_interest_overlap = (
             <R n="enumcap_initial_authorisation" /> is a{" "}
             <R n="NamespaceSignature" /> issued by the{" "}
             <R n="enumcap_namespace" /> over the byte{" "}
-            <Code>0x02</Code>, followed by the <R n="enumcap_user" />{" "}
+            <Code>0x04</Code>, followed by the <R n="enumcap_user" />{" "}
             (encoded via <R n="encode_user_pk" />).
           </P>
 
