@@ -832,7 +832,7 @@ export const data_model = (
               ever be certain that it has (up-to-date) information about all
               existing <Rs n="store" />. A <Def n="subspace" rs="subspaces" />
               {" "}
-              is teh set of all <Rs n="Entry" /> of a given <R n="SubspaceId" />
+              is the set of all <Rs n="Entry" /> of a given <R n="SubspaceId" />
               {" "}
               in a given{" "}
               <R n="namespace" />. This again is more of a conceptual notion

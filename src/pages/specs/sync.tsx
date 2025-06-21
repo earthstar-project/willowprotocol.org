@@ -636,7 +636,7 @@ export const sync = (
                   private interest overlap detection
                 </R>, the two peers privately determine which{" "}
                 <Rs n="PrivateInterest" />{" "}
-                they share, and provae read access for those interests.
+                they share, and prove read access for those interests.
               </P>
 
               <Hsection
