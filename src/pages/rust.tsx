@@ -97,8 +97,9 @@ export const rust = (
           <Li>
             <R n="tut-grouping">Work with groupings</R>
           </Li>
-          <Li>Create a capability</Li>
-          <Li>Authorise an entry with Meadowcap</Li>
+          <Li>
+            <R n="tut-caps">Create and use capabilities</R>
+          </Li>
           <Li>Work with a store</Li>
           <Li>Create and ingest a sidedrop</Li>
           <Li>

@@ -130,7 +130,7 @@ export const tutorial_groupings = (
 
       <Hsection title="Summary" n="tut-grouping-summary">
         <P>
-          In this tutorial, we explored all of Willow's{" "}
+          In this tutorial, we explored some of Willow's{" "}
           <R n="grouping_entries">entry groupings</R>:
         </P>
         <Ul>
@@ -148,7 +148,7 @@ export const tutorial_groupings = (
 
         <P>
           We've now practiced everything we need to move on to the next
-          tutorial: <R n="tut-capability">Create a capability</R>.
+          tutorial: <R n="tut-caps">Create a capability</R>.
         </P>
       </Hsection>
     </>
