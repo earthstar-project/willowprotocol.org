@@ -100,10 +100,14 @@ export const rust = (
           <Li>
             <R n="tut-caps">Create and use capabilities</R>
           </Li>
-          <Li>Work with a store</Li>
-          <Li>Create and ingest a sidedrop</Li>
           <Li>
-            Sync two stores with the WGPS
+            <R n="tut-store">Work with a Store</R>
+          </Li>
+          <Li>
+            <R n="tut-sidedrop">Create and ingest a sidedrop</R>
+          </Li>
+          <Li>
+            <R n="tut-wgps">Sync two stores with the WGPS</R>
           </Li>
         </Ul>
       </Hsection>

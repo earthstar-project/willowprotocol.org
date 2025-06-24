@@ -3,6 +3,7 @@ import { tutorial_paths } from "./tutorials/paths.tsx";
 import { tutorial_entry } from "./tutorials/entry.tsx";
 import { tutorial_groupings } from "./tutorials/groupings.tsx";
 import { tutorial_caps } from "./tutorials/caps.tsx";
+import { tutorial_store } from "./tutorials/store.tsx";
 import { Code, Li, Ol, P } from "macromania-html";
 import { TerminalInput } from "../../macros.tsx";
 import { Hsection } from "macromania-hsection";
@@ -15,6 +16,7 @@ export const tutorials = (
     {tutorial_entry}
     {tutorial_groupings}
     {tutorial_caps}
+    {tutorial_store}
   </Dir>
 );
 

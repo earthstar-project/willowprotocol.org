@@ -848,7 +848,11 @@ a.bib {
     padding: 0 1rem;
 }
 
-.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) {
+.code_sample > .shiki .line::before{
+   content: "\200B";
+}
+
+.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span {
     opacity: 0.4;
 }
 
@@ -857,6 +861,16 @@ a.bib {
     display: inline-block;
     width: calc(100% - 2rem);
 }
+
+.code_sample > .shiki span.addition {
+    background: rgba(149, 255, 197, 0.2);
+}
+
+.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span.addition {
+    opacity: 1;
+}
+
+
 
 
 code.terminal-input {
