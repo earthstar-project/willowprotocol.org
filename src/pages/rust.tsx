@@ -10,8 +10,18 @@ const rustdocs_willow_data_model = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/willow_data_model.json"),
 );
 
+const rustdocs_meadowcap = JSON.parse(
+  await Deno.readTextFile("./rustdocs/source_json/meadowcap.json"),
+);
+
 const rustdocs_willow_25 = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/willow_25.json"),
+);
+
+const rustdocs_simple_store_sled = JSON.parse(
+  await Deno.readTextFile(
+    "./rustdocs/source_json/willow_store_simple_sled.json",
+  ),
 );
 
 export const rust = (
@@ -32,14 +42,34 @@ export const rust = (
         cachingPath={["rustdocs", "cached_defs"]}
       />
       <DefsRustDocs
-        crate="willow_25"
+        crate="meadowcap"
+        json={rustdocs_meadowcap}
+        prefix="rs-"
+        typeClass="rustic type"
+        functionClass="rustic function"
+        interfaceClass="rustic interface"
+        depsCss={[{ dep: ["pseudocode.css"] }]}
+        cachingPath={["rustdocs", "cached_defs"]}
+      />
+      <DefsRustDocs
+        crate="willow-store-simple-sled"
         json={rustdocs_willow_25}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"
         interfaceClass="rustic interface"
         depsCss={[{ dep: ["pseudocode.css"] }]}
-        cachingPath={["rustdocs_defs", "cached_defs"]}
+        cachingPath={["rustdocs", "cached_defs"]}
+      />
+      <DefsRustDocs
+        crate="willow_25"
+        json={rustdocs_simple_store_sled}
+        prefix="rs-"
+        typeClass="rustic type"
+        functionClass="rustic function"
+        interfaceClass="rustic interface"
+        depsCss={[{ dep: ["pseudocode.css"] }]}
+        cachingPath={["rustdocs", "cached_defs"]}
       />
 
       <P>

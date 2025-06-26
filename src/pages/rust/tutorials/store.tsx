@@ -30,7 +30,9 @@ export const tutorial_store = (
       <Hsection title="Instantiate a store" n="tut-store-1">
         <P>
           Firstly we'll instantiate a{" "}
-          <R n="rs-willow_store_simple_sled-StoreSimpleSled" />.
+          <R n="rs-willow_store_simple_sled-StoreSimpleSled" /> in the directory
+          {" "}
+          <Code>./my_db</Code>.
         </P>
 
         <P>
