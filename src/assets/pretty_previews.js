@@ -1392,7 +1392,7 @@ function _(e, t) {
             $ = `${te[0]}?${ne.toString()}`;
         }
         let G = document.createElement("iframe");
-        G.setAttribute("sandbox", "allow-scripts"),
+        G.setAttribute("sandbox", "allow-scripts allow-same-origin"),
           G.src = $,
           L.appendChild(G),
           L.addEventListener("mouseleave", () => {
