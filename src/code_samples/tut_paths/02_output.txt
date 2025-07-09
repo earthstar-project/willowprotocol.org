@@ -1,0 +1,2 @@
+A path with nothing in it: Path([])
+A path with two components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])])

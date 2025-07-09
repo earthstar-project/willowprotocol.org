@@ -1,0 +1,21 @@
+{
+  "tasks": {
+    "dev": "deno run --watch main.ts"
+  },
+  "imports": {
+    "@std/path": "jsr:@std/path@^1.1.0",
+    "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania-logger": "../macromania_logger/mod.tsx",
+    "@aljoschameyer/loggingutils": "jsr:@aljoscha-meyer/logging-utils@^1.0.0",
+    "shiki": "npm:shiki@^3.6.0",
+    "std_fmt": "jsr:@std/fmt@^0.221.0",
+    "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania-fs": "../macromania_fs/mod.tsx",
+    "macromania-outfs": "../macromania_outfs/mod.tsx"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "macromaniajsx"
+  }
+}
