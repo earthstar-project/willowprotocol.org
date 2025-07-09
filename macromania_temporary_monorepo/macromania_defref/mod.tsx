@@ -852,20 +852,20 @@ function linkTag(opts: {
   const config = getConfig(opts.ctx);
 
   for (const dep of config.depsCssRef ?? []) {
-    previewScopeDependencyCss(opts.ctx, dep, true);
+    dependencyCss(opts.ctx, dep);
   }
 
   for (const dep of config.depsJsRef ?? []) {
-    previewScopeDependencyJs(opts.ctx, dep, true);
+    dependencyJs(opts.ctx, dep);
   }
 
   if (opts.info !== undefined) {
     for (const dep of opts.info.depsCssRef ?? []) {
-      previewScopeDependencyCss(opts.ctx, dep, true);
+      dependencyCss(opts.ctx, dep);
     }
 
     for (const dep of opts.info.depsJsRef ?? []) {
-      previewScopeDependencyJs(opts.ctx, dep, true);
+      dependencyJs(opts.ctx, dep);
     }
   }
 
