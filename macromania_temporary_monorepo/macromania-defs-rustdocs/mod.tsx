@@ -8,7 +8,7 @@ import { ensureDir } from "@std/fs";
 
 // Rustdoc JSON output is still unstable, so we need to pin the output version.
 // TODO: They don't actually seem to support this yet.
-const JSON_VERSION = 46;
+const JSON_VERSIONS = [46, 53];
 
 type SymbolKind = "type" | "fn" | "interface" | "constant" | "module";
 
@@ -58,9 +58,9 @@ const makeClassGetter = (
 };
 
 export function DefsRustDocs(props: RustDocsProps): Expression {
-  if (props.json["format_version"] !== JSON_VERSION) {
+  if (!JSON_VERSIONS.includes(props.json["format_version"])) {
     throw Error(
-      `Expected Rustdoc format version ${JSON_VERSION}, got ${
+      `Expected Rustdoc format version of ${JSON_VERSIONS}, got ${
         props.json["format_version"]
       }`,
     );
@@ -110,6 +110,7 @@ export function DefsRustDocs(props: RustDocsProps): Expression {
                 href={url}
                 refClass={classGetter(kind)}
                 depsCssRef={props.depsCss}
+                noPreview
               />
             ))}
           </omnomnom>
@@ -123,6 +124,7 @@ type DocsRsProps = {
   crate: string;
   version?: string;
   prefix?: string;
+  cachingPath: string[];
 };
 
 const logger = createLogger("LoggerDefsRustdocs");
@@ -135,7 +137,7 @@ export function DefsDocsRs(props: DocsRsProps): Expression {
         // Request JSON from docs.rs with the appropriate URL
         const jsonUrl = `https://docs.rs/crate/${props.crate}/${
           props.version || "latest"
-        }/json/${JSON_VERSION}`;
+        }/json/${JSON_VERSIONS[0]}`;
         // TODO: log an error if this request fails.
         const res = await fetch(jsonUrl);
 
@@ -159,6 +161,7 @@ export function DefsDocsRs(props: DocsRsProps): Expression {
 
         return (
           <DefsRustDocs
+            cachingPath={props.cachingPath}
             crate={props.crate}
             json={docsJson}
             prefix={props.prefix}

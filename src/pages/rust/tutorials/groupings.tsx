@@ -34,7 +34,8 @@ export const tutorial_groupings = (
     <>
       <Hsection title="Range" n="tut-grouping-1">
         <P>
-          Firstly we'll create a few <R n="rs-willow_25-Range">Ranges</R>{" "}
+          Firstly we'll create a few{" "}
+          <R n="rs-willow_data_model-grouping-Range">Ranges</R>{" "}
           and compare them.
         </P>
 
@@ -61,8 +62,7 @@ export const tutorial_groupings = (
         <P>
           Next we'll create some <R n="rs-willow_25-Area">Areas</R> and some
           {" "}
-          <R n="rs-willow_25-Entry">Entries</R>
-          to test against them.
+          <R n="rs-willow_25-Entry">Entries</R> to test against them.
         </P>
 
         <P>
@@ -136,8 +136,8 @@ export const tutorial_groupings = (
         <Ul>
           <Li>
             We created a few{" "}
-            <R n="rs-willow_25-Range">Ranges</R>, compared them, and created new
-            intersecting ranges from them.
+            <R n="rs-willow_data_model-grouping-Range">Ranges</R>, compared
+            them, and created new intersecting ranges from them.
           </Li>
           <Li>
             Created some{"  "}

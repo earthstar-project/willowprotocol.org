@@ -53,7 +53,7 @@ export const rust = (
       />
       <DefsRustDocs
         crate="willow-store-simple-sled"
-        json={rustdocs_willow_25}
+        json={rustdocs_simple_store_sled}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"
@@ -63,7 +63,7 @@ export const rust = (
       />
       <DefsRustDocs
         crate="willow_25"
-        json={rustdocs_simple_store_sled}
+        json={rustdocs_willow_25}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"
