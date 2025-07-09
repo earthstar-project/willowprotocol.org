@@ -45,7 +45,7 @@ export const index = (
       }
     >
       <P clazz="tagline wide">
-        Peer-to-peer storage which scales up, down, and sideways.
+        Peer-to-peer protocols which scale up, down, and sideways.
       </P>
 
       <Ul clazz="taglist wide">
@@ -59,7 +59,7 @@ export const index = (
         <Li>Public networks.</Li>
         <Li>Live networking.</Li>
         <Li>Sneakernets.</Li>
-        <Li clazz="vermillion">Rust implementations.</Li>
+        <Li>Rust implementations.</Li>
         <Li>Free forever, in every sense.</Li>
       </Ul>
 
@@ -73,7 +73,7 @@ export const index = (
           <Li>
             <R n="specifications">Specifications</R>
           </Li>
-          <Li>
+          <Li id="rust-nav">
             <R n="rust">Rust</R>
           </Li>
           <Li>

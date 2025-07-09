@@ -232,6 +232,20 @@ nav.ctas ul li a[data-ref]:hover {
     text-decoration: none;
 }
 
+nav.ctas ul li#rust-nav a[data-ref] {
+    color: var(--wong-vermillion);
+    text-decoration: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--wong-vermillion);
+}
+
+nav.ctas ul li#rust-nav a[data-ref]:hover {
+    color: var(--wong-vermillion);
+    border: 1px solid var(--wong-vermillion);
+    text-decoration: none;
+}
+
 .path {
     white-space: nowrap;
 }
@@ -835,7 +849,7 @@ a.bib {
 }
 
 .code_sample > .shiki {
-    overflow-x: scroll;
+    overflow-x: auto;
     padding: 1rem 0;
     border-radius: 0.2rem;
 }

@@ -148,9 +148,15 @@ export const rust = (
           help you achieve some common tasks.
         </P>
         <Ul>
-          <Li>Create a drop and write it to disk</Li>
-          <Li>Configure a WGPS session</Li>
-          <Li>Run an always-online peer on a server</Li>
+          <Li>
+            <R n="guide-sidedrop">Create a drop and write it to disk</R>
+          </Li>
+          <Li>
+            <R n="guide-wgps">Configure a WGPS session</R>
+          </Li>
+          <Li>
+            <R n="guide-server">Run an always-online peer on a server</R>
+          </Li>
         </Ul>
       </Hsection>
 
