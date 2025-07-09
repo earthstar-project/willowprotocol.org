@@ -81,6 +81,7 @@ Deno.serve(async (req: Request) => {
     return new Response(file.readable, {
       headers: {
         "Content-Type": contentKind,
+        "Access-Control-Allow-Origin": "*",
       },
     });
   }
