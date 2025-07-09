@@ -41,11 +41,6 @@ export const more = (
             </R>
           </Li>
           <Li>
-            <R n="projects_and_communities">
-              Active Projects and Communities
-            </R>
-          </Li>
-          <Li>
             <R n="changes">News and Necessary Changes</R>
           </Li>
           <Li>

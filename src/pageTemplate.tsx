@@ -232,14 +232,15 @@ export function PageTemplate(
                       <R n="specifications">Specs</R>
                     </Li>
                     <Li>
+                      <R n="rust">Rust</R>
+                    </Li>
+                    <Li>
                       <R n="changes">News</R>
                     </Li>
                     <Li>
                       <R n="about">About Us</R>
                     </Li>
-                    <Li>
-                      <R n="projects_and_communities">Active Projects</R>
-                    </Li>
+
                     <Li>
                       <R n="more">More</R>
                     </Li>

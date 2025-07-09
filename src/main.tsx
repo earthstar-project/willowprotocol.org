@@ -15,12 +15,13 @@ import { handshake_and_encryption } from "./pages/specs/handshake_and_encryption
 import { meadowcap } from "./pages/specs/meadowcap.tsx";
 import { lcmux } from "./pages/specs/lcmux.tsx";
 import { encodings } from "./pages/specs/encodings.tsx";
+import { rust } from "./pages/rust.tsx";
+import { tutorials } from "./pages/rust/tutorials.tsx";
 import { more } from "./pages/more.tsx";
 import { about_us } from "./pages/more/about_us.tsx";
 import { threedstorage } from "./pages/more/3dstorage.tsx";
 import { changes } from "./pages/more/changes.tsx";
 import { willow_compared } from "./pages/more/willow_compared.tsx";
-import { projects_and_communities } from "./pages/more/projects_and_communities.tsx";
 import { timestamps_really } from "./pages/more/timestamps_really.tsx";
 import { why_willow } from "./pages/more/why_willow.tsx";
 import { ScriptDependencyInfo } from "macromania-html-utils";
@@ -211,13 +212,17 @@ const exp = (
                 {willow25}
               </Dir>
 
+              <Dir name="rust">
+                {rust}
+                {tutorials}
+              </Dir>
+
               <Dir name="more">
                 {more}
                 {threedstorage}
                 {about_us}
                 {changes}
                 {willow_compared}
-                {projects_and_communities}
                 {timestamps_really}
                 {why_willow}
               </Dir>

@@ -1,9 +1,11 @@
 {
   "imports": {
     "@aljoschameyer/loggingutils": "jsr:@aljoscha-meyer/logging-utils@^1.0.0",
+    "@std/assert": "jsr:@std/assert@^1.0.13",
     "@std/media-types": "jsr:@std/media-types@^1.1.0",
     "@std/path": "jsr:@std/path@^1.0.9",
     "std_fmt": "jsr:@std/fmt@^0.221.0",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
     "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
     "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
     "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
@@ -29,7 +31,9 @@
     "macromania-bib": "./macromania_temporary_monorepo/macromania_bib/mod.tsx",
     "macromania-bib/": "./macromania_temporary_monorepo/macromania_bib/",
     "macromania-wip": "./macromania_temporary_monorepo/macromania_wip/mod.tsx",
-    "macromania-emit-latex": "./macromania_temporary_monorepo/macromania_emit_latex/mod.tsx"
+    "macromania-emit-latex": "./macromania_temporary_monorepo/macromania_emit_latex/mod.tsx",
+    "macromania-defs-rustdocs": "./macromania_temporary_monorepo/macromania-defs-rustdocs/mod.tsx",
+    "macromania-shiki": "./macromania_temporary_monorepo/macromania_shiki/mod.tsx"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
@@ -44,5 +48,13 @@
     "dev": "deno run -A ./server.ts --dev"
   },
   "include": ["src", "deps.ts", "devServer.ts"],
-  "exclude": ["build"]
+  "exclude": ["build"],
+
+  "lint": {
+    "include": ["src/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["jsx-no-useless-fragment", "jsx-key"]
+    }
+  }
 }

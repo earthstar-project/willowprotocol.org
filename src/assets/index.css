@@ -111,10 +111,11 @@ strong {
 }
 
 code:not(.pseudocode) {
+    font-size: 1rem;
     background: rgba(0, 0, 0, 0.05);
-    padding: 0.12em;
-    border-radius: 10%;
+    padding: 0.12em 0.17em;
     word-break: break-word;
+    border-radius: 0.2rem;
 }
 
 h1,
@@ -202,6 +203,10 @@ ul.spec-taglist li:nth-child(odd) {
     color: var(--color-comment);
 }
 
+ul.taglist li.vermillion {
+    color: var(--wong-vermillion);
+}
+
 nav.ctas ul {
     padding: 0;
     margin-bottom: 2rem;
@@ -224,6 +229,20 @@ nav.ctas ul li a[data-ref] {
 nav.ctas ul li a[data-ref]:hover {
     color: var(--green);
     border: 1px solid var(--green);
+    text-decoration: none;
+}
+
+nav.ctas ul li#rust-nav a[data-ref] {
+    color: var(--wong-vermillion);
+    text-decoration: none;
+    padding: 0.35rem 0.6rem;
+    border-radius: 0.25rem;
+    border: 1px solid var(--wong-vermillion);
+}
+
+nav.ctas ul li#rust-nav a[data-ref]:hover {
+    color: var(--wong-vermillion);
+    border: 1px solid var(--wong-vermillion);
     text-decoration: none;
 }
 
@@ -824,3 +843,52 @@ a.bib {
 .piiExampleCaption {
     margin-top: 1em;
 }
+
+.code_sample {
+    font-size: 1rem;
+}
+
+.code_sample > .shiki {
+    overflow-x: auto;
+    padding: 1rem 0;
+    border-radius: 0.2rem;
+}
+
+.code_sample > .shiki code {
+    background: none;
+}
+
+.code_sample > .shiki .line {
+    padding: 0 1rem;
+}
+
+.code_sample > .shiki .line::before{
+   content: "\200B";
+}
+
+.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span {
+    opacity: 0.4;
+}
+
+.code_sample > .shiki .line.addition {
+    background: rgba(149, 255, 197, 0.2);
+    display: inline-block;
+    width: calc(100% - 2rem);
+}
+
+.code_sample > .shiki span.addition {
+    background: rgba(149, 255, 197, 0.2);
+}
+
+.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span.addition {
+    opacity: 1;
+}
+
+
+
+
+code.terminal-input {
+    //color: #e0def4;
+    //background-color: #232136;
+}
+
