@@ -571,7 +571,7 @@ evaluate(enable_previews([
           
           pinformative(
             marginale_inlineable(
-              img(asset("landing/privacy.png"), "A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall blocks the troll’s line of sight. The trool is deeply unhappy about this circumstance."),
+              img(asset("landing/privacy.png"), "A cartoonish troll tries to spy on a person enjoying themselves with a paper airplane, but a solid brick wall blocks the troll’s line of sight. The troll is deeply unhappy about this circumstance."),
             ),
             "Private and end-to-end encrypted. Other users can't find out what you’re interested in unless they already know about it themselves. And if they get that far, they still have to be able to decrypt synced data to make any sense of it."
           ),
@@ -588,7 +588,7 @@ evaluate(enable_previews([
             marginale_inlineable(
               img(asset("landing/capabilities.png"), `Two stylised admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`),
             ),
-            "Fine grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
+            "Fine-grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
           ),
 
           pinformative(
