@@ -588,7 +588,7 @@ evaluate(enable_previews([
             marginale_inlineable(
               img(asset("landing/capabilities.png"), `Two stylised admission tickets. One says "Admin", the other says "Aug 1st to Sep 3rd".`),
             ),
-            "Fine grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
+            "Fine-grained capabilities. Restrict read and write access by semantically meaningful ranges of data, or time range. Use your favourite existing capability system, or try our Meadowcap system.",
           ),
 
           pinformative(
