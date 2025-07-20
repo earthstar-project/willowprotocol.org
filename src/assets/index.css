@@ -118,6 +118,11 @@ code:not(.pseudocode) {
     border-radius: 0.2rem;
 }
 
+pre code:not(.pseudocode) {
+    padding: 0;
+    border-radius: 0;
+}
+
 h1,
 h2,
 h3,
