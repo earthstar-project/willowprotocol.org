@@ -1988,7 +1988,18 @@ export const encodings = (
                   </EncConditional>
                 </EncConditional>,
                 <C64Encoding id="start_time_diff" />,
-                <C64Encoding id="end_time_diff" />,
+                <EncConditional
+                  condition={
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="D3RangeTime" />
+                      </AccessStruct>{" "}
+                      != <R n="range_open" />
+                    </Code>
+                  }
+                >
+                  <C64Encoding noDot id="end_time_diff" />
+                </EncConditional>,
               ]}
             />
           </Hsection>
