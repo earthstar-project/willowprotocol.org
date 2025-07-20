@@ -122,7 +122,7 @@ const exp = (
                 // Transform the names of all assets to content-derived ones...
                 transformation: contentAddress,
 
-                // ... witht he following exceptions:
+                // ... with the following exceptions:
                 children: {
                   "about": {
                     children: {
@@ -138,6 +138,12 @@ const exp = (
                         transformation: transformCopy,
                       },
                     },
+                  },
+                  "graphics": {
+                    children: {
+                      "bg.png": transformCopy,
+                      "proposal-bg.png": transformCopy,
+                    }
                   },
                   "apple-touch-icon.png": transformCopy,
                   "authors.css": transformCopy,
