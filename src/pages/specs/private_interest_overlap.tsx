@@ -1091,7 +1091,7 @@ export const private_interest_overlap = (
               >
                 The left peer detects an overlap. This example represents the
                 case of <R n="pi_awkward" />{" "}
-                <Rs n="PrivateInterest" />; this is the onl case in which a
+                <Rs n="PrivateInterest" />; this is the only case in which a
                 transmitted hash-boolean pair with a boolean of{" "}
                 <Code>false</Code> is involved in detecting an overlap.
               </PiiExample>
@@ -1234,7 +1234,7 @@ export const private_interest_overlap = (
                 is obviously broken if peers can simply claim an overlap for
                 {" "}
                 <Em>arbitrary</Em>{" "}
-                hashes. But we can prevent this by mandating that every
+                hashes. But we can prevent this by mandating that every{" "}
                 <R n="overlap_announcement" /> contains an{" "}
                 <Def
                   n="announcement_authentication"
