@@ -847,17 +847,11 @@ export const encodings = (
                     <Rs n="Component" /> of <RelName />.
                   </P>
                 }
-                bitfields={[
-                  c64Tag(
-                    "prefix_count",
-                    8,
-                    <>
-                      <R n="EncodePathRelativePath_prefix_count" />
-                    </>,
-                  ),
-                ]}
+                bitfields={[]}
                 contents={[
-                  <C64Encoding id="prefix_count" />,
+                  <C64Standalone>
+                    <R n="EncodePathRelativePath_prefix_count" />
+                  </C64Standalone>,
                   <CodeFor enc="EncodePath">
                     the <R n="path_difference" /> from <RelName /> to{" "}
                     <ValName />
