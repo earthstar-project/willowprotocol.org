@@ -1,5 +1,5 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, AsideBlock, Gwil, Path, Purple } from "../../macros.tsx";
+import { AE, Alj, AsideBlock, Gwil, Path, Purple } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Blockquote,
@@ -1202,6 +1202,25 @@ export const private_interest_overlap = (
                   <R n="pi_include_area">included in</R> the{" "}
                   <R n="pi_more_specific">less specific</R>{" "}
                   <R n="PrivateInterest" />.
+                  <Ul>
+                    <Li>
+                      There is one exception to this case: when the two{" "}
+                      <Rs n="PrivateInterest" /> have equal <Rs n="pi_ns" /> and
+                      {" "}
+                      <Rs n="pi_path" /> but one has a <R n="pi_ss" /> of{" "}
+                      <R n="ss_any" /> whereas the other has a concrete{" "}
+                      <R n="pi_ss" />, then <Em>both</Em>{" "}
+                      peers will detect the overlap<Alj>
+                        TODO: refer to the example drawing we will surely add
+                      </Alj>. In this special case, the peer with the{" "}
+                      <R n="pi_ss" /> of <R n="ss_any" /> should <Em>not</Em>
+                      {" "}
+                      announce an overlap, and the peer with the concrete{" "}
+                      <R n="pi_ss" /> simply sends its <R n="read_capability" />
+                      {" "}
+                      immediately.
+                    </Li>
+                  </Ul>
                 </Li>
                 <Li>
                   Both <Rs n="PrivateInterest" />{" "}
