@@ -633,6 +633,13 @@ export const encodings = (
             </Ul>
           </PreviewScope>
 
+          <P>
+            We have provided a{" "}
+            <AE href="https://github.com/worm-blossom/willow_test_vectors">
+              set of test vectors here
+            </AE>.
+          </P>
+
           <Hsection n="enc_path" title="Path Encoding" shortTitle="Path">
             <P>
               Encodings for <Rs n="Path" />.
