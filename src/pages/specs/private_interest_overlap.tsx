@@ -1032,7 +1032,12 @@ export const private_interest_overlap = (
                 for <Rs n="pi_ss" />, <R n="path_prefix" />,{" "}
                 <R n="path_extension" />, or <R n="path_related">unrelated</R>
                 {" "}
-                for <Rs n="pi_path" />).
+                for{" "}
+                <Rs n="pi_path" />). Note that in all examples, both peers also
+                locally compute hashes for <Rs n="PrivateInterest" />{" "}
+                with the empty{" "}
+                <R n="Path" />. For brevity we do not depict those, since in
+                these examples they never match any transmitted hashes.
               </P>
 
               <PiiExample
