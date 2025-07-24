@@ -189,9 +189,9 @@ export const sideloading = (
                 />{" "}
                 encoding <Rs n="AuthorisationToken" /> relative to pairs of an
                 {" "}
-                <R n="AuthorisedEntry" /> (the previously transmitted{" "}
+                <R n="AuthorisedEntry" /> (the previously encoded{" "}
                 <R n="AuthorisedEntry" />) and an <R n="Entry" /> (the{" "}
-                <R n="Entry" /> currently being transmitted),
+                <R n="Entry" /> currently being encoded),
               </Li>
               <Li>
                 a <R n="NamespaceId" />{" "}
