@@ -6,7 +6,13 @@ import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
 import { Def, R, Rs, Rsb } from "macromania-defref";
-import { AccessStruct, DefFunction, DefValue, Tuple } from "macromania-rustic";
+import {
+  AccessStruct,
+  DefFunction,
+  DefType,
+  DefValue,
+  Tuple,
+} from "macromania-rustic";
 import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { DefVariant } from "macromania-rustic";
@@ -27,7 +33,7 @@ export const sideloading = (
       <PageTemplate
         htmlTitle="Willow Sideloading Protocol"
         headingId="sideloading"
-        heading={"Willow Sideloading Protocol"}
+        heading="Willow Sideloading Protocol"
         toc
         status="proposal"
         parentId="specifications"
@@ -164,12 +170,28 @@ export const sideloading = (
                 for <R n="PayloadDigest" />,
               </Li>
               <Li>
-                An <R n="encoding_function" />{" "}
-                <DefFunction
-                  n="sideload_encode_token"
-                  r="encode_authorisation_token"
+                <Marginale>
+                  When using <R n="MeadowcapAuthorisationToken" />{" "}
+                  as the type of <Rs n="AuthorisationToken" />, you can use{" "}
+                  <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
+                </Marginale>
+                A <R n="relative_encoding_relation" />{" "}
+                <DefType
+                  n="SideloadingEncodeAuthorisationToken"
+                  r="EncodeAuthorisationToken"
+                  preview={
+                    <P>
+                      A protocol parameter of the <R n="wgps" />, the{" "}
+                      <R n="relative_encoding_relation" /> for encoding{" "}
+                      <Rs n="AuthorisationToken" />.
+                    </P>
+                  }
                 />{" "}
-                for <R n="AuthorisationToken" />,
+                encoding <Rs n="AuthorisationToken" /> relative to pairs of an
+                {" "}
+                <R n="AuthorisedEntry" /> (the previously transmitted{" "}
+                <R n="AuthorisedEntry" />) and an <R n="Entry" /> (the{" "}
+                <R n="Entry" /> currently being transmitted),
               </Li>
               <Li>
                 a <R n="NamespaceId" />{" "}
@@ -184,10 +206,23 @@ export const sideloading = (
                 <DefValue
                   n="sl_default_payload_digest"
                   r="default_payload_digest"
-                />, and
+                />,
               </Li>
               <Li>
-                and a function <DefFunction n="encrypt" />{" "}
+                an <R n="AuthorisationToken" />{" "}
+                <DefValue
+                  n="sl_default_authorisation_token"
+                  r="default_authorisation_token"
+                />{" "}
+                which <R n="is_authorised_write">authorises</R>{" "}
+                <Code>
+                  <R n="default_entry" />(<R n="sl_default_nsid" />,{" "}
+                  <R n="sl_default_ssid" />,{" "}
+                  <R n="sl_default_payload_digest" />), and
+                </Code>
+              </Li>
+              <Li>
+                a function <DefFunction n="encrypt" />{" "}
                 which encrypts the final compiled encoding.
               </Li>
             </Ul>
@@ -231,7 +266,11 @@ export const sideloading = (
               <Code>
                 <R n="default_entry" />(<R n="sl_default_nsid" />,{" "}
                 <R n="sl_default_ssid" />, <R n="sl_default_payload_digest" />)
-              </Code>.
+              </Code>, and let{" "}
+              <M>
+                <DefValue n="initial_authtoken" r="auth_{-1}" />
+              </M>{" "}
+              be <R n="sl_default_authorisation_token" />.
             </P>
           </PreviewScope>
 
@@ -293,7 +332,23 @@ export const sideloading = (
                   }
                 >
                   <Br />
-                  <CodeFor isFunction enc="sideload_encode_token" notStandalone>
+                  <CodeFor
+                    enc="SideloadingEncodeAuthorisationToken"
+                    notStandalone
+                    relativeTo={
+                      <>
+                        the pair of (<R n="sl_e">
+                          entry_<Curly>i-1</Curly>
+                        </R>,{" "}
+                        <R n="sl_a">
+                          auth_<Curly>i-1</Curly>
+                        </R>) and{" "}
+                        <R n="sl_e">
+                          entry_<Curly>i</Curly>
+                        </R>
+                      </>
+                    }
+                  >
                     <R n="sl_a" />
                   </CodeFor>
                   , then
@@ -487,7 +542,7 @@ export const sideloading = (
 
           <P>
             The the <R n="drop" /> corresponding to the sequence{" "}
-            <R n="side_entries" /> is the result if applying <R n="encrypt" />
+            <R n="side_entries" /> is the result of applying <R n="encrypt" />
             {" "}
             to <R n="side_contents" />.
           </P>
