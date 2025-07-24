@@ -2828,7 +2828,7 @@ export const encodings = (
 
           <Hsection
             n="encsec_EncodeMeadowcapAuthorisationTokenRelative"
-            title={<Code>EncodeMeadowcapAuthorisationTokenyRelative</Code>}
+            title={<Code>EncodeMeadowcapAuthorisationTokenRelative</Code>}
             shortTitle="McAuthorisationToken"
           >
             <EncodingRelationRelativeTemplate

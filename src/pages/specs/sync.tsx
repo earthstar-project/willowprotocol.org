@@ -2371,6 +2371,12 @@ export const sync = (
                 </Li>
 
                 <Li>
+                  <Marginale>
+                    When using <R n="MeadowcapAuthorisationToken" />{" "}
+                    as the type of <Rs n="AuthorisationToken" />, you can use
+                    {" "}
+                    <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
+                  </Marginale>
                   A <R n="relative_encoding_relation" />{" "}
                   <DefType
                     n="EncodeAuthorisationToken"
@@ -2384,7 +2390,9 @@ export const sync = (
                   />{" "}
                   encoding <Rs n="AuthorisationToken" /> relative to pairs of an
                   {" "}
-                  <R n="AuthorisedEntry" /> and an <R n="Entry" />.
+                  <R n="AuthorisedEntry" /> (the previously transmitted{" "}
+                  <R n="AuthorisedEntry" />) and an <R n="Entry" /> (the{" "}
+                  <R n="Entry" /> currently being transmitted).
                 </Li>
 
                 <Li>
