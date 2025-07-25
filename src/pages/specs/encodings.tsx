@@ -2500,11 +2500,25 @@ export const encodings = (
                   pair of a <R n="Capability" /> and an <R n="Entry" />
                 </>
               }
-              bitfields={[]}
+              bitfields={[
+                c64Tag(
+                  "nice_hack",
+                  4,
+                  <>
+                    <R n="comcap_hack" />
+                  </>,
+                ),
+                c64Tag(
+                  "delcount",
+                  4,
+                  <>
+                    the length of <ValAccess field="communal_cap_delegations" />
+                  </>,
+                ),
+              ]}
               contents={[
-                <C64Standalone>
-                  <R n="comcap_hack" />
-                </C64Standalone>,
+                <C64Encoding id="nice_hack" />,
+                <C64Encoding id="delcount" />,
                 <EncIterator
                   val={
                     <>
@@ -2721,11 +2735,25 @@ export const encodings = (
                   pair of a <R n="Capability" /> and an <R n="Entry" />
                 </>
               }
-              bitfields={[]}
+              bitfields={[
+                c64Tag(
+                  "nice_hack",
+                  4,
+                  <>
+                    <R n="owncap_hack" />
+                  </>,
+                ),
+                c64Tag(
+                  "delcount",
+                  4,
+                  <>
+                    the length of <ValAccess field="owned_cap_delegations" />
+                  </>,
+                ),
+              ]}
               contents={[
-                <C64Standalone>
-                  <R n="owncap_hack" />
-                </C64Standalone>,
+                <C64Encoding id="nice_hack" />,
+                <C64Encoding id="delcount" />,
                 <EncConditional
                   condition={
                     <>
