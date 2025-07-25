@@ -2433,8 +2433,7 @@ export const encodings = (
                             </AccessStruct>
                           </AccessStruct>
                         </Code>, */
-                        }
-                        and else
+                        } and else
                       </Li>
                       <Li>
                         <Code>
@@ -2549,6 +2548,7 @@ export const encodings = (
                       >
                         <CodeFor
                           enc="EncodePrivateAreaAlmostInArea"
+                          notStandalone
                           relativeTo={
                             <M>
                               <R n="ccrpi_ctx_i">
@@ -2569,7 +2569,7 @@ export const encodings = (
                           </>
                         }
                       >
-                        <CodeFor enc="encode_user_pk">
+                        <CodeFor enc="encode_user_pk" notStandalone>
                           <R n="enc_ccap_rel_pk" />
                         </CodeFor>
                       </EncConditional>,
@@ -2582,7 +2582,7 @@ export const encodings = (
                           </>
                         }
                       >
-                        <CodeFor enc="encode_user_sig">
+                        <CodeFor enc="encode_user_sig" notStandalone>
                           <R n="enc_ccap_rel_sig" />
                         </CodeFor>
                       </EncConditional>,
@@ -2817,6 +2817,7 @@ export const encodings = (
                               </R>
                             </M>
                           }
+                          notStandalone
                         >
                           <R n="enc_ccap_rel_area" />
                         </CodeFor>
@@ -2830,7 +2831,7 @@ export const encodings = (
                           </>
                         }
                       >
-                        <CodeFor enc="encode_user_pk">
+                        <CodeFor enc="encode_user_pk" notStandalone>
                           <R n="enc_ccap_rel_pk" />
                         </CodeFor>
                       </EncConditional>,
@@ -2843,7 +2844,7 @@ export const encodings = (
                           </>
                         }
                       >
-                        <CodeFor enc="encode_user_sig">
+                        <CodeFor enc="encode_user_sig" notStandalone>
                           <R n="enc_ccap_rel_sig" />
                         </CodeFor>
                       </EncConditional>,
@@ -2930,13 +2931,13 @@ export const encodings = (
                 <EncConditional
                   condition={
                     <>
-                      The <R n="comcap_shared" /> in the encoding of{" "}
+                      the <R n="comcap_shared" /> in the encoding of{" "}
                       <AccessStruct field="capability_inner">
                         <ValAccess field="mcat_cap" />
                       </AccessStruct>{" "}
                       was not equal to the number of triplets in the{" "}
                       <R n="communal_cap_delegations" /> of the{" "}
-                      <R n="AuthorisationToken" /> of <R n="mae_prior" />.
+                      <R n="AuthorisationToken" /> of <R n="mae_prior" />
                     </>
                   }
                 >
