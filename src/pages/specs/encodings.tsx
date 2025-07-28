@@ -3,6 +3,7 @@ import {
   ArbitraryBitsAreZero,
   Bitfield,
   bitfieldConditional,
+  bitfieldConstant,
   bitfieldIff,
   C64Encoding,
   C64Standalone,
@@ -2500,9 +2501,10 @@ export const encodings = (
                 </>
               }
               bitfields={[
+                bitfieldConstant([0]),
                 c64Tag(
                   "nice_hack",
-                  4,
+                  3,
                   <>
                     <R n="comcap_hack" />
                   </>,
@@ -2736,9 +2738,10 @@ export const encodings = (
                 </>
               }
               bitfields={[
+                bitfieldConstant([1]),
                 c64Tag(
                   "nice_hack",
-                  4,
+                  3,
                   <>
                     <R n="owncap_hack" />
                   </>,
