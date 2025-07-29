@@ -2931,23 +2931,9 @@ export const encodings = (
                     </AccessStruct>
                   </CodeFor>
                 </EncConditional>,
-                <EncConditional
-                  condition={
-                    <>
-                      the <R n="comcap_shared" /> in the encoding of{" "}
-                      <AccessStruct field="capability_inner">
-                        <ValAccess field="mcat_cap" />
-                      </AccessStruct>{" "}
-                      was not equal to the number of triplets in the{" "}
-                      <R n="communal_cap_delegations" /> of the{" "}
-                      <R n="AuthorisationToken" /> of <R n="mae_prior" />
-                    </>
-                  }
-                >
-                  <CodeFor notStandalone isFunction enc="encode_user_sig">
-                    <ValAccess field="mcat_sig" />
-                  </CodeFor>
-                </EncConditional>,
+                <CodeFor isFunction enc="encode_user_sig">
+                  <ValAccess field="mcat_sig" />
+                </CodeFor>,
               ]}
             />
           </Hsection>
