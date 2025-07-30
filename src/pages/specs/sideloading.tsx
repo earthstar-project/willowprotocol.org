@@ -18,6 +18,7 @@ import { PreviewScope } from "macromania-previews";
 import { DefVariant } from "macromania-rustic";
 import {
   bitfieldIff,
+  C64Encoding,
   c64Tag,
   CodeFor,
   EncConditional,
@@ -491,28 +492,8 @@ export const sideloading = (
                           <R n="sl_e" />
                         </AccessStruct>
                       </CodeFor>,
-                      <C64Standalone>
-                        <Code>
-                          abs(
-                          <AccessStruct field="entry_timestamp">
-                            <R n="sl_e" />
-                          </AccessStruct>{" "}
-                          -{" "}
-                          <AccessStruct field="entry_timestamp">
-                            <R n="sl_e">
-                              entry_<Curly>i-1</Curly>
-                            </R>
-                          </AccessStruct>
-                          )
-                        </Code>
-                      </C64Standalone>,
-                      <C64Standalone>
-                        <Code>
-                          <AccessStruct field="entry_payload_length">
-                            <R n="sl_e" />
-                          </AccessStruct>
-                        </Code>
-                      </C64Standalone>,
+                      <C64Encoding id="timediff" />,
+                      <C64Encoding id="payload_len" />,
                       <CodeFor enc="encode_payload_digest">
                         <Code>
                           <AccessStruct field="entry_payload_digest">

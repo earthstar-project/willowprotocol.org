@@ -3902,7 +3902,7 @@ export const encodings = (
                     </>
                   }
                 >
-                  <CodeFor enc="encode_user_pk" notStandalone>
+                  <CodeFor enc="encode_user_sig" notStandalone>
                     the final <R n="UserSignature" /> in{" "}
                     <ValAccess field="enumcap_delegations" />
                   </CodeFor>
