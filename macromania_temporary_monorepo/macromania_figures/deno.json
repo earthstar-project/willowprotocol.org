@@ -1,0 +1,21 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Deno",
+  
+    "imports": {
+      "macromaniajsx/jsx-dev-runtime": "./deps.ts",
+      "macromaniajsx/jsx-runtime": "./deps.ts",
+    },
+  
+    "compilerOptions": {
+      "jsx": "react-jsxdev",
+      "jsxImportSource": "macromaniajsx",
+      "lib": ["deno.ns", "dom"],
+      "strict": true
+    },
+
+    "tasks": {
+      "test": "cd test"
+    }
+  }
+  
