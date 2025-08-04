@@ -134,7 +134,7 @@ export const rust = (
             <R n="tut-store">Work with a Store</R>
           </Li>
           <Li>
-            <R n="tut-sidedrop">Create and ingest a sidedrop</R>
+            <R n="tut-drop">Create and ingest a sidedrop</R>
           </Li>
           <Li>
             <R n="tut-wgps">Sync two stores with the WGPS</R>
