@@ -118,7 +118,8 @@ export const tutorial_drop = (
       <Hsection title="Ingest the drop" n="tut-drop-3">
         <P>
           Finally, we'll create a new <R n="rs-willow_data_model-Store" />{" "}
-          and ingest the contents of the <R n="drop" /> into it.
+          and ingest the contents of the <R n="drop" /> into it using{" "}
+          <R n="rs-willow_25-ingest_drop" />.
         </P>
 
         <RustSample
