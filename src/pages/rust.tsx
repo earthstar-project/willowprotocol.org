@@ -14,6 +14,10 @@ const rustdocs_meadowcap = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/meadowcap.json"),
 );
 
+const rustdocs_sideload = JSON.parse(
+  await Deno.readTextFile("./rustdocs/source_json/willow_sideload.json"),
+);
+
 const rustdocs_willow_25 = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/willow_25.json"),
 );
@@ -44,6 +48,16 @@ export const rust = (
       <DefsRustDocs
         crate="meadowcap"
         json={rustdocs_meadowcap}
+        prefix="rs-"
+        typeClass="rustic type"
+        functionClass="rustic function"
+        interfaceClass="rustic interface"
+        depsCss={[{ dep: ["pseudocode.css"] }]}
+        cachingPath={["rustdocs", "cached_defs"]}
+      />
+      <DefsRustDocs
+        crate="willow_sideload"
+        json={rustdocs_sideload}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"
