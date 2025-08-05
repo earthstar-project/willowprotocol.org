@@ -123,11 +123,6 @@ export const rust = (
 
       <Hsection n="rs_tutorials" title="Tutorials">
         <P>
-          <Gwil>
-            It would be cool to have some time indications here. Even just
-            saying that you could do all the tutorials in x minutes would be
-            nice.
-          </Gwil>
           Learn everything you need to get started with these step-by-step
           tutorials.
         </P>
@@ -149,27 +144,6 @@ export const rust = (
           </Li>
           <Li>
             <R n="tut-drop">Create and ingest a sidedrop</R>
-          </Li>
-          <Li>
-            <R n="tut-wgps">Sync two stores with the WGPS</R>
-          </Li>
-        </Ul>
-      </Hsection>
-
-      <Hsection n="rs_guides" title="Guides">
-        <P>
-          If you're already familiar with our APIs, we've written some guides to
-          help you achieve some common tasks.
-        </P>
-        <Ul>
-          <Li>
-            <R n="guide-sidedrop">Create a drop and write it to disk</R>
-          </Li>
-          <Li>
-            <R n="guide-wgps">Configure a WGPS session</R>
-          </Li>
-          <Li>
-            <R n="guide-server">Run an always-online peer on a server</R>
           </Li>
         </Ul>
       </Hsection>
