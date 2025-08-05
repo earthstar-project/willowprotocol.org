@@ -7,7 +7,14 @@ import { TutorialTemplate } from "../tutorials.tsx";
 export const tutorial_drop = (
   <TutorialTemplate
     name="drop"
-    preamble={<P></P>}
+    preamble={
+      <P>
+        In this tutorial we will use <R n="rs-willow_25-create_drop" /> and{" "}
+        <R n="rs-willow_25-ingest_drop" /> to transport data between two{" "}
+        <R n="rs-willow_data_model-Store">Stores</R> via a{" "}
+        <R n="sideload_protocol" /> <R n="drop" />.
+      </P>
+    }
     deps={[
       "willow_25",
       "willow-store-simple-sled",
@@ -49,7 +56,7 @@ export const tutorial_drop = (
       <Hsection title="Create a drop" n="tut-drop-2">
         <P>
           Next, we'll create a <R n="drop" /> using{" "}
-          <R n="rs-willow_25-create_drop" /> and store its contents in a{" "}
+          <R n="rs-willow_25-create_drop" /> and store it in a{" "}
           <Code>{"Vec<u8>"}</Code>.
         </P>
 
@@ -118,7 +125,7 @@ export const tutorial_drop = (
       <Hsection title="Ingest the drop" n="tut-drop-3">
         <P>
           Finally, we'll create a new <R n="rs-willow_data_model-Store" />{" "}
-          and ingest the contents of the <R n="drop" /> into it using{" "}
+          and ingest the <R n="drop" /> into it using{" "}
           <R n="rs-willow_25-ingest_drop" />.
         </P>
 
@@ -188,8 +195,7 @@ export const tutorial_drop = (
         </P>
 
         <Li>
-          We instantiated a{" "}
-          <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
+          We created a <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
         </Li>
 
         <Li>
@@ -205,11 +211,10 @@ export const tutorial_drop = (
         </Li>
 
         <Li>
-          We instantiated another{" "}
+          We created another{" "}
           <R n="rs-willow_store_simple_sled-StoreSimpleSled" />, and used{" "}
           <R n="rs-willow_25-ingest_drop" />{" "}
-          to take the ingest the contents of the drop we'd just created into
-          that store.
+          to ingest the drop we'd just created into that store.
         </Li>
       </Hsection>
     </>

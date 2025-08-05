@@ -11,7 +11,7 @@ export const tutorial_store = (
     preamble={
       <P>
         In this tutorial we will instantiate a{" "}
-        <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
+        <R n="rs-willow_store_simple_sled-StoreSimpleSled" />{" "}
         and use it to store and retrieve an <R n="rs-willow_25-Entry" /> and its
         {" "}
         <R n="Payload" />.
@@ -329,8 +329,7 @@ export const tutorial_store = (
         </P>
         <Ul>
           <Li>
-            We instantiated a{" "}
-            <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
+            We created a <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
           </Li>
 
           <Li>
