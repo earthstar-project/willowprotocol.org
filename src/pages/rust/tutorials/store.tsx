@@ -323,8 +323,8 @@ export const tutorial_store = (
 
       <Hsection title="Summary" n="tut-store-summary">
         <P>
-          In this tutorial, we explored <R n="rs-willow_25-Store" />'s APIs via
-          {" "}
+          In this tutorial, we explored{" "}
+          <R n="rs-willow_data_model-Store" />'s APIs via{" "}
           <R n="rs-willow_store_simple_sled-StoreSimpleSled" />:
         </P>
         <Ul>
@@ -357,7 +357,7 @@ export const tutorial_store = (
 
         <P>
           We've now practiced everything we need to move on to the next
-          tutorial: <R n="tut-sidedrop">Create and ingest a sidedrop.</R>.
+          tutorial: <R n="tut-drop">Create and ingest a sidedrop.</R>.
         </P>
       </Hsection>
     </>
