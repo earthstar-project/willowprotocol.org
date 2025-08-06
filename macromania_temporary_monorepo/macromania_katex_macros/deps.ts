@@ -1,0 +1,1 @@
+export * from "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts";

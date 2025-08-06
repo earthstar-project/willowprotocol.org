@@ -1,0 +1,5 @@
+Instantiated the export store!
+We ingested the entry!
+We created the drop!
+We ingested the drop!
+TODO: NICE ENTRY PRINTING!
