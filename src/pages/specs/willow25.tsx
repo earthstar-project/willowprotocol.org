@@ -277,8 +277,8 @@ export const willow25 = (
             <P>
               The <R n="interest_hash_length" /> is 32. The <R n="sync_h" />
               {" "}
-              function operates by applying{" "}
-              <R n="william3" />to the concatenation of the following bytes:
+              function operates by applying <R n="william3" />{" "}
+              to the concatenation of the following bytes:
             </P>
 
             <Encoding

@@ -1135,8 +1135,10 @@ export const sync = (
                   <R n="ReconciliationTerminatePayload" /> message, and
                 </Li>
                 <Li>
-                  <R n="ReconciliationSendEntry" /> must only follow a{" "}
-                  <R n="ReconciliationSendEntry" /> message whose{" "}
+                  <R n="ReconciliationSendFingerprint" /> or{" "}
+                  <R n="ReconciliationAnnounceEntries" />{" "}
+                  messages must only follow a{" "}
+                  <R n="ReconciliationAnnounceEntries" /> message whose{" "}
                   <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
                   <Code>true</Code>, or a{" "}
                   <R n="ReconciliationTerminatePayload" />.
