@@ -135,7 +135,7 @@ export const willow25 = (
             The type <R n="AuthorisationToken" /> is{" "}
             <R n="MeadowcapAuthorisationToken" /> and the{" "}
             <R n="is_authorised_write" /> function is{" "}
-            <R n="meadowcap_is_authorised_write" />, witht eh{" "}
+            <R n="meadowcap_is_authorised_write" />, with the{" "}
             <R n="meadowcap" /> parameter instantiation described in the{" "}
             <R n="willow25_meadowcap">next section</R>.
           </P>

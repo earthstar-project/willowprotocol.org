@@ -1094,7 +1094,7 @@ export const sync = (
 
               <P>
                 Peers <Em>must</Em>{" "}
-                follow this cadence strictly, sending reconciliation-related
+                follow this cadence strictly; sending reconciliation-related
                 {" "}
                 <Sidenote
                   note={
@@ -1109,7 +1109,7 @@ export const sync = (
                 >
                   messages
                 </Sidenote>{" "}
-                places strict constrains on the next reconciliation-related
+                places strict constraints on the next reconciliation-related
                 messages
                 <Marginale>
                   All other kinds of messages remain unaffected and can be
@@ -1122,7 +1122,7 @@ export const sync = (
               <Ul>
                 <Li>
                   every <R n="ReconciliationAnnounceEntries" />{" "}
-                  must be followed by an <R n="ReconciliationSendEntry" />{" "}
+                  must be followed by a <R n="ReconciliationSendEntry" />{" "}
                   message if and only if its{" "}
                   <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
                   <Code>true</Code>,

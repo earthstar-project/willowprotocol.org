@@ -219,8 +219,8 @@ export const sideloading = (
                 <Code>
                   <R n="default_entry" />(<R n="sl_default_nsid" />,{" "}
                   <R n="sl_default_ssid" />,{" "}
-                  <R n="sl_default_payload_digest" />), and
-                </Code>
+                  <R n="sl_default_payload_digest" />)
+                </Code>, and
               </Li>
               <Li>
                 a function <DefFunction n="encrypt" />{" "}
@@ -332,27 +332,6 @@ export const sideloading = (
                     </>
                   }
                 >
-                  <Br />
-                  <CodeFor
-                    enc="SideloadingEncodeAuthorisationToken"
-                    notStandalone
-                    relativeTo={
-                      <>
-                        the pair of (<R n="sl_e">
-                          entry_<Curly>i-1</Curly>
-                        </R>,{" "}
-                        <R n="sl_a">
-                          auth_<Curly>i-1</Curly>
-                        </R>) and{" "}
-                        <R n="sl_e">
-                          entry_<Curly>i</Curly>
-                        </R>
-                      </>
-                    }
-                  >
-                    <R n="sl_a" />
-                  </CodeFor>
-                  , then
                   <Encoding
                     idPrefix="sl_enc_nested"
                     bitfields={[
@@ -404,7 +383,7 @@ export const sideloading = (
                                   entry_<Curly>i-1</Curly>
                                 </R>
                               </AccessStruct>
-                            </Code>, arbitrary if <Code>1</Code> if{" "}
+                            </Code>, arbitrary if{" "}
                             <Code>
                               <AccessStruct field="entry_timestamp">
                                 <R n="sl_e" />
@@ -500,6 +479,25 @@ export const sideloading = (
                             <R n="sl_e" />
                           </AccessStruct>
                         </Code>
+                      </CodeFor>,
+                      <CodeFor
+                        enc="SideloadingEncodeAuthorisationToken"
+                        notStandalone
+                        relativeTo={
+                          <>
+                            the pair of (<R n="sl_e">
+                              entry_<Curly>i-1</Curly>
+                            </R>,{" "}
+                            <R n="sl_a">
+                              auth_<Curly>i-1</Curly>
+                            </R>) and{" "}
+                            <R n="sl_e">
+                              entry_<Curly>i</Curly>
+                            </R>
+                          </>
+                        }
+                      >
+                        <R n="sl_a" />
                       </CodeFor>,
                       <EncConditional
                         condition={
