@@ -34,6 +34,7 @@ import { Pseudocode } from "macromania-pseudocode";
 import { Bib } from "macromania-bib/mod.tsx";
 import {
   bitfieldArbitrary,
+  bitfieldConditionalString,
   bitfieldConstant,
   bitfieldIff,
   C64Encoding,
@@ -1099,14 +1100,21 @@ export const sync = (
                 </R>{" "}
                 to synchronise the data of the peers. Our{" "}
                 <R n="ReconciliationSendFingerprint" />{" "}
-                messages serve to transmit <Rs n="D3RangeFingerprint" />.
+                messages serve to transmit{" "}
+                <Rs n="D3RangeFingerprint" />; they run on the dedicated{" "}
+                <R n="ReconciliationChannel" />{" "}
+                to help bounded-memory implementations of{" "}
+                <R n="d3_range_based_set_reconciliation">
+                  range-based set reconciliation
+                </R>{" "}
+                gauge how much buffer space is still available.
               </P>
 
               <P>
-                For <Rs n="D3RangeEntrySet" />{" "}
+                For <Rs n="D3RangeEntrySet" /> transmission{" "}
                 we need four different message type, in order to keep things
                 streaming, interleavable, and adaptable to store mutation that
-                happens concurrently to syncing:{" "}
+                happens concurrently to syncing.{" "}
                 <R n="ReconciliationAnnounceEntries" /> messages announce a{" "}
                 <R n="D3Range" /> whose <Rs n="Entry" />{" "}
                 will be transmitted. For each <R n="Entry" /> in the{" "}
@@ -1127,54 +1135,41 @@ export const sync = (
 
               <P>
                 Peers <Em>must</Em>{" "}
-                follow this cadence strictly; sending reconciliation-related
+                follow this cadence strictly; the message encodings make it
+                impossible not to do so. The four message types in question
+                (<R n="ReconciliationAnnounceEntries" />,{" "}
+                <R n="ReconciliationSendEntry" />,{" "}
+                <R n="ReconciliationSendPayload" />,
+                <R n="ReconciliationTerminatePayload" />) are all sent on the
                 {" "}
-                <Sidenote
-                  note={
-                    <>
-                      <R n="ReconciliationSendFingerprint" />,{" "}
-                      <R n="ReconciliationAnnounceEntries" />,{" "}
-                      <R n="ReconciliationSendEntry" />,{" "}
-                      <R n="ReconciliationSendPayload" />, and
-                      <R n="ReconciliationTerminatePayload" />.
-                    </>
-                  }
-                >
-                  messages
-                </Sidenote>{" "}
-                places strict constraints on the next reconciliation-related
-                messages
-                <Marginale>
-                  All other kinds of messages remain unaffected and can be
-                  freely interleaved, only the ordering of
-                  reconciliation-related messages relative to each other is
-                  restricted
-                </Marginale>{" "}
-                that may be sent:
+                <R n="DataChannel" />. Other messages of the{" "}
+                <R n="DataChannel" />{" "}
+                can be arbitrarily interleaved with the reconciliation messages,
+                but amongst each other they must follow the required pattern.
+                Precisely:
               </P>
               <Ul>
                 <Li>
-                  every <R n="ReconciliationAnnounceEntries" />{" "}
+                  a <R n="ReconciliationAnnounceEntries" />{" "}
                   must be followed by a <R n="ReconciliationSendEntry" />{" "}
                   message if and only if its{" "}
                   <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
                   <Code>true</Code>,
                 </Li>
                 <Li>
-                  every <R n="ReconciliationSendEntry" />{" "}
+                  a <R n="ReconciliationSendEntry" />{" "}
                   message must be followed by zero or more{" "}
                   <R n="ReconciliationSendPayload" />{" "}
                   messages, followed by exactly one{" "}
                   <R n="ReconciliationTerminatePayload" /> message, and
                 </Li>
                 <Li>
-                  <R n="ReconciliationSendFingerprint" /> or{" "}
-                  <R n="ReconciliationAnnounceEntries" />{" "}
+                  a <R n="ReconciliationAnnounceEntries" />{" "}
                   messages must only follow a{" "}
                   <R n="ReconciliationAnnounceEntries" /> message whose{" "}
                   <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
                   <Code>true</Code>, or a{" "}
-                  <R n="ReconciliationTerminatePayload" />.
+                  <R n="ReconciliationTerminatePayload" /> message.
                 </Li>
               </Ul>
 
@@ -1186,6 +1181,12 @@ export const sync = (
               </Figure>
 
               <P>
+                <Gwil>
+                  TODO: update diagram; see{" "}
+                  <AE href="https://github.com/earthstar-project/willowprotocol.org/issues/149">
+                    the issue
+                  </AE>.
+                </Gwil>
                 There is a second concern spanning multiple of the
                 reconciliation messages: peers should know when to proceed from
                 {" "}
@@ -1624,7 +1625,7 @@ export const sync = (
 
                 <P>
                   <Rb n="ReconciliationAnnounceEntries" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />.
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
 
@@ -1707,7 +1708,7 @@ export const sync = (
 
                 <P>
                   <Rb n="ReconciliationSendEntry" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />.
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
 
@@ -1798,7 +1799,7 @@ export const sync = (
 
                 <P>
                   <Rb n="ReconciliationSendPayload" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />.
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
 
@@ -1862,7 +1863,7 @@ export const sync = (
                 <P>
                   <Rb n="ReconciliationTerminatePayload" /> messages use the
                   {" "}
-                  <R n="ReconciliationChannel" />.
+                  <R n="DataChannel" />.
                 </P>
               </Hsection>
             </Hsection>
@@ -2802,7 +2803,7 @@ export const sync = (
                     </>
                   }
                   bitfields={[
-                    bitfieldConstant([0]),
+                    bitfieldConstant([0, 0]),
                     bitfieldIff(
                       <>
                         <ValAccess field="PioAnnounceOverlapEnumerationCapability" />
@@ -2812,7 +2813,7 @@ export const sync = (
                     ),
                     c64Tag(
                       "sender_handle",
-                      3,
+                      2,
                       <>
                         <ValAccess field="PioAnnounceOverlapSenderHandle" />
                       </>,
@@ -2841,6 +2842,7 @@ export const sync = (
                       }
                     >
                       <CodeFor
+                        notStandalone
                         enc="EncodeEnumerationCapability"
                         relativeTo={<R n="epao_pair" />}
                       >
@@ -2981,19 +2983,11 @@ export const sync = (
                   n="EncodeReconciliationSendFingerprint"
                   valType={<R n="ReconciliationSendFingerprint" />}
                   bitfields={[
-                    bitfieldConstant([0]),
-                    bitfieldIff(
-                      <>
-                        <AccessStruct field="RangeInfoIsFinal">
-                          <ValAccess field="ReconciliationSendFingerprintInfo" />
-                        </AccessStruct>
-                      </>,
-                    ),
                     c64Tag(
-                      "covers",
-                      2,
+                      "root",
+                      4,
                       <>
-                        <AccessStruct field="RangeInfoCovers">
+                        <AccessStruct field="RangeInfoRootId">
                           <ValAccess field="ReconciliationSendFingerprintInfo" />
                         </AccessStruct>
                       </>,
@@ -3018,7 +3012,7 @@ export const sync = (
                     ),
                   ]}
                   contents={[
-                    <C64Encoding id="covers" />,
+                    <C64Encoding id="root" />,
                     <C64Encoding id="sender_handle" />,
                     <C64Encoding id="receiver_handle" />,
                     <CodeFor
@@ -3126,8 +3120,7 @@ export const sync = (
                 <P>
                   <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationAnnounceEntries" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />, so they are transmitted via
-                  {" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
                 </P>
@@ -3220,9 +3213,9 @@ export const sync = (
                 />
 
                 <P>
+                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendEntry" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />, so they are transmitted via
-                  {" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
                 </P>
@@ -3255,9 +3248,9 @@ export const sync = (
                 />
 
                 <P>
+                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendPayload" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />, so they are transmitted via
-                  {" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
                 </P>
@@ -3282,9 +3275,9 @@ export const sync = (
                 />
 
                 <P>
+                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationTerminatePayload" /> messages use the{" "}
-                  <R n="ReconciliationChannel" />, so they are transmitted via
-                  {" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
                 </P>
@@ -3385,7 +3378,7 @@ export const sync = (
                   n="EncodeDataSetEagerness"
                   valType={<R n="DataSetEagerness" />}
                   bitfields={[
-                    bitfieldConstant([1, 0]),
+                    bitfieldConstant([0, 1]),
                     bitfieldIff(
                       <>
                         <ValAccess field="DataSetEagernessSetEager" /> is not
@@ -3529,16 +3522,39 @@ export const sync = (
                 n="EncodeResourceHandleFree"
                 valType={<R n="ResourceHandleFree" />}
                 bitfields={[
-                  bitfieldConstant([1, 1]),
-                  bitfieldIff(
-                    <>
-                      <Code>
-                        <ValAccess field="ResourceHandleFreeHandleType" /> ==
-                        {" "}
-                        <R n="OverlapHandle" />
-                      </Code>
-                    </>,
-                  ),
+                  bitfieldConstant([1]),
+                  bitfieldConditionalString([
+                    {
+                      bits: [0, 0],
+                      condition: (
+                        <Code>
+                          <ValAccess field="ResourceHandleFreeHandleType" /> ==
+                          {" "}
+                          <R n="OverlapHandle" />
+                        </Code>
+                      ),
+                    },
+                    {
+                      bits: [0, 1],
+                      condition: (
+                        <Code>
+                          <ValAccess field="ResourceHandleFreeHandleType" /> ==
+                          {" "}
+                          <R n="ReadCapabilityHandle" />
+                        </Code>
+                      ),
+                    },
+                    {
+                      bits: [0, 0],
+                      condition: (
+                        <Code>
+                          <ValAccess field="ResourceHandleFreeHandleType" /> ==
+                          {" "}
+                          <R n="PayloadRequestHandle" />
+                        </Code>
+                      ),
+                    },
+                  ]),
                   bitfieldIff(
                     <>
                       <Code>
@@ -3568,9 +3584,6 @@ export const sync = (
               />
 
               <P>
-                <Alj>
-                  TODO: I added another handle type, update encoding here.
-                </Alj>
                 <R n="ResourceHandleFree" /> messages are{" "}
                 <Rs n="global_message" />, so they are transmitted via{" "}
                 <Rs n="SendGlobalFrame" />.
