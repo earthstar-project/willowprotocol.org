@@ -1148,23 +1148,30 @@ export const sync = (
               <Figure>
                 <Img
                   src={<ResolveAsset asset={["sync", "message_flow.png"]} />}
-                  alt={`A contiguous range is recursively split into subranges. Some subranges are coloured blue to indicate matching fingerprints; these are not split further. The total picture is that of a thinning tree growing downwards, ending in the few areas that require actual data exchange.`}
+                  alt={`The states and transitions of a finite state machine describing the order in which reconciliation messages must be sent.`}
                 />
               </Figure>
 
               <P>
-                There is a second concern that spans multiple of the
+                There is a second concern spanning multiple of the
                 reconciliation messages: peers should know when to proceed from
                 {" "}
                 <R n="d3_range_based_set_reconciliation" /> to{" "}
                 <R n="sync_post_sync_forwarding">eager forwarding</R> of new
                 {" "}
-                <Rs n="Entry" />. Continuously tracking whether the responses
-                you received to a <R n="D3RangeFingerprint" />{" "}
-                have fully covered its <R n="D3RangeFingerprintRange" />{" "}
-                is computationally inconvenient, so we allow for a cooperative
-                approach instead: peers tell each other once they have fully
-                covered a <R n="D3RangeFingerprintRange" /> they reply to.
+                <Rs n="Entry" />. Roughly speaking, the WGPS supports this by
+                annotating <R n="ReconciliationSendFingerprint" /> and{" "}
+                <R n="ReconciliationAnnounceEntries" />{" "}
+                messages which an id for the original <Quotes>root</Quotes>{" "}
+                <R n="D3Range" />{" "}
+                which the two peers are actually syching. Peers can track a
+                counter per root <R n="D3Range" />, incrementing for{" "}
+                <R n="ReconciliationSendFingerprint" />{" "}
+                messages and decrementing for{" "}
+                <R n="ReconciliationAnnounceEntries" />. Once the counter
+                reaches zero, a peer knows that all <Rs n="Entry" /> in the root
+                {" "}
+                <R n="D3Range" /> have been synchronised.
               </P>
 
               <PreviewScope>
@@ -1172,20 +1179,22 @@ export const sync = (
                   To this end, we (implicitly) assign an id to certain messages
                   through the following mechanism: each peer tracks two numbers,
                   {" "}
-                  <DefValue n="my_range_counter" /> and{" "}
-                  <DefValue n="your_range_counter" />. Both are initialised to
+                  <DefValue n="alfies_range_counter" /> and{" "}
+                  <DefValue n="betties_range_counter" />, initialised to{" "}
+                  <M>1</M> and <M>2</M> respectively.{" "}
+                  <R n="ReconciliationAnnounceEntries" /> and{" "}
+                  <R n="ReconciliationSendFingerprint" />{" "}
+                  messages include an optional{" "}
+                  <R n="RangeInfoRootId" />. Setting that value to{" "}
+                  <R n="root_id_none" /> indicates that the message is a{" "}
+                  <Def n="root_message" r="root message" rs="root messages" />
                   {" "}
-                  <M post=".">1</M> Whenever a peer <Em>sends</Em> either a{" "}
-                  <R n="ReconciliationAnnounceEntries" /> message with{" "}
-                  <R n="ReconciliationAnnounceEntriesWantResponse" /> set to
+                  — this should be done when peers initiate reconciliation for a
                   {" "}
-                  <Code>true</Code> or a <R n="ReconciliationSendFingerprint" />
-                  {" "}
-                  message, it increments its{" "}
-                  <R n="my_range_counter" />. Whenever it <Em>receives</Em>{" "}
-                  such a message, it increments its{" "}
-                  <R n="your_range_counter" />. When a messages causes one of
-                  these values to be incremented, we call{" "}
+                  <R n="D3Range" />{" "}
+                  because they detected an overlap of interests, but not when
+                  they send a message in response to another reconciliation
+                  message.{" "}
                   <Sidenote
                     note={
                       <>
@@ -1193,35 +1202,44 @@ export const sync = (
                       </>
                     }
                   >
-                    the
+                    The
                   </Sidenote>{" "}
-                  value <Em>before</Em> incrementation the message's{" "}
-                  <DefValue n="range_count" />.
+                  <Def
+                    n="root_message_id"
+                    r="root message id"
+                    rs="root message ids"
+                  />{" "}
+                  of that message is the current value of{" "}
+                  <R n="alfies_range_counter" /> (if <R n="alfie" />{" "}
+                  sent the message) or of <R n="betties_range_counter" /> (if
+                  {" "}
+                  <R n="betty" />{" "}
+                  sent the message). After sending or receiving such a message
+                  and assigning the{" "}
+                  <R n="root_message_id" />, the corresponding range counter is
+                  increased by two.
                 </P>
 
                 <P>
-                  Whenever a peer receives a message of some{" "}
-                  <R n="range_count" />{" "}
-                  <DefValue n="recon_send_fp_count" r="count" />, it may recurse
-                  by producing a cover of smaller{" "}
-                  <Rs n="D3Range" />. For each subrange of that cover, it sends
-                  either a <R n="ReconciliationSendFingerprint" /> message or a
-                  {" "}
-                  <R n="ReconciliationAnnounceEntries" />{" "}
-                  message. Each of these response messages contains the{" "}
-                  <R n="recon_send_fp_count" />{" "}
-                  as a field. They also contain a flag which is set to{" "}
-                  <Code>true</Code>{" "}
-                  only on the final of these covering messages. With this
-                  information, peers can track relatively easily whether any
-                  given range has been fully reconciled yet or not.
+                  When a peer responds to a reconciliation message with one or
+                  more reciprocal reconciliation messages, these responses
+                  should set their <R n="RangeInfoRootId" /> to the{" "}
+                  <R n="root_message_id" />{" "}
+                  they pertain to. With this information, peers can track easily
+                  whether any root range has been fully reconciled yet or
+                  not.<Marginale>
+                    A malicious peer might set <R n="RangeInfoRootId" />{" "}
+                    fields to incorrect values. Implementations should ensure
+                    that the only impact of such malicious behavior is
+                    incomplete syncing with that particular peer.
+                  </Marginale>
                 </P>
               </PreviewScope>
 
               <P>
-                For ease of presentation, we bundle these and other fields that
-                are shared between <R n="ReconciliationSendFingerprint" /> and
-                {" "}
+                For ease of presentation, we bundle the{" "}
+                <R n="RangeInfoRootId" /> and other fields shared between{" "}
+                <R n="ReconciliationSendFingerprint" /> and{" "}
                 <R n="ReconciliationAnnounceEntries" /> messages into a struct:
               </P>
 
@@ -1243,41 +1261,24 @@ export const sync = (
                       commented: {
                         comment: (
                           <>
-                            The <R n="recon_send_fp_count" />{" "}
-                            of the message this message is responding to. If
-                            this message was not created in response to any
-                            other message, this field is <M post=".">0</M>
+                            Indicates the <R n="root_message_id" /> of the prior
+                            {" "}
+                            <R n="root_message" />{" "}
+                            this message refers to (when set to a{" "}
+                            <R n="U64" />), or indicates that this message{" "}
+                            <Em>is</Em> a fresh <R n="root_message" />{" "}
+                            itself (when set to{" "}
+                            <DefVariant n="root_id_none" r="none" />).
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
-                            "covers",
-                            "RangeInfoCovers",
-                            "covers",
+                            "root_id",
+                            "RangeInfoRootId",
+                            "root_ids",
                           ],
                           <R n="U64" />,
-                        ],
-                      },
-                    },
-                    {
-                      commented: {
-                        comment: (
-                          <>
-                            Whether this message is the final message sent in
-                            response to some other message. If this message is
-                            not sent as a response at all, this field is{" "}
-                            <Code>true</Code>.
-                          </>
-                        ),
-                        dedicatedLine: true,
-                        segment: [
-                          [
-                            "is_final",
-                            "RangeInfoIsFinal",
-                            "is_final",
-                          ],
-                          <R n="Bool" />,
                         ],
                       },
                     },
@@ -2703,6 +2704,7 @@ export const sync = (
                 />
 
                 <P>
+                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendFingerprint" /> messages use the{" "}
                   <R n="ReconciliationChannel" />, so they are transmitted via
                   {" "}
@@ -2790,6 +2792,7 @@ export const sync = (
                 />
 
                 <P>
+                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationAnnounceEntries" /> messages use the{" "}
                   <R n="ReconciliationChannel" />, so they are transmitted via
                   {" "}
