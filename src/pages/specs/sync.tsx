@@ -2202,19 +2202,19 @@ export const sync = (
               </P>
 
               <Hsection
-                n="sync_msg_PayloadRequestBind"
-                title={<Code>PayloadRequestBind</Code>}
+                n="sync_msg_PayloadRequestBindRequest"
+                title={<Code>PayloadRequestBindRequest</Code>}
                 noToc
               >
                 <P>
-                  The <R n="PayloadRequestBind" />{" "}
+                  The <R n="PayloadRequestBindRequest" />{" "}
                   messages let peers issue requests for specific (parts of){" "}
                   <Rs n="Payload" />, binding a <R n="PayloadRequestHandle" />
                   {" "}
                   in the process (which is used to map responses to requests).
                 </P>
 
-                <Pseudocode n="sync_defs_PayloadRequestBind">
+                <Pseudocode n="sync_defs_PayloadRequestBindRequest">
                   <StructDef
                     comment={
                       <>
@@ -2223,8 +2223,8 @@ export const sync = (
                       </>
                     }
                     id={[
-                      "PayloadRequestBind",
-                      "PayloadRequestBind",
+                      "PayloadRequestBindRequest",
+                      "PayloadRequestBindRequest",
                     ]}
                     fields={[
                       {
@@ -2240,7 +2240,7 @@ export const sync = (
                           segment: [
                             [
                               "namespace_id",
-                              "PayloadRequestBindNamespaceId",
+                              "PayloadRequestBindRequestNamespaceId",
                               "namespace_ids",
                             ],
                             <R n="NamespaceId" />,
@@ -2260,7 +2260,7 @@ export const sync = (
                           segment: [
                             [
                               "subspace_id",
-                              "PayloadRequestBindSubspaceId",
+                              "PayloadRequestBindRequestSubspaceId",
                               "subspace_ids",
                             ],
                             <R n="SubspaceId" />,
@@ -2280,7 +2280,7 @@ export const sync = (
                           segment: [
                             [
                               "path",
-                              "PayloadRequestBindPath",
+                              "PayloadRequestBindRequestPath",
                               "paths",
                             ],
                             <R n="Path" />,
@@ -2300,7 +2300,7 @@ export const sync = (
                           segment: [
                             [
                               "payload_digest",
-                              "PayloadRequestBindPayloadDigest",
+                              "PayloadRequestBindRequestPayloadDigest",
                               "payload_digests",
                             ],
                             <R n="PayloadDigest" />,
@@ -2316,16 +2316,18 @@ export const sync = (
                               <Em>sender</Em> of this message. The{" "}
                               <R n="granted_area" /> of the corresponding{" "}
                               <R n="read_capability" /> must contain the{" "}
-                              <R n="PayloadRequestBindNamespaceId" />,{" "}
-                              <R n="PayloadRequestBindSubespaceId" />, and{" "}
-                              <R n="PayloadRequestBindPath" />.
+                              <R n="PayloadRequestBindRequestNamespaceId" />,
+                              {" "}
+                              <R n="PayloadRequestBindRequestSubspaceId" />, and
+                              {" "}
+                              <R n="PayloadRequestBindRequestPath" />.
                             </>
                           ),
                           dedicatedLine: true,
                           segment: [
                             [
                               "sender_handle",
-                              "PayloadRequestBindNamespaceIdSenderHandle",
+                              "PayloadRequestBindRequestNamespaceIdSenderHandle",
                               "sender_handles",
                             ],
                             <R n="U64" />,
@@ -2341,16 +2343,18 @@ export const sync = (
                               <Em>receiver</Em> of this message. The{" "}
                               <R n="granted_area" /> of the corresponding{" "}
                               <R n="read_capability" /> must contain the{" "}
-                              <R n="PayloadRequestBindNamespaceId" />,{" "}
-                              <R n="PayloadRequestBindSubespaceId" />, and{" "}
-                              <R n="PayloadRequestBindPath" />.
+                              <R n="PayloadRequestBindRequestNamespaceId" />,
+                              {" "}
+                              <R n="PayloadRequestBindRequestSubspaceId" />, and
+                              {" "}
+                              <R n="PayloadRequestBindRequestPath" />.
                             </>
                           ),
                           dedicatedLine: true,
                           segment: [
                             [
                               "receiver_handle",
-                              "PayloadRequestBindNamespaceIdReceiverHandle",
+                              "PayloadRequestBindRequestNamespaceIdReceiverHandle",
                               "receiver_handles",
                             ],
                             <R n="U64" />,
@@ -2362,14 +2366,15 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  When receiving a <R n="PayloadRequestBind" />{" "}
+                  When receiving a <R n="PayloadRequestBindRequest" />{" "}
                   message, a peer must not reply with the corresponding{" "}
                   <R n="Payload" /> if the <R n="Entry" />’s{" "}
                   <R n="entry_timestamp" /> does not fall within both the{" "}
                   <R n="read_capability" /> corresponding to{" "}
-                  <R n="PayloadRequestBindNamespaceIdSenderHandle" />{" "}
+                  <R n="PayloadRequestBindRequestNamespaceIdSenderHandle" />
+                  {" "}
                   and that corresponding to{" "}
-                  <R n="PayloadRequestBindNamespaceIdReceiverHandle" />.
+                  <R n="PayloadRequestBindRequestNamespaceIdReceiverHandle" />.
                 </P>
 
                 <P>
@@ -2378,39 +2383,59 @@ export const sync = (
                     transformed chunks, not bytes); this will be part of Bab
                     grant work
                   </Alj>
-                  <Rb n="PayloadRequestBind" /> messages use the{" "}
+                  <Rb n="PayloadRequestBindRequest" /> messages use the{" "}
                   <R n="PayloadRequestChannel" />.
                 </P>
               </Hsection>
 
-              {
-                /* <Hsection
-                n="sync_msg_DataSendPayload"
-                title={<Code>DataSendPayload</Code>}
+              <Hsection
+                n="sync_msg_PayloadRequestSendResponse"
+                title={<Code>PayloadRequestSendResponse</Code>}
                 noToc
               >
                 <P>
-                  The <R n="DataSendPayload" />{" "}
+                  The <R n="PayloadRequestSendResponse" />{" "}
                   messages let peers transmit (successive parts of) the
                   concatenation of the <R n="transform_payload">transformed</R>
                   {" "}
-                  <Rs n="Payload" /> of the receiver’s{" "}
-                  <R n="data_current_entry" />.
+                  <Rs n="Payload" /> of{" "}
+                  <R n="PayloadRequestBindRequest">requested</R>{" "}
+                  <Rs n="Entry" />.
                 </P>
 
-                <Pseudocode n="sync_defs_DataSendPayload">
+                <Pseudocode n="sync_defs_PayloadRequestSendResponse">
                   <StructDef
                     comment={
                       <>
-                        Send some <Rs n="Chunk" /> of the receiver’s{" "}
-                        <R n="data_current_entry" />.
+                        Send some <Rs n="Chunk" /> of a{" "}
+                        <R n="PayloadRequestBindRequest">requested</R>{" "}
+                        <R n="Entry" />.
                       </>
                     }
                     id={[
-                      "DataSendPayload",
-                      "DataSendPayload",
+                      "PayloadRequestSendResponse",
+                      "PayloadRequestSendResponse",
                     ]}
                     fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="PayloadRequestHandle" />{" "}
+                              of the request this is responding to.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "handle",
+                              "PayloadRequestSendResponseHandle",
+                              "handle",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
                       {
                         commented: {
                           comment: (
@@ -2422,7 +2447,7 @@ export const sync = (
                           segment: [
                             [
                               "amount",
-                              "DataSendPayloadAmount",
+                              "PayloadRequestSendResponseAmount",
                               "amounts",
                             ],
                             <R n="U64" />,
@@ -2437,24 +2462,19 @@ export const sync = (
                               {" "}
                               <Rs n="Chunk" /> obtained by applying{" "}
                               <R n="transform_payload" /> to the{" "}
-                              <R n="Payload" /> of the receiver’s{" "}
-                              <R n="data_current_entry" />
-                              <R n="Entry" />, starting at the{" "}
-                              <R n="DataSendEntryOffset" /> of the corresponding
-                              {" "}
-                              <R n="DataSendEntry" /> message plus the number of
-                              {" "}
-                              <Rs n="Chunk" /> for the current <R n="Entry" />
-                              {" "}
+                              <R n="Payload" /> of the requested
+                              <R n="Entry" />, starting at the requested offset
+                              plus the number of <Rs n="Chunk" />{" "}
+                              for the same request{" "}
                               that were already transmitted by prior{" "}
-                              <R n="DataSendPayload" /> messages.
+                              <R n="PayloadRequestSendResponse" /> messages.
                             </>
                           ),
                           dedicatedLine: true,
                           segment: [
                             [
                               "bytes",
-                              "DataSendPayloadBytes",
+                              "PayloadRequestSendResponseBytes",
                               "bytes",
                             ],
                             <SliceType>
@@ -2468,11 +2488,10 @@ export const sync = (
                 </Pseudocode>
 
                 <P>
-                  <Rb n="DataSendPayload" /> messages use the{" "}
+                  <Rb n="PayloadRequestSendResponse" /> messages use the{" "}
                   <R n="DataChannel" />.
                 </P>
-              </Hsection> */
-              }
+              </Hsection>
             </Hsection>
 
             <Hsection n="sync_resource_handle" title="ResourceHandle">
@@ -3462,13 +3481,19 @@ export const sync = (
                 </P>
               </Hsection>
 
-              {
-                /* <Hsection
-                n="sync_msg_enc_DataSendPayload"
-                title="DataSendPayload"
+              <Hsection
+                n="sync_msg_enc_PayloadRequestSendResponse"
+                title="PayloadRequestSendResponse"
                 noToc
               >
-                <EncodingRelationTemplate
+                <P>
+                  <Alj inline>
+                    TODO: Get this encoding out of my head and into the spec.
+                  </Alj>
+                </P>
+
+                {
+                  /* <EncodingRelationTemplate
                   n="EncodeDataSendPayload"
                   valType={<R n="DataSendPayload" />}
                   bitfields={[
@@ -3487,16 +3512,16 @@ export const sync = (
                       <ValAccess field="DataSendPayloadBytes" />
                     </RawBytes>,
                   ]}
-                />
+                /> */
+                }
 
                 <P>
-                  <R n="DataSendPayload" /> messages use the{" "}
+                  <R n="PayloadRequestSendResponse" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
                 </P>
-              </Hsection> */
-              }
+              </Hsection>
             </Hsection>
 
             <Hsection n="sync_encode_handle" title="ResourceHandle">
