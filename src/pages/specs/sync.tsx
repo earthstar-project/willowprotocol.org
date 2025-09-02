@@ -3415,10 +3415,10 @@ export const sync = (
               </Hsection>
             </Hsection>
 
-            <Hsection n="sync_encode_request_payload" title="RequestPayload">
+            <Hsection n="sync_encode_request_payload" title="PayloadRequest">
               <Hsection
-                n="sync_msg_enc_RequestPayloadBind"
-                title="RequestPayloadBind"
+                n="sync_msg_enc_PayloadRequestBindRequest"
+                title="PayloadRequestBindRequest"
                 noToc
               >
                 <P>
@@ -3466,8 +3466,8 @@ export const sync = (
                 }
 
                 <P>
-                  <R n="RequestPayloadBind" /> messages use the{" "}
-                  <R n="RequestPayloadChannel" />, so they are transmitted via
+                  <R n="PayloadRequestBindRequest" /> messages use the{" "}
+                  <R n="PayloadRequestChannel" />, so they are transmitted via
                   {" "}
                   <Rs n="SendChannelFrame" /> with{" "}
                   <R n="SendChannelFrameChannel" /> set to <M post=".">4</M>
