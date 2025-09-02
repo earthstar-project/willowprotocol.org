@@ -508,6 +508,22 @@ export const sync = (
                     </>
                   ),
                 },
+                {
+                  tuple: true,
+                  id: [
+                    "PayloadRequestHandle",
+                    "PayloadRequestHandle",
+                    "PayloadRequestHandles",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="resource_handle" />{" "}
+                      for explicitly requesting (parts of) <Rs n="Payload" />
+                      {" "}
+                      beyond what is exchanged automatically.
+                    </>
+                  ),
+                },
               ]}
             />
           </Pseudocode>
@@ -595,6 +611,23 @@ export const sync = (
                       <Rs n="ReadCapabilityHandle" />.{" "}
                       <R n="SendChannelFrameChannel">Channel id</R>:{" "}
                       <M post=".">3</M>
+                    </>
+                  ),
+                },
+                {
+                  tuple: true,
+                  id: [
+                    "PayloadRequestChannel",
+                    "PayloadRequestChannel",
+                    "PayloadRequestChannels",
+                  ],
+                  comment: (
+                    <>
+                      <Rb n="logical_channel" /> for controlling the{" "}
+                      <R n="handle_bind">binding</R> of new{" "}
+                      <Rs n="PayloadRequestHandle" />.{" "}
+                      <R n="SendChannelFrameChannel">Channel id</R>:{" "}
+                      <M post=".">4</M>
                     </>
                   ),
                 },
@@ -2162,6 +2195,286 @@ export const sync = (
               </Hsection>
             </Hsection>
 
+            <Hsection n="sync_payload_request" title="PayloadRequest">
+              <P>
+                The following messages allow peers to explicitly request{" "}
+                <Rs n="Payload" />, and to reply to such requests.
+              </P>
+
+              <Hsection
+                n="sync_msg_PayloadRequestBind"
+                title={<Code>PayloadRequestBind</Code>}
+                noToc
+              >
+                <P>
+                  The <R n="PayloadRequestBind" />{" "}
+                  messages let peers issue requests for specific (parts of){" "}
+                  <Rs n="Payload" />, binding a <R n="PayloadRequestHandle" />
+                  {" "}
+                  in the process (which is used to map responses to requests).
+                </P>
+
+                <Pseudocode n="sync_defs_PayloadRequestBind">
+                  <StructDef
+                    comment={
+                      <>
+                        <Rb n="handle_bind" /> a request for (parts of) a{" "}
+                        <R n="Payload" />.
+                      </>
+                    }
+                    id={[
+                      "PayloadRequestBind",
+                      "PayloadRequestBind",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="entry_namespace_id" /> of the{" "}
+                              <R n="Entry" /> whose <R n="Payload" />{" "}
+                              to request.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "namespace_id",
+                              "PayloadRequestBindNamespaceId",
+                              "namespace_ids",
+                            ],
+                            <R n="NamespaceId" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="entry_subspace_id" /> of the{" "}
+                              <R n="Entry" /> whose <R n="Payload" />{" "}
+                              to request.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "subspace_id",
+                              "PayloadRequestBindSubspaceId",
+                              "subspace_ids",
+                            ],
+                            <R n="SubspaceId" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="entry_path" /> of the <R n="Entry" />
+                              {" "}
+                              whose <R n="Payload" /> to request.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "path",
+                              "PayloadRequestBindPath",
+                              "paths",
+                            ],
+                            <R n="Path" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The <R n="entry_payload_digest" /> of the{" "}
+                              <R n="Entry" /> whose <R n="Payload" />{" "}
+                              to request.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "payload_digest",
+                              "PayloadRequestBindPayloadDigest",
+                              "payload_digests",
+                            ],
+                            <R n="PayloadDigest" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>sender</Em> of this message. The{" "}
+                              <R n="granted_area" /> of the corresponding{" "}
+                              <R n="read_capability" /> must contain the{" "}
+                              <R n="PayloadRequestBindNamespaceId" />,{" "}
+                              <R n="PayloadRequestBindSubespaceId" />, and{" "}
+                              <R n="PayloadRequestBindPath" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "sender_handle",
+                              "PayloadRequestBindNamespaceIdSenderHandle",
+                              "sender_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              A <R n="ReadCapabilityHandle" />{" "}
+                              <R n="handle_bind">bound</R> by the{" "}
+                              <Em>receiver</Em> of this message. The{" "}
+                              <R n="granted_area" /> of the corresponding{" "}
+                              <R n="read_capability" /> must contain the{" "}
+                              <R n="PayloadRequestBindNamespaceId" />,{" "}
+                              <R n="PayloadRequestBindSubespaceId" />, and{" "}
+                              <R n="PayloadRequestBindPath" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "receiver_handle",
+                              "PayloadRequestBindNamespaceIdReceiverHandle",
+                              "receiver_handles",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  When receiving a <R n="PayloadRequestBind" />{" "}
+                  message, a peer must not reply with the corresponding{" "}
+                  <R n="Payload" /> if the <R n="Entry" />’s{" "}
+                  <R n="entry_timestamp" /> does not fall within both the{" "}
+                  <R n="read_capability" /> corresponding to{" "}
+                  <R n="PayloadRequestBindNamespaceIdSenderHandle" />{" "}
+                  and that corresponding to{" "}
+                  <R n="PayloadRequestBindNamespaceIdReceiverHandle" />.
+                </P>
+
+                <P>
+                  <Alj>
+                    TODO: add ability to query for arbitrary slices (indexed in
+                    transformed chunks, not bytes); this will be part of Bab
+                    grant work
+                  </Alj>
+                  <Rb n="PayloadRequestBind" /> messages use the{" "}
+                  <R n="PayloadRequestChannel" />.
+                </P>
+              </Hsection>
+
+              {
+                /* <Hsection
+                n="sync_msg_DataSendPayload"
+                title={<Code>DataSendPayload</Code>}
+                noToc
+              >
+                <P>
+                  The <R n="DataSendPayload" />{" "}
+                  messages let peers transmit (successive parts of) the
+                  concatenation of the <R n="transform_payload">transformed</R>
+                  {" "}
+                  <Rs n="Payload" /> of the receiver’s{" "}
+                  <R n="data_current_entry" />.
+                </P>
+
+                <Pseudocode n="sync_defs_DataSendPayload">
+                  <StructDef
+                    comment={
+                      <>
+                        Send some <Rs n="Chunk" /> of the receiver’s{" "}
+                        <R n="data_current_entry" />.
+                      </>
+                    }
+                    id={[
+                      "DataSendPayload",
+                      "DataSendPayload",
+                    ]}
+                    fields={[
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The number of transmitted <Rs n="Chunk" />.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "amount",
+                              "DataSendPayloadAmount",
+                              "amounts",
+                            ],
+                            <R n="U64" />,
+                          ],
+                        },
+                      },
+                      {
+                        commented: {
+                          comment: (
+                            <>
+                              The bytes to transmit, the concatenation of the
+                              {" "}
+                              <Rs n="Chunk" /> obtained by applying{" "}
+                              <R n="transform_payload" /> to the{" "}
+                              <R n="Payload" /> of the receiver’s{" "}
+                              <R n="data_current_entry" />
+                              <R n="Entry" />, starting at the{" "}
+                              <R n="DataSendEntryOffset" /> of the corresponding
+                              {" "}
+                              <R n="DataSendEntry" /> message plus the number of
+                              {" "}
+                              <Rs n="Chunk" /> for the current <R n="Entry" />
+                              {" "}
+                              that were already transmitted by prior{" "}
+                              <R n="DataSendPayload" /> messages.
+                            </>
+                          ),
+                          dedicatedLine: true,
+                          segment: [
+                            [
+                              "bytes",
+                              "DataSendPayloadBytes",
+                              "bytes",
+                            ],
+                            <SliceType>
+                              <R n="U8" />
+                            </SliceType>,
+                          ],
+                        },
+                      },
+                    ]}
+                  />
+                </Pseudocode>
+
+                <P>
+                  <Rb n="DataSendPayload" /> messages use the{" "}
+                  <R n="DataChannel" />.
+                </P>
+              </Hsection> */
+              }
+            </Hsection>
+
             <Hsection n="sync_resource_handle" title="ResourceHandle">
               <P>
                 The <R n="ResourceHandleFree" />{" "}
@@ -3090,6 +3403,102 @@ export const sync = (
               </Hsection>
             </Hsection>
 
+            <Hsection n="sync_encode_request_payload" title="RequestPayload">
+              <Hsection
+                n="sync_msg_enc_RequestPayloadBind"
+                title="RequestPayloadBind"
+                noToc
+              >
+                <P>
+                  <Alj inline>
+                    TODO: Get this encoding out of my head and into the spec.
+                  </Alj>
+                </P>
+                {
+                  /* <EncodingRelationTemplate
+                  n="EncodeDataSendEntry"
+                  valType={<R n="DataSendEntry" />}
+                  bitfields={[
+                    bitfieldConstant([0]),
+                    c64Tag(
+                      "offset",
+                      7,
+                      <>
+                        <ValAccess field="DataSendEntryOffset" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="offset" />,
+                    <CodeFor
+                      enc="EncodeEntryRelativeEntry"
+                      relativeTo={<R n="data_current_entry" />}
+                    >
+                      the <R n="Entry" /> of{" "}
+                      <ValAccess field="DataSendEntryEntry" />
+                    </CodeFor>,
+                    <CodeFor
+                      enc="EncodeAuthorisationToken"
+                      relativeTo={
+                        <>
+                          <R n="data_current_entry" /> and{" "}
+                          <ValAccess field="DataSendEntryEntry" />
+                        </>
+                      }
+                    >
+                      the <R n="AuthorisationToken" /> of{" "}
+                      <ValAccess field="DataSendEntryEntry" />
+                    </CodeFor>,
+                  ]}
+                /> */
+                }
+
+                <P>
+                  <R n="RequestPayloadBind" /> messages use the{" "}
+                  <R n="RequestPayloadChannel" />, so they are transmitted via
+                  {" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">4</M>
+                </P>
+              </Hsection>
+
+              {
+                /* <Hsection
+                n="sync_msg_enc_DataSendPayload"
+                title="DataSendPayload"
+                noToc
+              >
+                <EncodingRelationTemplate
+                  n="EncodeDataSendPayload"
+                  valType={<R n="DataSendPayload" />}
+                  bitfields={[
+                    bitfieldConstant([1]),
+                    c64Tag(
+                      "amount",
+                      7,
+                      <>
+                        <ValAccess field="DataSendPayloadAmount" />
+                      </>,
+                    ),
+                  ]}
+                  contents={[
+                    <C64Encoding id="amount" />,
+                    <RawBytes>
+                      <ValAccess field="DataSendPayloadBytes" />
+                    </RawBytes>,
+                  ]}
+                />
+
+                <P>
+                  <R n="DataSendPayload" /> messages use the{" "}
+                  <R n="DataChannel" />, so they are transmitted via{" "}
+                  <Rs n="SendChannelFrame" /> with{" "}
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
+                </P>
+              </Hsection> */
+              }
+            </Hsection>
+
             <Hsection n="sync_encode_handle" title="ResourceHandle">
               <EncodingRelationTemplate
                 n="EncodeResourceHandleFree"
@@ -3134,6 +3543,9 @@ export const sync = (
               />
 
               <P>
+                <Alj>
+                  TODO: I added another handle type, update encoding here.
+                </Alj>
                 <R n="ResourceHandleFree" /> messages are{" "}
                 <Rs n="global_message" />, so they are transmitted via{" "}
                 <Rs n="SendGlobalFrame" />.
