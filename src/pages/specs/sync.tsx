@@ -1125,68 +1125,18 @@ export const sync = (
                 <R n="ReconciliationSendPayload" />{" "}
                 messages to transmit consecutive chunks of the payload, and
                 terminated by exactly one{" "}
-                <R n="ReconciliationTerminatePayload" />{" "}
-                message. Peers neither preannounce how many <Rs n="Entry" />
-                {" "}
-                they will send in each <R n="D3Range" />, nor how many{" "}
-                <R n="Payload" /> bytes they will transmit in total per{" "}
-                <R n="Entry" />.
+                <R n="ReconciliationTerminatePayload" /> message for the{" "}
+                <R n="Entry" />. Peers neither preannounce<Marginale>
+                  This is a feature; otherwise syncing concurrently to data
+                  insertion (possibly from other sync sessions) would be a
+                  nightmare to implement.
+                </Marginale>{" "}
+                how many <Rs n="Entry" /> they will send in each{" "}
+                <R n="D3Range" />, nor how many <R n="Payload" />{" "}
+                bytes they will transmit in total per <R n="Entry" />.
               </P>
 
               <P>
-                Peers <Em>must</Em>{" "}
-                follow this cadence strictly; the message encodings make it
-                impossible not to do so. The four message types in question
-                (<R n="ReconciliationAnnounceEntries" />,{" "}
-                <R n="ReconciliationSendEntry" />,{" "}
-                <R n="ReconciliationSendPayload" />,
-                <R n="ReconciliationTerminatePayload" />) are all sent on the
-                {" "}
-                <R n="DataChannel" />. Other messages of the{" "}
-                <R n="DataChannel" />{" "}
-                can be arbitrarily interleaved with the reconciliation messages,
-                but amongst each other they must follow the required pattern.
-                Precisely:
-              </P>
-              <Ul>
-                <Li>
-                  a <R n="ReconciliationAnnounceEntries" />{" "}
-                  must be followed by a <R n="ReconciliationSendEntry" />{" "}
-                  message if and only if its{" "}
-                  <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
-                  <Code>true</Code>,
-                </Li>
-                <Li>
-                  a <R n="ReconciliationSendEntry" />{" "}
-                  message must be followed by zero or more{" "}
-                  <R n="ReconciliationSendPayload" />{" "}
-                  messages, followed by exactly one{" "}
-                  <R n="ReconciliationTerminatePayload" /> message, and
-                </Li>
-                <Li>
-                  a <R n="ReconciliationAnnounceEntries" />{" "}
-                  messages must only follow a{" "}
-                  <R n="ReconciliationAnnounceEntries" /> message whose{" "}
-                  <R n="ReconciliationAnnounceEntriesIsEmpty" /> flag is{" "}
-                  <Code>true</Code>, or a{" "}
-                  <R n="ReconciliationTerminatePayload" /> message.
-                </Li>
-              </Ul>
-
-              <Figure>
-                <Img
-                  src={<ResolveAsset asset={["sync", "message_flow.png"]} />}
-                  alt={`The states and transitions of a finite state machine describing the order in which reconciliation messages must be sent.`}
-                />
-              </Figure>
-
-              <P>
-                <Gwil>
-                  TODO: update diagram; see{" "}
-                  <AE href="https://github.com/earthstar-project/willowprotocol.org/issues/149">
-                    the issue
-                  </AE>.
-                </Gwil>
                 There is a second concern spanning multiple of the
                 reconciliation messages: peers should know when to proceed from
                 {" "}
@@ -3418,7 +3368,8 @@ export const sync = (
               >
                 <P>
                   <Alj inline>
-                    TODO: Get this encoding out of my head and into the spec.
+                    TODO: Finalise this message type before defining its
+                    encoding.
                   </Alj>
                 </P>
                 {
