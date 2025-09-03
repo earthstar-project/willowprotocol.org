@@ -1298,7 +1298,7 @@ export const sync = (
                             Indicates the <R n="root_message_id" /> of the prior
                             {" "}
                             <R n="root_message" />{" "}
-                            this message refers to (when set to a{" "}
+                            this message refers to (when set to a non-zero{" "}
                             <R n="U64" />), or indicates that this message{" "}
                             <Em>is</Em> a fresh <R n="root_message" />{" "}
                             itself (when set to{" "}
@@ -1312,7 +1312,9 @@ export const sync = (
                             "RangeInfoRootId",
                             "root_ids",
                           ],
-                          <R n="U64" />,
+                          <ChoiceType
+                            types={[<R n="U64" />, <R n="root_id_none" />]}
+                          />,
                         ],
                       },
                     },
@@ -1838,11 +1840,11 @@ export const sync = (
                         commented: {
                           comment: (
                             <>
-                              Set to <Code>true</Code> if and only if no further
-                              {" "}
+                              Setting this to <Code>true</Code>{" "}
+                              indicates that no further{" "}
                               <R n="ReconciliationSendEntry" />{" "}
                               message will be sent as part of reconciling the
-                              current <R n="D3Range" />.
+                              current <R n="D3Range" />. This
                             </>
                           ),
                           dedicatedLine: true,
@@ -2979,6 +2981,12 @@ export const sync = (
                 title="ReconciliationSendFingerprint"
                 noToc
               >
+                <P>
+                  In the following, a <R n="RangeInfoRootId" /> of{" "}
+                  <R n="root_id_none" /> is encoded as if it was the{" "}
+                  <R n="U64" /> <Code>0</Code>.
+                </P>
+
                 <EncodingRelationTemplate
                   n="EncodeReconciliationSendFingerprint"
                   valType={<R n="ReconciliationSendFingerprint" />}
@@ -3030,7 +3038,6 @@ export const sync = (
                 />
 
                 <P>
-                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendFingerprint" /> messages use the{" "}
                   <R n="ReconciliationChannel" />, so they are transmitted via
                   {" "}
@@ -3044,23 +3051,17 @@ export const sync = (
                 title="ReconciliationAnnounceEntries"
                 noToc
               >
+                <P>
+                  In the following, a <R n="RangeInfoRootId" /> of{" "}
+                  <R n="root_id_none" /> is encoded as if it was the{" "}
+                  <R n="U64" /> <Code>0</Code>.
+                </P>
+
                 <EncodingRelationTemplate
                   n="EncodeReconciliationReconciliationAnnounceEntries"
                   valType={<R n="ReconciliationAnnounceEntries" />}
                   bitfields={[
-                    bitfieldConstant([1]),
-                    bitfieldIff(
-                      <>
-                        <AccessStruct field="RangeInfoIsFinal">
-                          <ValAccess field="ReconciliationAnnounceEntriesInfo" />
-                        </AccessStruct>
-                      </>,
-                    ),
-                    bitfieldIff(
-                      <>
-                        <ValAccess field="ReconciliationAnnounceEntriesIsEmpty" />
-                      </>,
-                    ),
+                    bitfieldConstant([0, 0, 0]),
                     bitfieldIff(
                       <>
                         <ValAccess field="ReconciliationAnnounceEntriesWantResponse" />
@@ -3072,10 +3073,10 @@ export const sync = (
                       </>,
                     ),
                     c64Tag(
-                      "covers",
+                      "root",
                       3,
                       <>
-                        <AccessStruct field="RangeInfoCovers">
+                        <AccessStruct field="RangeInfoRootId">
                           <ValAccess field="ReconciliationAnnounceEntriesInfo" />
                         </AccessStruct>
                       </>,
@@ -3100,7 +3101,7 @@ export const sync = (
                     ),
                   ]}
                   contents={[
-                    <C64Encoding id="covers" />,
+                    <C64Encoding id="root" />,
                     <C64Encoding id="sender_handle" />,
                     <C64Encoding id="receiver_handle" />,
                     <CodeFor
@@ -3118,11 +3119,10 @@ export const sync = (
                 />
 
                 <P>
-                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationAnnounceEntries" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
-                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
                 </P>
               </Hsection>
 
@@ -3147,11 +3147,11 @@ export const sync = (
                     </>
                   }
                   bitfields={[
-                    bitfieldConstant([0]),
+                    bitfieldConstant([0, 0, 1]),
                     bitfieldIff(<R n="erse_mode" />),
                     c64Tag(
                       "offset",
-                      6,
+                      4,
                       <>
                         <ValAccess field="ReconciliationSendEntryOffset" />
                       </>,
@@ -3213,11 +3213,10 @@ export const sync = (
                 />
 
                 <P>
-                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendEntry" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
-                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
                 </P>
               </Hsection>
 
@@ -3230,10 +3229,10 @@ export const sync = (
                   n="EncodeReconciliationSendPayload"
                   valType={<R n="ReconciliationSendPayload" />}
                   bitfields={[
-                    bitfieldConstant([0]),
+                    bitfieldConstant([0, 1, 0]),
                     c64Tag(
                       "amount",
-                      7,
+                      5,
                       <>
                         <ValAccess field="ReconciliationSendPayloadAmount" />
                       </>,
@@ -3248,11 +3247,10 @@ export const sync = (
                 />
 
                 <P>
-                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationSendPayload" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
-                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
                 </P>
               </Hsection>
 
@@ -3265,21 +3263,20 @@ export const sync = (
                   n="EncodeReconciliationTerminatePayload"
                   valType={<R n="ReconciliationTerminatePayload" />}
                   bitfields={[
-                    bitfieldConstant([1]),
+                    bitfieldConstant([0, 1, 1]),
                     bitfieldIff(
                       <ValAccess field="ReconciliationTerminatePayloadFinal" />,
                     ),
-                    bitfieldArbitrary(6),
+                    bitfieldArbitrary(4),
                   ]}
                   contents={[]}
                 />
 
                 <P>
-                  <Alj>TODO update encoding</Alj>
                   <R n="ReconciliationTerminatePayload" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
                   <Rs n="SendChannelFrame" /> with{" "}
-                  <R n="SendChannelFrameChannel" /> set to <M post=".">0</M>
+                  <R n="SendChannelFrameChannel" /> set to <M post=".">1</M>
                 </P>
               </Hsection>
             </Hsection>
@@ -3294,10 +3291,10 @@ export const sync = (
                   n="EncodeDataSendEntry"
                   valType={<R n="DataSendEntry" />}
                   bitfields={[
-                    bitfieldConstant([0]),
+                    bitfieldConstant([1, 0, 0]),
                     c64Tag(
                       "offset",
-                      7,
+                      5,
                       <>
                         <ValAccess field="DataSendEntryOffset" />
                       </>,
@@ -3344,10 +3341,10 @@ export const sync = (
                   n="EncodeDataSendPayload"
                   valType={<R n="DataSendPayload" />}
                   bitfields={[
-                    bitfieldConstant([1]),
+                    bitfieldConstant([1, 0, 1]),
                     c64Tag(
                       "amount",
-                      7,
+                      5,
                       <>
                         <ValAccess field="DataSendPayloadAmount" />
                       </>,
@@ -3381,9 +3378,7 @@ export const sync = (
                     bitfieldConstant([0, 1]),
                     bitfieldIff(
                       <>
-                        <ValAccess field="DataSetEagernessSetEager" /> is not
-                        {" "}
-                        <R n="enum_cap_none" />
+                        <ValAccess field="DataSetEagernessSetEager" />
                       </>,
                     ),
                     c64Tag(
@@ -3479,35 +3474,32 @@ export const sync = (
                 title="PayloadRequestSendResponse"
                 noToc
               >
-                <P>
-                  <Alj inline>
-                    TODO: Get this encoding out of my head and into the spec.
-                  </Alj>
-                </P>
-
-                {
-                  /* <EncodingRelationTemplate
-                  n="EncodeDataSendPayload"
+                <EncodingRelationTemplate
+                  n="EncodePayloadRequestSendResponse"
                   valType={<R n="DataSendPayload" />}
                   bitfields={[
-                    bitfieldConstant([1]),
+                    bitfieldConstant([1, 1]),
+                    c64Tag(
+                      "handle",
+                      2,
+                      <ValAccess field="PayloadRequestSendResponseHandle" />,
+                    ),
                     c64Tag(
                       "amount",
-                      7,
+                      4,
                       <>
-                        <ValAccess field="DataSendPayloadAmount" />
+                        <ValAccess field="PayloadRequestSendResponseAmount" />
                       </>,
                     ),
                   ]}
                   contents={[
+                    <C64Encoding id="handle" />,
                     <C64Encoding id="amount" />,
                     <RawBytes>
-                      <ValAccess field="DataSendPayloadBytes" />
+                      <ValAccess field="PayloadRequestSendResponseBytes" />
                     </RawBytes>,
                   ]}
-                /> */
-                }
-
+                />
                 <P>
                   <R n="PayloadRequestSendResponse" /> messages use the{" "}
                   <R n="DataChannel" />, so they are transmitted via{" "}
