@@ -2910,17 +2910,21 @@ export const sync = (
               <PreviewScope>
                 <P>
                   To efficiently encode{" "}
-                  <Rs n="D3Range" />, each peer maintains a piece of state, a
+                  <Rs n="D3Range" />, each peer maintains two pieces of state, a
                   {" "}
                   <R n="D3Range" /> called its{" "}
-                  <DefValue n="previously_received_3drange" />. It is
+                  <DefValue n="previously_received_fingerprint_3drange" />, and
+                  a <R n="D3Range" /> called its{" "}
+                  <DefValue n="previously_received_itemset_3drange" />. Both are
                   initialised to{"   "}
                   <Code>
                     <R n="default_3d_range" />(<R n="sync_default_subspace_id" />)
                   </Code>. Upon receiving a{" "}
                   <R n="ReconciliationSendFingerprint" /> or{" "}
                   <R n="ReconciliationAnnounceEntries" />{" "}
-                  message, a peer sets its <R n="previously_received_3drange" />
+                  message, a peer sets its{" "}
+                  <R n="previously_received_fingerprint_3drange" /> or{" "}
+                  <R n="previously_received_itemset_3drange" /> respectively
                   {" "}
                   to the message’s <R n="D3Range" />.
                 </P>
@@ -2975,7 +2979,9 @@ export const sync = (
                     <C64Encoding id="receiver_handle" />,
                     <CodeFor
                       enc="Encode3dRangeRelative3dRange"
-                      relativeTo={<R n="previously_received_3drange" />}
+                      relativeTo={
+                        <R n="previously_received_fingerprint_3drange" />
+                      }
                     >
                       <AccessStruct field="RangeInfoRange">
                         <ValAccess field="ReconciliationSendFingerprintInfo" />
@@ -3056,7 +3062,7 @@ export const sync = (
                     <C64Encoding id="receiver_handle" />,
                     <CodeFor
                       enc="Encode3dRangeRelative3dRange"
-                      relativeTo={<R n="previously_received_3drange" />}
+                      relativeTo={<R n="previously_received_itemset_3drange" />}
                     >
                       <AccessStruct field="RangeInfoRange">
                         <ValAccess field="ReconciliationSendFingerprintInfo" />
@@ -3123,9 +3129,9 @@ export const sync = (
                             relativeTo={
                               <>
                                 the pair of{" "}
-                                <R n="previously_received_3drange" /> and the
+                                <R n="previously_received_itemset_3drange" />
                                 {" "}
-                                <R n="granted_namespace" /> of the{" "}
+                                and the <R n="granted_namespace" /> of the{" "}
                                 <R n="ReconciliationAnnounceEntriesInfo" />{" "}
                                 of the preceding{" "}
                                 <R n="ReconciliationAnnounceEntries" /> message
@@ -3141,7 +3147,7 @@ export const sync = (
                       <CodeFor
                         notStandalone
                         enc="EncodeEntryRelativeEntry"
-                        relativeTo={<R n="data_current_entry" />}
+                        relativeTo={<R n="reconciliation_current_entry" />}
                       >
                         the <R n="Entry" /> of{" "}
                         <ValAccess field="ReconciliationSendEntryEntry" />
