@@ -3020,6 +3020,11 @@ export const sync = (
                     bitfieldConstant([0, 0, 0]),
                     bitfieldIff(
                       <>
+                        <ValAccess field="ReconciliationAnnounceEntriesIsEmpty" />
+                      </>,
+                    ),
+                    bitfieldIff(
+                      <>
                         <ValAccess field="ReconciliationAnnounceEntriesWantResponse" />
                       </>,
                     ),
@@ -3030,7 +3035,7 @@ export const sync = (
                     ),
                     c64Tag(
                       "root",
-                      3,
+                      2,
                       <>
                         <AccessStruct field="RangeInfoRootId">
                           <ValAccess field="ReconciliationAnnounceEntriesInfo" />
@@ -3107,14 +3112,24 @@ export const sync = (
                     bitfieldIff(<R n="erse_mode" />),
                     c64Tag(
                       "offset",
-                      4,
+                      2,
                       <>
                         <ValAccess field="ReconciliationSendEntryOffset" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "available",
+                      2,
+                      <>
+                        <AccessStruct field="lengthy_entry_available">
+                          <ValAccess field="ReconciliationSendEntryEntry" />
+                        </AccessStruct>
                       </>,
                     ),
                   ]}
                   contents={[
                     <C64Encoding id="offset" />,
+                    <C64Encoding id="available" />,
                     <EncConditional
                       condition={
                         <Code>
