@@ -85,6 +85,10 @@ export const uris = (
 
             <Ul>
               <Li>
+                <Alj>
+                  For Willow25, these would simply be base-16 encoding of public
+                  keys and digests.
+                </Alj>
                 An <R n="encoding_relation" />{" "}
                 <DefType n="UriEncodeNamespaceId" /> for{" "}
                 <R n="NamespaceId" />, such that the bytes of all{" "}
@@ -518,6 +522,14 @@ export const uris = (
               </Li>
             </Ul>
           </Hsection>
+        </Hsection>
+
+        <Hsection n="uris_area" title="Entry URIs">
+          <P>
+            <Alj inline>
+              TODO: For identifying <Rs n="AreaOfInterest" />.
+            </Alj>
+          </P>
         </Hsection>
       </PageTemplate>
     </File>
