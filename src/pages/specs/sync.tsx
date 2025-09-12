@@ -3172,7 +3172,7 @@ export const sync = (
                       enc="EncodeAuthorisationToken"
                       relativeTo={
                         <>
-                          <R n="data_current_entry" /> and{" "}
+                          <R n="reconciliation_current_entry" /> and{" "}
                           <ValAccess field="ReconciliationSendEntryEntry" />
                         </>
                       }
