@@ -422,6 +422,19 @@ export const uris = (
                   </SkyBlue>?<Orange>from=5&digest=b287afb0</Orange>
                 </Code>
               </Li>
+              <Li>
+                <Code>
+                  <Green>willowentry</Green>://<Purple>
+                    family
+                  </Purple>!<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?<Orange>from=0</Orange>#blabla
+                  (<AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+                    fragments
+                  </AE>{" "}
+                  are allowed!)
+                </Code>
+              </Li>
             </Ul>
 
             <P>
