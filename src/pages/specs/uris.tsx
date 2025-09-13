@@ -280,9 +280,9 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The identifier of the <R n="namespace" /> identified
+                          The identifier of the <R n="namespace" />{" "}
+                          to which the identified <R n="Entry" /> belongs. If
                           {" "}
-                          <R n="Entry" /> belongs. If{" "}
                           <DefVariant n="entry_uri_ns_none" r="none" />, the
                           {" "}
                           <R n="EntryURI" /> is <R n="namespace_relative" />.
@@ -308,9 +308,9 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The identifier of the <R n="subspace" /> identified
+                          The identifier of the <R n="subspace" />{" "}
+                          to which the identified <R n="Entry" /> belongs. If
                           {" "}
-                          <R n="Entry" /> belongs. If{" "}
                           <DefVariant n="entry_uri_ss_none" r="none" />, the
                           {" "}
                           <R n="EntryURI" /> is <R n="subspace_relative" />.
