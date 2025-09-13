@@ -257,7 +257,7 @@ export const uris = (
                 <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.1">
                   scheme
                 </AE>{" "}
-                is <Code>willowentry</Code>.<Alj>
+                is <Code>willow</Code>.<Alj>
                   Should this be <Code>willow</Code> only?
                 </Alj>
               </Li>
@@ -367,7 +367,7 @@ export const uris = (
             <Ul>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -376,7 +376,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -386,7 +386,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -399,7 +399,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!
                 </Code>{" "}
@@ -407,7 +407,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/
                 </Code>{" "}
@@ -415,7 +415,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -425,7 +425,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -437,7 +437,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -447,7 +447,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -458,7 +458,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -469,7 +469,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -478,7 +478,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -491,7 +491,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!<SkyBlue>
                     cakes
@@ -502,7 +502,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!!/<SkyBlue>
                     blog
@@ -513,7 +513,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!<Vermillion>
+                  <Green>willow</Green>://!<Vermillion>
                     alfie
                   </Vermillion>!/<SkyBlue>
                     blog
@@ -524,7 +524,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!!/<SkyBlue>
+                  <Green>willow</Green>://!!/<SkyBlue>
                     blog
                   </SkyBlue>
                 </Code>{" "}
@@ -534,7 +534,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!!<SkyBlue>
                     cakes
@@ -546,7 +546,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!<Vermillion>
+                  <Green>willow</Green>://!<Vermillion>
                     alfie
                   </Vermillion>!<SkyBlue>
                     cakes
@@ -558,7 +558,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!!<SkyBlue>
+                  <Green>willow</Green>://!!<SkyBlue>
                     .
                   </SkyBlue>
                 </Code>{" "}
@@ -567,7 +567,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!!
+                  <Green>willow</Green>://!!
                 </Code>{" "}
                 (<R n="namespace_relative" />,{"  "}
                 <R n="subspace_relative" />, not{" "}
@@ -575,7 +575,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://!!/
+                  <Green>willow</Green>://!!/
                 </Code>{" "}
                 (<R n="namespace_relative" />,{"  "}
                 <R n="subspace_relative" />, not{" "}
@@ -584,7 +584,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     ..
@@ -597,7 +597,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!//<SkyBlue>
                     blog
@@ -618,13 +618,13 @@ export const uris = (
             <Ul>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://
+                  <Green>willow</Green>://
                 </Code>{" "}
                 (needs more <Code>!!</Code>)
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -634,7 +634,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -644,7 +644,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -654,7 +654,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -664,7 +664,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -674,7 +674,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
@@ -684,7 +684,7 @@ export const uris = (
               </Li>
               <Li>
                 <Code>
-                  <Green>willowentry</Green>://<Purple>
+                  <Green>willow</Green>://<Purple>
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>
                   <SkyBlue>
