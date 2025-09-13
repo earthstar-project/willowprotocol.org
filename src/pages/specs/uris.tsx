@@ -18,9 +18,12 @@ import { Hsection } from "macromania-hsection";
 import { Def, R, Rb, Rs, Rsb } from "macromania-defref";
 import {
   AccessStruct,
+  ChoiceType,
   DefFunction,
   DefType,
   DefValue,
+  SliceType,
+  StructDef,
   Tuple,
 } from "macromania-rustic";
 import { M } from "macromania-katex";
@@ -37,6 +40,7 @@ import {
 } from "../../encoding_macros.tsx";
 import { C64Standalone } from "../../encoding_macros.tsx";
 import { RawBytes } from "../../encoding_macros.tsx";
+import { Pseudocode } from "macromania-pseudocode";
 
 export const uris = (
   <Dir name="uris">
@@ -130,130 +134,349 @@ export const uris = (
             </P>
           </PreviewScope>
 
-          <PreviewScope>
-            <P>
-              The <R n="NamespaceId" /> of an <R n="EntryURI" />{" "}
-              is optional. If it is missing, we say the <R n="EntryURI" /> is
-              {" "}
-              <Def n="namespace_relative" r="namespace-relative" />. It can then
-              only be resolved relative to a given{" "}
-              <R n="NamespaceId" />, and identifies an <R n="Entry" />{" "}
-              of that given <R n="NamespaceId" />.
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
-              The <R n="SubspaceId" /> of an <R n="EntryURI" />{" "}
-              is optional. If it is missing, we say the <R n="EntryURI" /> is
-              {" "}
-              <Def n="subspace_relative" r="subspace-relative" />. It can then
-              only be resolved relative to a given{" "}
-              <R n="SubspaceId" />, and identifies an <R n="Entry" />{" "}
-              of that given <R n="SubspaceId" />.
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
-              The <DefType n="URIPath" rs="URIPaths" /> of an <R n="EntryURI" />
-              {" "}
-              is not a regular Willow{" "}
-              <R n="Path" />, but a pair of a boolean to indicate whether it is
-              {" "}
-              <Def n="uri_path_absolute" r="absolute" /> or{" "}
-              <Def n="uri_path_relative" r="relative" />, and a sequence of{" "}
-              <Rs n="URIPathComponent" />. A{" "}
-              <DefType n="URIPathComponent" rs="URIPathComponents" />{" "}
-              is a sequence consisting of regular <Rs n="Component" /> and{" "}
-              <Def n="dot_segment" r="dot-segment" rs="dot-segments">
-                dot-segments
-              </Def>{" "}
-              — either <Code>.</Code> or <Code>..</Code>. If the{" "}
-              <R n="URIPath" /> is <R n="uri_path_relative" />, we say the{" "}
-              <R n="EntryURI" /> is <Def n="path_relative" r="path-relative" />.
-            </P>
-
-            <P>
-              <Rs n="URIPath" /> can be converted into Willow{" "}
-              <Rs n="Path" />. For <R n="uri_path_relative" />{" "}
-              <Rs n="URIPath" />, this requires a Willow{" "}
-              <Def
-                n="uri_reference_path"
-                r="reference path"
-                rs="reference paths"
-              />{" "}
-              to start from; for <R n="uri_path_absolute" />{" "}
-              <Rs n="URIPath" />, the <R n="uri_reference_path" /> is the empty
-              {" "}
-              <R n="Path" />. You then iterate through the{" "}
-              <Rs n="URIPathComponent" /> and modify the{" "}
-              <R n="uri_reference_path" />:
-            </P>
-
-            <Ul>
-              <Li>
-                for each regular <R n="Component" />, append it to the{" "}
-                <R n="uri_reference_path" />,
-              </Li>
-              <Li>
-                for each <Code>..</Code> <R n="dot_segment" />, remove the final
+          <Hsection n="uris_entry_semantics" title="Entry URI Semantics">
+            <PreviewScope>
+              <P>
+                The <R n="NamespaceId" /> of an <R n="EntryURI" />{" "}
+                is optional. If it is missing, we say the <R n="EntryURI" /> is
                 {" "}
-                <R n="Component" /> of the <R n="uri_reference_path" />, and
-              </Li>
-              <Li>
-                for each <Code>.</Code> <R n="dot_segment" />, do nothing.
-              </Li>
-            </Ul>
+                <Def n="namespace_relative" r="namespace-relative" />. It can
+                then only be resolved relative to a given{" "}
+                <R n="NamespaceId" />, and identifies an <R n="Entry" />{" "}
+                of that given <R n="NamespaceId" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                The <R n="SubspaceId" /> of an <R n="EntryURI" />{" "}
+                is optional. If it is missing, we say the <R n="EntryURI" /> is
+                {" "}
+                <Def n="subspace_relative" r="subspace-relative" />. It can then
+                only be resolved relative to a given{" "}
+                <R n="SubspaceId" />, and identifies an <R n="Entry" />{" "}
+                of that given <R n="SubspaceId" />.
+              </P>
+            </PreviewScope>
+
+            <PreviewScope>
+              <P>
+                The <DefType n="URIPath" rs="URIPaths" /> of an{" "}
+                <R n="EntryURI" /> is not a regular Willow{" "}
+                <R n="Path" />, but a pair of a boolean to indicate whether it
+                is <Def n="uri_path_absolute" r="absolute" /> or{" "}
+                <Def n="uri_path_relative" r="relative" />, and a sequence of
+                {" "}
+                <Rs n="URIPathComponent" />. A{" "}
+                <DefType n="URIPathComponent" rs="URIPathComponents" />{" "}
+                is a sequence consisting of regular <Rs n="Component" /> and
+                {" "}
+                <Def n="dot_segment" r="dot-segment" rs="dot-segments">
+                  dot-segments
+                </Def>{" "}
+                — either <Code>.</Code> or <Code>..</Code>. If the{" "}
+                <R n="URIPath" /> is <R n="uri_path_relative" />, we say the
+                {" "}
+                <R n="EntryURI" /> is{" "}
+                <Def n="path_relative" r="path-relative" />.
+              </P>
+
+              <P>
+                <Rs n="URIPath" /> can be converted into Willow{" "}
+                <Rs n="Path" />. For <R n="uri_path_relative" />{" "}
+                <Rs n="URIPath" />, this requires a Willow{" "}
+                <Def
+                  n="uri_reference_path"
+                  r="reference path"
+                  rs="reference paths"
+                />{" "}
+                to start from; for <R n="uri_path_absolute" />{" "}
+                <Rs n="URIPath" />, the <R n="uri_reference_path" />{" "}
+                is the empty <R n="Path" />. You then iterate through the{" "}
+                <Rs n="URIPathComponent" /> and modify the{" "}
+                <R n="uri_reference_path" />:
+              </P>
+
+              <Ul>
+                <Li>
+                  for each regular <R n="Component" />, append it to the{" "}
+                  <R n="uri_reference_path" />,
+                </Li>
+                <Li>
+                  for each <Code>..</Code>{" "}
+                  <R n="dot_segment" />, remove the final <R n="Component" />
+                  {" "}
+                  of the <R n="uri_reference_path" />, and
+                </Li>
+                <Li>
+                  for each <Code>.</Code> <R n="dot_segment" />, do nothing.
+                </Li>
+              </Ul>
+
+              <P>
+                If this would at any point result in removing a{" "}
+                <R n="Component" /> from an empty{" "}
+                <R n="uri_reference_path" />, then the <R n="EntryURI" />{" "}
+                identifies nothing.
+              </P>
+            </PreviewScope>
 
             <P>
-              If this would at any point result in removing a{" "}
-              <R n="Component" /> from an empty{" "}
-              <R n="uri_reference_path" />, then the <R n="EntryURI" />{" "}
-              identifies nothing.
+              An <R n="EntryURI" />{" "}
+              can optionally and additionally identify (a single contiguous
+              subslice of) the <R n="Payload" /> of the identified{" "}
+              <R n="Entry" />. The bytewise, zero-indexed <R n="Payload" />{" "}
+              subslice is specified by an optional start index, and an optional
+              end index. If both are missing, the <R n="EntryURI" />{" "}
+              refers to the <R n="Entry" /> only, without its{" "}
+              <R n="Payload" />. If both are given, the indices describe the
+              identified subslice (the start index is inclusive, but the end
+              index is exclusive). If only the start index is given, then the
+              subslice extends to the end of the{" "}
+              <R n="Payload" />. If only the end index is given, the subslcie
+              starts at the initial byte of the <R n="Payload" />.
             </P>
-          </PreviewScope>
 
-          <P>
-            An <R n="EntryURI" />{" "}
-            can optionally and additionally identify (a single contiguous
-            subslice of) the <R n="Payload" /> of the identified{" "}
-            <R n="Entry" />. The bytewise, zero-indexed <R n="Payload" />{" "}
-            subslice is specified by an optional start index, and an optional
-            end index. If both are missing, the <R n="EntryURI" /> refers to the
-            {" "}
-            <R n="Entry" /> only, without its{" "}
-            <R n="Payload" />. If both are given, the indices describe the
-            identified subslice (the start index is inclusive, but the end index
-            is exclusive). If only the start index is given, then the subslice
-            extends to the end of the{" "}
-            <R n="Payload" />. If only the end index is given, the subslcie
-            starts at the initial byte of the <R n="Payload" />.
-          </P>
+            <P>
+              An <R n="EntryURI" /> can optionally contain an expected{" "}
+              <R n="PayloadDigest" />. If the <R n="Entry" />{" "}
+              it would address does not have a <R n="Payload" /> of the expected
+              {" "}
+              <R n="PayloadDigest" />, then the URI identifies nothing instead.
+              This feature <Em>cannot</Em> be used to address old{" "}
+              <Rs n="Entry" /> which had been{" "}
+              <R n="prefix_pruning">prefix-pruned</R>.
+            </P>
 
-          <P>
-            An <R n="EntryURI" /> can optionally contain an expected{" "}
-            <R n="PayloadDigest" />. If the <R n="Entry" />{" "}
-            it would address does not have a <R n="Payload" /> of the expected
-            {" "}
-            <R n="PayloadDigest" />, then the URI identifies nothing instead.
-            This feature <Em>cannot</Em> be used to address old <Rs n="Entry" />
-            {" "}
-            which had been <R n="prefix_pruning">prefix-pruned</R>.
-          </P>
+            <P>
+              An <R n="EntryURI" />{" "}
+              can optionally contain a sequence of other URIS (of any scheme,
+              not just{" "}
+              <Code>
+                <Green>willow://</Green>
+              </Code>) to serve as hints how to retrieve the identified{" "}
+              <R n="Entry" /> (and, optionally, its{" "}
+              <R n="Payload" />). Hints appearing early in the sequence should
+              be tried before hints appearing later in the sequence. The
+              sequence may contain duplicates, but that would be pretty
+              pointless.
+            </P>
 
-          <P>
-            An <R n="EntryURI" />{" "}
-            can optionally contain a sequence of other URIS (of any scheme, not
-            just{" "}
-            <Code>
-              <Green>willow://</Green>
-            </Code>) to serve as hints how to retrieve the identified{" "}
-            <R n="Entry" /> (and, optionally, its{" "}
-            <R n="Payload" />). Hints appearing early in the sequence should be
-            tried before hints appearing later in the sequence. The sequence may
-            contain duplicates, but that would be pretty pointless.
-          </P>
+            <P>
+              Taken together, we get the following data that conceptually makes
+              up an <R n="EntryURI" />:
+            </P>
+
+            <Pseudocode n="entry_uri_definition">
+              <StructDef
+                comment={
+                  <>
+                    The data of an <R n="EntryURI" />.
+                  </>
+                }
+                id={["EntryURIData", "EntryURIData", "EntryURIData"]}
+                fields={[
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The identifier of the <R n="namespace" /> identified
+                          {" "}
+                          <R n="Entry" /> belongs. If{" "}
+                          <DefVariant n="entry_uri_ns_none" r="none" />, the
+                          {" "}
+                          <R n="EntryURI" /> is <R n="namespace_relative" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "namespace_id",
+                          "entry_uri_namespace_id",
+                          "namespace_ids",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="NamespaceId" />,
+                            <R n="entry_uri_ns_none" />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The identifier of the <R n="subspace" /> identified
+                          {" "}
+                          <R n="Entry" /> belongs. If{" "}
+                          <DefVariant n="entry_uri_ss_none" r="none" />, the
+                          {" "}
+                          <R n="EntryURI" /> is <R n="subspace_relative" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "subspace_id",
+                          "entry_uri_subspace_id",
+                          "subspace_ids",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="SubspaceId" />,
+                            <R n="entry_uri_ss_none" />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Whether the <Rs n="URIPathComponent" />{" "}
+                          is absolute or relative.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "path_is_relative",
+                          "entry_uri_path_is_relative",
+                          "path_is_relatives",
+                        ],
+                        <R n="Bool" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <Rs n="URIPathComponent" /> of the{" "}
+                          <R n="URIPath" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "path_components",
+                          "entry_uri_path_components",
+                          "path_components",
+                        ],
+                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The optional start index of the <R n="Payload" />{" "}
+                          slice.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "payload_from",
+                          "entry_uri_payload_from",
+                          "payload_froms",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="U64" />,
+                            <DefVariant
+                              n="entry_uri_payload_from_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The optional end index of the <R n="Payload" /> slice.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "payload_to",
+                          "entry_uri_payload_to",
+                          "payload_to",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="U64" />,
+                            <DefVariant
+                              n="entry_uri_payload_to_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The optional expected <R n="PayloadDigest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "expected_digest",
+                          "entry_uri_expected_digest",
+                          "expected_digests",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="PayloadDigest" />,
+                            <DefVariant
+                              n="entry_uri_expected_digest_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The resolution hints for the <R n="EntryURI" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "path_hints",
+                          "entry_uri_hints",
+                          "path_hints",
+                        ],
+                        <SliceType
+                          children={[
+                            <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
+                              URI
+                            </AE>,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                ]}
+              />
+            </Pseudocode>
+          </Hsection>
 
           <Hsection n="uris_entry_syntax" title="Entry URI Syntax">
             <P>
@@ -375,7 +598,7 @@ export const uris = (
                     To indicate a non-empty list of resolution hints, the ASCII
                     string{" "}
                     <Code>
-                      hint=<EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
+                      hints=<EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
                     </Code>, where{" "}
                     <Code>
                       <EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
@@ -547,7 +770,7 @@ export const uris = (
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
                   </SkyBlue>?<Orange>
-                    hint=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
+                    hints=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
                   </Orange>
                 </Code>
               </Li>
