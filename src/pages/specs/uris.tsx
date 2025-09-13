@@ -242,6 +242,19 @@ export const uris = (
             which had been <R n="prefix_pruning">prefix-pruned</R>.
           </P>
 
+          <P>
+            An <R n="EntryURI" />{" "}
+            can optionally contain a sequence of other URIS (of any scheme, not
+            just{" "}
+            <Code>
+              <Green>willow://</Green>
+            </Code>) to serve as hints how to retrieve the identified{" "}
+            <R n="Entry" /> (and, optionally, its{" "}
+            <R n="Payload" />). Hints appearing early in the sequence should be
+            tried before hints appearing later in the sequence. The sequence may
+            contain duplicates, but that would be pretty pointless.
+          </P>
+
           <Hsection n="uris_entry_syntax" title="Entry URI Syntax">
             <P>
               <Rb n="EntryURI" /> syntax follows the{" "}
@@ -257,9 +270,7 @@ export const uris = (
                 <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.1">
                   scheme
                 </AE>{" "}
-                is <Code>willow</Code>.<Alj>
-                  Should this be <Code>willow</Code> only?
-                </Alj>
+                is <Code>willow</Code>.
               </Li>
               <Li>
                 The{" "}
@@ -278,7 +289,18 @@ export const uris = (
                 <Code>!</Code>, followed by a <R n="code" /> of the{" "}
                 <R n="SubspaceId" /> in <R n="UriEncodeSubspaceId" />{" "}
                 (simply omitted for <R n="subspace_relative" />{" "}
-                <Rs n="EntryURI" />), followed by an ASCII <Code>!</Code>.
+                <Rs n="EntryURI" />), followed by an ASCII{" "}
+                <Code>!</Code>. The authority subcomponent must adhere exactly
+                to these rules (i.e., no{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1">
+                  user information
+                </AE>,{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2">
+                  IP addresses
+                </AE>, or{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.3">
+                  ports
+                </AE>).
               </Li>
               <Li>
                 The{" "}
@@ -349,6 +371,24 @@ export const uris = (
                     {" "}
                     in <R n="UriEncodePayloadDigest" />.
                   </Li>
+                  <Li>
+                    To indicate a non-empty list of resolution hints, the ASCII
+                    string{" "}
+                    <Code>
+                      hint=<EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
+                    </Code>, where{" "}
+                    <Code>
+                      <EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
+                    </Code>{" "}
+                    is a <Code>;</Code>-separated list of the hint URIs, with
+                    {" "}
+                    <R n="uri_unreserved" />{" "}
+                    bytes being included verbatim, and all other bytes being
+                    {" "}
+                    <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">
+                      percent-encoded
+                    </AE>.
+                  </Li>
                 </Ul>
 
                 If both a start and an end index are specified and the end
@@ -356,7 +396,31 @@ export const uris = (
                 <R n="EntryURI" /> identifies only the <R n="Entry" />{" "}
                 but no subslice of its <R n="Payload" />.
               </Li>
+              <Li>
+                There may be an arbitrary{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+                  URI fragment
+                </AE>, with application-specific semantics.
+              </Li>
             </Ul>
+
+            <P>
+              Note that from the generic URI spec we inherit the ability to use
+              relative URIs consisting of a path segments only, for example,
+              {" "}
+              <Code>
+                <SkyBlue>
+                  .
+                </SkyBlue>/<SkyBlue>ideas</SkyBlue>
+              </Code>. Such a relative URI is equivalent to a{" "}
+              <R n="namespace_relative" /> and <R n="subspace_relative" />{" "}
+              <R n="EntryURI" />, for example,{" "}
+              <Code>
+                <Green>willow</Green>://!!<SkyBlue>
+                  .
+                </SkyBlue>/<SkyBlue>ideas</SkyBlue>
+              </Code>.
+            </P>
           </Hsection>
 
           <Hsection n="uris_entry_examples" title="Entry URI Examples">
@@ -482,6 +546,17 @@ export const uris = (
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
+                  </SkyBlue>?<Orange>
+                    hint=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
+                  </Orange>
+                </Code>
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                    blog
                   </SkyBlue>?<Orange>from=0</Orange>#blabla
                   (<AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
                     fragments
@@ -499,6 +574,18 @@ export const uris = (
                 </Code>{" "}
                 (not <R n="namespace_relative" />, not{" "}
                 <R n="subspace_relative" />, <R n="path_relative" />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>!<Vermillion>alfie</Vermillion>!<SkyBlue>
+                    .
+                  </SkyBlue>/<SkyBlue>
+                    cakes
+                  </SkyBlue>
+                </Code>{" "}
+                (equivalent to the preceeding one, and less confusing)
               </Li>
               <Li>
                 <Code>
@@ -599,9 +686,9 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!//<SkyBlue>
+                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
                     blog
-                  </SkyBlue>
+                  </SkyBlue>/
                   <SkyBlue>
                     ..
                   </SkyBlue>/<SkyBlue>blog</SkyBlue>
