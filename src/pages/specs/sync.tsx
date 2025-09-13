@@ -1721,9 +1721,9 @@ export const sync = (
                               <Rs n="Chunk" /> obtained by applying{" "}
                               <R n="transform_payload" /> to the{" "}
                               <R n="Payload" /> of the receiver’s{" "}
-                              <R n="reconciliation_current_entry" />
-                              <R n="Entry" />, starting at the{" "}
-                              <R n="ReconciliationSendEntryOffset" />{" "}
+                              <R n="reconciliation_current_entry" />, starting
+                              at the <R n="ReconciliationSendEntryOffset" />
+                              {" "}
                               of the corresponding{" "}
                               <R n="ReconciliationSendEntry" />{" "}
                               message plus the number of <Rs n="Chunk" />{" "}
