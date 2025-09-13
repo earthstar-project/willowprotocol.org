@@ -336,7 +336,7 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          Whether the <Rs n="URIPathComponent" />{" "}
+                          Whether the <Rs n="URIPath" />{" "}
                           is absolute or relative.
                         </>
                       ),
@@ -698,7 +698,7 @@ export const uris = (
                     family
                   </Purple>!<Vermillion>alfie</Vermillion>!/
                 </Code>{" "}
-                (<R n="Path" /> consists of a single, empty <R n="Component" />)
+                (<R n="Path" /> consists of a single empty <R n="Component" />)
               </Li>
               <Li>
                 <Code>
@@ -890,7 +890,7 @@ export const uris = (
                 (<R n="namespace_relative" />,{"  "}
                 <R n="subspace_relative" />, not{" "}
                 <R n="path_relative" />; addressing the <R n="Path" />{" "}
-                of a single, empty <R n="Component" />)
+                consisting of a single empty <R n="Component" />)
               </Li>
               <Li>
                 <Code>
