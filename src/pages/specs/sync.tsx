@@ -1634,13 +1634,10 @@ export const sync = (
                                 transformed
                               </R>) <R n="Payload" /> <R n="Chunk" />{" "}
                               that will be transmitted for{" "}
-                              <R n="ReconciliationSendEntryEntry" />. Set this
-                              to the total number of <Rs n="Chunk" />{" "}
-                              to indicate that no <Rs n="Chunk" />{" "}
-                              will be transmitted. In this case, the receiver
-                              must act as if it had received a{" "}
-                              <R n="ReconciliationTerminatePayload" />{" "}
-                              message immediately after this message.
+                              <R n="ReconciliationSendEntryEntry" />. If you
+                              will not transmit any{" "}
+                              <Rs n="Chunk" />, this can be set arbitrarily
+                              (zero is a good choice).
                             </>
                           ),
                           dedicatedLine: true,
