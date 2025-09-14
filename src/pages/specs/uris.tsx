@@ -314,7 +314,8 @@ export const uris = (
         <Hsection n="uris_parameters" title="Parameters">
           <P>
             <Marginale>
-              See <R n="willow25" /> for a default recommendation of parameters.
+              See <R n="willow25_uris">Willow’25</R>{" "}
+              for a default recommendation of parameters.
             </Marginale>
             In order to work with{" "}
             <Rs n="Willow_URI" />, one must first specify a full suite of
@@ -326,11 +327,6 @@ export const uris = (
 
           <Ul>
             <Li>
-              <Alj>
-                For Willow25, these will simply be base-16 encodings of public
-                keys and digests, with a sigil indicating owned vs communal for
-                the namespace.
-              </Alj>
               An <R n="encoding_relation" />{" "}
               <DefType
                 n="URIEncodeNamespaceId"

@@ -49,6 +49,7 @@ export const willow25 = (
             settings. It provides parameter choices for the{" "}
             <R n="data_model">Willow data model</R>, the{" "}
             <R n="meadowcap">Meadowcap capability system</R>, the{" "}
+            <R n="uris">Willow URI specification</R>, the{" "}
             <R n="sync">Willow General Purpose Sync protocol</R>, and the{" "}
             <R n="sideloading">sideloading specification</R>.
           </P>
@@ -200,6 +201,51 @@ export const willow25 = (
           <P>
             These choices of parameters make the Meadowcap instantiation{" "}
             <R n="mc_compatible" /> with the data model instantiation.
+          </P>
+        </Hsection>
+
+        <Hsection n="willow25_uris" title="URI Parameters">
+          <P>
+            <Rb n="willow25" /> instantiates the <R n="uris">Willow URI spec</R>
+            {" "}
+            with the following parameters:
+          </P>
+
+          <P>
+            The <R n="URIEncodeNamespaceId" /> <R n="encoding_relation" />{" "}
+            admits as <Rs n="code" /> of a <R n="NamespaceId" /> (which is a
+            {" "}
+            <R n="dss_pk" />, i.e., a bytestring) any concatenation of
+          </P>
+          <Ul>
+            <Li>
+              the byte <Code>43</Code> (ASCII <Code>+</Code>) if{" "}
+              <R n="is_communal" /> maps the <R n="NamespaceId" /> to{" "}
+              <Code>true</Code>, or the byte <Code>45</Code> (ASCII{" "}
+              <Code>-</Code>) otherwise, and
+            </Li>
+            <Li>
+              a base-16 ASCII encoding of the <R n="NamespaceId" />{" "}
+              (lowercase is recommended, but uppercase is also allowed).
+            </Li>
+          </Ul>
+
+          <P>
+            The <R n="URIEncodeSubspaceId" /> <R n="encoding_relation" />{" "}
+            admits as <Rs n="code" /> of a <R n="SubspaceId" /> (which is a{" "}
+            <R n="dss_pk" />, i.e., a bytestring) any base-16 ASCII encoding of
+            the <R n="SubspaceId" />{" "}
+            (lowercase is recommended, but uppercase is also allowed).
+          </P>
+
+          <P>
+            The <R n="URIEncodePayloadDigest" /> <R n="encoding_relation" />
+            {" "}
+            admits as <Rs n="code" /> of a <R n="PayloadDigest" /> (which is a
+            {" "}
+            <R n="William3Digest" />, i.e., a bytestring) any base-16 ASCII
+            encoding of the <R n="PayloadDigest" />{" "}
+            (lowercase is recommended, but uppercase is also allowed).
           </P>
         </Hsection>
 
