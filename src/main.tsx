@@ -8,6 +8,7 @@ import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
 import { sync } from "./pages/specs/sync.tsx";
+import { wtp } from "./pages/specs/wtp.tsx";
 import { sideloading } from "./pages/specs/sideloading.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
@@ -143,7 +144,7 @@ const exp = (
                     children: {
                       "bg.png": transformCopy,
                       "proposal-bg.png": transformCopy,
-                    }
+                    },
                   },
                   "apple-touch-icon.png": transformCopy,
                   "authors.css": transformCopy,
@@ -210,6 +211,7 @@ const exp = (
                 {encodings}
                 {sideloading}
                 {sync}
+                {wtp}
                 {rbsr}
                 {lcmux}
                 {grouping_entries}
