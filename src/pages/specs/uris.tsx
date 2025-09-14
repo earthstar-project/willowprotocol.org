@@ -244,7 +244,7 @@ export const uris = (
               <Marginale>
                 <Rsb n="dot_segment" />{" "}
                 are fairly useless in absolute URIs, but they become important
-                for constructing <Rs n="uri_reference" />.
+                for constructing <R n="uri_references">URI References</R>.
               </Marginale>{" "}
               of{" "}
               <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.3">
@@ -391,8 +391,7 @@ export const uris = (
                 but{" "}
                 <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
                   URI references
-                </AE>. Their semantics derive automatically from the URI
-                definition; we give an overview in <Rc n="uri_references" />.
+                </AE>. We inherit their semantics for free.
               </Marginale>
               We first describe the information represented in a{" "}
               <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />{" "}
@@ -1710,6 +1709,29 @@ export const uris = (
               </Li>
             </Ul>
           </Hsection>
+        </Hsection>
+
+        <Hsection n="uri_references" title="URI References">
+          <P>
+            <Rsb n="Willow_URI" />{" "}
+            identify resources absolutely. But it can also be useful to provide
+            relative addressing, in the vein of{" "}
+            <Quotes>
+              starting from this <R n="Entry" />, apply the <R n="URIPath" />
+              {" "}
+              <Code>../image.png</Code> to obtain a different <R n="Entry" />
+            </Quotes>. RFC 3986 provides this feature for arbitrary URIs, using
+            its concept of{" "}
+            <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
+              URI References
+            </AE>.
+          </P>
+
+          <P>
+            Implementations of this specification should provide support both
+            for pure <Rs n="Willow_URI" /> and for URI References using{" "}
+            <Rs n="Willow_URI" />.
+          </P>
         </Hsection>
       </PageTemplate>
     </File>
