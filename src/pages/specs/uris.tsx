@@ -6,6 +6,7 @@ import {
   Green,
   MarginCaption,
   Orange,
+  Path,
   Purple,
   Quotes,
   SkyBlue,
@@ -59,7 +60,7 @@ export const uris = (
         <P>
           This specifications describes the <Code>willow://</Code>{" "}
           <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
-            URI scheme (RFC 3986)
+            URI scheme
           </AE>{" "}
           for identifying Willow resources in a standardised, human-readable
           form. More specifically, these URIs can identify an <R n="Entry" />
@@ -67,17 +68,43 @@ export const uris = (
           (optionally together with a single contiguous slice of its{" "}
           <R n="Payload" />), or they can identify an <R n="AreaOfInterest" />
           {" "}
-          in a <R n="namespace" />, .
+          in a <R n="namespace" />.
         </P>
+
+        <P>
+          Two quick Examples:
+        </P>
+
+        <Ul>
+          <Li>
+            <Code>
+              <Green>willow</Green>://<Purple>
+                family
+              </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                blog
+              </SkyBlue>/?<Orange>from=5&digest=b287af</Orange>#about
+            </Code>
+          </Li>
+          <Li>
+            <Code>
+              <Green>willow</Green>://<Purple>
+                family
+              </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                blog
+              </SkyBlue>?area&<Orange>count=12</Orange>
+            </Code>
+          </Li>
+        </Ul>
 
         <Hsection n="uris_preliminaries" title="Preliminaries">
           <PreviewScope>
             <P>
-              We say a byte is a <Def n="uri_subdelim" r="sub-delimiter" />
+              We say a byte is a{" "}
+              <Def n="uri_subdelimiter" r="sub-delimiter" rs="sub-delimiters" />
               <Marginale>
                 This definition agrees with{" "}
                 <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.2">
-                  that of RFC 3986
+                  the <Code>sub-delim</Code> production of RFC 3986
                 </AE>.
               </Marginale>{" "}
               if its numeric value is the ASCII code of one of the following
@@ -109,24 +136,6 @@ export const uris = (
             <P>
               We say a byte is <Def n="uri_reserved" /> if it is not{" "}
               <R n="uri_unreserved" />.
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
-              We say a byte is a{" "}
-              <Def n="uri_subdelimiter" r="sub-delimiter" rs="sub-delimiters" />
-              <Marginale>
-                This definition agrees with{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.2">
-                  the <Code>sub-delim</Code> production of RFC 3986
-                </AE>.
-              </Marginale>{" "}
-              if its numeric value is the ASCII code of one of the following
-              characters:{" "}
-              <Code>
-                !$&'()*+,;=
-              </Code>.
             </P>
           </PreviewScope>
 
@@ -233,7 +242,6 @@ export const uris = (
               <Rs n="Willow_URI" /> extend regular Willow <Rs n="Path" />{" "}
               with the <Rs n="dot_segment" />
               <Marginale>
-                4
                 <Rsb n="dot_segment" />{" "}
                 are fairly useless in absolute URIs, but they become important
                 for constructing <Rs n="uri_reference" />.
@@ -316,7 +324,7 @@ export const uris = (
           <Ul>
             <Li>
               <Alj>
-                For Willow25, these will simply be base-16 encoding of public
+                For Willow25, these will simply be base-16 encodings of public
                 keys and digests, with a sigil indicating owned vs communal for
                 the namespace.
               </Alj>
@@ -1044,7 +1052,7 @@ export const uris = (
                           </>
                         }
                       >
-                        The bytes <Code>[104, 105, 110, 116, 115, 61]</Code>
+                        the bytes <Code>[104, 105, 110, 116, 115, 61]</Code>
                         {" "}
                         (ASCII <Code>hints=</Code>), followed by{" "}
                         <R n="entry_uri_encoded_hints" />
@@ -1057,7 +1065,7 @@ export const uris = (
                           </Code>
                         }
                       >
-                        The bytes{" "}
+                        the bytes{" "}
                         <Code>[100, 105, 103, 101, 115, 116, 61]</Code> (ASCII
                         {" "}
                         <Code>digest=</Code>), followed by{" "}
@@ -1073,7 +1081,7 @@ export const uris = (
                           </Code>
                         }
                       >
-                        The bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
+                        the bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
                         {" "}
                         <Code>from=</Code>), followed by an ASCII decimal
                         encoding with arbitrarily many leading zeros of{" "}
@@ -1087,7 +1095,7 @@ export const uris = (
                           </Code>
                         }
                       >
-                        The bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
+                        the bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
                         <Code>to=</Code>), followed by an ASCII decimal encoding
                         with arbitrarily many leading zeros of{" "}
                         <ValAccess field="EntryURIPayloadTo" />
@@ -1182,7 +1190,6 @@ export const uris = (
 
           <Hsection n="uris_entry_examples" title="Entry URI Examples">
             <P>
-              <Alj>These are outdated!</Alj>
               Here are some examples of valid <Rs n="Entry_URI" />:
             </P>
 
@@ -1191,7 +1198,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>/<SkyBlue>ideas</SkyBlue>
                 </Code>
@@ -1200,7 +1207,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>/<SkyBlue>ideas</SkyBlue>/
                 </Code>{" "}
@@ -1210,7 +1217,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>
                   {"///"}
@@ -1223,7 +1230,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!
+                  </Purple>.<Vermillion>alfie</Vermillion>
                 </Code>{" "}
                 (empty <R n="Path" />)
               </Li>
@@ -1231,7 +1238,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/
+                  </Purple>.<Vermillion>alfie</Vermillion>/
                 </Code>{" "}
                 (<R n="Path" /> consists of a single empty <R n="Component" />)
               </Li>
@@ -1239,7 +1246,60 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>/<SkyBlue>.</SkyBlue>/<SkyBlue>
+                    ideas
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>
+                </Code>{" "}
+                (<R n="Path" /> is equivalent to <Path components={["blog"]} />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    chess
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>/<SkyBlue>
+                    ..
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>/<SkyBlue>blog</SkyBlue>
+                </Code>{" "}
+                (<R n="Path" /> is equivalent to <Path components={["blog"]} />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?<Orange>
+                    hints=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
+                  </Orange>
+                </Code>
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?<Orange>digest=b287afb0</Orange>
+                </Code>
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?<Orange>digest=b287afb0</Orange>#blabla%0A
+                </Code>
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>?<Orange>from=0</Orange> (identifying an{" "}
                   <R n="Entry" /> and its complete <R n="Payload" />)
@@ -1249,7 +1309,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>?<Orange>to=17</Orange> (identifying an{" "}
                   <R n="Entry" />{" "}
@@ -1261,7 +1321,7 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>?<Orange>to=6&from=4</Orange> (identifying an{" "}
                   <R n="Entry" /> and its <R n="Payload" /> bytes four and five)
@@ -1271,40 +1331,326 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>?<Orange>from=5&to=5</Orange> (identifying only an
+                  </SkyBlue>?<Orange>from=5&to=5</Orange> (identifying an{" "}
+                  <R n="Entry" /> and an empty subslice of its{" "}
+                  <R n="Payload" />)
+                </Code>
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?<Orange>from=99&to=12</Orange> (identifying an{" "}
+                  <R n="Entry" /> and an empty subslice of its{" "}
+                  <R n="Payload" />)
+                </Code>
+              </Li>
+            </Ul>
+          </Hsection>
+
+          <Hsection n="uris_area_syntax" title="Area URI Syntax">
+            <EncodingRelationTemplate
+              n="EncodeAreaURI"
+              valType={<R n="AreaURI" />}
+              preDefs={
+                <>
+                  <P>
+                    <Marginale>
+                      This encoding works mostly the same way as that for{" "}
+                      <Rs n="EntryURI" />. The only differences are the
+                      construction of{" "}
+                      <R n="area_uri_query" />, and the query fragment always
+                      starting with <Code>?area</Code>
+                    </Marginale>
+                    Let{" "}
+                    <DefValue n="area_uri_encoded_hints" r="encoded_hints" />
+                    {" "}
+                    be the bytestring obtained by applying{" "}
+                    <R n="percent_encode" /> to{" "}
+                    <ValAccess field="AreaURIHints" />{" "}
+                    and joining the results with <Code>59</Code> (ASCII{" "}
+                    <Code>;</Code>) bytes (but without leading or trailing{" "}
+                    <Code>;</Code>).
+                  </P>
+
+                  <P>
+                    Let <DefValue n="area_uri_query" r="query_component" />{" "}
+                    be a bytestring obtained by concatenating the following
+                    bytestrings in arbitrary order, joining non-empty ones with
+                    {" "}
+                    <Code>38</Code> (ASCII{" "}
+                    <Code>&</Code>) bytes (but without leading or trailing{" "}
+                    <Code>&</Code>):
+                  </P>
+
+                  <Encoding
+                    idPrefix="uri_area_query"
+                    bitfields={[]}
+                    contents={[
+                      <EncConditional
+                        condition={
+                          <>
+                            <ValAccess field="AreaURIHints" />{" "}
+                            is not the empty sequence
+                          </>
+                        }
+                      >
+                        the bytes <Code>[104, 105, 110, 116, 115, 61]</Code>
+                        {" "}
+                        (ASCII <Code>hints=</Code>), followed by{" "}
+                        <R n="area_uri_encoded_hints" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <Code>
+                              <ValAccess field="AreaURIMaxCount" /> != 0
+                            </Code>, or if{" "}
+                            <Code>
+                              <ValAccess field="AreaURIMaxCount" /> == 0
+                            </Code>{" "}
+                            but you feel like encoding it explicitly anyway
+                          </>
+                        }
+                      >
+                        the bytes <Code>[99, 111, 117, 110, 116, 61]</Code>{" "}
+                        (ASCII{" "}
+                        <Code>count=</Code>), followed by an ASCII decimal
+                        encoding with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="AreaURIMaxCount" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <Code>
+                              <ValAccess field="AreaURIMaxSize" /> != 0
+                            </Code>, or if{" "}
+                            <Code>
+                              <ValAccess field="AreaURIMaxSize" /> == 0
+                            </Code>{" "}
+                            but you feel like encoding it explicitly anyway
+                          </>
+                        }
+                      >
+                        the bytes <Code>[115, 105, 112, 101, 61]</Code> (ASCII
+                        {" "}
+                        <Code>size=</Code>), followed by an ASCII decimal
+                        encoding with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="AreaURIMaxSize" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <Code>
+                              <ValAccess field="AreaURITimestampFrom" /> != 0
+                            </Code>, or if{" "}
+                            <Code>
+                              <ValAccess field="AreaURITimestampFrom" /> == 0
+                            </Code>{" "}
+                            but you feel like encoding it explicitly anyway
+                          </>
+                        }
+                      >
+                        the bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
+                        {" "}
+                        <Code>from=</Code>), followed by an ASCII decimal
+                        encoding with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="AreaURITimestampFrom" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <Code>
+                            <ValAccess field="AreaURITimestampTo" /> !={" "}
+                            <R n="area_uri_timestamp_to_none" />
+                          </Code>
+                        }
+                      >
+                        the bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
+                        <Code>to=</Code>), followed by an ASCII decimal encoding
+                        with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="AreaURITimestampTo" />
+                      </EncConditional>,
+                    ]}
+                  />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <>
+                  The bytes{" "}
+                  <Code>[119, 105, 108, 108, 111, 119, 58, 47, 47]</Code> (ASCII
                   {" "}
-                  <R n="Entry" />)
+                  <Code>willow://</Code>).
+                </>,
+                <CodeFor enc="URIEncodeNamespaceId">
+                  <ValAccess field="AreaURINamespaceId" />
+                </CodeFor>,
+                <>
+                  The byte <Code>46</Code> (ASCII <Code>.</Code>).
+                </>,
+                <CodeFor enc="URIEncodeSubspaceId">
+                  <ValAccess field="AreaURISubspaceId" />
+                </CodeFor>,
+                <EncIterator
+                  val={
+                    <>
+                      <R n="URIPathComponent" />{" "}
+                      <DefValue n="uri_area_path_comp" r="comp" />
+                    </>
+                  }
+                  iter={<ValAccess field="AreaURIPath" />}
+                >
+                  <Encoding
+                    idPrefix="uri_area_path"
+                    bitfields={[]}
+                    contents={[
+                      <>
+                        The byte <Code>47</Code> (ASCII <Code>/</Code>).
+                      </>,
+                      <>
+                        <Ul>
+                          <Li>
+                            If <R n="uri_area_path_comp" /> is the{" "}
+                            <R n="dot_segment" /> <Code>.</Code>, the byte{" "}
+                            <Code>46</Code> (ASCII <Code>.</Code>),
+                          </Li>
+                          <Li>
+                            else, if <R n="uri_area_path_comp" /> is the{" "}
+                            <R n="dot_segment" /> <Code>..</Code>, the bytes
+                            {" "}
+                            <Code>[46, 46]</Code> (ASCII <Code>..</Code>),
+                          </Li>
+                          <Li>
+                            else, the result of applying{" "}
+                            <R n="percent_encode" /> to the <R n="Component" />.
+                          </Li>
+                        </Ul>
+                      </>,
+                    ]}
+                  />
+                </EncIterator>,
+                <>
+                  The bytes <Code>[38, 97, 114, 101, 97]</Code> (ASCII{" "}
+                  <Code>&area</Code>).
+                </>,
+                <EncConditional
+                  condition={
+                    <>
+                      <R n="area_uri_query" /> is not the empty string
+                    </>
+                  }
+                >
+                  the byte <Code>38</Code> (ASCII <Code>&</Code>)
+                </EncConditional>,
+                <RawBytes>
+                  <R n="area_uri_query" />
+                </RawBytes>,
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="AreaURIFragment" /> !={" "}
+                      <R n="area_uri_fragment_none" />
+                    </Code>
+                  }
+                >
+                  the byte <Code>35</Code> (ASCII{" "}
+                  <Code>#</Code>), followed by the result of applying{" "}
+                  <R n="fragment_encode" /> to{" "}
+                  <ValAccess field="AreaURIFragment" />
+                </EncConditional>,
+              ]}
+            />
+          </Hsection>
+
+          <Hsection n="uris_area_examples" title="Area URI Examples">
+            <P>
+              Here are some examples of valid <Rs n="Area_URI" />:
+            </P>
+
+            <Ul>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>/<SkyBlue>ideas</SkyBlue>?area
                 </Code>
               </Li>
               <Li>
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>?<Orange>from=99&to=12</Orange> (identifying only an
-                  {" "}
-                  <R n="Entry" />)
-                </Code>
+                  </SkyBlue>/<SkyBlue>ideas</SkyBlue>/?area
+                </Code>{" "}
+                (the <R n="Path" /> ends with an empty <R n="Component" />)
               </Li>
               <Li>
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>?<Orange>from=5&digest=b287afb0</Orange>
-                </Code>
+                  </SkyBlue>
+                  {"///"}
+                  <SkyBlue>ideas</SkyBlue>?area
+                </Code>{" "}
+                (the <R n="Path" /> has two empty <Rs n="Component" />{" "}
+                in the middle)
               </Li>
               <Li>
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>?area
+                </Code>{" "}
+                (empty <R n="Path" />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/?area
+                </Code>{" "}
+                (<R n="Path" /> consists of a single empty <R n="Component" />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>?<Orange>
+                  </SkyBlue>/<SkyBlue>.</SkyBlue>/<SkyBlue>
+                    ideas
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>?area
+                </Code>{" "}
+                (<R n="Path" /> is equivalent to <Path components={["blog"]} />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    chess
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>/<SkyBlue>
+                    ..
+                  </SkyBlue>/<SkyBlue>..</SkyBlue>/<SkyBlue>blog</SkyBlue>?area
+                </Code>{" "}
+                (<R n="Path" /> is equivalent to <Path components={["blog"]} />)
+              </Li>
+              <Li>
+                <Code>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
+                    blog
+                  </SkyBlue>?area&<Orange>
                     hints=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
                   </Orange>
                 </Code>
@@ -1313,241 +1659,57 @@ export const uris = (
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>?<Orange>from=0</Orange>#blabla
-                  (<AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
-                    fragments
-                  </AE>{" "}
-                  are allowed!)
+                  </SkyBlue>?area&<Orange>count=5&size=0</Orange>
                 </Code>
               </Li>
               <Li>
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!<Vermillion>alfie</Vermillion>!<SkyBlue>
-                    cakes
-                  </SkyBlue>
-                </Code>{" "}
-                (not <R n="namespace_relative" />, not{" "}
-                <R n="subspace_relative" />, <R n="path_relative" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!<SkyBlue>
-                    .
-                  </SkyBlue>/<SkyBlue>
-                    cakes
-                  </SkyBlue>
-                </Code>{" "}
-                (equivalent to the preceeding one, and less confusing)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>
-                </Code>{" "}
-                (not <R n="namespace_relative" />,{" "}
-                <R n="subspace_relative" />, not <R n="path_relative" />)
+                  </SkyBlue>?area&<Orange>count=5&size=0</Orange>#blabla%0A
+                </Code>
               </Li>
               <Li>
                 <Code>
-                  <Green>willow</Green>://!<Vermillion>
-                    alfie
-                  </Vermillion>!/<SkyBlue>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>
-                </Code>{" "}
-                (<R n="namespace_relative" />, not{" "}
-                <R n="subspace_relative" />, not <R n="path_relative" />)
+                  </SkyBlue>?area&<Orange>from=0</Orange>{" "}
+                  (redundantly specifying the <R n="TimeRangeStart" /> of the
+                  {" "}
+                  <R n="TimeRange" /> as zero; the <R n="TimeRangeEnd" /> is
+                  {" "}
+                  <R n="range_open" />)
+                </Code>
               </Li>
               <Li>
                 <Code>
-                  <Green>willow</Green>://!!/<SkyBlue>
+                  <Green>willow</Green>://<Purple>
+                    family
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>
-                </Code>{" "}
-                (<R n="namespace_relative" />, <R n="subspace_relative" />, not
-                {" "}
-                <R n="path_relative" />)
+                  </SkyBlue>?area&<Orange>to=17</Orange> (specifying the{" "}
+                  <R n="TimeRangeEnd" /> of the <R n="TimeRange" /> as 17)
+                </Code>
               </Li>
               <Li>
                 <Code>
                   <Green>willow</Green>://<Purple>
                     family
-                  </Purple>!!<SkyBlue>
-                    cakes
-                  </SkyBlue>
-                </Code>{" "}
-                (not <R n="namespace_relative" />, <R n="subspace_relative" />,
-                {" "}
-                <R n="path_relative" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://!<Vermillion>
-                    alfie
-                  </Vermillion>!<SkyBlue>
-                    cakes
-                  </SkyBlue>
-                </Code>{" "}
-                (<R n="namespace_relative" />, not <R n="subspace_relative" />,
-                {" "}
-                <R n="path_relative" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://!!<SkyBlue>
-                    .
-                  </SkyBlue>
-                </Code>{" "}
-                (<R n="namespace_relative" />, <R n="subspace_relative" />,{" "}
-                <R n="path_relative" />; addressing the current <R n="Path" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://!!
-                </Code>{" "}
-                (<R n="namespace_relative" />,{"  "}
-                <R n="subspace_relative" />, not{" "}
-                <R n="path_relative" />; addressing the empty <R n="Path" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://!!/
-                </Code>{" "}
-                (<R n="namespace_relative" />,{"  "}
-                <R n="subspace_relative" />, not{" "}
-                <R n="path_relative" />; addressing the <R n="Path" />{" "}
-                consisting of a single empty <R n="Component" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    ..
-                  </SkyBlue>/<SkyBlue>recipes</SkyBlue>
-                </Code>{" "}
-                (addresses nothing, because the first step of <R n="Path" />
-                {" "}
-                resolution would need to pop a <R n="Component" />{" "}
-                from the empty <R n="Path" />)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
+                  </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
-                  </SkyBlue>/
-                  <SkyBlue>
-                    ..
-                  </SkyBlue>/<SkyBlue>blog</SkyBlue>
-                </Code>{" "}
-                (pointless, but allowed)
-              </Li>
-            </Ul>
-
-            <P>
-              Here are some non-examples — these are not valid{" "}
-              <Rs n="Entry_URI" />:
-            </P>
-
-            <Ul>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://
-                </Code>{" "}
-                (needs more <Code>!!</Code>)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>/<SkyBlue>recipes</SkyBlue>?foo=bar
-                </Code>{" "}
-                (the specification allows no custom query components)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>?<Orange>from=5&from=7</Orange>
-                </Code>{" "}
-                (no duplicate query parts)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>?<Orange>from=5to=7</Orange>
-                </Code>{" "}
-                (missing <Code>&</Code>)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>?<Orange>&from=5&from=7</Orange>
-                </Code>{" "}
-                (leading <Code>&</Code>)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>?<Orange>from=5&from=7&</Orange>
-                </Code>{" "}
-                (trailing <Code>&</Code>)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>!/<SkyBlue>
-                    blog
-                  </SkyBlue>?<Orange>from=5&&from=7</Orange>
-                </Code>{" "}
-                (duplicate <Code>&</Code>)
-              </Li>
-              <Li>
-                <Code>
-                  <Green>willow</Green>://<Purple>
-                    family
-                  </Purple>!<Vermillion>alfie</Vermillion>
-                  <SkyBlue>
-                    ..
-                  </SkyBlue>/<SkyBlue>chess</SkyBlue>
-                </Code>{" "}
-                (missing the <Code>!</Code> after the <R n="SubspaceId" />)
+                  </SkyBlue>?area&<Orange>to=6&from=4</Orange> (specifying the
+                  {" "}
+                  <R n="TimeRange" /> from four to six)
+                </Code>
               </Li>
             </Ul>
           </Hsection>
-        </Hsection>
-
-        <Hsection n="uris_area" title="Entry URIs">
-          <P>
-            <Alj inline>
-              TODO: For identifying <Rs n="AreaOfInterest" />.
-            </Alj>
-          </P>
         </Hsection>
       </PageTemplate>
     </File>
