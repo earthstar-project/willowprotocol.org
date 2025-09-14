@@ -63,16 +63,15 @@ export const uris = (
             URI scheme
           </AE>{" "}
           for identifying Willow resources in a standardised, human-readable
-          form. More specifically, these URIs can identify an <R n="Entry" />
-          {" "}
+          form. More specifically, each <Code>willow://</Code>{" "}
+          URI identifies either an <R n="Entry" />{" "}
           (optionally together with a single contiguous slice of its{" "}
-          <R n="Payload" />), or they can identify an <R n="AreaOfInterest" />
-          {" "}
-          in a <R n="namespace" />.
+          <R n="Payload" />), or an <R n="AreaOfInterest" /> in some{" "}
+          <R n="namespace" />.
         </P>
 
         <P>
-          Two quick Examples:
+          Two quick examples:
         </P>
 
         <Ul>
@@ -153,23 +152,23 @@ export const uris = (
                   the <Code>pct-encoded</Code> production of RFC 3986
                 </AE>.
               </Marginale>{" "}
-              if it first byte is the ASCII code of <Code>%</Code> (decimal{" "}
-              <Code>37</Code>, hex{" "}
-              <Code>0x25</Code>), followed by two ASCII codes of hex digits (any
-              of{" "}
+              if its first byte is <Code>37</Code> (ASCII{" "}
+              <Code>%</Code>), followed by two ASCII codes of hex digits (any of
+              {" "}
               <Code>0123456789abcdefABCDEF</Code>). The two hex digits then
               encode the value of some arbitrary byte. For consistency, you
-              should use uppercase hex digits.
+              should use uppercase hex digits<Marginale>
+                This is what RFC 3986 suggests.
+              </Marginale>.
             </P>
           </PreviewScope>
 
           <PreviewScope>
             <P>
-              We write <DefFunction n="percent_encode" />{" "}
-              for the function which maps a bytestring to the bytestring
-              obtained by replacing all <R n="uri_reserved" /> bytes with their
-              {" "}
-              <R n="percent_encoding" />.
+              We denote by <DefFunction n="percent_encode" />{" "}
+              the function which maps a bytestring to the bytestring obtained by
+              replacing with their <Rs n="percent_encoding" /> all{" "}
+              <R n="uri_reserved" /> bytes.
             </P>
           </PreviewScope>
 
@@ -224,16 +223,16 @@ export const uris = (
 
           <PreviewScope>
             <P>
-              We write <DefFunction n="fragment_encode" />{" "}
-              for the function which maps a bytestring to the bytestring
-              obtained by replacing all bytes which are neither{" "}
-              <R n="uri_unreserved" /> bytes, nor <R n="uri_subdelimiter" />
+              We denote by <DefFunction n="fragment_encode" />{" "}
+              the function which maps a bytestring to the bytestring obtained by
+              replacing with their <Rs n="percent_encoding" />{" "}
+              all bytes which are neither <R n="uri_unreserved" /> bytes, nor
               {" "}
-              bytes, nor or the ASCII code of any of the characters{" "}
+              <R n="uri_subdelimiter" />{" "}
+              bytes, nor the ASCII code of any of the characters{" "}
               <Code>
                 /?:@
-              </Code>, nor part of a <Rs n="percent_encoding" /> with their{" "}
-              <R n="percent_encoding" />.
+              </Code>, nor part of a <Rs n="percent_encoding" />.
             </P>
           </PreviewScope>
 
@@ -267,7 +266,12 @@ export const uris = (
               </Li>
               <Li>
                 a <DefType n="URIPath" rs="URIPaths" /> is a sequence of{" "}
-                <Rs n="URIPathComponent" />.
+                <Rs n="URIPathComponent" />{" "}
+                which, using the procedure defined below, converts into a valid
+                {" "}
+                <R n="Path" /> (i.e., respecting <R n="max_component_count" />
+                {" "}
+                and <R n="max_path_length" />).
               </Li>
             </Ul>
 
@@ -276,8 +280,7 @@ export const uris = (
                 This procedure agrees with{" "}
                 <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4">
                   that of RFC 3968
-                </AE>, but describing it in terms of a data model instead of
-                syntactically makes it significantly less intimidating.
+                </AE>.
               </Marginale>
               To convert a <R n="URIPath" /> into the Willow <R n="Path" />{" "}
               it identifies, repeat the following action for the first (<Quotes>
@@ -301,7 +304,7 @@ export const uris = (
                 If the <R n="dot_segment" /> is <Code>..</Code>{" "}
                 but not the very first <R n="URIPathComponent" />{" "}
                 of the (remaining){" "}
-                <R n="URIPath" />, remove it and remove the preceding{" "}
+                <R n="URIPath" />, remove both it and the preceding{" "}
                 <R n="Component" />.
               </Li>
             </Ul>
@@ -313,12 +316,12 @@ export const uris = (
             <Marginale>
               See <R n="willow25" /> for a default recommendation of parameters.
             </Marginale>
-            In order to use{" "}
+            In order to work with{" "}
             <Rs n="Willow_URI" />, one must first specify a full suite of
             instantiations of the{" "}
             <R n="willow_parameters">
               parameters of the core Willow data model
-            </R>. In addition to this, the URIs require the following:
+            </R>. Additionally, one needs:
           </P>
 
           <Ul>
@@ -383,23 +386,26 @@ export const uris = (
         </Hsection>
 
         <Hsection n="uris_semantics" title="URI Semantics">
+          <P>
+            <Marginale>
+              Note that URIs always provide an absolute reference. Relative
+              identification (think relative hyperlinks in HTML) are not URIs
+              but{" "}
+              <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
+                URI references
+              </AE>. We inherit their semantics for free.
+            </Marginale>
+            We first specify the information contained by each{" "}
+            <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />, independent
+            from URI syntax.
+          </P>
+
           <PreviewScope>
             <P>
-              <Marginale>
-                Note that URIs always provide an absolute reference. Relative
-                identification (think relative hyperlinks in HTML) are not URIs
-                but{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
-                  URI references
-                </AE>. We inherit their semantics for free.
-              </Marginale>
-              We first describe the information represented in a{" "}
-              <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />{" "}
-              and its meaning in abstract, independent from the actual URI
-              syntax. Each <R n="Willow_URI" /> identifies either an{" "}
-              <R n="Entry" />{" "}
+              Each <R n="Willow_URI" /> identifies either an <R n="Entry" />
+              {" "}
               (plus, optionally, a single contiguous slice of its{" "}
-              <R n="Payload" />), or an <R n="AreaOfInterest" /> in a{" "}
+              <R n="Payload" />), or an <R n="AreaOfInterest" /> in some{" "}
               <R n="namespace" />. We call such <Rs n="Willow_URI" />{" "}
               <Def n="Entry_URI" r="Entry URI" rs="Entry URIs">Entry URIs</Def>
               {" "}
@@ -412,14 +418,14 @@ export const uris = (
           <P>
             Each <R n="Willow_URI" /> contains a{" "}
             <R n="NamespaceId" />. This identifies the{" "}
-            <R n="entry_namespace_id" /> of an <R n="Entry" /> or the{" "}
+            <R n="entry_namespace_id" /> of an <R n="Entry" />, or the{" "}
             <R n="namespace" /> in which to locate an <R n="AreaOfInterest" />.
           </P>
 
           <P>
             Each <R n="Willow_URI" /> contains a{" "}
             <R n="SubspaceId" />. This identifies the{" "}
-            <R n="entry_subspace_id" /> of an <R n="Entry" /> or the{" "}
+            <R n="entry_subspace_id" /> of an <R n="Entry" />, or the{" "}
             <R n="AreaSubspace" /> of an <R n="AreaOfInterest" />.
           </P>
 
@@ -427,7 +433,7 @@ export const uris = (
             Each <R n="Willow_URI" /> contains a{" "}
             <R n="URIPath" />. This identifies the <R n="entry_path" /> of an
             {" "}
-            <R n="Entry" /> or the <R n="AreaPath" /> of an{" "}
+            <R n="Entry" />, or the <R n="AreaPath" /> of an{" "}
             <R n="AreaOfInterest" />.
           </P>
 
@@ -460,15 +466,21 @@ export const uris = (
           </P>
 
           <P>
-            <Marginale>
-              The contents of this fragment is irrelevant to this specification;
-              its intended scope and functionality is detailed in{" "}
-              <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
-                Section 3.5 of RFC 3986
-              </AE>.
-            </Marginale>
             Each <R n="Willow_URI" />{" "}
-            may optionally contain a bytestring of application-specific data.
+            may optionally contain a bytestring of application-specific{" "}
+            <Sidenote
+              note={
+                <>
+                  The content of this fragment is opaque to this specification;
+                  the intended scope and functionality are detailed in{" "}
+                  <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+                    Section 3.5 of RFC 3986
+                  </AE>.
+                </>
+              }
+            >
+              data
+            </Sidenote>.
           </P>
 
           <Hsection n="uris_semantics_entry" title="Entry URI Semantics">
@@ -502,7 +514,7 @@ export const uris = (
             </P>
 
             <P>
-              Each <R n="Entry_URI" /> optionally contains an starting index (a
+              Each <R n="Entry_URI" /> optionally contains a starting index (a
               {" "}
               <R n="U64" />) and optionally contains an end index (also a{" "}
               <R n="U64" />), to identify a specific subslice of the{" "}
@@ -539,7 +551,7 @@ export const uris = (
               <Li>
                 If only one index is present, the other defaults to zero (for
                 the start index) or the length of the <R n="Payload" />{" "}
-                (for the end index), and then the preceding case appplies.
+                (for the end index), and then the preceding case applies.
               </Li>
             </Ul>
 
@@ -611,7 +623,7 @@ export const uris = (
                           "EntryURIPath",
                           "path",
                         ],
-                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                        <R n="URIPath" />,
                       ],
                     },
                   },
@@ -643,8 +655,8 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The application-specific extra data associated with
-                          this <R n="Entry_URI" />.
+                          The optional, application-specific extra data
+                          associated with this <R n="Entry_URI" />.
                         </>
                       ),
                       dedicatedLine: true,
@@ -779,7 +791,7 @@ export const uris = (
               of the <R n="aoi_area" /> of the identified{" "}
               <R n="AreaOfInterest" />. If this <R n="Timestamp" />{" "}
               is not present, then the <R n="TimeRangeEnd" /> is{" "}
-              <R n="range_open" /> instead.
+              <R n="range_open" />.
             </P>
 
             <P>
@@ -852,7 +864,7 @@ export const uris = (
                           "AreaURIPath",
                           "path",
                         ],
-                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                        <R n="URIPath" />,
                       ],
                     },
                   },
@@ -884,8 +896,8 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The application-specific extra data associated with
-                          this <R n="Area_URI" />.
+                          The optional, application-specific extra data
+                          associated with this <R n="Area_URI" />.
                         </>
                       ),
                       dedicatedLine: true,
@@ -1021,10 +1033,11 @@ export const uris = (
                     <DefValue n="entry_uri_encoded_hints" r="encoded_hints" />
                     {" "}
                     be the bytestring obtained by applying{" "}
-                    <R n="percent_encode" /> to{" "}
+                    <R n="percent_encode" /> to every URI in{" "}
                     <ValAccess field="EntryURIHints" />{" "}
                     and joining the results with <Code>59</Code> (ASCII{" "}
-                    <Code>;</Code>) bytes (but without leading or trailing{" "}
+                    <Code>;</Code>) bytes (with neither leading nor trailing
+                    {" "}
                     <Code>;</Code>).
                   </P>
 
@@ -1035,7 +1048,8 @@ export const uris = (
                     bytestrings in arbitrary order, joining non-empty ones with
                     {" "}
                     <Code>38</Code> (ASCII{" "}
-                    <Code>&</Code>) bytes (but without leading or trailing{" "}
+                    <Code>&</Code>) bytes (with neither leading nor trailing
+                    {" "}
                     <Code>&</Code>):
                   </P>
 
@@ -1083,8 +1097,9 @@ export const uris = (
                         the bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
                         {" "}
                         <Code>from=</Code>), followed by an ASCII decimal
-                        encoding with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="EntryURIPayloadFrom" />
+                        encoding of <ValAccess field="EntryURIPayloadFrom" />
+                        {" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                       <EncConditional
                         condition={
@@ -1096,8 +1111,8 @@ export const uris = (
                       >
                         the bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
                         <Code>to=</Code>), followed by an ASCII decimal encoding
-                        with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="EntryURIPayloadTo" />
+                        of <ValAccess field="EntryURIPayloadTo" />{" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                     ]}
                   />
@@ -1369,10 +1384,11 @@ export const uris = (
                     <DefValue n="area_uri_encoded_hints" r="encoded_hints" />
                     {" "}
                     be the bytestring obtained by applying{" "}
-                    <R n="percent_encode" /> to{" "}
+                    <R n="percent_encode" /> to the URIs in{" "}
                     <ValAccess field="AreaURIHints" />{" "}
                     and joining the results with <Code>59</Code> (ASCII{" "}
-                    <Code>;</Code>) bytes (but without leading or trailing{" "}
+                    <Code>;</Code>) bytes (with neither leading nor trailing
+                    {" "}
                     <Code>;</Code>).
                   </P>
 
@@ -1382,7 +1398,8 @@ export const uris = (
                     bytestrings in arbitrary order, joining non-empty ones with
                     {" "}
                     <Code>38</Code> (ASCII{" "}
-                    <Code>&</Code>) bytes (but without leading or trailing{" "}
+                    <Code>&</Code>) bytes (with neither leading nor trailing
+                    {" "}
                     <Code>&</Code>):
                   </P>
 
@@ -1419,8 +1436,8 @@ export const uris = (
                         the bytes <Code>[99, 111, 117, 110, 116, 61]</Code>{" "}
                         (ASCII{" "}
                         <Code>count=</Code>), followed by an ASCII decimal
-                        encoding with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="AreaURIMaxCount" />
+                        encoding of <ValAccess field="AreaURIMaxCount" />{" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                       <EncConditional
                         condition={
@@ -1438,8 +1455,8 @@ export const uris = (
                         the bytes <Code>[115, 105, 112, 101, 61]</Code> (ASCII
                         {" "}
                         <Code>size=</Code>), followed by an ASCII decimal
-                        encoding with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="AreaURIMaxSize" />
+                        encoding of <ValAccess field="AreaURIMaxSize" />{" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                       <EncConditional
                         condition={
@@ -1457,8 +1474,9 @@ export const uris = (
                         the bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
                         {" "}
                         <Code>from=</Code>), followed by an ASCII decimal
-                        encoding with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="AreaURITimestampFrom" />
+                        encoding of <ValAccess field="AreaURITimestampFrom" />
+                        {" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                       <EncConditional
                         condition={
@@ -1470,8 +1488,8 @@ export const uris = (
                       >
                         the bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
                         <Code>to=</Code>), followed by an ASCII decimal encoding
-                        with arbitrarily many leading zeros of{" "}
-                        <ValAccess field="AreaURITimestampTo" />
+                        of <ValAccess field="AreaURITimestampTo" />{" "}
+                        with arbitrarily many leading zeros
                       </EncConditional>,
                     ]}
                   />
@@ -1714,14 +1732,15 @@ export const uris = (
         <Hsection n="uri_references" title="URI References">
           <P>
             <Rsb n="Willow_URI" />{" "}
-            identify resources absolutely. But it can also be useful to provide
+            identify resources absolutely. Many applications benefit from
             relative addressing, in the vein of{" "}
             <Quotes>
               starting from this <R n="Entry" />, apply the <R n="URIPath" />
               {" "}
               <Code>../image.png</Code> to obtain a different <R n="Entry" />
-            </Quotes>. RFC 3986 provides this feature for arbitrary URIs, using
-            its concept of{" "}
+            </Quotes>. RFC 3986 provides this feature for arbitrary URIs — so,
+            in particular, also for <Rs n="Willow_URI" /> — using its concept of
+            {" "}
             <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
               URI References
             </AE>.
