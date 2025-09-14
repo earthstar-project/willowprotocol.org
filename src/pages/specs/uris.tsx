@@ -7,15 +7,16 @@ import {
   MarginCaption,
   Orange,
   Purple,
+  Quotes,
   SkyBlue,
   Vermillion,
 } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Br, Code, Em, EscapeHtml, Img, Li, P, Ul } from "macromania-html";
+import { Br, Code, Div, Em, EscapeHtml, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
-import { Def, R, Rb, Rs, Rsb } from "macromania-defref";
+import { Def, R, Rb, Rc, Rs, Rsb } from "macromania-defref";
 import {
   AccessStruct,
   ChoiceType,
@@ -37,6 +38,8 @@ import {
   EncConditional,
   EncIterator,
   Encoding,
+  EncodingRelationTemplate,
+  ValAccess,
 } from "../../encoding_macros.tsx";
 import { C64Standalone } from "../../encoding_macros.tsx";
 import { RawBytes } from "../../encoding_macros.tsx";
@@ -54,253 +57,515 @@ export const uris = (
         parentId="specifications"
       >
         <P>
-          This specifications describes two{" "}
-          <AE href="https://datatracker.ietf.org/doc/html/rfc3986">URI</AE>{" "}
-          schemes for use with Willow: one for identifying{" "}
-          <Rs n="Entry" />, and one for identifying <Rs n="AreaOfInterest" />.
+          This specifications describes the <Code>willow://</Code>{" "}
+          <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
+            URI scheme (RFC 3986)
+          </AE>{" "}
+          for identifying Willow resources in a standardised, human-readable
+          form. More specifically, these URIs can identify an <R n="Entry" />
+          {" "}
+          (optionally together with a single contiguous slice of its{" "}
+          <R n="Payload" />), or they can identify an <R n="AreaOfInterest" />
+          {" "}
+          in a <R n="namespace" />, .
         </P>
 
-        <PreviewScope>
-          <P>
-            We say a byte is <Def n="uri_unreserved" r="unreserved" />{" "}
-            if its numeric value is the ASCII code of one of the following
-            characters:{" "}
-            <Code>
-              -.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~
-            </Code>{" "}
-            (i.e., alphanumerics and <Code>-</Code>, <Code>.</Code>,{" "}
-            <Code>_</Code>, and <Code>~</Code>).
-          </P>
-        </PreviewScope>
-
-        <Hsection n="uris_parameters" title="Parameters">
+        <Hsection n="uris_preliminaries" title="Preliminaries">
           <PreviewScope>
             <P>
+              We say a byte is a <Def n="uri_subdelim" r="sub-delimiter" />
               <Marginale>
-                See <R n="willow25" />{" "}
-                for a default recommendation of parameters.
-              </Marginale>
-              In order to use Willow URIs, one must first specify a full suite
-              of instantiations of the{" "}
-              <R n="willow_parameters">
-                parameters of the core Willow data model
-              </R>. In addition to this, the URIs require the following:
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.2">
+                  that of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if its numeric value is the ASCII code of one of the following
+              characters:{" "}
+              <Code>
+                !$&'()*+,;=
+              </Code>.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a byte is <Def n="uri_unreserved" r="unreserved" />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.3">
+                  the <Code>unreserved</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if its numeric value is the ASCII code of one of the following
+              characters:{" "}
+              <Code>
+                -.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_~
+              </Code>{" "}
+              (i.e., alphanumerics and <Code>-</Code>, <Code>.</Code>,{" "}
+              <Code>_</Code>, and <Code>~</Code>).
+            </P>
+
+            <P>
+              We say a byte is <Def n="uri_reserved" /> if it is not{" "}
+              <R n="uri_unreserved" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a byte is a{" "}
+              <Def n="uri_subdelimiter" r="sub-delimiter" rs="sub-delimiters" />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.2">
+                  the <Code>sub-delim</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if its numeric value is the ASCII code of one of the following
+              characters:{" "}
+              <Code>
+                !$&'()*+,;=
+              </Code>.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a sequence of three bytes is a{" "}
+              <Def
+                n="percent_encoding"
+                r="percent encoding"
+                rs="percent encodings"
+              />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">
+                  the <Code>pct-encoded</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if it first byte is the ASCII code of <Code>%</Code> (decimal{" "}
+              <Code>37</Code>, hex{" "}
+              <Code>0x25</Code>), followed by two ASCII codes of hex digits (any
+              of{" "}
+              <Code>0123456789abcdefABCDEF</Code>). The two hex digits then
+              encode the value of some arbitrary byte. For consistency, you
+              should use uppercase hex digits.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We write <DefFunction n="percent_encode" />{" "}
+              for the function which maps a bytestring to the bytestring
+              obtained by replacing all <R n="uri_reserved" /> bytes with their
+              {" "}
+              <R n="percent_encoding" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a sequence of bytes is{" "}
+              <Def n="uri_host_safe" r="host-safe" />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2">
+                  the <Code>reg-name</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if it consists solely of <R n="uri_unreserved" /> bytes,{" "}
+              <R n="uri_subdelimiter" /> bytes, or <Rs n="percent_encoding" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a sequence of bytes is{" "}
+              <Def n="uri_query_safe" r="query-safe" />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.4">
+                  the <Code>query</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if it consists solely of <R n="uri_unreserved" /> bytes,{" "}
+              <R n="uri_subdelimiter" /> bytes,{" "}
+              <Rs n="percent_encoding" />, or the ASCII code of any of the
+              following characters:{" "}
+              <Code>
+                /?:@
+              </Code>.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We say a sequence of bytes is{" "}
+              <Def n="uri_fragment_safe" r="fragment-safe" />
+              <Marginale>
+                This definition agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+                  the <Code>fragment</Code> production of RFC 3986
+                </AE>.
+              </Marginale>{" "}
+              if it is <R n="uri_query_safe" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              We write <DefFunction n="fragment_encode" />{" "}
+              for the function which maps a bytestring to the bytestring
+              obtained by replacing all bytes which are neither{" "}
+              <R n="uri_unreserved" /> bytes, nor <R n="uri_subdelimiter" />
+              {" "}
+              bytes, nor or the ASCII code of any of the characters{" "}
+              <Code>
+                /?:@
+              </Code>, nor part of a <Rs n="percent_encoding" /> with their{" "}
+              <R n="percent_encoding" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              <Rs n="Willow_URI" /> extend regular Willow <Rs n="Path" />{" "}
+              with the <Rs n="dot_segment" />
+              <Marginale>
+                4
+                <Rsb n="dot_segment" />{" "}
+                are fairly useless in absolute URIs, but they become important
+                for constructing <Rs n="uri_reference" />.
+              </Marginale>{" "}
+              of{" "}
+              <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.3">
+                RFC 3986
+              </AE>:
             </P>
 
             <Ul>
               <Li>
-                <Alj>
-                  For Willow25, these would simply be base-16 encoding of public
-                  keys and digests.
-                </Alj>
-                An <R n="encoding_relation" />{" "}
-                <DefType n="UriEncodeNamespaceId" /> for{" "}
-                <R n="NamespaceId" />, such that the bytes of all{" "}
-                <Rs n="code" /> are <R n="uri_unreserved" />.
+                the two{" "}
+                <Def n="dot_segment" r="dot-segment" rs="dot-segments">
+                  dot-segments
+                </Def>{" "}
+                are <Code>.</Code> and <Code>..</Code>,
               </Li>
               <Li>
-                An <R n="encoding_relation" />{" "}
-                <DefType n="UriEncodeSubspaceId" /> for{" "}
-                <R n="SubspaceId" />, such that the bytes of all <Rs n="code" />
+                a <DefType n="URIPathComponent" rs="URIPathComponents" />{" "}
+                is either a regular <Rs n="Component" /> or a{" "}
+                <R n="dot_segment" />, and
+              </Li>
+              <Li>
+                a <DefType n="URIPath" rs="URIPaths" /> is a sequence of{" "}
+                <Rs n="URIPathComponent" />.
+              </Li>
+            </Ul>
+
+            <P>
+              <Marginale>
+                This procedure agrees with{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-5.2.4">
+                  that of RFC 3968
+                </AE>, but describing it in terms of a data model instead of
+                syntactically makes it significantly less intimidating.
+              </Marginale>
+              To convert a <R n="URIPath" /> into the Willow <R n="Path" />{" "}
+              it identifies, repeat the following action for the first (<Quotes>
+                leftmost
+              </Quotes>) <R n="dot_segment" /> until no <Rs n="dot_segment" />
+              {" "}
+              remain:
+            </P>
+
+            <Ul>
+              <Li>
+                If the <R n="dot_segment" /> is <Code>.</Code>, remove it.
+              </Li>
+              <Li>
+                If the <R n="dot_segment" /> is <Code>..</Code>{" "}
+                and the very first <R n="URIPathComponent" /> of the (remaining)
                 {" "}
-                are <R n="uri_unreserved" />.
+                <R n="URIPath" />, remove it.
               </Li>
               <Li>
-                An <R n="encoding_relation" />{" "}
-                <DefType n="UriEncodePayloadDigest" /> for{" "}
-                <R n="PayloadDigest" />, such that the bytes of all{" "}
-                <Rs n="code" /> are <R n="uri_unreserved" />.
+                If the <R n="dot_segment" /> is <Code>..</Code>{" "}
+                but not the very first <R n="URIPathComponent" />{" "}
+                of the (remaining){" "}
+                <R n="URIPath" />, remove it and remove the preceding{" "}
+                <R n="Component" />.
               </Li>
             </Ul>
           </PreviewScope>
         </Hsection>
 
-        <Hsection n="uris_entry" title="Entry URIs">
+        <Hsection n="uris_parameters" title="Parameters">
+          <P>
+            <Marginale>
+              See <R n="willow25" /> for a default recommendation of parameters.
+            </Marginale>
+            In order to use{" "}
+            <Rs n="Willow_URI" />, one must first specify a full suite of
+            instantiations of the{" "}
+            <R n="willow_parameters">
+              parameters of the core Willow data model
+            </R>. In addition to this, the URIs require the following:
+          </P>
+
+          <Ul>
+            <Li>
+              <Alj>
+                For Willow25, these will simply be base-16 encoding of public
+                keys and digests, with a sigil indicating owned vs communal for
+                the namespace.
+              </Alj>
+              An <R n="encoding_relation" />{" "}
+              <DefType
+                n="URIEncodeNamespaceId"
+                preview={
+                  <P>
+                    A protocol parameter of the <Rs n="Willow_URI" />, the{" "}
+                    <R n="encoding_relation" /> for encoding{" "}
+                    <Rs n="NamespaceId" />, producing <R n="uri_host_safe" />
+                    {" "}
+                    <Rs n="code" /> only.
+                  </P>
+                }
+              />{" "}
+              for <R n="NamespaceId" />, such that all <Rs n="code" /> are{" "}
+              <R n="uri_host_safe" />.
+            </Li>
+            <Li>
+              An <R n="encoding_relation" />{" "}
+              <DefType
+                n="URIEncodeSubspaceId"
+                preview={
+                  <P>
+                    A protocol parameter of the <Rs n="Willow_URI" />, the{" "}
+                    <R n="encoding_relation" /> for encoding{" "}
+                    <Rs n="SubspaceId" />, producing <R n="uri_host_safe" />
+                    {" "}
+                    <Rs n="code" /> only.
+                  </P>
+                }
+              />{" "}
+              for <R n="SubspaceId" />, such that all <Rs n="code" /> are{" "}
+              <R n="uri_host_safe" />.
+            </Li>
+            <Li>
+              An <R n="encoding_relation" />{" "}
+              <DefType
+                n="URIEncodePayloadDigest"
+                preview={
+                  <P>
+                    A protocol parameter of the <Rs n="Willow_URI" />, the{" "}
+                    <R n="encoding_relation" /> for encoding{" "}
+                    <Rs n="PayloadDigest" />, producing <R n="uri_query_safe" />
+                    {" "}
+                    <Rs n="code" /> only.
+                  </P>
+                }
+              />{" "}
+              for <R n="PayloadDigest" />, such that all <Rs n="code" /> are
+              {" "}
+              <R n="uri_query_safe" />.
+            </Li>
+          </Ul>
+        </Hsection>
+
+        <Hsection n="uris_semantics" title="URI Semantics">
           <PreviewScope>
             <P>
-              An (absolute){" "}
-              <DefType n="EntryURI" r="Entry URI" rs="Entry URIs">
-                Entry URI
-              </DefType>{" "}
-              identifies an <R n="Entry" />, by specifying a{" "}
-              <R n="NamespaceId" />, <R n="SubspaceId" /> and{" "}
-              <R n="Path" />; the identified <R n="Entry" />{" "}
-              is — conceptually speaking — the globally{" "}
-              <R n="entry_newer">newest</R> <R n="Entry" /> of the given{" "}
-              <R n="NamespaceId" />, <R n="SubspaceId" /> and{" "}
-              <R n="Path" />. In practice, the URI will resolve to the{" "}
-              <R n="entry_newer">newest</R> matching <R n="Entry" />{" "}
-              known to the communication partner.
+              <Marginale>
+                Note that URIs always provide an absolute reference. Relative
+                identification (think relative hyperlinks in HTML) are not URIs
+                but{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
+                  URI references
+                </AE>. Their semantics derive automatically from the URI
+                definition; we give an overview in <Rc n="uri_references" />.
+              </Marginale>
+              We first describe the information represented in a{" "}
+              <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />{" "}
+              and its meaning in abstract, independent from the actual URI
+              syntax. Each <R n="Willow_URI" /> identifies either an{" "}
+              <R n="Entry" />{" "}
+              (plus, optionally, a single contiguous slice of its{" "}
+              <R n="Payload" />), or an <R n="AreaOfInterest" /> in a{" "}
+              <R n="namespace" />. We call such <Rs n="Willow_URI" />{" "}
+              <Def n="Entry_URI" r="Entry URI" rs="Entry URIs">Entry URIs</Def>
+              {" "}
+              and <Def n="Area_URI" r="Area URI" rs="Area URIs">Area URIs</Def>
+              {" "}
+              respectively.
             </P>
           </PreviewScope>
 
-          <Hsection n="uris_entry_semantics" title="Entry URI Semantics">
-            <PreviewScope>
-              <P>
-                The <R n="NamespaceId" /> of an <R n="EntryURI" />{" "}
-                is optional. If it is missing, we say the <R n="EntryURI" /> is
-                {" "}
-                <Def n="namespace_relative" r="namespace-relative" />. It can
-                then only be resolved relative to a given{" "}
-                <R n="NamespaceId" />, and identifies an <R n="Entry" />{" "}
-                of that given <R n="NamespaceId" />.
-              </P>
-            </PreviewScope>
+          <P>
+            Each <R n="Willow_URI" /> contains a{" "}
+            <R n="NamespaceId" />. This identifies the{" "}
+            <R n="entry_namespace_id" /> of an <R n="Entry" /> or the{" "}
+            <R n="namespace" /> in which to locate an <R n="AreaOfInterest" />.
+          </P>
 
-            <PreviewScope>
-              <P>
-                The <R n="SubspaceId" /> of an <R n="EntryURI" />{" "}
-                is optional. If it is missing, we say the <R n="EntryURI" /> is
-                {" "}
-                <Def n="subspace_relative" r="subspace-relative" />. It can then
-                only be resolved relative to a given{" "}
-                <R n="SubspaceId" />, and identifies an <R n="Entry" />{" "}
-                of that given <R n="SubspaceId" />.
-              </P>
-            </PreviewScope>
+          <P>
+            Each <R n="Willow_URI" /> contains a{" "}
+            <R n="SubspaceId" />. This identifies the{" "}
+            <R n="entry_subspace_id" /> of an <R n="Entry" /> or the{" "}
+            <R n="AreaSubspace" /> of an <R n="AreaOfInterest" />.
+          </P>
 
-            <PreviewScope>
-              <P>
-                The <DefType n="URIPath" rs="URIPaths" /> of an{" "}
-                <R n="EntryURI" /> is not a regular Willow{" "}
-                <R n="Path" />, but a pair of a boolean to indicate whether it
-                is <Def n="uri_path_absolute" r="absolute" /> or{" "}
-                <Def n="uri_path_relative" r="relative" />, and a sequence of
-                {" "}
-                <Rs n="URIPathComponent" />. A{" "}
-                <DefType n="URIPathComponent" rs="URIPathComponents" />{" "}
-                is a sequence consisting of regular <Rs n="Component" /> and
-                {" "}
-                <Def n="dot_segment" r="dot-segment" rs="dot-segments">
-                  dot-segments
-                </Def>{" "}
-                — either <Code>.</Code> or <Code>..</Code>. If the{" "}
-                <R n="URIPath" /> is <R n="uri_path_relative" />, we say the
-                {" "}
-                <R n="EntryURI" /> is{" "}
-                <Def n="path_relative" r="path-relative" />.
-              </P>
+          <P>
+            Each <R n="Willow_URI" /> contains a{" "}
+            <R n="URIPath" />. This identifies the <R n="entry_path" /> of an
+            {" "}
+            <R n="Entry" /> or the <R n="AreaPath" /> of an{" "}
+            <R n="AreaOfInterest" />.
+          </P>
 
-              <P>
-                <Rs n="URIPath" /> can be converted into Willow{" "}
-                <Rs n="Path" />. For <R n="uri_path_relative" />{" "}
-                <Rs n="URIPath" />, this requires a Willow{" "}
-                <Def
-                  n="uri_reference_path"
-                  r="reference path"
-                  rs="reference paths"
-                />{" "}
-                to start from; for <R n="uri_path_absolute" />{" "}
-                <Rs n="URIPath" />, the <R n="uri_reference_path" />{" "}
-                is the empty <R n="Path" />. You then iterate through the{" "}
-                <Rs n="URIPathComponent" /> and modify the{" "}
-                <R n="uri_reference_path" />:
-              </P>
+          <P>
+            Each <R n="Willow_URI" /> contains a (possibly empty) sequence of
+            {" "}
+            <Sidenote
+              note={
+                <>
+                  Typically <Em>not</Em> <Rs n="Willow_URI" />.
+                </>
+              }
+            >
+              URIs
+            </Sidenote>, which serve as hints for how and/or where to obtain the
+            identified data. Hints appearing early in the sequence should be
+            tried before hints appearing later in the sequence. The sequence
+            {" "}
+            <Sidenote
+              note={
+                <>
+                  Duplicates are fairly pointless though. Almost as pointless as
+                  including the original <R n="Willow_URI" /> in the sequence.
+                </>
+              }
+            >
+              may
+            </Sidenote>{" "}
+            contain duplicates.
+          </P>
 
-              <Ul>
-                <Li>
-                  for each regular <R n="Component" />, append it to the{" "}
-                  <R n="uri_reference_path" />,
-                </Li>
-                <Li>
-                  for each <Code>..</Code>{" "}
-                  <R n="dot_segment" />, remove the final <R n="Component" />
-                  {" "}
-                  of the <R n="uri_reference_path" />, and
-                </Li>
-                <Li>
-                  for each <Code>.</Code> <R n="dot_segment" />, do nothing.
-                </Li>
-              </Ul>
+          <P>
+            <Marginale>
+              The contents of this fragment is irrelevant to this specification;
+              its intended scope and functionality is detailed in{" "}
+              <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
+                Section 3.5 of RFC 3986
+              </AE>.
+            </Marginale>
+            Each <R n="Willow_URI" />{" "}
+            may optionally contain a bytestring of application-specific data.
+          </P>
 
-              <P>
-                If this would at any point result in removing a{" "}
-                <R n="Component" /> from an empty{" "}
-                <R n="uri_reference_path" />, then the <R n="EntryURI" />{" "}
-                identifies nothing.
-              </P>
-            </PreviewScope>
-
+          <Hsection n="uris_semantics_entry" title="Entry URI Semantics">
             <P>
-              An <R n="EntryURI" />{" "}
-              can optionally and additionally identify (a single contiguous
-              subslice of) the <R n="Payload" /> of the identified{" "}
-              <R n="Entry" />. The bytewise, zero-indexed <R n="Payload" />{" "}
-              subslice is specified by an optional start index, and an optional
-              end index. If both are missing, the <R n="EntryURI" />{" "}
-              refers to the <R n="Entry" /> only, without its{" "}
-              <R n="Payload" />. If both are given, the indices describe the
-              identified subslice (the start index is inclusive, but the end
-              index is exclusive). If only the start index is given, then the
-              subslice extends to the end of the{" "}
-              <R n="Payload" />. If only the end index is given, the subslcie
-              starts at the initial byte of the <R n="Payload" />.
-            </P>
-
-            <P>
-              An <R n="EntryURI" /> can optionally contain an expected{" "}
-              <R n="PayloadDigest" />. If the <R n="Entry" />{" "}
-              it would address does not have a <R n="Payload" /> of the expected
+              Each <R n="Entry_URI" /> optionally contains an expected{" "}
+              <R n="PayloadDigest" />. Such an <R n="Entry_URI" />{" "}
+              can only identify <Rs n="Entry" /> with that exact{" "}
+              <R n="entry_payload_digest" />. In other words, this feature can
+              be used to identify an <R n="Entry" /> with a specific{" "}
+              <R n="Payload" />, filtering out all differently-payloaded{" "}
+              <Rs n="Entry" /> which have been or{" "}
+              <Sidenote
+                note={
+                  <>
+                    Conformant <Rs n="store" /> will delete the overwritten{" "}
+                    <R n="Entry" />, and using an <R n="Entry_URI" /> will not
+                    {" "}
+                    <Quotes>pin</Quotes>{" "}
+                    it in any way. This feature will make it so that retrieval
+                    deliberately <Em>fails</Em> if the intended <R n="Entry" />
+                    {" "}
+                    got pruned, it does not allow keeping pruned data around.
+                  </>
+                }
+              >
+                will
+              </Sidenote>{" "}
+              have been written in the same <R n="namespace" /> with the same
               {" "}
-              <R n="PayloadDigest" />, then the URI identifies nothing instead.
-              This feature <Em>cannot</Em> be used to address old{" "}
-              <Rs n="Entry" /> which had been{" "}
-              <R n="prefix_pruning">prefix-pruned</R>.
+              <R n="entry_subspace_id" /> and <R n="entry_path" />.
             </P>
 
             <P>
-              An <R n="EntryURI" />{" "}
-              can optionally contain a sequence of other URIS (of any scheme,
-              not just{" "}
-              <Code>
-                <Green>willow://</Green>
-              </Code>) to serve as hints how to retrieve the identified{" "}
-              <R n="Entry" /> (and, optionally, its{" "}
-              <R n="Payload" />). Hints appearing early in the sequence should
-              be tried before hints appearing later in the sequence. The
-              sequence may contain duplicates, but that would be pretty
-              pointless.
+              Each <R n="Entry_URI" /> optionally contains an starting index (a
+              {" "}
+              <R n="U64" />) and optionally contains an end index (also a{" "}
+              <R n="U64" />), to identify a specific subslice of the{" "}
+              <R n="Payload" /> of the <R n="Entry" /> in addition to the{" "}
+              <R n="Entry" /> itself. The semantics are as follows:
             </P>
 
+            <Ul>
+              <Li>
+                If neither index is present, the <R n="Entry_URI" />{" "}
+                identifies only an <R n="Entry" /> but not its{" "}
+                <R n="Payload" />.
+              </Li>
+              <Li>
+                If both indices are present, the <R n="Entry_URI" />{" "}
+                identifies not only an{" "}
+                <R n="Entry" />, but also the zero-indexed subslice of its{" "}
+                <R n="Payload" />, starting at the start index (inclusive) and
+                up until the end index (exclusive). If the start index is
+                strictly greater than the end index, treat the{" "}
+                <R n="Entry_URI" />{" "}
+                as if its end index was set to the start index instead. Indexes
+                strictly greater than the <R n="Payload" />{" "}
+                length are truncated<Marginale>
+                  Giving an end index which is too large identifies the slice
+                  extending to the very end of the{" "}
+                  <R n="Payload" />; and giving a start index which is too large
+                  identifies the empty slice, positioned at the very end of the
+                  {" "}
+                  <R n="Payload" />.
+                </Marginale>{" "}
+                down to the exact <R n="Payload" /> length for this purpose.
+              </Li>
+              <Li>
+                If only one index is present, the other defaults to zero (for
+                the start index) or the length of the <R n="Payload" />{" "}
+                (for the end index), and then the preceding case appplies.
+              </Li>
+            </Ul>
+
             <P>
-              Taken together, we get the following data that conceptually makes
-              up an <R n="EntryURI" />:
+              Summarising as a data type:
             </P>
 
             <Pseudocode n="entry_uri_definition">
               <StructDef
                 comment={
                   <>
-                    The data of an <R n="EntryURI" />.
+                    The data of an <R n="Entry_URI" />.
                   </>
                 }
-                id={["EntryURIData", "EntryURIData", "EntryURIData"]}
+                id={["EntryURI", "EntryURI", "EntryURIs"]}
                 fields={[
                   {
                     commented: {
                       comment: (
                         <>
-                          The identifier of the <R n="namespace" />{" "}
-                          to which the identified <R n="Entry" /> belongs. If
+                          The <R n="entry_namespace_id" /> of the identified
                           {" "}
-                          <DefVariant n="entry_uri_ns_none" r="none" />, the
-                          {" "}
-                          <R n="EntryURI" /> is <R n="namespace_relative" />.
+                          <R n="Entry" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
                           "namespace_id",
-                          "entry_uri_namespace_id",
+                          "EntryURINamespaceId",
                           "namespace_ids",
                         ],
-                        <ChoiceType
-                          types={[
-                            <R n="NamespaceId" />,
-                            <R n="entry_uri_ns_none" />,
-                          ]}
-                        />,
+                        <R n="NamespaceId" />,
                       ],
                     },
                   },
@@ -308,25 +573,60 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The identifier of the <R n="subspace" />{" "}
-                          to which the identified <R n="Entry" /> belongs. If
-                          {" "}
-                          <DefVariant n="entry_uri_ss_none" r="none" />, the
-                          {" "}
-                          <R n="EntryURI" /> is <R n="subspace_relative" />.
+                          The <R n="entry_subspace_id" /> of the identified{" "}
+                          <R n="Entry" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
                           "subspace_id",
-                          "entry_uri_subspace_id",
+                          "EntryURISubspaceId",
                           "subspace_ids",
                         ],
-                        <ChoiceType
-                          types={[
-                            <R n="SubspaceId" />,
-                            <R n="entry_uri_ss_none" />,
+                        <R n="SubspaceId" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="URIPath" /> indicating the{" "}
+                          <R n="entry_path" /> of the identified{" "}
+                          <R n="Entry" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "path",
+                          "EntryURIPath",
+                          "path",
+                        ],
+                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The resolution hints for the <R n="Entry_URI" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "hints",
+                          "EntryURIHints",
+                          "hints",
+                        ],
+                        <SliceType
+                          children={[
+                            <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
+                              URI
+                            </AE>,
                           ]}
                         />,
                       ],
@@ -336,18 +636,26 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          Whether the <Rs n="URIPath" />{" "}
-                          is absolute or relative.
+                          The application-specific extra data associated with
+                          this <R n="Entry_URI" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "path_is_relative",
-                          "entry_uri_path_is_relative",
-                          "path_is_relatives",
+                          "fragment",
+                          "EntryURIFragment",
+                          "fragment",
                         ],
-                        <R n="Bool" />,
+                        <ChoiceType
+                          types={[
+                            <SliceType children={[<R n="U8" />]} />,
+                            <DefVariant
+                              n="entry_uri_fragment_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
                       ],
                     },
                   },
@@ -355,18 +663,25 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The <Rs n="URIPathComponent" /> of the{" "}
-                          <R n="URIPath" />.
+                          The optional expected <R n="PayloadDigest" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "path_components",
-                          "entry_uri_path_components",
-                          "path_components",
+                          "expected_digest",
+                          "EntryURIExpectedDigest",
+                          "expected_digests",
                         ],
-                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                        <ChoiceType
+                          types={[
+                            <R n="PayloadDigest" />,
+                            <DefVariant
+                              n="entry_uri_expected_digest_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
                       ],
                     },
                   },
@@ -382,7 +697,7 @@ export const uris = (
                       segment: [
                         [
                           "payload_from",
-                          "entry_uri_payload_from",
+                          "EntryURIPayloadFrom",
                           "payload_froms",
                         ],
                         <ChoiceType
@@ -408,7 +723,7 @@ export const uris = (
                       segment: [
                         [
                           "payload_to",
-                          "entry_uri_payload_to",
+                          "EntryURIPayloadTo",
                           "payload_to",
                         ],
                         <ChoiceType
@@ -423,29 +738,74 @@ export const uris = (
                       ],
                     },
                   },
+                ]}
+              />
+            </Pseudocode>
+          </Hsection>
+
+          <Hsection n="uris_semantics_area" title="Area URI Semantics">
+            <P>
+              Each <R n="Area_URI" /> contains a <R n="U64" /> to indicate the
+              {" "}
+              <R n="aoi_count" /> of the identified <R n="AreaOfInterest" />.
+            </P>
+
+            <P>
+              Each <R n="Area_URI" /> contains a <R n="U64" /> to indicate the
+              {" "}
+              <R n="aoi_size" /> of the identified <R n="AreaOfInterest" />.
+            </P>
+
+            <P>
+              Each <R n="Area_URI" /> contains a <R n="Timestamp" />{" "}
+              to indicate the <R n="TimeRangeStart" /> of the <R n="AreaTime" />
+              {" "}
+              of the <R n="aoi_area" /> of the identified{" "}
+              <R n="AreaOfInterest" />.
+            </P>
+
+            <P>
+              Each <R n="Area_URI" /> optionally contains a <R n="Timestamp" />
+              {" "}
+              to indicate the <R n="TimeRangeEnd" /> of the <R n="AreaTime" />
+              {" "}
+              of the <R n="aoi_area" /> of the identified{" "}
+              <R n="AreaOfInterest" />. If this <R n="Timestamp" />{" "}
+              is not present, then the <R n="TimeRangeEnd" /> is{" "}
+              <R n="range_open" /> instead.
+            </P>
+
+            <P>
+              Summarising as a data type (the first five fields are identical to
+              those of <R n="EntryURI" />):
+            </P>
+
+            <Pseudocode n="area_uri_definition">
+              <StructDef
+                comment={
+                  <>
+                    The data of an <R n="Area_URI" />.
+                  </>
+                }
+                id={["AreaURI", "AreaURI", "AreaURIs"]}
+                fields={[
                   {
                     commented: {
                       comment: (
                         <>
-                          The optional expected <R n="PayloadDigest" />.
+                          The <R n="NamespaceId" /> in which to identify the
+                          {" "}
+                          <R n="AreaOfInterest" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "expected_digest",
-                          "entry_uri_expected_digest",
-                          "expected_digests",
+                          "namespace_id",
+                          "AreaURINamespaceId",
+                          "namespace_ids",
                         ],
-                        <ChoiceType
-                          types={[
-                            <R n="PayloadDigest" />,
-                            <DefVariant
-                              n="entry_uri_expected_digest_none"
-                              r="none"
-                            />,
-                          ]}
-                        />,
+                        <R n="NamespaceId" />,
                       ],
                     },
                   },
@@ -453,15 +813,55 @@ export const uris = (
                     commented: {
                       comment: (
                         <>
-                          The resolution hints for the <R n="EntryURI" />.
+                          The <R n="AreaSubspace" /> of the <R n="aoi_area" />
+                          {" "}
+                          of the identified <R n="AreaOfInterest" />.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "path_hints",
-                          "entry_uri_hints",
-                          "path_hints",
+                          "subspace_id",
+                          "AreaURISubspaceId",
+                          "subspace_ids",
+                        ],
+                        <R n="SubspaceId" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="URIPath" /> indicating the{" "}
+                          <R n="AreaPath" /> of the <R n="aoi_area" />{" "}
+                          of the identified <R n="AreaOfInterest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "path",
+                          "AreaURIPath",
+                          "path",
+                        ],
+                        <SliceType children={[<R n="URIPathComponent" />]} />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The resolution hints for the <R n="Area_URI" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "hints",
+                          "AreaURIHints",
+                          "hints",
                         ],
                         <SliceType
                           children={[
@@ -473,182 +873,317 @@ export const uris = (
                       ],
                     },
                   },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The application-specific extra data associated with
+                          this <R n="Area_URI" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "fragment",
+                          "AreaURIFragment",
+                          "fragment",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <SliceType children={[<R n="U8" />]} />,
+                            <DefVariant
+                              n="area_uri_fragment_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="aoi_count" /> of the identified{" "}
+                          <R n="AreaOfInterest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "max_count",
+                          "AreaURIMaxCount",
+                          "max_counts",
+                        ],
+                        <R n="U64" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="aoi_size" /> of the identified{" "}
+                          <R n="AreaOfInterest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "max_size",
+                          "AreaURIMaxSize",
+                          "max_size",
+                        ],
+                        <R n="U64" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="TimeRangeStart" /> of the <R n="AreaTime" />
+                          {" "}
+                          of the <R n="aoi_area" /> of the identified{" "}
+                          <R n="AreaOfInterest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "timestamp_from",
+                          "AreaURITimestampFrom",
+                          "timestamp_from",
+                        ],
+                        <R n="Timestamp" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          The <R n="TimeRangeEnd" /> of the <R n="AreaTime" />
+                          {" "}
+                          of the <R n="aoi_area" /> of the identified{" "}
+                          <R n="AreaOfInterest" />.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "timestamp_to",
+                          "AreaURITimestampTo",
+                          "timestamp_to",
+                        ],
+                        <ChoiceType
+                          types={[
+                            <R n="Timestamp" />,
+                            <DefVariant
+                              n="area_uri_timestamp_to_none"
+                              r="none"
+                            />,
+                          ]}
+                        />,
+                      ],
+                    },
+                  },
                 ]}
               />
             </Pseudocode>
           </Hsection>
+        </Hsection>
+
+        <Hsection n="uris_syntax" title="URI Syntax">
+          <P>
+            We now define the syntax of a human-readable,{" "}
+            <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
+              RFC 3986
+            </AE>-compatible encoding for{" "}
+            <Rs n="Willow_URI" />, and give some example <Rs n="code" />.
+          </P>
 
           <Hsection n="uris_entry_syntax" title="Entry URI Syntax">
-            <P>
-              <Rb n="EntryURI" /> syntax follows the{" "}
-              <AE href="https://datatracker.ietf.org/doc/html/rfc3986">
-                RFC 3986
-              </AE>{" "}
-              URI syntax. In particular:
-            </P>
-
-            <Ul>
-              <Li>
-                The{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.1">
-                  scheme
-                </AE>{" "}
-                is <Code>willow</Code>.
-              </Li>
-              <Li>
-                The{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2">
-                  host
-                </AE>{" "}
-                subcomponent of the{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2">
-                  authority
-                </AE>{" "}
-                is given by a <R n="code" /> of the <R n="NamespaceId" /> in
-                {" "}
-                <R n="UriEncodeNamespaceId" /> (simply omitted for{" "}
-                <R n="namespace_relative" />{" "}
-                <Rs n="EntryURI" />), followed by an ASCII{" "}
-                <Code>!</Code>, followed by a <R n="code" /> of the{" "}
-                <R n="SubspaceId" /> in <R n="UriEncodeSubspaceId" />{" "}
-                (simply omitted for <R n="subspace_relative" />{" "}
-                <Rs n="EntryURI" />), followed by an ASCII{" "}
-                <Code>!</Code>. The authority subcomponent must adhere exactly
-                to these rules (i.e., no{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.1">
-                  user information
-                </AE>,{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.2">
-                  IP addresses
-                </AE>, or{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.2.3">
-                  ports
-                </AE>).
-              </Li>
-              <Li>
-                The{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.3">
-                  path segments
-                </AE>{" "}
-                are determined by the <Rs n="URIPathComponent" />.{" "}
-                <Rs n="dot_segment" /> are encoded as ASCII <Code>.</Code> or
-                {" "}
-                <Code>..</Code> respectively. The <R n="uri_unreserved" />{" "}
-                bytes of a regular <R n="Component" />{" "}
-                are encoded as ASCII, all other bytes are encoded using{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">
-                  percent encoding
-                </AE>. Each encoded <R n="URIPathComponent" /> (and{" "}
-                <R n="dot_segment" />) must be preceded by an ASCII{" "}
-                <Code>/</Code>, with two exceptions: omit the <Code>/</Code>
-                {" "}
-                for the first <R n="URIPathComponent" /> of a{" "}
-                <R n="path_relative" />{" "}
-                <R n="EntryURI" />, and omit it when encoding an absolute, empty
-                {" "}
-                <R n="Path" />. When decoding, the latter case takes precedence.
-              </Li>
-              <Li>
-                The{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.4">
-                  query component
-                </AE>{" "}
-                is a (possibly empty) sequence of the following strings — in any
-                order, separated by <Code>&</Code>{" "}
-                — where no option occurs more than once in the URI:
-                <Ul>
-                  <Li>
-                    To indicate a <R n="Payload" />{" "}
-                    slice start index, the ASCII string{" "}
-                    <Code>
-                      from=<EscapeHtml>{"<"}decimal{">"}</EscapeHtml>
-                    </Code>, where{" "}
-                    <Code>
-                      <EscapeHtml>{"<"}decimal{">"}</EscapeHtml>
-                    </Code>{" "}
-                    denotes an ASCII base-ten representation of the start index
-                    (with an arbitrary number of leading zeros).
-                  </Li>
-                  <Li>
-                    To indicate a <R n="Payload" />{" "}
-                    slice end index, the ASCII string{" "}
-                    <Code>
-                      to=<EscapeHtml>{"<"}decimal{">"}</EscapeHtml>
-                    </Code>, where{" "}
-                    <Code>
-                      <EscapeHtml>{"<"}decimal{">"}</EscapeHtml>
-                    </Code>{" "}
-                    denotes an ASCII base-ten representation of the end index
-                    (with an arbitrary number of leading zeros).
-                  </Li>
-                  <Li>
-                    To indicate an expected{" "}
-                    <R n="PayloadDigest" />, the ASCII string{" "}
-                    <Code>
-                      digest=<EscapeHtml>{"<"}code{">"}</EscapeHtml>
-                    </Code>, where{" "}
-                    <Code>
-                      <EscapeHtml>{"<"}code{">"}</EscapeHtml>
-                    </Code>{" "}
-                    is a <R n="code" /> of the expected <R n="PayloadDigest" />
+            <EncodingRelationTemplate
+              n="EncodeEntryURI"
+              valType={<R n="EntryURI" />}
+              preDefs={
+                <>
+                  <P>
+                    Let{" "}
+                    <DefValue n="entry_uri_encoded_hints" r="encoded_hints" />
                     {" "}
-                    in <R n="UriEncodePayloadDigest" />.
-                  </Li>
-                  <Li>
-                    To indicate a non-empty list of resolution hints, the ASCII
-                    string{" "}
-                    <Code>
-                      hints=<EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
-                    </Code>, where{" "}
-                    <Code>
-                      <EscapeHtml>{"<"}encoded_hints{">"}</EscapeHtml>
-                    </Code>{" "}
-                    is a <Code>;</Code>-separated list of the hint URIs, with
-                    {" "}
-                    <R n="uri_unreserved" />{" "}
-                    bytes being included verbatim, and all other bytes being
-                    {" "}
-                    <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-2.1">
-                      percent-encoded
-                    </AE>.
-                  </Li>
-                </Ul>
+                    be the bytestring obtained by applying{" "}
+                    <R n="percent_encode" /> to{" "}
+                    <ValAccess field="EntryURIHints" />{" "}
+                    and joining the results with <Code>59</Code> (ASCII{" "}
+                    <Code>;</Code>) bytes (but without leading or trailing{" "}
+                    <Code>;</Code>).
+                  </P>
 
-                If both a start and an end index are specified and the end
-                offset is equal or less than the start offset, the{" "}
-                <R n="EntryURI" /> identifies only the <R n="Entry" />{" "}
-                but no subslice of its <R n="Payload" />.
-              </Li>
-              <Li>
-                There may be an arbitrary{" "}
-                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.5">
-                  URI fragment
-                </AE>, with application-specific semantics.
-              </Li>
-            </Ul>
+                  <P>
+                    Let <DefValue n="entry_uri_query" r="query_component" />
+                    {" "}
+                    be a bytestring obtained by concatenating the following
+                    bytestrings in arbitrary order, joining non-empty ones with
+                    {" "}
+                    <Code>38</Code> (ASCII{" "}
+                    <Code>&</Code>) bytes (but without leading or trailing{" "}
+                    <Code>&</Code>):
+                  </P>
 
-            <P>
-              Note that from the generic URI spec we inherit the ability to use
-              relative URIs consisting of a path segments only, for example,
-              {" "}
-              <Code>
-                <SkyBlue>
-                  .
-                </SkyBlue>/<SkyBlue>ideas</SkyBlue>
-              </Code>. Such a relative URI is equivalent to a{" "}
-              <R n="namespace_relative" /> and <R n="subspace_relative" />{" "}
-              <R n="EntryURI" />, for example,{" "}
-              <Code>
-                <Green>willow</Green>://!!<SkyBlue>
-                  .
-                </SkyBlue>/<SkyBlue>ideas</SkyBlue>
-              </Code>.
-            </P>
+                  <Encoding
+                    idPrefix="uri_entry_query"
+                    bitfields={[]}
+                    contents={[
+                      <EncConditional
+                        condition={
+                          <>
+                            <ValAccess field="EntryURIHints" />{" "}
+                            is not the empty sequence
+                          </>
+                        }
+                      >
+                        The bytes <Code>[104, 105, 110, 116, 115, 61]</Code>
+                        {" "}
+                        (ASCII <Code>hints=</Code>), followed by{" "}
+                        <R n="entry_uri_encoded_hints" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <Code>
+                            <ValAccess field="EntryURIExpectedDigest" /> !={" "}
+                            <R n="entry_uri_expected_digest_none" />
+                          </Code>
+                        }
+                      >
+                        The bytes{" "}
+                        <Code>[100, 105, 103, 101, 115, 116, 61]</Code> (ASCII
+                        {" "}
+                        <Code>digest=</Code>), followed by{" "}
+                        <CodeFor notStandalone enc="URIEncodePayloadDigest">
+                          <ValAccess field="EntryURIExpectedDigest" />
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <Code>
+                            <ValAccess field="EntryURIPayloadFrom" /> !={" "}
+                            <R n="entry_uri_payload_from_none" />
+                          </Code>
+                        }
+                      >
+                        The bytes <Code>[102, 114, 111, 109, 61]</Code> (ASCII
+                        {" "}
+                        <Code>from=</Code>), followed by an ASCII decimal
+                        encoding with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="EntryURIPayloadFrom" />
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <Code>
+                            <ValAccess field="EntryURIPayloadTo" /> !={" "}
+                            <R n="entry_uri_payload_to_none" />
+                          </Code>
+                        }
+                      >
+                        The bytes <Code>[116, 111, 61]</Code> (ASCII{" "}
+                        <Code>to=</Code>), followed by an ASCII decimal encoding
+                        with arbitrarily many leading zeros of{" "}
+                        <ValAccess field="EntryURIPayloadTo" />
+                      </EncConditional>,
+                    ]}
+                  />
+                </>
+              }
+              bitfields={[]}
+              contents={[
+                <>
+                  The bytes{" "}
+                  <Code>[119, 105, 108, 108, 111, 119, 58, 47, 47]</Code> (ASCII
+                  {" "}
+                  <Code>willow://</Code>).
+                </>,
+                <CodeFor enc="URIEncodeNamespaceId">
+                  <ValAccess field="EntryURINamespaceId" />
+                </CodeFor>,
+                <>
+                  The byte <Code>46</Code> (ASCII <Code>.</Code>).
+                </>,
+                <CodeFor enc="URIEncodeSubspaceId">
+                  <ValAccess field="EntryURISubspaceId" />
+                </CodeFor>,
+                <EncIterator
+                  val={
+                    <>
+                      <R n="URIPathComponent" />{" "}
+                      <DefValue n="uri_entry_path_comp" r="comp" />
+                    </>
+                  }
+                  iter={<ValAccess field="EntryURIPath" />}
+                >
+                  <Encoding
+                    idPrefix="uri_entry_path"
+                    bitfields={[]}
+                    contents={[
+                      <>
+                        The byte <Code>47</Code> (ASCII <Code>/</Code>).
+                      </>,
+                      <>
+                        <Ul>
+                          <Li>
+                            If <R n="uri_entry_path_comp" /> is the{" "}
+                            <R n="dot_segment" /> <Code>.</Code>, the byte{" "}
+                            <Code>46</Code> (ASCII <Code>.</Code>),
+                          </Li>
+                          <Li>
+                            else, if <R n="uri_entry_path_comp" /> is the{" "}
+                            <R n="dot_segment" /> <Code>..</Code>, the bytes
+                            {" "}
+                            <Code>[46, 46]</Code> (ASCII <Code>..</Code>),
+                          </Li>
+                          <Li>
+                            else, the result of applying{" "}
+                            <R n="percent_encode" /> to the <R n="Component" />.
+                          </Li>
+                        </Ul>
+                      </>,
+                    ]}
+                  />
+                </EncIterator>,
+                <EncConditional
+                  condition={
+                    <>
+                      <R n="entry_uri_query" /> is not the empty string
+                    </>
+                  }
+                >
+                  the byte <Code>63</Code> (ASCII <Code>?</Code>)
+                </EncConditional>,
+                <RawBytes>
+                  <R n="entry_uri_query" />
+                </RawBytes>,
+                <EncConditional
+                  condition={
+                    <Code>
+                      <ValAccess field="EntryURIFragment" /> !={" "}
+                      <R n="entry_uri_fragment_none" />
+                    </Code>
+                  }
+                >
+                  the byte <Code>35</Code> (ASCII{" "}
+                  <Code>#</Code>), followed by the result of applying{" "}
+                  <R n="fragment_encode" /> to{" "}
+                  <ValAccess field="EntryURIFragment" />
+                </EncConditional>,
+              ]}
+            />
           </Hsection>
 
           <Hsection n="uris_entry_examples" title="Entry URI Examples">
             <P>
-              Here are some examples of valid <Rs n="EntryURI" />:
+              <Alj>These are outdated!</Alj>
+              Here are some examples of valid <Rs n="Entry_URI" />:
             </P>
 
             <Ul>
@@ -922,7 +1457,7 @@ export const uris = (
 
             <P>
               Here are some non-examples — these are not valid{" "}
-              <Rs n="EntryURI" />:
+              <Rs n="Entry_URI" />:
             </P>
 
             <Ul>
