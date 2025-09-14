@@ -117,12 +117,27 @@ export const wtp = (
             bidirectional eager forwarding of novel information, multiplexes
             several independent data streams, and diligently optimises bandwidth
             usage, the <R n="wtp" />{" "}
-            makes simplifying trust assumptions, works only unidirectionally,
-            places responsibility for avoiding head-of-line blocking on the{" "}
+            makes simplifying trust assumptions, has an unidirectionally flow of
+            initiative, places responsibility for avoiding head-of-line blocking
+            on the{" "}
             <R n="wtp_client" />, and sacrifices bandwidth for simplicity. In
             exchange, it goes easy on the computational resources of the{" "}
             <R n="wtp_server" />, and it is actually enjoyable and
             straightforward to implement.
+          </P>
+
+          <P>
+            Partial implementations of the <R n="wtp" />{" "}
+            can meaningfully interact with fully-featured ones. The{" "}
+            <R n="wtp_client" />{" "}
+            need not be able to process replies to types of requests it never
+            makes. The <R n="wtp_server" />{" "}
+            can refuse to process any incoming request, and it can communicate
+            when the reason is due to unimplemented features. This allows the
+            {" "}
+            <R n="wtp_client" />{" "}
+            to adapt its behaviour and to refrain from issuing requests the{" "}
+            <R n="wtp_server" /> does not support.
           </P>
 
           <P>
@@ -136,7 +151,7 @@ export const wtp = (
             <R n="wtp_client" />{" "}
             only works with public data, the channel is allowed to be
             non-confidential. Eavesdroppers might then learn about the{" "}
-            <R n="wtp_client" />’s interests, it is up to the{" "}
+            <R n="wtp_client" />’s interests; it is up to the{" "}
             <R n="wtp_client" /> to gauge whether that is acceptable.
           </P>
         </Hsection>
@@ -168,9 +183,12 @@ export const wtp = (
                 with an <R n="cap_mode" /> of <R n="access_read" />{" "}
                 as the type of <Rs n="WtpReadCapability" />.
               </Marginale>{" "}
-              and a type{" "}
-              <DefType n="wtp_receiver" r="Receiver" rs="Receivers" /> of{" "}
-              <Rs n="access_receiver" />.
+              a type <DefType n="wtp_receiver" r="Receiver" rs="Receivers" /> of
+              {" "}
+              <Rs n="access_receiver" />, and the type{" "}
+              <DefType n="wtp_signature" r="Signature" rs="Signatures" /> of
+              {" "}
+              <Rs n="dss_signature" /> issued by the <R n="wtp_receiver" />.
             </P>
           </PreviewScope>
 
@@ -231,6 +249,303 @@ export const wtp = (
               in terms of <R n="WtpChunk" /> offsets.
             </P>
           </PreviewScope>
+        </Hsection>
+
+        <Hsection n="wtp_protocol" title="Protocol">
+          <P>
+            The <R n="wtp" />{" "}
+            is message-based. The first message sent by each peer is a dedicated
+            setup message. After having sent its setup message, the{" "}
+            <R n="wtp_client" />{" "}
+            can send a number of request messages, in arbitrary order. The{" "}
+            <R n="wtp_server" />{" "}
+            replies to each request message with exactly one response message.
+          </P>
+
+          <P>
+            Peers might receive invalid messages, both syntactically (i.e.,
+            invalid encodings) and semantically (i.e., logically inconsistent
+            messages). In both cases, the peer to detect this behaviour must
+            abort the sync session. We indicate such situations by writing that
+            something{" "}
+            <Quotes>is an error</Quotes>. Whenever we state that a message must
+            fulfil some criteria, but a peer receives a message that does not
+            fulfil these criteria, that is an error.
+          </P>
+
+          <PreviewScope>
+            <P>
+              We start the message descriptions with the setup messages. The
+              {" "}
+              <R n="WtpServerSetupMessage" /> contains a{" "}
+              <DefValue n="wtp_challenge" r="challenge" rs="challenges" />, a
+              128-bit random number for which the <R n="wtp_client" />{" "}
+              must provide a valid signature in its own setup message. The{" "}
+              <R n="WtpServerSetupMessage" />{" "}
+              also contains some (non-binding) information about which{" "}
+              <R n="wtp" /> features the <R n="wtp_server" />{" "}
+              implements. For each feature, the <R n="wtp_server" /> supplies an
+              {" "}
+              <R n="AvailabilityInfo" />:
+            </P>
+          </PreviewScope>
+
+          <Pseudocode n="wtp_availability_def">
+            <Enum
+              comment={
+                <>
+                  Information about the degree to which the <R n="wtp_server" />
+                  {" "}
+                  implements and provides a feature of the <R n="wtp" />.
+                </>
+              }
+              id={["AvailabilityInfo", "AvailabilityInfo", "AvailabilityInfo"]}
+              variants={[
+                {
+                  tuple: true,
+                  comment: (
+                    <>
+                      The <R n="wtp_server" />{" "}
+                      does not want to supply any information about this
+                      feature. Reasons might include reducing the surface for
+                      fingerprinting particular implementations or deployments,
+                      or perhaps the implementer did not want to spend time on
+                      providing accurate information.
+                    </>
+                  ),
+                  id: ["WontTell", "AvailabilityInfoWontTell"],
+                },
+                {
+                  tuple: true,
+                  comment: (
+                    <>
+                      The feature is not available to this <R n="wtp_client" />
+                      {" "}
+                      at all. Perhaps the <R n="wtp_server" />{" "}
+                      does not implement it, perhaps the <R n="wtp_server" />
+                      {" "}
+                      does not want to spend the required resources for this
+                      {" "}
+                      <R n="wtp_client" />. No matter why, the{" "}
+                      <R n="wtp_client" />{" "}
+                      need not bother make requests which rely on this feature.
+                    </>
+                  ),
+                  id: ["Unavailable", "AvailabilityInfoUnavailable"],
+                },
+                {
+                  tuple: true,
+                  comment: (
+                    <>
+                      The feature may or may not be available, depending on some
+                      unknown factor such as perhaps the <R n="namespace" />,
+                      {" "}
+                      <R n="subspace" />{" "}
+                      or other request data, or perhaps the weather. When making
+                      requests which rely on this feature, the{" "}
+                      <R n="wtp_client" />{" "}
+                      should know that it may or may not get the response it
+                      hoped for.
+                    </>
+                  ),
+                  id: ["Depends", "AvailabilityInfoDepends"],
+                },
+                {
+                  tuple: true,
+                  comment: (
+                    <>
+                      The feature is available. The <R n="wtp_client" />{" "}
+                      should assume that requests which rely on this feature
+                      will get a satisfactory reply.
+                    </>
+                  ),
+                  id: ["Available", "AvailabilityInfoAvailable"],
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <P>
+            The <R n="WtpServerSetupMessage" /> combines a{" "}
+            <R n="wtp_challenge" /> with the <R n="AvailabilityInfo" />{" "}
+            for various features:<Alj>
+              TODO: add more features here as they come up in requests.
+            </Alj>
+          </P>
+
+          <Pseudocode n="wtp_defs_server_setup_message">
+            <StructDef
+              comment={
+                <>
+                  The first message sent by the{" "}
+                  <R n="wtp_server" />. The various <Rs n="AvailabilityInfo" />
+                  {" "}
+                  serve as optimisation hints for the{" "}
+                  <R n="wtp_client" />, but they are not binding: the{" "}
+                  <R n="wtp_server" /> might claim that a feature is{" "}
+                  <R n="AvailabilityInfoAvailable" />, yet later reply to a
+                  request that the feature is unsupported. Such behaviour is
+                  obviously not ideal, but not expressly forbidden.
+                </>
+              }
+              id={["ServerSetupMessage", "WtpServerSetupMessage"]}
+              fields={[
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        The <R n="wtp_challenge" /> for the <R n="wtp_client" />
+                        {" "}
+                        in this <R n="wtp" />{" "}
+                        session. This must be a nonce, sending the same{" "}
+                        <R n="wtp_challenge" /> twice might allow a malicious
+                        {" "}
+                        <R n="wtp_client" /> to sidestep access control. The
+                        {" "}
+                        <R n="wtp_challenge" />{" "}
+                        is sufficiently large that generating a random number
+                        for each connection keeps things secure.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "challenge",
+                        "WtpServerSetupMessageChallenge",
+                        "challenges",
+                      ],
+                      <ArrayType count="16">
+                        <R n="U8" />
+                      </ArrayType>,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        Whether the <R n="wtp_server" />{" "}
+                        supports working with transformed <R n="Payload" />{" "}
+                        <Rs n="WtpChunk" />. If this feature is{" "}
+                        <R n="AvailabilityInfoUnavailable" />, the{" "}
+                        <R n="wtp_client" />{" "}
+                        can fall back to working with raw, byte-indexed{" "}
+                        <R n="Payload" />, foregoing incremental authentication
+                        of <R n="Payload" /> slices.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "availability_transformed_payloads",
+                        "wtp_availability_transformed_payloads",
+                      ],
+                      <R n="AvailabilityInfo" />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        Whether the <R n="wtp_server" />{" "}
+                        supports working withraw, byte-indexed{" "}
+                        <Rs n="Payload" />. If this feature is{" "}
+                        <R n="AvailabilityInfoUnavailable" />, the{" "}
+                        <R n="wtp_client" /> must work with transformed{" "}
+                        <R n="Payload" /> <Rs n="WtpChunk" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "availability_raw_payloads",
+                        "wtp_availability_raw_payloads",
+                      ],
+                      <R n="AvailabilityInfo" />,
+                    ],
+                  },
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <P>
+            The first message sent by the <R n="wtp_client" /> consists of a
+            {" "}
+            <R n="wtp_receiver" />, and a signature with that{" "}
+            <R n="wtp_receiver" /> over the previously received{" "}
+            <R n="WtpServerSetupMessageChallenge" /> issued by the{" "}
+            <R n="wtp_server" />. This <R n="wtp_receiver" /> must be the{" "}
+            <R n="access_receiver" /> of every <R n="WtpReadCapability" />{" "}
+            which the <R n="wtp_client" /> will supply over the course of this
+            {" "}
+            <R n="wtp" /> session. This <R n="wtp_receiver" />{" "}
+            is one of the few pieces of state the <R n="wtp_server" />{" "}
+            must maintain for the duration of the <R n="wtp" /> session.
+          </P>
+
+          <Pseudocode n="wtp_defs_client_setup_message">
+            <StructDef
+              comment={
+                <>
+                  The first message sent by the{" "}
+                  <R n="wtp_client" />. If the underlying{" "}
+                  <R n="signature_scheme" /> is secure, a valid{" "}
+                  <R n="WtpClientSetupMessage" /> can only be sent after the
+                  {" "}
+                  <R n="wtp_client" /> has received the{" "}
+                  <R n="WtpServerSetupMessage" /> message.
+                </>
+              }
+              id={["ClientSetupMessage", "WtpClientSetupMessage"]}
+              fields={[
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        The single <R n="wtp_receiver" /> of every{" "}
+                        <R n="WtpReadCapability" /> the <R n="wtp_client" />
+                        {" "}
+                        will send in this <R n="wtp" /> session.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "read_capability_receiver",
+                        "WtpClientSetupMessageReadCapabilityReceiver",
+                        "read_capability_receivers",
+                      ],
+                      <R n="wtp_receiver" />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        A <R n="dss_signature" /> issued by the{" "}
+                        <R n="WtpClientSetupMessageReadCapabilityReceiver" />
+                        {" "}
+                        over the <R n="WtpServerSetupMessageChallenge" />{" "}
+                        of the previously received{" "}
+                        <R n="WtpServerSetupMessage" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "signature",
+                        "WtpClientSetupMessageSignature",
+                      ],
+                      <R n="wtp_signature" />,
+                    ],
+                  },
+                },
+              ]}
+            />
+          </Pseudocode>
         </Hsection>
       </PageTemplate>
     </File>
