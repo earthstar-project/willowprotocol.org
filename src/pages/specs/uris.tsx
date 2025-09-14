@@ -382,19 +382,21 @@ export const uris = (
         </Hsection>
 
         <Hsection n="uris_semantics" title="URI Semantics">
-          <P>
-            <Marginale>
-              Note that URIs always provide an absolute reference. Relative
-              identification (think relative hyperlinks in HTML) are not URIs
-              but{" "}
-              <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
-                URI references
-              </AE>. We inherit their semantics for free.
-            </Marginale>
-            We first specify the information contained by each{" "}
-            <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />, independent
-            from URI syntax.
-          </P>
+          <PreviewScope>
+            <P>
+              <Marginale>
+                Note that URIs always provide an absolute reference. Relative
+                identification (think relative hyperlinks in HTML) are not URIs
+                but{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-4.1">
+                  URI references
+                </AE>. We inherit their semantics for free.
+              </Marginale>
+              We first specify the information contained by each{" "}
+              <Def n="Willow_URI" r="Willow URI" rs="Willow URIs" />,
+              independent from URI syntax.
+            </P>
+          </PreviewScope>
 
           <PreviewScope>
             <P>
