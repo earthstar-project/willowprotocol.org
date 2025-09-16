@@ -255,7 +255,7 @@ export const wtp = (
                 also contains some (non-binding) information about which{" "}
                 <R n="wtp" /> features the <R n="wtp_server" />{" "}
                 implements. For each feature, the <R n="wtp_server" />{" "}
-                supplies an <R n="AvailabilityInfo" />:
+                supplies an <R n="Availability" />:
               </P>
             </PreviewScope>
 
@@ -269,9 +269,9 @@ export const wtp = (
                   </>
                 }
                 id={[
-                  "AvailabilityInfo",
-                  "AvailabilityInfo",
-                  "AvailabilityInfo",
+                  "Availability",
+                  "Availability",
+                  "Availability",
                 ]}
                 variants={[
                   {
@@ -286,7 +286,7 @@ export const wtp = (
                         spend time on providing accurate information.
                       </>
                     ),
-                    id: ["WontTell", "AvailabilityInfoWontTell"],
+                    id: ["WontTell", "AvailabilityWontTell"],
                   },
                   {
                     tuple: true,
@@ -305,7 +305,7 @@ export const wtp = (
                         feature.
                       </>
                     ),
-                    id: ["Unavailable", "AvailabilityInfoUnavailable"],
+                    id: ["Unavailable", "AvailabilityUnavailable"],
                   },
                   {
                     tuple: true,
@@ -321,7 +321,7 @@ export const wtp = (
                         hoped for.
                       </>
                     ),
-                    id: ["Depends", "AvailabilityInfoDepends"],
+                    id: ["Depends", "AvailabilityDepends"],
                   },
                   {
                     tuple: true,
@@ -332,7 +332,7 @@ export const wtp = (
                         will get a satisfactory reply.
                       </>
                     ),
-                    id: ["Available", "AvailabilityInfoAvailable"],
+                    id: ["Available", "AvailabilityAvailable"],
                   },
                 ]}
               />
@@ -340,7 +340,7 @@ export const wtp = (
 
             <P>
               The <R n="WtpServerSetupMessage" /> combines a{" "}
-              <R n="wtp_challenge" /> with the <R n="AvailabilityInfo" />{" "}
+              <R n="wtp_challenge" /> with the <R n="Availability" />{" "}
               for various features:<Alj>
                 TODO: add more features here as they come up in requests.
               </Alj>
@@ -351,12 +351,12 @@ export const wtp = (
                 comment={
                   <>
                     The first message sent by the{" "}
-                    <R n="wtp_server" />. The various{" "}
-                    <Rs n="AvailabilityInfo" />{" "}
+                    <R n="wtp_server" />. The various <Rs n="Availability" />
+                    {" "}
                     serve as optimisation hints for the{" "}
                     <R n="wtp_client" />, but they are not binding: the{" "}
                     <R n="wtp_server" /> might claim that a feature is{" "}
-                    <R n="AvailabilityInfoAvailable" />, yet later reply to a
+                    <R n="AvailabilityAvailable" />, yet later reply to a
                     request that the feature is unsupported. Such behaviour is
                     obviously not ideal, but not expressly forbidden.
                   </>
@@ -397,24 +397,17 @@ export const wtp = (
                       comment: (
                         <>
                           Whether the <R n="wtp_server" />{" "}
-                          supports sending transformed <R n="Payload" />{" "}
-                          <Rs n="WtpChunk" />. If this feature is{" "}
-                          <R n="AvailabilityInfoUnavailable" />, the{" "}
-                          <R n="wtp_client" />{" "}
-                          can possibly fall back to requesting raw, byte-indexed
-                          {" "}
-                          <R n="Payload" />, foregoing incremental
-                          authentication of the <R n="Payload" />{" "}
-                          slices it receives.
+                          supports properly responding to{" "}
+                          <R n="WtpRequestSpecific" /> messages.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "availability_send_transformed_payloads",
-                          "wtp_availability_send_transformed_payloads",
+                          "feature_req_specific",
+                          "wtp_feature_req_specific",
                         ],
-                        <R n="AvailabilityInfo" />,
+                        <R n="Availability" />,
                       ],
                     },
                   },
@@ -422,32 +415,142 @@ export const wtp = (
                     commented: {
                       comment: (
                         <>
-                          Whether the <R n="wtp_server" />{" "}
-                          supports sending raw, byte-indexed{" "}
-                          <Rs n="Payload" />. If this feature is{" "}
-                          <R n="AvailabilityInfoUnavailable" />, the{" "}
-                          <R n="wtp_client" /> should request transformed{" "}
-                          <R n="Payload" /> <Rs n="WtpChunk" />{" "}
-                          instead. If both this feature and the{" "}
-                          <R n="wtp_availability_send_transformed_payloads" />
-                          {" "}
-                          feature are <R n="AvailabilityInfoUnavailable" />, the
-                          {" "}
-                          <R n="wtp_server" /> signals that it does not send
-                          {" "}
-                          <Rs n="Payload" /> at all.
+                          Whether the <R n="wtp_server" /> supports serving{" "}
+                          <Rs n="Payload" /> via responses to{" "}
+                          <R n="WtpRequestSpecific" /> messages.
                         </>
                       ),
                       dedicatedLine: true,
                       segment: [
                         [
-                          "availability_raw_payloads",
-                          "wtp_availability_raw_payloads",
+                          "feature_req_specific_payload",
+                          "wtp_feature_req_specific_payload",
                         ],
-                        <R n="AvailabilityInfo" />,
+                        <R n="Availability" />,
                       ],
                     },
                   },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Whether the <R n="wtp_server" /> supports serving{" "}
+                          raw, byte-indexed <Rs n="Payload" />{" "}
+                          slices in its responses to{" "}
+                          <R n="WtpRequestSpecific" />{" "}
+                          messages (as opposed to Bab-based authenticated
+                          slices).
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "feature_req_specific_raw_slices",
+                          "wtp_feature_req_specific_raw_slices",
+                        ],
+                        <R n="Availability" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Whether the <R n="wtp_server" /> supports serving{" "}
+                          Bab authenticated <Rs n="Payload" />{" "}
+                          slices in its responses to{" "}
+                          <R n="WtpRequestSpecific" />{" "}
+                          messages (as opposed to raw, byte-indexed slices).
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "feature_req_specific_authenticated_slices",
+                          "wtp_feature_req_specific_authenticated_slices",
+                        ],
+                        <R n="Availability" />,
+                      ],
+                    },
+                  },
+                  {
+                    commented: {
+                      comment: (
+                        <>
+                          Whether the <R n="wtp_server" /> supports serving{" "}
+                          Bab authenticated <Rs n="Payload" />{" "}
+                          slices in its responses to{" "}
+                          <R n="WtpRequestSpecific" /> messages with a{" "}
+                          <R n="WtpPartialVerificationK" /> other than{" "}
+                          <Code>1</Code>.
+                        </>
+                      ),
+                      dedicatedLine: true,
+                      segment: [
+                        [
+                          "feature_req_specific_fancy_k",
+                          "wtp_feature_req_specific_fancy_k",
+                        ],
+                        <R n="Availability" />,
+                      ],
+                    },
+                  },
+                  // {
+                  //   commented: {
+                  //     comment: (
+                  //       <>
+                  //         Whether the <R n="wtp_server" />{" "}
+                  //         supports sending transformed <R n="Payload" />{" "}
+                  //         <Rs n="WtpChunk" />. If this feature is{" "}
+                  //         <R n="AvailabilityUnavailable" />, the{" "}
+                  //         <R n="wtp_client" />{" "}
+                  //         can possibly fall back to requesting raw, byte-indexed
+                  //         {" "}
+                  //         <R n="Payload" />, foregoing incremental
+                  //         authentication of the <R n="Payload" />{" "}
+                  //         slices it receives.
+                  //       </>
+                  //     ),
+                  //     dedicatedLine: true,
+                  //     segment: [
+                  //       [
+                  //         "availability_send_transformed_payloads",
+                  //         "wtp_availability_send_transformed_payloads",
+                  //       ],
+                  //       <R n="Availability" />,
+                  //     ],
+                  //   },
+                  // },
+                  // {
+                  //   commented: {
+                  //     comment: (
+                  //       <>
+                  //         Whether the <R n="wtp_server" />{" "}
+                  //         supports sending raw, byte-indexed{" "}
+                  //         <Rs n="Payload" />. If this feature is{" "}
+                  //         <R n="AvailabilityUnavailable" />, the{" "}
+                  //         <R n="wtp_client" /> should request transformed{" "}
+                  //         <R n="Payload" /> <Rs n="WtpChunk" />{" "}
+                  //         instead. If both this feature and the{" "}
+                  //         <R n="wtp_availability_send_transformed_payloads" />
+                  //         {" "}
+                  //         feature are <R n="AvailabilityUnavailable" />, the
+                  //         {" "}
+                  //         <R n="wtp_server" /> signals that it does not send
+                  //         {" "}
+                  //         <Rs n="Payload" /> at all.
+                  //       </>
+                  //     ),
+                  //     dedicatedLine: true,
+                  //     segment: [
+                  //       [
+                  //         "availability_raw_payloads",
+                  //         "wtp_availability_raw_payloads",
+                  //       ],
+                  //       <R n="Availability" />,
+                  //     ],
+                  //   },
+                  // },
                 ]}
               />
             </Pseudocode>
@@ -592,8 +695,7 @@ export const wtp = (
 
             <Hsection
               n="wtp_request_specific"
-              title="Requesting Payloads (and Entries)"
-              shortTitle="Requesting Payloads"
+              title={<Code>RequestSpecific</Code>}
             >
               <P>
                 The first kind of request allows to request a specific
@@ -680,6 +782,33 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
+                            A <R n="WtpReadCapability" /> whose{" "}
+                            <R n="granted_namespace" /> must be the requested
+                            {" "}
+                            <R n="WtpRequestSpecificNamespaceId" />, and whose
+                            {" "}
+                            <R n="granted_area" /> must be able to{" "}
+                            <R n="area_include" /> <Rs n="Entry" />{" "}
+                            of the requested{" "}
+                            <R n="WtpRequestSpecificSubspaceId" /> and{" "}
+                            <R n="WtpRequestSpecificPath" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "read_capability",
+                            "WtpRequestSpecificReadCapability",
+                            "read_capabilities",
+                          ],
+                          <R n="Path" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
                             Optionally the expected{" "}
                             <R n="entry_payload_digest" /> of the requested{" "}
                             <R n="AuthorisedEntry" />. If this is not{" "}
@@ -748,6 +877,87 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
+                            <P>
+                              Specifies a minimum timestamp for any{" "}
+                              <R n="AuthorisedEntry" /> the <R n="wtp_server" />
+                              {" "}
+                              might reply with. If this is not{" "}
+                              <R n="wtp_request_specific_minimum_timestamp_none" />
+                              {" "}
+                              and the <R n="wtp_server" /> stores a matching
+                              {" "}
+                              <R n="AuthorisedEntry" />, but its{" "}
+                              <R n="entry_timestamp" /> is less than this{" "}
+                              <R n="WtpRequestSpecificMinimumTimestamp" />, the
+                              {" "}
+                              <R n="wtp_server" /> responds with the{" "}
+                              <R n="WtpResponseSpecificStatusCodeTooOld" />{" "}
+                              status code instead of supplying the{" "}
+                              <R n="AuthorisedEntry" /> (and/or a part of its
+                              {" "}
+                              <R n="Payload" />).
+                            </P>
+
+                            <P>
+                              If this is not{" "}
+                              <R n="wtp_request_specific_minimum_timestamp_none" />,
+                              and the <R n="WtpRequestSpecificPayloadDigest" />
+                              {" "}
+                              is also not{" "}
+                              <R n="wtp_request_specific_payload_digest_none" />,
+                              the semantics of the{" "}
+                              <R n="WtpRequestSpecificPayloadDigest" />{" "}
+                              change: it does not need to match exactly any
+                              more, instead it factors into the{" "}
+                              <R n="entry_newer" />-than relation: if the{" "}
+                              <R n="wtp_server" /> has an appropriate{" "}
+                              <R n="AuthorisedEntry" /> of{" "}
+                              <R n="entry_timestamp" /> exactly{" "}
+                              <R n="WtpRequestSpecificMinimumTimestamp" />, it
+                              responds with the{" "}
+                              <R n="WtpResponseSpecificStatusCodeTooOld" />{" "}
+                              status code only if the{" "}
+                              <R n="entry_payload_digest" /> of the candidate
+                              {" "}
+                              <R n="AuthorisedEntry" />{" "}
+                              is strictly less than the{" "}
+                              <R n="WtpRequestSpecificPayloadDigest" />.
+                            </P>
+
+                            <P>
+                              Finally, this field must be{" "}
+                              <R n="wtp_request_specific_minimum_timestamp_none" />
+                              {" "}
+                              if <R n="WtpRequestSpecificSkipEntry" /> is{" "}
+                              <Code>true</Code>. There is no status code for
+                              indicating a mismatch because the message encoding
+                              ensures this.
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "minimum_timestamp",
+                            "WtpRequestSpecificMinimumTimestamp",
+                            "minimum_timestamp",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="Timestamp" />,
+                              <DefVariant
+                                n="wtp_request_specific_minimum_timestamp_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
                             The start offset (zero-indexed, inclusive) of the
                             requested <R n="Payload" /> slice.
                           </>
@@ -767,8 +977,7 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
-                            The end offset (zero-indexed, exclusive) of the
-                            requested <R n="Payload" />{" "}
+                            The length of the requested <R n="Payload" />{" "}
                             slice. Note that requesting a very large slice might
                             result in a very large reply, which could take a
                             very long time to transmit, blocking off possibly
@@ -783,9 +992,9 @@ export const wtp = (
                         dedicatedLine: true,
                         segment: [
                           [
-                            "slice_to",
-                            "WtpRequestSpecificSliceTo",
-                            "slice_to",
+                            "slice_length",
+                            "WtpRequestSpecificSliceLength",
+                            "slice_length",
                           ],
                           <R n="U64" />,
                         ],
@@ -799,17 +1008,15 @@ export const wtp = (
                             <R n="wtp_request_specific_partial_verification_options_none" />,
                             then the <R n="WtpRequestSpecificSliceFrom" /> and
                             {" "}
-                            <R n="WtpRequestSpecificSliceTo" />{" "}
-                            fields are byte-based indices into the{" "}
-                            <R n="Payload" /> of the requested{" "}
-                            <R n="AuthorisedEntry" />, and the response simply
+                            <R n="WtpRequestSpecificSliceLength" />{" "}
+                            fields are number of bytes, and the response simply
                             contains (a prefix of) the <R n="Payload" />{" "}
                             slice as raw bytes. If{" "}
                             <R n="WtpPartialVerification" /> is given, however,
                             {" "}
                             <R n="WtpRequestSpecificSliceFrom" /> and{" "}
-                            <R n="WtpRequestSpecificSliceTo" /> are indices of
-                            {" "}
+                            <R n="WtpRequestSpecificSliceLength" />{" "}
+                            are numbers of{" "}
                             <AE href="https://worm-blossom.github.io/bab/#chunk">
                               Bab chunks
                             </AE>. The response then contains not a raw subslice
@@ -933,55 +1140,709 @@ export const wtp = (
                         ],
                       },
                     },
+                  ]}
+                />
+              </Pseudocode>
+            </Hsection>
+
+            <Hsection
+              n="wtp_response_specific"
+              title={<Code>ResponseSpecific</Code>}
+            >
+              <P>
+                The corresponding response starts with the{" "}
+                <R n="wtp_request_id" /> of the <R n="WtpRequestSpecific" />
+                {" "}
+                message, followed by one of the following status codes:
+              </P>
+
+              <Pseudocode n="wtp_response_specific_status_code_def">
+                <Enum
+                  comment={
+                    <>
+                      The different status codes in a response to a{" "}
+                      <R n="WtpRequestSpecific" />{" "}
+                      message. If multiple codes would apply, the one listed
+                      earliest takes precedence.
+                    </>
+                  }
+                  id={[
+                    "ResponseSpecificStatusCode",
+                    "WtpResponseSpecificStatusCode",
+                    "ResponseSpecificStatusCodes",
+                  ]}
+                  variants={[
                     {
-                      commented: {
-                        comment: (
-                          <>
-                            If <Code>true</Code>, the <R n="wtp_server" />{" "}
-                            is allowed to convert the chunk indices of{" "}
-                            <R n="WtpRequestSpecificSliceFrom" /> and{" "}
-                            <R n="WtpRequestSpecificSliceTo" />{" "}
-                            into byte indices and to reply with the raw{" "}
-                            <R n="Payload" />{" "}
-                            slice instead of replying with a Bab partially
-                            verifiable stream. This allows <Rs n="wtp_server" />
+                      tuple: true,
+                      id: [
+                        "nope",
+                        "WtpResponseSpecificStatusCodeNope",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{" "}
+                          chose to not meaningfully answer this request. It also
+                          chose to not tell the <R n="wtp_client" /> why.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "yay",
+                        "WtpResponseSpecificStatusCodeYay",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, and the{" "}
+                          <R n="wtp_server" /> stored an appropriate{" "}
+                          <R n="AuthorisedEntry" />. The response contains it,
+                          unless <R n="WtpRequestSpecificSkipEntry" /> was{" "}
+                          <Code>true</Code>.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "not_processed",
+                        "WtpResponseSpecificStatusCodeNotProcessed",
+                      ],
+                      comment: (
+                        <>
+                          The request was not processed. The{" "}
+                          <R n="wtp_feature_req_specific" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "unauthorised",
+                        "WtpResponseSpecificStatusCodeUnauthorised",
+                      ],
+                      comment: (
+                        <>
+                          <P>
+                            The <R n="access_receiver" /> of the{" "}
+                            <R n="WtpRequestSpecificReadCapability" />{" "}
+                            was not the{" "}
+                            <R n="WtpClientSetupMessageReadCapabilityReceiver" />
                             {" "}
-                            without a full Bab implementation to still reply
-                            with useful data. If this field is{" "}
-                            <Code>false</Code>, then such <Rs n="wtp_server" />
+                            in the <R n="wtp_client" />’s{" "}
+                            <R n="WtpClientSetupMessage" />.
+                          </P>
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "not_found",
+                        "WtpResponseSpecificStatusCodeNotFound",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{"  "}
+                          processed the reqest, but did not have an{" "}
+                          <R n="AuthorisedEntry" /> of matching{" "}
+                          <R n="entry_namespace_id" />,{" "}
+                          <R n="entry_subspace_id" /> and <R n="entry_path" />.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "too_old",
+                        "WtpResponseSpecificStatusCodeTooOld",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{"  "}
+                          processed the reqest, did have an{" "}
+                          <R n="AuthorisedEntry" /> of matching{" "}
+                          <R n="entry_namespace_id" />,{" "}
+                          <R n="entry_subspace_id" /> and{" "}
+                          <R n="entry_path" />, but the request had a
+                          non-<R n="wtp_request_specific_minimum_timestamp_none" />
+                          {" "}
+                          <R n="WtpRequestSpecificMinimumTimestamp" />, and the
+                          {" "}
+                          <R n="entry_timestamp" /> of the matching{" "}
+                          <R n="AuthorisedEntry" /> was strictly less than the
+                          {" "}
+                          <R n="WtpRequestSpecificMinimumTimestamp" />{" "}
+                          (or, if the request’s{" "}
+                          <R n="WtpRequestSpecificPayloadDigest" /> is not{" "}
+                          <R n="wtp_request_specific_payload_digest_none" />,
+                          this status code is also sent if the{" "}
+                          <R n="entry_timestamp" /> of the matching{" "}
+                          <R n="AuthorisedEntry" /> is equal to the{" "}
+                          <R n="WtpRequestSpecificMinimumTimestamp" /> but its
+                          {" "}
+                          <R n="entry_payload_digest" />{" "}
+                          is strictly less than the request’s{" "}
+                          <R n="WtpRequestSpecificPayloadDigest" />).
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "unexpected_payload_digest",
+                        "WtpResponseSpecificStatusCodeUnexpectedPayloadDigest",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{"  "}
+                          processed the reqest, did have an{" "}
+                          <R n="AuthorisedEntry" /> of matching{" "}
+                          <R n="entry_namespace_id" />,{" "}
+                          <R n="entry_subspace_id" /> and{" "}
+                          <R n="entry_path" />, but its{" "}
+                          <R n="entry_payload_digest" />{" "}
+                          did not match the expected{" "}
+                          <R n="WtpRequestSpecificPayloadDigest" />{" "}
+                          specified in the request.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "unexpected_timestamp",
+                        "WtpResponseSpecificStatusCodeUnexpectedTimestamp",
+                      ],
+                      comment: (
+                        <>
+                          <P>
+                            The <R n="wtp_server" />{"  "}
+                            processed the reqest, did have an{" "}
+                            <R n="AuthorisedEntry" /> of matching{" "}
+                            <R n="entry_namespace_id" />,{" "}
+                            <R n="entry_subspace_id" /> and{" "}
+                            <R n="entry_path" />, but its{" "}
+                            <R n="entry_timestamp" /> did not fall into the{" "}
+                            <R n="TimeRange" /> of the <R n="granted_area" />
                             {" "}
-                            must reply with an unsuccessful status code and no
-                            {" "}
-                            <R n="Payload" /> data instead.
-                          </>
-                        ),
-                        dedicatedLine: true,
-                        segment: [
-                          [
-                            "allow_fallback",
-                            "WtpPartialVerificationAllowFallback",
-                            "allow_fallback",
-                          ],
-                          <R n="Bool" />,
-                        ],
-                      },
+                            of the <R n="WtpRequestSpecificReadCapability" />.
+                          </P>
+                        </>
+                      ),
                     },
                   ]}
                 />
               </Pseudocode>
 
               <P>
-                <Alj inline>
-                  TODO: As part of describing the response, handle the corner
-                  cases for too-great or swapped from and to indices.
-                </Alj>
+                Every <R n="WtpResponseSpecificStatusCode" /> but{" "}
+                <R n="WtpResponseSpecificStatusCodeYay" />{" "}
+                marks the end of the response. If the{" "}
+                <R n="WtpResponseSpecificStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponseSpecificStatusCodeYay" />, the response
+                continues with the requested <R n="AuthorisedEntry" />{" "}
+                (skipped if the request had set{" "}
+                <R n="WtpRequestSpecificSkipEntry" /> to{" "}
+                <Code>true</Code>), followed by a new status code to indicate
+                whether the requested <R n="Payload" /> slice can be served:
               </P>
+
+              <Pseudocode n="wtp_response_specific_status_code_payload_def">
+                <Enum
+                  comment={
+                    <>
+                      The different status codes indicating whether a{" "}
+                      <R n="Payload" /> slice could be served in response to a
+                      {" "}
+                      <R n="WtpRequestSpecific" />{" "}
+                      message. If multiple codes would apply, the one listed
+                      earliest takes precedence.
+                    </>
+                  }
+                  id={[
+                    "ResponseSpecificPayloadStatusCode",
+                    "WtpResponseSpecificPayloadStatusCode",
+                    "ResponseSpecificSPayloadtatusCodes",
+                  ]}
+                  variants={[
+                    {
+                      tuple: true,
+                      id: [
+                        "nope",
+                        "WtpResponseSpecificPayloadStatusCodeNope",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" /> chose to not anwer with a
+                          {" "}
+                          <R n="Payload" /> slice. It also chose to not tell the
+                          {" "}
+                          <R n="wtp_client" /> why.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "yay",
+                        "WtpResponseSpecificPayloadStatusCodeYay",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, and a prefix of the
+                          requested <R n="Payload" />{" "}
+                          slice is part of this response.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "not_processed",
+                        "WtpResponseSpecificPayloadStatusCodeNotProcessed",
+                      ],
+                      comment: (
+                        <>
+                          The request for a <R n="Payload" />{" "}
+                          slice was not processed. The{" "}
+                          <R n="wtp_feature_req_specific_payload" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "no_raw_slices",
+                        "WtpResponseSpecificPayloadStatusCodeNoRawSlices",
+                      ],
+                      comment: (
+                        <>
+                          The request for a <R n="Payload" />{" "}
+                          slice was not processed, because the{" "}
+                          <R n="WtpRequestSpecificPartialVerification" /> was
+                          {" "}
+                          <R n="wtp_request_specific_partial_verification_options_none" />.
+                          The <R n="wtp_feature_req_specific_raw_slices" />{" "}
+                          of the <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "no_authenticated_slices",
+                        "WtpResponseSpecificPayloadStatusCodeNoAuthenticatedSlices",
+                      ],
+                      comment: (
+                        <>
+                          The request for a <R n="Payload" />{" "}
+                          slice was not processed, because the{" "}
+                          <R n="WtpRequestSpecificPartialVerification" /> was
+                          {" "}
+                          not{" "}
+                          <R n="wtp_request_specific_partial_verification_options_none" />.
+                          The{" "}
+                          <R n="wtp_feature_req_specific_authenticated_slices" />
+                          {" "}
+                          of the <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "no_fancy_k",
+                        "WtpResponseSpecificPayloadStatusCodeNoFancyK",
+                      ],
+                      comment: (
+                        <>
+                          The request for a <R n="Payload" />{" "}
+                          slice was not processed, because the{" "}
+                          <R n="WtpRequestSpecificPartialVerification" /> set
+                          {" "}
+                          <R n="WtpPartialVerificationK" />{" "}
+                          to a value other than <Code>1</Code>. The{" "}
+                          <R n="wtp_feature_req_specific_fancy_k" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                Every <R n="WtpResponseSpecificPayloadStatusCode" /> but{" "}
+                <R n="WtpResponseSpecificPayloadStatusCodeYay" />{" "}
+                marks the end of the response. If the{" "}
+                <R n="WtpResponseSpecificPayloadStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponseSpecificPayloadStatusCodeYay" />, the response
+                continues with the requested <R n="Payload" />{" "}
+                slice, and some accompanying metadata.
+              </P>
+
+              <P>
+                More specifically, the response does not have to contain the
+                complete requested slice, but merely a prefix of it. The
+                response first indicates how much of the requested slice is
+                actually part of the response. If the{" "}
+                <R n="WtpRequestSpecificPartialVerification" />{" "}
+                of the request was{" "}
+                <R n="wtp_request_specific_partial_verification_options_none" />,
+                the response simply states the number of <R n="Payload" />{" "}
+                bytes it contains, starting at the requested{" "}
+                <R n="WtpRequestSpecificSliceFrom" />. If the{" "}
+                <R n="WtpRequestSpecificPartialVerification" />{" "}
+                of the request was <Em>not</Em>{" "}
+                <R n="wtp_request_specific_partial_verification_options_none" />,
+                then the response indicates the length of the response slice,
+                measured in{" "}
+                <AE href="https://worm-blossom.github.io/bab/#chunk">
+                  Bab chunks
+                </AE>. In both cases, the indicated slice length must not exceed
+                the originally requested{" "}
+                <R n="WtpRequestSpecificSliceLength" />.
+              </P>
+
+              <P>
+                The slice data itself consists of raw <R n="Payload" />{" "}
+                bytes if the <R n="WtpRequestSpecificPartialVerification" />
+                {" "}
+                of the request was{" "}
+                <R n="wtp_request_specific_partial_verification_options_none" />,
+                and of the{" "}
+                <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
+                  k-grouped light verifiable slice stream
+                </AE>{" "}
+                over the indicated number of chunks otherwise, omitting the
+                verification metadata indicated by the{" "}
+                <R n="WtpPartialVerificationLeftSkip" /> and{" "}
+                <R n="WtpPartialVerificationRightSkip" />{" "}
+                of the request. Note that the{" "}
+                <R n="WtpPartialVerificationRightSkip" />{" "}
+                indicates which metadata to skip based on the originally
+                requested slice, not based on the prefix with which the{" "}
+                <R n="wtp_server" /> responds.
+              </P>
+
+              <P>
+                If the <R n="WtpRequestSpecificSliceFrom" /> exceeds{" "}
+                <R n="entry_payload_length" /> of the addressed{" "}
+                <R n="AuthorisedEntry" />, the message must be treated as if
+                {" "}
+                <R n="WtpRequestSpecificSliceLength" /> was zero.
+              </P>
+
+              <P>
+                Finally, if the response sends a strict prefix of the requested
+                slice instead of the full slice, it contains a boolean to
+                indicate whether the <R n="wtp_client" />{" "}
+                should issue a new request for the remaining part (for example,
+                if the <R n="wtp_server" />{" "}
+                simply did not want to send a single, comically large response),
+                or not (for example, if the <R n="wtp_server" /> has no{" "}
+                <R n="Payload" /> bytes beyond the cutoff point).
+              </P>
+
+              <P>
+                Bringing it all together:
+              </P>
+
+              <Pseudocode n="wtp_defs_ResponseSpecific">
+                <StructDef
+                  comment={
+                    <>
+                      Responds to a <R n="WtpRequestSpecific" /> message.
+                    </>
+                  }
+                  id={[
+                    "ResponseSpecific",
+                    "WtpResponseSpecific",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="wtp_request_id" />{" "}
+                            of the request to which this responds.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpResponseSpecificRequestId",
+                            "request_ids",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The status code for this response.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "status_code",
+                            "WtpResponseSpecificStatusCodeField",
+                            "status_codes",
+                          ],
+                          <R n="WtpResponseSpecificStatusCode" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="AuthorisedEntry" />{" "}
+                            the the request requested. If the{" "}
+                            <R n="WtpResponseSpecificStatusCodeField" /> is not
+                            {" "}
+                            <R n="WtpResponseSpecificStatusCodeYay" />, or if
+                            the request set{" "}
+                            <R n="WtpRequestSpecificSkipEntry" /> to{" "}
+                            <Code>true</Code>, then and only then must this be
+                            {" "}
+                            <R n="wtp_request_specific_requested_entry_none" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "requested_entry",
+                            "WtpResponseSpecificRequestedEntry",
+                            "requested_entries",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="AuthorisedEntry" />,
+                              <DefVariant
+                                n="wtp_request_specific_requested_entry_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The status code for the <R n="Payload" />{" "}
+                            part of this response. Must be{" "}
+                            <R n="wtp_request_specific_payload_status_code_none" />
+                            {" "}
+                            if and only if the{" "}
+                            <R n="WtpResponseSpecificStatusCodeField" />{" "}
+                            field is not{" "}
+                            <R n="WtpResponseSpecificStatusCodeYay" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_status_code",
+                            "WtpResponseSpecificPayloadStatusCodeField",
+                            "payload_status_codes",
+                          ],
+                          <ChoiceType
+                            multiline
+                            types={[
+                              <R n="WtpResponseSpecificPayloadStatusCode" />,
+                              <DefVariant
+                                n="wtp_request_specific_payload_status_code_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The information concerning the requested{" "}
+                            <R n="Payload" />. Must be{" "}
+                            <R n="wtp_request_specific_payload_response_none" />
+                            {" "}
+                            if and only if{"  "}
+                            <R n="WtpResponseSpecificStatusCodeField" />{" "}
+                            field is not{" "}
+                            <R n="WtpResponseSpecificStatusCodeYay" /> or{" "}
+                            <R n="WtpResponseSpecificPayloadStatusCodeField" />
+                            {" "}
+                            field is not{" "}
+                            <R n="WtpResponseSpecificPayloadStatusCodeYay" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_response",
+                            "WtpResponseSpecificPayloadResponse",
+                            "payload_response",
+                          ],
+                          <ChoiceType
+                            multiline
+                            types={[
+                              <R n="WtpPayloadResponse" />,
+                              <DefVariant
+                                n="wtp_request_specific_payload_response_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+                <Loc />
+                <StructDef
+                  comment={
+                    <>
+                      Information concerning the requested <R n="Payload" />.
+                    </>
+                  }
+                  id={[
+                    "PayloadResponse",
+                    "WtpPayloadResponse",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              The length of the prefix of the requested slice
+                              contained in this response.
+                            </P>
+
+                            <P>
+                              If the{" "}
+                              <R n="WtpRequestSpecificPartialVerification" />
+                              {" "}
+                              of the request was{" "}
+                              <R n="wtp_request_specific_partial_verification_options_none" />,
+                              this is simply the number of bytes in the response
+                              slice.
+                            </P>
+
+                            <P>
+                              Otherwise, this is the number of{" "}
+                              <AE href="https://worm-blossom.github.io/bab/#chunk">
+                                Bab chunks
+                              </AE>{" "}
+                              this response provides. Note that the actual data
+                              it transmits consists of more than just those
+                              chunks; it also includes the verification data of
+                              the requested{" "}
+                              <AE href="https://worm-blossom.github.io/bab/#kgrouped">
+                                k-grouped light
+                              </AE>{" "}
+                              <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
+                                slice stream
+                              </AE>. The length of the actually transmitted{" "}
+                              <R n="WtpPayloadResponseSliceData" />{" "}
+                              in bytes can (and must) be deterministically
+                              computed from the number of chunks and the index
+                              of the first included chunk.
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_length",
+                            "WtpPayloadResponseSliceLength",
+                            "slice_lengths",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether the <R n="wtp_client" />{" "}
+                            should issue more requests for this{" "}
+                            <R n="Payload" />{" "}
+                            in order to obtain the data missing from this
+                            response. This must be false if the response{" "}
+                            <R n="WtpPayloadResponseSliceLength" />{" "}
+                            is equal to the requested{" "}
+                            <R n="WtpRequestSpecificSliceLength" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "should_try_again",
+                            "WtpPayloadResponseShouldTryAgain",
+                            "should_try_again",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The slice data, either as raw bytes or as a Bab
+                            stream. The length of this is given by (or can be
+                            derived from){" "}
+                            <R n="WtpPayloadResponseSliceLength" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_data",
+                            "WtpPayloadResponseSliceData",
+                            "slice_data",
+                          ],
+                          <SliceType>
+                            <R n="U8" />
+                          </SliceType>,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
           </Hsection>
 
           <Hsection n="wtp_encodings" title="Encodings">
             <P>
               <Alj inline>TODO</Alj>
+            </P>
+
+            <P>
+              <Alj inline>
+                TODO: allow for a well-known default read capability, intended
+                for public data, and allow omitting the read capability from the
+                encodings to indicate the default one.
+              </Alj>
             </P>
           </Hsection>
         </Hsection>
