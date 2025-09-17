@@ -1,0 +1,9 @@
+Instantiated the store!
+We ingested the entry!
+We got our entry back out!
+We have the payload!
+Appended the payload!
+We have the payload!
+Found an entry in the area!
+Forgot 1 entry(s)!
+Our entry was forgotten!
