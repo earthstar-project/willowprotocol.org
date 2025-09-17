@@ -783,6 +783,10 @@ export const wtp = (
                         comment: (
                           <>
                             A <R n="WtpReadCapability" /> whose{" "}
+                            <R n="access_receiver" /> must be the{" "}
+                            <R n="WtpClientSetupMessageReadCapabilityReceiver" />
+                            {" "}
+                            of the <R n="WtpClientSetupMessage" />, whose{" "}
                             <R n="granted_namespace" /> must be the requested
                             {" "}
                             <R n="WtpRequestSpecificNamespaceId" />, and whose
@@ -801,7 +805,7 @@ export const wtp = (
                             "WtpRequestSpecificReadCapability",
                             "read_capabilities",
                           ],
-                          <R n="Path" />,
+                          <R n="WtpReadCapability" />,
                         ],
                       },
                     },
@@ -1823,6 +1827,179 @@ export const wtp = (
                           <SliceType>
                             <R n="U8" />
                           </SliceType>,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+            </Hsection>
+
+            <Hsection
+              n="wtp_request_bulk"
+              title={<Code>RequestBulk</Code>}
+            >
+              <P>
+                The second kind of request allows to request many{" "}
+                <Rs n="LengthyAuthorisedEntry" /> in the same{" "}
+                <R n="WtpRequestBulkNamespaceId" /> simultaneously, either by
+                {" "}
+                <R n="AreaOfInterest" /> or by <R n="D3Range" />.
+              </P>
+
+              <P>
+                Crucially, there are two optimisations. First, the request may
+                carry a <R n="WtpFingerprint" />. If the set of requested{" "}
+                <Rs n="LengthyAuthorisedEntry" /> hashes to exactly that{" "}
+                <R n="WtpFingerprint" />, the <R n="wtp_server" />{" "}
+                does not need to respond with its{" "}
+                <Rs n="LengthyAuthorisedEntry" />{" "}
+                at all. And second, if the number of{" "}
+                <Rs n="LengthyAuthorisedEntry" />{" "}
+                matching the query would exceed a threshold specified in the
+                request, then the server replies with some summary data
+                (<R n="WtpFingerprint" />, number of matching{" "}
+                <Rs n="LengthyAuthorisedEntry" />, and/or their summed{" "}
+                <R n="Payload" />{" "}
+                lengths) instead of transmitting all the matching{" "}
+                <Rs n="LengthyAuthorisedEntry" />.
+              </P>
+
+              <P>
+                Taken together, these optimisations allow for an entirely
+                optional, <R n="wtp_client" />-request-driven{" "}
+                <R n="d3_range_based_set_reconciliation">
+                  range-based set reconciliation
+                </R>. And, less ambitiously, for pagination.
+              </P>
+
+              <Pseudocode n="wtp_defs_RequestBulk">
+                <StructDef
+                  comment={
+                    <>
+                      Request a contiguous, possibly empty subslice of the{" "}
+                      <R n="Payload" /> of a specific <R n="AuthorisedEntry" />.
+                    </>
+                  }
+                  id={[
+                    "RequestBulk",
+                    "WtpRequestBulk",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="NamespaceId" /> of the <R n="namespace" />
+                            {" "}
+                            in which to request{" "}
+                            <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "namespace_id",
+                            "WtpRequestBulkNamespaceId",
+                            "namespace_ids",
+                          ],
+                          <R n="NamespaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The requested <Rs n="LengthyAuthorisedEntry" />{" "}
+                            within the <R n="WtpRequestBulkNamespaceId" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "query",
+                            "WtpRequestBulkQuery",
+                            "query",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="AreaOfInterest" />,
+                              <R n="D3Range" />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            A <R n="WtpReadCapability" /> whose{" "}
+                            <R n="access_receiver" /> must be the{" "}
+                            <R n="WtpClientSetupMessageReadCapabilityReceiver" />
+                            {" "}
+                            of the{" "}
+                            <R n="WtpClientSetupMessage" />, and which must
+                            include all potential <Rs n="Entry" />{" "}
+                            which could possibly be included in the{" "}
+                            <R n="WtpRequestBulkQuery" /> in the{" "}
+                            <R n="WtpRequestBulkNamespaceId" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "read_capability",
+                            "WtpRequestBulkReadCapability",
+                            "read_capabilities",
+                          ],
+                          <R n="WtpReadCapability" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Optionally the expected <R n="WtpFingerprint" />
+                            {" "}
+                            of all <Rs n="LengthyAuthorisedEntry" /> the{" "}
+                            <R n="wtp_server" /> has in the{" "}
+                            <R n="WtpRequestBulkQuery" /> in the{" "}
+                            <R n="WtpRequestBulkNamespaceId" />. If this is not
+                            {" "}
+                            <R n="wtp_request_bulk_fingerprint_none" />{" "}
+                            and the matching <Rs n="LengthyAuthorisedEntry" />
+                            {" "}
+                            of the <R n="wtp_server" /> have exactly this{" "}
+                            <R n="WtpFingerprint" />, the <R n="wtp_server" />
+                            {" "}
+                            can omit from its response all the{" "}
+                            <Rs n="LengthyAuthorisedEntry" />.<Alj inline>
+                              TODO client should be able specify whether the
+                              server *must* support this, and possibly whether
+                              the server *must* include the fingerprint in a
+                              non-matching response
+                            </Alj>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "fingerprint",
+                            "WtpRequestBulkFingerprint",
+                            "fingerprints",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="PayloadDigest" />,
+                              <DefVariant
+                                n="wtp_request_bulk_fingerprint_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
                         ],
                       },
                     },
