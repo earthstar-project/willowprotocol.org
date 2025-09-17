@@ -71,11 +71,24 @@ export const uris = (
         </P>
 
         <P>
-          Two quick examples:
+          At a glance:
         </P>
 
-        <Ul>
+        <Ul clazz="wide">
           <Li>
+            <Rs n="Entry" />:{" "}
+            <Code>
+              <Green>willow</Green>://<Purple>
+                namespace
+              </Purple>.<Vermillion>subspace</Vermillion>/<SkyBlue>
+                path
+              </SkyBlue>/<SkyBlue>
+                components
+              </SkyBlue>?<Orange>select_features</Orange>#fragment
+            </Code>
+          </Li>
+          <Li>
+            <R n="Entry" /> example:{" "}
             <Code>
               <Green>willow</Green>://<Purple>
                 family
@@ -85,6 +98,19 @@ export const uris = (
             </Code>
           </Li>
           <Li>
+            <R n="AreaOfInterest">Areas</R>:{" "}
+            <Code>
+              <Green>willow</Green>://<Purple>
+                namespace
+              </Purple>.<Vermillion>subspace</Vermillion>/<SkyBlue>
+                path
+              </SkyBlue>/<SkyBlue>
+                components
+              </SkyBlue>?area<Orange>&select_features</Orange>#fragment
+            </Code>
+          </Li>
+          <Li>
+            <R n="AreaOfInterest">Area</R> example:{" "}
             <Code>
               <Green>willow</Green>://<Purple>
                 family
