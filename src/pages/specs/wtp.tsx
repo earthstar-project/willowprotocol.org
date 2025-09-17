@@ -398,7 +398,7 @@ export const wtp = (
                         <>
                           Whether the <R n="wtp_server" />{" "}
                           supports properly responding to{" "}
-                          <R n="WtpRequestSpecific" /> messages.
+                          <R n="WtpRequestGet" /> messages.
                         </>
                       ),
                       dedicatedLine: true,
@@ -417,7 +417,7 @@ export const wtp = (
                         <>
                           Whether the <R n="wtp_server" /> supports serving{" "}
                           <Rs n="Payload" /> via responses to{" "}
-                          <R n="WtpRequestSpecific" /> messages.
+                          <R n="WtpRequestGet" /> messages.
                         </>
                       ),
                       dedicatedLine: true,
@@ -436,8 +436,8 @@ export const wtp = (
                         <>
                           Whether the <R n="wtp_server" /> supports serving{" "}
                           raw, byte-indexed <Rs n="Payload" />{" "}
-                          slices in its responses to{" "}
-                          <R n="WtpRequestSpecific" />{" "}
+                          slices in its responses to <R n="WtpRequestGet" />
+                          {" "}
                           messages (as opposed to Bab-based authenticated
                           slices).
                         </>
@@ -458,8 +458,8 @@ export const wtp = (
                         <>
                           Whether the <R n="wtp_server" /> supports serving{" "}
                           Bab authenticated <Rs n="Payload" />{" "}
-                          slices in its responses to{" "}
-                          <R n="WtpRequestSpecific" />{" "}
+                          slices in its responses to <R n="WtpRequestGet" />
+                          {" "}
                           messages (as opposed to raw, byte-indexed slices).
                         </>
                       ),
@@ -479,10 +479,10 @@ export const wtp = (
                         <>
                           Whether the <R n="wtp_server" /> supports serving{" "}
                           Bab authenticated <Rs n="Payload" />{" "}
-                          slices in its responses to{" "}
-                          <R n="WtpRequestSpecific" /> messages with a{" "}
-                          <R n="WtpPartialVerificationK" /> other than{" "}
-                          <Code>1</Code>.
+                          slices in its responses to <R n="WtpRequestGet" />
+                          {" "}
+                          messages with a <R n="WtpPartialVerificationK" />{" "}
+                          other than <Code>1</Code>.
                         </>
                       ),
                       dedicatedLine: true,
@@ -694,8 +694,8 @@ export const wtp = (
             </P>
 
             <Hsection
-              n="wtp_request_specific"
-              title={<Code>RequestSpecific</Code>}
+              n="wtp_request_get"
+              title={<Code>RequestGet</Code>}
             >
               <P>
                 The first kind of request allows to request a specific
@@ -706,7 +706,7 @@ export const wtp = (
                 itself.
               </P>
 
-              <Pseudocode n="wtp_defs_RequestSpecific">
+              <Pseudocode n="wtp_defs_RequestGet">
                 <StructDef
                   comment={
                     <>
@@ -715,8 +715,8 @@ export const wtp = (
                     </>
                   }
                   id={[
-                    "RequestSpecific",
-                    "WtpRequestSpecific",
+                    "RequestGet",
+                    "WtpRequestGet",
                   ]}
                   fields={[
                     {
@@ -732,7 +732,7 @@ export const wtp = (
                         segment: [
                           [
                             "namespace_id",
-                            "WtpRequestSpecificNamespaceId",
+                            "WtpRequestGetNamespaceId",
                             "namespace_ids",
                           ],
                           <R n="NamespaceId" />,
@@ -752,7 +752,7 @@ export const wtp = (
                         segment: [
                           [
                             "subspace_id",
-                            "WtpRequestSpecificSubspaceId",
+                            "WtpRequestGetSubspaceId",
                             "subspace_ids",
                           ],
                           <R n="SubspaceId" />,
@@ -771,7 +771,7 @@ export const wtp = (
                         segment: [
                           [
                             "path",
-                            "WtpRequestSpecificPath",
+                            "WtpRequestGetPath",
                             "paths",
                           ],
                           <R n="Path" />,
@@ -789,20 +789,19 @@ export const wtp = (
                             of the <R n="WtpClientSetupMessage" />, whose{" "}
                             <R n="granted_namespace" /> must be the requested
                             {" "}
-                            <R n="WtpRequestSpecificNamespaceId" />, and whose
-                            {" "}
+                            <R n="WtpRequestGetNamespaceId" />, and whose{" "}
                             <R n="granted_area" /> must be able to{" "}
                             <R n="area_include" /> <Rs n="Entry" />{" "}
-                            of the requested{" "}
-                            <R n="WtpRequestSpecificSubspaceId" /> and{" "}
-                            <R n="WtpRequestSpecificPath" />.
+                            of the requested <R n="WtpRequestGetSubspaceId" />
+                            {" "}
+                            and <R n="WtpRequestGetPath" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "read_capability",
-                            "WtpRequestSpecificReadCapability",
+                            "WtpRequestGetReadCapability",
                             "read_capabilities",
                           ],
                           <R n="WtpReadCapability" />,
@@ -816,8 +815,7 @@ export const wtp = (
                             Optionally the expected{" "}
                             <R n="entry_payload_digest" /> of the requested{" "}
                             <R n="AuthorisedEntry" />. If this is not{" "}
-                            <R n="wtp_request_specific_payload_digest_none" />
-                            {" "}
+                            <R n="wtp_request_get_payload_digest_none" />{" "}
                             and the <R n="wtp_server" /> has an <R n="Entry" />
                             {" "}
                             of the correct <R n="entry_namespace_id" />,{" "}
@@ -834,14 +832,14 @@ export const wtp = (
                         segment: [
                           [
                             "payload_digest",
-                            "WtpRequestSpecificPayloadDigest",
+                            "WtpRequestGetPayloadDigest",
                             "payload_digests",
                           ],
                           <ChoiceType
                             types={[
                               <R n="PayloadDigest" />,
                               <DefVariant
-                                n="wtp_request_specific_payload_digest_none"
+                                n="wtp_request_get_payload_digest_none"
                                 r="none"
                               />,
                             ]}
@@ -859,8 +857,8 @@ export const wtp = (
                             <R n="AuthorisedEntry" />, transmitting{" "}
                             <Em>only</Em> the <R n="Payload" />{" "}
                             slice. Should only be used with an actual{" "}
-                            <R n="WtpRequestSpecificPayloadDigest" />, to ensure
-                            that the <R n="wtp_client" />{" "}
+                            <R n="WtpRequestGetPayloadDigest" />, to ensure that
+                            the <R n="wtp_client" />{" "}
                             does not accidentally receive a <R n="Payload" />
                             {" "}
                             slice from an unexpected <R n="Entry" />.
@@ -870,7 +868,7 @@ export const wtp = (
                         segment: [
                           [
                             "skip_entry",
-                            "WtpRequestSpecificSkipEntry",
+                            "WtpRequestGetSkipEntry",
                             "skip_entry",
                           ],
                           <R n="Bool" />,
@@ -886,16 +884,15 @@ export const wtp = (
                               <R n="AuthorisedEntry" /> the <R n="wtp_server" />
                               {" "}
                               might reply with. If this is not{" "}
-                              <R n="wtp_request_specific_minimum_timestamp_none" />
+                              <R n="wtp_request_get_minimum_timestamp_none" />
                               {" "}
                               and the <R n="wtp_server" /> stores a matching
                               {" "}
                               <R n="AuthorisedEntry" />, but its{" "}
                               <R n="entry_timestamp" /> is less than this{" "}
-                              <R n="WtpRequestSpecificMinimumTimestamp" />, the
-                              {" "}
+                              <R n="WtpRequestGetMinimumTimestamp" />, the{" "}
                               <R n="wtp_server" /> responds with the{" "}
-                              <R n="WtpResponseSpecificStatusCodeTooOld" />{" "}
+                              <R n="WtpResponseGetStatusCodeTooOld" />{" "}
                               status code instead of supplying the{" "}
                               <R n="AuthorisedEntry" /> (and/or a part of its
                               {" "}
@@ -904,35 +901,34 @@ export const wtp = (
 
                             <P>
                               If this is not{" "}
-                              <R n="wtp_request_specific_minimum_timestamp_none" />,
-                              and the <R n="WtpRequestSpecificPayloadDigest" />
-                              {" "}
+                              <R n="wtp_request_get_minimum_timestamp_none" />,
+                              and the <R n="WtpRequestGetPayloadDigest" />{" "}
                               is also not{" "}
-                              <R n="wtp_request_specific_payload_digest_none" />,
-                              the semantics of the{" "}
-                              <R n="WtpRequestSpecificPayloadDigest" />{" "}
+                              <R n="wtp_request_get_payload_digest_none" />, the
+                              semantics of the{" "}
+                              <R n="WtpRequestGetPayloadDigest" />{" "}
                               change: it does not need to match exactly any
                               more, instead it factors into the{" "}
                               <R n="entry_newer" />-than relation: if the{" "}
                               <R n="wtp_server" /> has an appropriate{" "}
                               <R n="AuthorisedEntry" /> of{" "}
                               <R n="entry_timestamp" /> exactly{" "}
-                              <R n="WtpRequestSpecificMinimumTimestamp" />, it
+                              <R n="WtpRequestGetMinimumTimestamp" />, it
                               responds with the{" "}
-                              <R n="WtpResponseSpecificStatusCodeTooOld" />{" "}
+                              <R n="WtpResponseGetStatusCodeTooOld" />{" "}
                               status code only if the{" "}
                               <R n="entry_payload_digest" /> of the candidate
                               {" "}
                               <R n="AuthorisedEntry" />{" "}
                               is strictly less than the{" "}
-                              <R n="WtpRequestSpecificPayloadDigest" />.
+                              <R n="WtpRequestGetPayloadDigest" />.
                             </P>
 
                             <P>
                               Finally, this field must be{" "}
-                              <R n="wtp_request_specific_minimum_timestamp_none" />
+                              <R n="wtp_request_get_minimum_timestamp_none" />
                               {" "}
-                              if <R n="WtpRequestSpecificSkipEntry" /> is{" "}
+                              if <R n="WtpRequestGetSkipEntry" /> is{" "}
                               <Code>true</Code>. There is no status code for
                               indicating a mismatch because the message encoding
                               ensures this.
@@ -943,14 +939,14 @@ export const wtp = (
                         segment: [
                           [
                             "minimum_timestamp",
-                            "WtpRequestSpecificMinimumTimestamp",
+                            "WtpRequestGetMinimumTimestamp",
                             "minimum_timestamp",
                           ],
                           <ChoiceType
                             types={[
                               <R n="Timestamp" />,
                               <DefVariant
-                                n="wtp_request_specific_minimum_timestamp_none"
+                                n="wtp_request_get_minimum_timestamp_none"
                                 r="none"
                               />,
                             ]}
@@ -970,7 +966,7 @@ export const wtp = (
                         segment: [
                           [
                             "slice_from",
-                            "WtpRequestSpecificSliceFrom",
+                            "WtpRequestGetSliceFrom",
                             "slice_from",
                           ],
                           <R n="U64" />,
@@ -997,7 +993,7 @@ export const wtp = (
                         segment: [
                           [
                             "slice_length",
-                            "WtpRequestSpecificSliceLength",
+                            "WtpRequestGetSliceLength",
                             "slice_length",
                           ],
                           <R n="U64" />,
@@ -1009,18 +1005,17 @@ export const wtp = (
                         comment: (
                           <>
                             If this is{" "}
-                            <R n="wtp_request_specific_partial_verification_options_none" />,
-                            then the <R n="WtpRequestSpecificSliceFrom" /> and
-                            {" "}
-                            <R n="WtpRequestSpecificSliceLength" />{" "}
+                            <R n="wtp_request_get_partial_verification_options_none" />,
+                            then the <R n="WtpRequestGetSliceFrom" /> and{" "}
+                            <R n="WtpRequestGetSliceLength" />{" "}
                             fields are number of bytes, and the response simply
                             contains (a prefix of) the <R n="Payload" />{" "}
                             slice as raw bytes. If{" "}
                             <R n="WtpPartialVerification" /> is given, however,
                             {" "}
-                            <R n="WtpRequestSpecificSliceFrom" /> and{" "}
-                            <R n="WtpRequestSpecificSliceLength" />{" "}
-                            are numbers of{" "}
+                            <R n="WtpRequestGetSliceFrom" /> and{" "}
+                            <R n="WtpRequestGetSliceLength" /> are numbers of
+                            {" "}
                             <AE href="https://worm-blossom.github.io/bab/#chunk">
                               Bab chunks
                             </AE>. The response then contains not a raw subslice
@@ -1034,14 +1029,14 @@ export const wtp = (
                         segment: [
                           [
                             "partial_verification",
-                            "WtpRequestSpecificPartialVerification",
+                            "WtpRequestGetPartialVerification",
                             "partial_verification",
                           ],
                           <ChoiceType
                             types={[
                               <R n="WtpPartialVerification" />,
                               <DefVariant
-                                n="wtp_request_specific_partial_verification_options_none"
+                                n="wtp_request_get_partial_verification_options_none"
                                 r="none"
                               />,
                             ]}
@@ -1057,9 +1052,9 @@ export const wtp = (
                     <>
                       Options for controlling the Bab-based, verifiable
                       transmission of the requested <R n="Payload" />{" "}
-                      slice. A successful response to a{" "}
-                      <R n="WtpRequestSpecific" /> with{" "}
-                      <R n="WtpPartialVerification" /> uses Bab’s{" "}
+                      slice. A successful response to a <R n="WtpRequestGet" />
+                      {" "}
+                      with <R n="WtpPartialVerification" /> uses Bab’s{" "}
                       <AE href="https://worm-blossom.github.io/bab/#kgrouped">
                         k-grouped light
                       </AE>{" "}
@@ -1150,37 +1145,37 @@ export const wtp = (
             </Hsection>
 
             <Hsection
-              n="wtp_response_specific"
-              title={<Code>ResponseSpecific</Code>}
+              n="wtp_response_get"
+              title={<Code>ResponseGet</Code>}
             >
               <P>
-                The corresponding response starts with the{" "}
-                <R n="wtp_request_id" /> of the <R n="WtpRequestSpecific" />
-                {" "}
+                The response to a <R n="WtpRequestGet" />{" "}
+                message starts with the <R n="wtp_request_id" /> of the{" "}
+                <R n="WtpRequestGet" />{" "}
                 message, followed by one of the following status codes:
               </P>
 
-              <Pseudocode n="wtp_response_specific_status_code_def">
+              <Pseudocode n="wtp_response_get_status_code_def">
                 <Enum
                   comment={
                     <>
                       The different status codes in a response to a{" "}
-                      <R n="WtpRequestSpecific" />{" "}
+                      <R n="WtpRequestGet" />{" "}
                       message. If multiple codes would apply, the one listed
                       earliest takes precedence.
                     </>
                   }
                   id={[
-                    "ResponseSpecificStatusCode",
-                    "WtpResponseSpecificStatusCode",
-                    "ResponseSpecificStatusCodes",
+                    "ResponseGetStatusCode",
+                    "WtpResponseGetStatusCode",
+                    "ResponseGetStatusCodes",
                   ]}
                   variants={[
                     {
                       tuple: true,
                       id: [
                         "nope",
-                        "WtpResponseSpecificStatusCodeNope",
+                        "WtpResponseGetStatusCodeNope",
                       ],
                       comment: (
                         <>
@@ -1194,14 +1189,14 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "yay",
-                        "WtpResponseSpecificStatusCodeYay",
+                        "WtpResponseGetStatusCodeYay",
                       ],
                       comment: (
                         <>
                           The request could be processed, and the{" "}
                           <R n="wtp_server" /> stored an appropriate{" "}
                           <R n="AuthorisedEntry" />. The response contains it,
-                          unless <R n="WtpRequestSpecificSkipEntry" /> was{" "}
+                          unless <R n="WtpRequestGetSkipEntry" /> was{" "}
                           <Code>true</Code>.
                         </>
                       ),
@@ -1210,7 +1205,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "not_processed",
-                        "WtpResponseSpecificStatusCodeNotProcessed",
+                        "WtpResponseGetStatusCodeNotProcessed",
                       ],
                       comment: (
                         <>
@@ -1225,14 +1220,14 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "unauthorised",
-                        "WtpResponseSpecificStatusCodeUnauthorised",
+                        "WtpResponseGetStatusCodeUnauthorised",
                       ],
                       comment: (
                         <>
                           <P>
                             The <R n="access_receiver" /> of the{" "}
-                            <R n="WtpRequestSpecificReadCapability" />{" "}
-                            was not the{" "}
+                            <R n="WtpRequestGetReadCapability" /> was not the
+                            {" "}
                             <R n="WtpClientSetupMessageReadCapabilityReceiver" />
                             {" "}
                             in the <R n="wtp_client" />’s{" "}
@@ -1245,7 +1240,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "not_found",
-                        "WtpResponseSpecificStatusCodeNotFound",
+                        "WtpResponseGetStatusCodeNotFound",
                       ],
                       comment: (
                         <>
@@ -1261,7 +1256,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "too_old",
-                        "WtpResponseSpecificStatusCodeTooOld",
+                        "WtpResponseGetStatusCodeTooOld",
                       ],
                       comment: (
                         <>
@@ -1271,25 +1266,23 @@ export const wtp = (
                           <R n="entry_namespace_id" />,{" "}
                           <R n="entry_subspace_id" /> and{" "}
                           <R n="entry_path" />, but the request had a
-                          non-<R n="wtp_request_specific_minimum_timestamp_none" />
+                          non-<R n="wtp_request_get_minimum_timestamp_none" />
                           {" "}
-                          <R n="WtpRequestSpecificMinimumTimestamp" />, and the
-                          {" "}
+                          <R n="WtpRequestGetMinimumTimestamp" />, and the{" "}
                           <R n="entry_timestamp" /> of the matching{" "}
                           <R n="AuthorisedEntry" /> was strictly less than the
                           {" "}
-                          <R n="WtpRequestSpecificMinimumTimestamp" />{" "}
+                          <R n="WtpRequestGetMinimumTimestamp" />{" "}
                           (or, if the request’s{" "}
-                          <R n="WtpRequestSpecificPayloadDigest" /> is not{" "}
-                          <R n="wtp_request_specific_payload_digest_none" />,
-                          this status code is also sent if the{" "}
+                          <R n="WtpRequestGetPayloadDigest" /> is not{" "}
+                          <R n="wtp_request_get_payload_digest_none" />, this
+                          status code is also sent if the{" "}
                           <R n="entry_timestamp" /> of the matching{" "}
                           <R n="AuthorisedEntry" /> is equal to the{" "}
-                          <R n="WtpRequestSpecificMinimumTimestamp" /> but its
-                          {" "}
+                          <R n="WtpRequestGetMinimumTimestamp" /> but its{" "}
                           <R n="entry_payload_digest" />{" "}
                           is strictly less than the request’s{" "}
-                          <R n="WtpRequestSpecificPayloadDigest" />).
+                          <R n="WtpRequestGetPayloadDigest" />).
                         </>
                       ),
                     },
@@ -1297,7 +1290,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "unexpected_payload_digest",
-                        "WtpResponseSpecificStatusCodeUnexpectedPayloadDigest",
+                        "WtpResponseGetStatusCodeUnexpectedPayloadDigest",
                       ],
                       comment: (
                         <>
@@ -1309,7 +1302,7 @@ export const wtp = (
                           <R n="entry_path" />, but its{" "}
                           <R n="entry_payload_digest" />{" "}
                           did not match the expected{" "}
-                          <R n="WtpRequestSpecificPayloadDigest" />{" "}
+                          <R n="WtpRequestGetPayloadDigest" />{" "}
                           specified in the request.
                         </>
                       ),
@@ -1318,7 +1311,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "unexpected_timestamp",
-                        "WtpResponseSpecificStatusCodeUnexpectedTimestamp",
+                        "WtpResponseGetStatusCodeUnexpectedTimestamp",
                       ],
                       comment: (
                         <>
@@ -1332,7 +1325,7 @@ export const wtp = (
                             <R n="entry_timestamp" /> did not fall into the{" "}
                             <R n="TimeRange" /> of the <R n="granted_area" />
                             {" "}
-                            of the <R n="WtpRequestSpecificReadCapability" />.
+                            of the <R n="WtpRequestGetReadCapability" />.
                           </P>
                         </>
                       ),
@@ -1342,41 +1335,42 @@ export const wtp = (
               </Pseudocode>
 
               <P>
-                Every <R n="WtpResponseSpecificStatusCode" /> but{" "}
-                <R n="WtpResponseSpecificStatusCodeYay" />{" "}
+                Every <R n="WtpResponseGetStatusCode" /> but{" "}
+                <R n="WtpResponseGetStatusCodeYay" />{" "}
                 marks the end of the response. If the{" "}
-                <R n="WtpResponseSpecificStatusCode" /> <Em>is</Em>{" "}
-                <R n="WtpResponseSpecificStatusCodeYay" />, the response
-                continues with the requested <R n="AuthorisedEntry" />{" "}
-                (skipped if the request had set{" "}
-                <R n="WtpRequestSpecificSkipEntry" /> to{" "}
+                <R n="WtpResponseGetStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponseGetStatusCodeYay" />, the response continues
+                with the requested <R n="AuthorisedEntry" />{" "}
+                (skipped if the request had set <R n="WtpRequestGetSkipEntry" />
+                {" "}
+                to{" "}
                 <Code>true</Code>), followed by a new status code to indicate
                 whether the requested <R n="Payload" /> slice can be served:
               </P>
 
-              <Pseudocode n="wtp_response_specific_status_code_payload_def">
+              <Pseudocode n="wtp_response_get_status_code_payload_def">
                 <Enum
                   comment={
                     <>
                       The different status codes indicating whether a{" "}
                       <R n="Payload" /> slice could be served in response to a
                       {" "}
-                      <R n="WtpRequestSpecific" />{" "}
+                      <R n="WtpRequestGet" />{" "}
                       message. If multiple codes would apply, the one listed
                       earliest takes precedence.
                     </>
                   }
                   id={[
-                    "ResponseSpecificPayloadStatusCode",
-                    "WtpResponseSpecificPayloadStatusCode",
-                    "ResponseSpecificSPayloadtatusCodes",
+                    "ResponseGetPayloadStatusCode",
+                    "WtpResponseGetPayloadStatusCode",
+                    "ResponseGetSPayloadtatusCodes",
                   ]}
                   variants={[
                     {
                       tuple: true,
                       id: [
                         "nope",
-                        "WtpResponseSpecificPayloadStatusCodeNope",
+                        "WtpResponseGetPayloadStatusCodeNope",
                       ],
                       comment: (
                         <>
@@ -1392,7 +1386,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "yay",
-                        "WtpResponseSpecificPayloadStatusCodeYay",
+                        "WtpResponseGetPayloadStatusCodeYay",
                       ],
                       comment: (
                         <>
@@ -1406,7 +1400,7 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "not_processed",
-                        "WtpResponseSpecificPayloadStatusCodeNotProcessed",
+                        "WtpResponseGetPayloadStatusCodeNotProcessed",
                       ],
                       comment: (
                         <>
@@ -1422,15 +1416,14 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "no_raw_slices",
-                        "WtpResponseSpecificPayloadStatusCodeNoRawSlices",
+                        "WtpResponseGetPayloadStatusCodeNoRawSlices",
                       ],
                       comment: (
                         <>
                           The request for a <R n="Payload" />{" "}
                           slice was not processed, because the{" "}
-                          <R n="WtpRequestSpecificPartialVerification" /> was
-                          {" "}
-                          <R n="wtp_request_specific_partial_verification_options_none" />.
+                          <R n="WtpRequestGetPartialVerification" /> was{" "}
+                          <R n="wtp_request_get_partial_verification_options_none" />.
                           The <R n="wtp_feature_req_specific_raw_slices" />{" "}
                           of the <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
@@ -1441,16 +1434,15 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "no_authenticated_slices",
-                        "WtpResponseSpecificPayloadStatusCodeNoAuthenticatedSlices",
+                        "WtpResponseGetPayloadStatusCodeNoAuthenticatedSlices",
                       ],
                       comment: (
                         <>
                           The request for a <R n="Payload" />{" "}
                           slice was not processed, because the{" "}
-                          <R n="WtpRequestSpecificPartialVerification" /> was
+                          <R n="WtpRequestGetPartialVerification" /> was not
                           {" "}
-                          not{" "}
-                          <R n="wtp_request_specific_partial_verification_options_none" />.
+                          <R n="wtp_request_get_partial_verification_options_none" />.
                           The{" "}
                           <R n="wtp_feature_req_specific_authenticated_slices" />
                           {" "}
@@ -1463,14 +1455,13 @@ export const wtp = (
                       tuple: true,
                       id: [
                         "no_fancy_k",
-                        "WtpResponseSpecificPayloadStatusCodeNoFancyK",
+                        "WtpResponseGetPayloadStatusCodeNoFancyK",
                       ],
                       comment: (
                         <>
                           The request for a <R n="Payload" />{" "}
                           slice was not processed, because the{" "}
-                          <R n="WtpRequestSpecificPartialVerification" /> set
-                          {" "}
+                          <R n="WtpRequestGetPartialVerification" /> set{" "}
                           <R n="WtpPartialVerificationK" />{" "}
                           to a value other than <Code>1</Code>. The{" "}
                           <R n="wtp_feature_req_specific_fancy_k" /> of the{" "}
@@ -1484,11 +1475,11 @@ export const wtp = (
               </Pseudocode>
 
               <P>
-                Every <R n="WtpResponseSpecificPayloadStatusCode" /> but{" "}
-                <R n="WtpResponseSpecificPayloadStatusCodeYay" />{" "}
+                Every <R n="WtpResponseGetPayloadStatusCode" /> but{" "}
+                <R n="WtpResponseGetPayloadStatusCodeYay" />{" "}
                 marks the end of the response. If the{" "}
-                <R n="WtpResponseSpecificPayloadStatusCode" /> <Em>is</Em>{" "}
-                <R n="WtpResponseSpecificPayloadStatusCodeYay" />, the response
+                <R n="WtpResponseGetPayloadStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponseGetPayloadStatusCodeYay" />, the response
                 continues with the requested <R n="Payload" />{" "}
                 slice, and some accompanying metadata.
               </P>
@@ -1498,31 +1489,30 @@ export const wtp = (
                 complete requested slice, but merely a prefix of it. The
                 response first indicates how much of the requested slice is
                 actually part of the response. If the{" "}
-                <R n="WtpRequestSpecificPartialVerification" />{" "}
-                of the request was{" "}
-                <R n="wtp_request_specific_partial_verification_options_none" />,
-                the response simply states the number of <R n="Payload" />{" "}
+                <R n="WtpRequestGetPartialVerification" /> of the request was
+                {" "}
+                <R n="wtp_request_get_partial_verification_options_none" />, the
+                response simply states the number of <R n="Payload" />{" "}
                 bytes it contains, starting at the requested{" "}
-                <R n="WtpRequestSpecificSliceFrom" />. If the{" "}
-                <R n="WtpRequestSpecificPartialVerification" />{" "}
-                of the request was <Em>not</Em>{" "}
-                <R n="wtp_request_specific_partial_verification_options_none" />,
+                <R n="WtpRequestGetSliceFrom" />. If the{" "}
+                <R n="WtpRequestGetPartialVerification" /> of the request was
+                {" "}
+                <Em>not</Em>{" "}
+                <R n="wtp_request_get_partial_verification_options_none" />,
                 then the response indicates the length of the response slice,
                 measured in{" "}
                 <AE href="https://worm-blossom.github.io/bab/#chunk">
                   Bab chunks
                 </AE>. In both cases, the indicated slice length must not exceed
-                the originally requested{" "}
-                <R n="WtpRequestSpecificSliceLength" />.
+                the originally requested <R n="WtpRequestGetSliceLength" />.
               </P>
 
               <P>
                 The slice data itself consists of raw <R n="Payload" />{" "}
-                bytes if the <R n="WtpRequestSpecificPartialVerification" />
-                {" "}
+                bytes if the <R n="WtpRequestGetPartialVerification" />{" "}
                 of the request was{" "}
-                <R n="wtp_request_specific_partial_verification_options_none" />,
-                and of the{" "}
+                <R n="wtp_request_get_partial_verification_options_none" />, and
+                of the{" "}
                 <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
                   k-grouped light verifiable slice stream
                 </AE>{" "}
@@ -1538,11 +1528,11 @@ export const wtp = (
               </P>
 
               <P>
-                If the <R n="WtpRequestSpecificSliceFrom" /> exceeds{" "}
+                If the <R n="WtpRequestGetSliceFrom" /> exceeds{" "}
                 <R n="entry_payload_length" /> of the addressed{" "}
                 <R n="AuthorisedEntry" />, the message must be treated as if
                 {" "}
-                <R n="WtpRequestSpecificSliceLength" /> was zero.
+                <R n="WtpRequestGetSliceLength" /> was zero.
               </P>
 
               <P>
@@ -1560,16 +1550,16 @@ export const wtp = (
                 Bringing it all together:
               </P>
 
-              <Pseudocode n="wtp_defs_ResponseSpecific">
+              <Pseudocode n="wtp_defs_ResponseGet">
                 <StructDef
                   comment={
                     <>
-                      Responds to a <R n="WtpRequestSpecific" /> message.
+                      Responds to a <R n="WtpRequestGet" /> message.
                     </>
                   }
                   id={[
-                    "ResponseSpecific",
-                    "WtpResponseSpecific",
+                    "ResponseGet",
+                    "WtpResponseGet",
                   ]}
                   fields={[
                     {
@@ -1584,7 +1574,7 @@ export const wtp = (
                         segment: [
                           [
                             "request_id",
-                            "WtpResponseSpecificRequestId",
+                            "WtpResponseGetRequestId",
                             "request_ids",
                           ],
                           <R n="U64" />,
@@ -1602,10 +1592,10 @@ export const wtp = (
                         segment: [
                           [
                             "status_code",
-                            "WtpResponseSpecificStatusCodeField",
+                            "WtpResponseGetStatusCodeField",
                             "status_codes",
                           ],
-                          <R n="WtpResponseSpecificStatusCode" />,
+                          <R n="WtpResponseGetStatusCode" />,
                         ],
                       },
                     },
@@ -1615,28 +1605,26 @@ export const wtp = (
                           <>
                             The <R n="AuthorisedEntry" />{" "}
                             the the request requested. If the{" "}
-                            <R n="WtpResponseSpecificStatusCodeField" /> is not
-                            {" "}
-                            <R n="WtpResponseSpecificStatusCodeYay" />, or if
-                            the request set{" "}
-                            <R n="WtpRequestSpecificSkipEntry" /> to{" "}
+                            <R n="WtpResponseGetStatusCodeField" /> is not{" "}
+                            <R n="WtpResponseGetStatusCodeYay" />, or if the
+                            request set <R n="WtpRequestGetSkipEntry" /> to{" "}
                             <Code>true</Code>, then and only then must this be
                             {" "}
-                            <R n="wtp_request_specific_requested_entry_none" />.
+                            <R n="wtp_request_get_requested_entry_none" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "requested_entry",
-                            "WtpResponseSpecificRequestedEntry",
+                            "WtpResponseGetRequestedEntry",
                             "requested_entries",
                           ],
                           <ChoiceType
                             types={[
                               <R n="AuthorisedEntry" />,
                               <DefVariant
-                                n="wtp_request_specific_requested_entry_none"
+                                n="wtp_request_get_requested_entry_none"
                                 r="none"
                               />,
                             ]}
@@ -1650,27 +1638,27 @@ export const wtp = (
                           <>
                             The status code for the <R n="Payload" />{" "}
                             part of this response. Must be{" "}
-                            <R n="wtp_request_specific_payload_status_code_none" />
+                            <R n="wtp_request_get_payload_status_code_none" />
                             {" "}
                             if and only if the{" "}
-                            <R n="WtpResponseSpecificStatusCodeField" />{" "}
-                            field is not{" "}
-                            <R n="WtpResponseSpecificStatusCodeYay" />.
+                            <R n="WtpResponseGetStatusCodeField" /> field is not
+                            {" "}
+                            <R n="WtpResponseGetStatusCodeYay" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "payload_status_code",
-                            "WtpResponseSpecificPayloadStatusCodeField",
+                            "WtpResponseGetPayloadStatusCodeField",
                             "payload_status_codes",
                           ],
                           <ChoiceType
                             multiline
                             types={[
-                              <R n="WtpResponseSpecificPayloadStatusCode" />,
+                              <R n="WtpResponseGetPayloadStatusCode" />,
                               <DefVariant
-                                n="wtp_request_specific_payload_status_code_none"
+                                n="wtp_request_get_payload_status_code_none"
                                 r="none"
                               />,
                             ]}
@@ -1684,23 +1672,21 @@ export const wtp = (
                           <>
                             The information concerning the requested{" "}
                             <R n="Payload" />. Must be{" "}
-                            <R n="wtp_request_specific_payload_response_none" />
-                            {" "}
+                            <R n="wtp_request_get_payload_response_none" />{" "}
                             if and only if{"  "}
-                            <R n="WtpResponseSpecificStatusCodeField" />{" "}
-                            field is not{" "}
-                            <R n="WtpResponseSpecificStatusCodeYay" /> or{" "}
-                            <R n="WtpResponseSpecificPayloadStatusCodeField" />
+                            <R n="WtpResponseGetStatusCodeField" /> field is not
                             {" "}
+                            <R n="WtpResponseGetStatusCodeYay" /> or{" "}
+                            <R n="WtpResponseGetPayloadStatusCodeField" />{" "}
                             field is not{" "}
-                            <R n="WtpResponseSpecificPayloadStatusCodeYay" />.
+                            <R n="WtpResponseGetPayloadStatusCodeYay" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "payload_response",
-                            "WtpResponseSpecificPayloadResponse",
+                            "WtpResponseGetPayloadResponse",
                             "payload_response",
                           ],
                           <ChoiceType
@@ -1708,7 +1694,7 @@ export const wtp = (
                             types={[
                               <R n="WtpPayloadResponse" />,
                               <DefVariant
-                                n="wtp_request_specific_payload_response_none"
+                                n="wtp_request_get_payload_response_none"
                                 r="none"
                               />,
                             ]}
@@ -1740,11 +1726,10 @@ export const wtp = (
                             </P>
 
                             <P>
-                              If the{" "}
-                              <R n="WtpRequestSpecificPartialVerification" />
+                              If the <R n="WtpRequestGetPartialVerification" />
                               {" "}
                               of the request was{" "}
-                              <R n="wtp_request_specific_partial_verification_options_none" />,
+                              <R n="wtp_request_get_partial_verification_options_none" />,
                               this is simply the number of bytes in the response
                               slice.
                             </P>
@@ -1816,7 +1801,7 @@ export const wtp = (
                             response. This must be false if the response{" "}
                             <R n="WtpPayloadResponseSliceLength" />{" "}
                             is equal to the requested{" "}
-                            <R n="WtpRequestSpecificSliceLength" />.
+                            <R n="WtpRequestGetSliceLength" />.
                           </>
                         ),
                         dedicatedLine: true,
@@ -1836,13 +1821,13 @@ export const wtp = (
             </Hsection>
 
             <Hsection
-              n="wtp_request_bulk"
-              title={<Code>RequestBulk</Code>}
+              n="wtp_request_get_many"
+              title={<Code>RequestGetMany</Code>}
             >
               <P>
                 The second kind of request allows to request many{" "}
                 <Rs n="LengthyAuthorisedEntry" /> in the same{" "}
-                <R n="WtpRequestBulkNamespaceId" /> simultaneously, either by
+                <R n="WtpRequestGetManyNamespaceId" /> simultaneously, either by
                 {" "}
                 <R n="AreaOfInterest" /> or by <R n="D3Range" />.
               </P>
@@ -1873,7 +1858,7 @@ export const wtp = (
                 </R>. And, less ambitiously, for pagination.
               </P>
 
-              <Pseudocode n="wtp_defs_RequestBulk">
+              <Pseudocode n="wtp_defs_RequestGetMany">
                 <StructDef
                   comment={
                     <>
@@ -1885,8 +1870,8 @@ export const wtp = (
                     </>
                   }
                   id={[
-                    "RequestBulk",
-                    "WtpRequestBulk",
+                    "RequestGetMany",
+                    "WtpRequestGetMany",
                   ]}
                   fields={[
                     {
@@ -1903,7 +1888,7 @@ export const wtp = (
                         segment: [
                           [
                             "namespace_id",
-                            "WtpRequestBulkNamespaceId",
+                            "WtpRequestGetManyNamespaceId",
                             "namespace_ids",
                           ],
                           <R n="NamespaceId" />,
@@ -1915,14 +1900,14 @@ export const wtp = (
                         comment: (
                           <>
                             The requested <Rs n="LengthyAuthorisedEntry" />{" "}
-                            within the <R n="WtpRequestBulkNamespaceId" />.
+                            within the <R n="WtpRequestGetManyNamespaceId" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "query",
-                            "WtpRequestBulkQuery",
+                            "WtpRequestGetManyQuery",
                             "query",
                           ],
                           <ChoiceType
@@ -1946,15 +1931,15 @@ export const wtp = (
                             <R n="WtpClientSetupMessage" />, and which must
                             include all potential <Rs n="Entry" />{" "}
                             which could possibly be included in the{" "}
-                            <R n="WtpRequestBulkQuery" /> in the{" "}
-                            <R n="WtpRequestBulkNamespaceId" />.
+                            <R n="WtpRequestGetManyQuery" /> in the{" "}
+                            <R n="WtpRequestGetManyNamespaceId" />.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
                             "read_capability",
-                            "WtpRequestBulkReadCapability",
+                            "WtpRequestGetManyReadCapability",
                             "read_capabilities",
                           ],
                           <R n="WtpReadCapability" />,
@@ -1981,7 +1966,7 @@ export const wtp = (
                         segment: [
                           [
                             "metadata_request_fingerprint",
-                            "WtpRequestBulkMetadataRequestFingerprint",
+                            "WtpRequestGetManyMetadataRequestFingerprint",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2007,7 +1992,7 @@ export const wtp = (
                         segment: [
                           [
                             "metadata_request_count",
-                            "WtpRequestBulkMetadataRequestCount",
+                            "WtpRequestGetManyMetadataRequestCount",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2033,7 +2018,7 @@ export const wtp = (
                         segment: [
                           [
                             "metadata_request_size",
-                            "WtpRequestBulkMetadataRequestSize",
+                            "WtpRequestGetManyMetadataRequestSize",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2047,10 +2032,10 @@ export const wtp = (
                             {" "}
                             of all <Rs n="LengthyAuthorisedEntry" /> the{" "}
                             <R n="wtp_server" /> has in the{" "}
-                            <R n="WtpRequestBulkQuery" /> in the{" "}
-                            <R n="WtpRequestBulkNamespaceId" />. If this is not
+                            <R n="WtpRequestGetManyQuery" /> in the{" "}
+                            <R n="WtpRequestGetManyNamespaceId" />. If this is
+                            not <R n="wtp_request_get_many_fingerprint_none" />
                             {" "}
-                            <R n="wtp_request_bulk_fingerprint_none" />{" "}
                             and the matching <Rs n="LengthyAuthorisedEntry" />
                             {" "}
                             of the <R n="wtp_server" /> have exactly this{" "}
@@ -2064,14 +2049,14 @@ export const wtp = (
                         segment: [
                           [
                             "fingerprint",
-                            "WtpRequestBulkFingerprint",
+                            "WtpRequestGetManyFingerprint",
                             "fingerprints",
                           ],
                           <ChoiceType
                             types={[
                               <R n="PayloadDigest" />,
                               <DefVariant
-                                n="wtp_request_bulk_fingerprint_none"
+                                n="wtp_request_get_many_fingerprint_none"
                                 r="none"
                               />,
                             ]}
@@ -2085,9 +2070,9 @@ export const wtp = (
                           <>
                             <P>
                               If this is <Code>true</Code>,{" "}
-                              <R n="WtpRequestBulkFingerprint" /> is not{" "}
-                              <R n="wtp_request_bulk_fingerprint_none" />, but
-                              the <R n="wtp_server" /> opts out of{" "}
+                              <R n="WtpRequestGetManyFingerprint" /> is not{" "}
+                              <R n="wtp_request_get_many_fingerprint_none" />,
+                              but the <R n="wtp_server" /> opts out of{" "}
                               <R n="WtpFingerprint" />{" "}
                               computation, then the server <Em>must</Em>{" "}
                               respond with metadata instead of the actual
@@ -2096,8 +2081,9 @@ export const wtp = (
 
                             <P>
                               Must be <Code>false</Code> if{" "}
-                              <R n="WtpRequestBulkFingerprint" /> is{" "}
-                              <R n="wtp_request_bulk_fingerprint_none" />{" "}
+                              <R n="WtpRequestGetManyFingerprint" /> is{" "}
+                              <R n="wtp_request_get_many_fingerprint_none" />
+                              {" "}
                               (the encoding ensures this).
                             </P>
                           </>
@@ -2106,7 +2092,7 @@ export const wtp = (
                         segment: [
                           [
                             "fingerprint_is_mandatory",
-                            "WtpRequestBulkFingerprintIsMandatory",
+                            "WtpRequestGetManyFingerprintIsMandatory",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2128,7 +2114,7 @@ export const wtp = (
                         segment: [
                           [
                             "threshold_count",
-                            "WtpRequestBulkThresholdCount",
+                            "WtpRequestGetManyThresholdCount",
                           ],
                           <R n="U64" />,
                         ],
@@ -2143,7 +2129,8 @@ export const wtp = (
                               <Code>true</Code>, and the number of matching{" "}
                               <Rs n="LengthyAuthorisedEntry" />{" "}
                               is greater than or equal to the{" "}
-                              <R n="WtpRequestBulkThresholdCount" /> or the{" "}
+                              <R n="WtpRequestGetManyThresholdCount" /> or the
+                              {" "}
                               <R n="wtp_server" />{" "}
                               does not want to compute the number of matches,
                               then the <R n="wtp_server" /> <Em>must</Em>{" "}
@@ -2153,7 +2140,7 @@ export const wtp = (
 
                             <P>
                               Must be <Code>false</Code> if{" "}
-                              <R n="WtpRequestBulkThresholdCount" /> is zero
+                              <R n="WtpRequestGetManyThresholdCount" /> is zero
                               {" "}
                               (the encoding ensures this).
                             </P>
@@ -2163,7 +2150,7 @@ export const wtp = (
                         segment: [
                           [
                             "threshold_count_is_mandatory",
-                            "WtpRequestBulkThresholdCountIsMandatory",
+                            "WtpRequestGetManyThresholdCountIsMandatory",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2186,7 +2173,7 @@ export const wtp = (
                         segment: [
                           [
                             "threshold_size",
-                            "WtpRequestBulkThresholdSize",
+                            "WtpRequestGetManyThresholdSize",
                           ],
                           <R n="U64" />,
                         ],
@@ -2203,7 +2190,8 @@ export const wtp = (
                               {" "}
                               <Rs n="LengthyAuthorisedEntry" />{" "}
                               is greater than or equal to the{" "}
-                              <R n="WtpRequestBulkThresholdSize" /> or the{" "}
+                              <R n="WtpRequestGetManyThresholdSize" /> or the
+                              {" "}
                               <R n="wtp_server" />{" "}
                               does not want to compute the number of matches,
                               then the <R n="wtp_server" /> <Em>must</Em>{" "}
@@ -2213,7 +2201,8 @@ export const wtp = (
 
                             <P>
                               Must be <Code>false</Code> if{" "}
-                              <R n="WtpRequestBulkThresholdSize" /> is zero{" "}
+                              <R n="WtpRequestGetManyThresholdSize" /> is zero
+                              {" "}
                               (the encoding ensures this).
                             </P>
                           </>
@@ -2222,7 +2211,7 @@ export const wtp = (
                         segment: [
                           [
                             "threshold_size_is_mandatory",
-                            "WtpRequestBulkThresholdSizeIsMandatory",
+                            "WtpRequestGetManyThresholdSizeIsMandatory",
                           ],
                           <R n="Bool" />,
                         ],
@@ -2233,19 +2222,19 @@ export const wtp = (
               </Pseudocode>
             </Hsection>
 
-            <Hsection n="wtp_response_bulk" title="ResponseBulk">
+            <Hsection n="wtp_response_get_many" title="ResponseGetMany">
               <P>
                 <Alj inline>TODO</Alj>
               </P>
             </Hsection>
 
-            <Hsection n="wtp_request_storage" title="ResponseStorage">
+            <Hsection n="wtp_request_put" title="RequestPut">
               <P>
                 <Alj inline>TODO</Alj>
               </P>
             </Hsection>
 
-            <Hsection n="wtp_response_storage" title="ResponseStorage">
+            <Hsection n="wtp_response_put" title="ResponsePut">
               <P>
                 <Alj inline>TODO</Alj>
               </P>
