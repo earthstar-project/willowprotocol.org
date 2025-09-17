@@ -1786,6 +1786,29 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
+                            The slice data, either as raw bytes or as a Bab
+                            stream. The length of this is given by (or can be
+                            derived from){" "}
+                            <R n="WtpPayloadResponseSliceLength" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_data",
+                            "WtpPayloadResponseSliceData",
+                            "slice_data",
+                          ],
+                          <SliceType>
+                            <R n="U8" />
+                          </SliceType>,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
                             Whether the <R n="wtp_client" />{" "}
                             should issue more requests for this{" "}
                             <R n="Payload" />{" "}
@@ -1804,29 +1827,6 @@ export const wtp = (
                             "should_try_again",
                           ],
                           <R n="Bool" />,
-                        ],
-                      },
-                    },
-                    {
-                      commented: {
-                        comment: (
-                          <>
-                            The slice data, either as raw bytes or as a Bab
-                            stream. The length of this is given by (or can be
-                            derived from){" "}
-                            <R n="WtpPayloadResponseSliceLength" />.
-                          </>
-                        ),
-                        dedicatedLine: true,
-                        segment: [
-                          [
-                            "slice_data",
-                            "WtpPayloadResponseSliceData",
-                            "slice_data",
-                          ],
-                          <SliceType>
-                            <R n="U8" />
-                          </SliceType>,
                         ],
                       },
                     },
@@ -1877,8 +1877,11 @@ export const wtp = (
                 <StructDef
                   comment={
                     <>
-                      Request a contiguous, possibly empty subslice of the{" "}
-                      <R n="Payload" /> of a specific <R n="AuthorisedEntry" />.
+                      Request multiple <Rs n="LengthyAuthorisedEntry" />{" "}
+                      at once, while optionally giving some optimisation
+                      conditions for omitting the{" "}
+                      <Rs n="LengthyAuthorisedEntry" />{" "}
+                      in favour of compact metadata.
                     </>
                   }
                   id={[
@@ -1962,6 +1965,84 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
+                            Under some circumstances, the <R n="wtp_server" />
+                            {" "}
+                            might reply to this request with compact metadata
+                            instead of actual{" "}
+                            <Rs n="LengthyAuthorisedEntry" />. When this flag is
+                            {" "}
+                            <Code>true</Code>, the <R n="wtp_client" />{" "}
+                            wants this metadata to include the{" "}
+                            <R n="WtpFingerprint" /> over all matched{" "}
+                            <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "metadata_request_fingerprint",
+                            "WtpRequestBulkMetadataRequestFingerprint",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Under some circumstances, the <R n="wtp_server" />
+                            {" "}
+                            might reply to this request with compact metadata
+                            instead of actual{" "}
+                            <Rs n="LengthyAuthorisedEntry" />. When this flag is
+                            {" "}
+                            <Code>true</Code>, the <R n="wtp_client" />{" "}
+                            wants this metadata to include the{" "}
+                            number of all matched{" "}
+                            <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "metadata_request_count",
+                            "WtpRequestBulkMetadataRequestCount",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Under some circumstances, the <R n="wtp_server" />
+                            {" "}
+                            might reply to this request with compact metadata
+                            instead of actual{" "}
+                            <Rs n="LengthyAuthorisedEntry" />. When this flag is
+                            {" "}
+                            <Code>true</Code>, the <R n="wtp_client" />{" "}
+                            wants this metadata to include the sum of the{" "}
+                            <Rs n="entry_payload_length" /> of all matched{" "}
+                            <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "metadata_request_size",
+                            "WtpRequestBulkMetadataRequestSize",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
                             Optionally the expected <R n="WtpFingerprint" />
                             {" "}
                             of all <Rs n="LengthyAuthorisedEntry" /> the{" "}
@@ -1976,12 +2057,7 @@ export const wtp = (
                             <R n="WtpFingerprint" />, the <R n="wtp_server" />
                             {" "}
                             can omit from its response all the{" "}
-                            <Rs n="LengthyAuthorisedEntry" />.<Alj inline>
-                              TODO client should be able specify whether the
-                              server *must* support this, and possibly whether
-                              the server *must* include the fingerprint in a
-                              non-matching response
-                            </Alj>
+                            <Rs n="LengthyAuthorisedEntry" />.
                           </>
                         ),
                         dedicatedLine: true,
@@ -2003,9 +2079,176 @@ export const wtp = (
                         ],
                       },
                     },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              If this is <Code>true</Code>,{" "}
+                              <R n="WtpRequestBulkFingerprint" /> is not{" "}
+                              <R n="wtp_request_bulk_fingerprint_none" />, but
+                              the <R n="wtp_server" /> opts out of{" "}
+                              <R n="WtpFingerprint" />{" "}
+                              computation, then the server <Em>must</Em>{" "}
+                              respond with metadata instead of the actual
+                              matching <Rs n="LengthyAuthorisedEntry" />.
+                            </P>
+
+                            <P>
+                              Must be <Code>false</Code> if{" "}
+                              <R n="WtpRequestBulkFingerprint" /> is{" "}
+                              <R n="wtp_request_bulk_fingerprint_none" />{" "}
+                              (the encoding ensures this).
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "fingerprint_is_mandatory",
+                            "WtpRequestBulkFingerprintIsMandatory",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            If this is nonzero, and the number of matching{" "}
+                            <Rs n="LengthyAuthorisedEntry" />{" "}
+                            is greater than or equal to this value, the{" "}
+                            <R n="wtp_server" />{" "}
+                            should respond with metadata instead of the actual
+                            matching <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "threshold_count",
+                            "WtpRequestBulkThresholdCount",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              If this is{" "}
+                              <Code>true</Code>, and the number of matching{" "}
+                              <Rs n="LengthyAuthorisedEntry" />{" "}
+                              is greater than or equal to the{" "}
+                              <R n="WtpRequestBulkThresholdCount" /> or the{" "}
+                              <R n="wtp_server" />{" "}
+                              does not want to compute the number of matches,
+                              then the <R n="wtp_server" /> <Em>must</Em>{" "}
+                              respond with metadata instead of the actual
+                              matching <Rs n="LengthyAuthorisedEntry" />.
+                            </P>
+
+                            <P>
+                              Must be <Code>false</Code> if{" "}
+                              <R n="WtpRequestBulkThresholdCount" /> is zero
+                              {" "}
+                              (the encoding ensures this).
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "threshold_count_is_mandatory",
+                            "WtpRequestBulkThresholdCountIsMandatory",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            If this is nonzero, and the sum of the{" "}
+                            <Rs n="entry_payload_length" /> of the matching{" "}
+                            <Rs n="LengthyAuthorisedEntry" />{" "}
+                            is greater than or equal to this value, the{" "}
+                            <R n="wtp_server" />{" "}
+                            should respond with metadata instead of the actual
+                            matching <Rs n="LengthyAuthorisedEntry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "threshold_size",
+                            "WtpRequestBulkThresholdSize",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              If this is <Code>true</Code>, and the sum of the
+                              {" "}
+                              <Rs n="entry_payload_length" /> of the matching
+                              {" "}
+                              <Rs n="LengthyAuthorisedEntry" />{" "}
+                              is greater than or equal to the{" "}
+                              <R n="WtpRequestBulkThresholdSize" /> or the{" "}
+                              <R n="wtp_server" />{" "}
+                              does not want to compute the number of matches,
+                              then the <R n="wtp_server" /> <Em>must</Em>{" "}
+                              respond with metadata instead of the actual
+                              matching <Rs n="LengthyAuthorisedEntry" />.
+                            </P>
+
+                            <P>
+                              Must be <Code>false</Code> if{" "}
+                              <R n="WtpRequestBulkThresholdSize" /> is zero{" "}
+                              (the encoding ensures this).
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "threshold_size_is_mandatory",
+                            "WtpRequestBulkThresholdSizeIsMandatory",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
                   ]}
                 />
               </Pseudocode>
+            </Hsection>
+
+            <Hsection n="wtp_response_bulk" title="ResponseBulk">
+              <P>
+                <Alj inline>TODO</Alj>
+              </P>
+            </Hsection>
+
+            <Hsection n="wtp_request_storage" title="ResponseStorage">
+              <P>
+                <Alj inline>TODO</Alj>
+              </P>
+            </Hsection>
+
+            <Hsection n="wtp_response_storage" title="ResponseStorage">
+              <P>
+                <Alj inline>TODO</Alj>
+              </P>
             </Hsection>
           </Hsection>
 
