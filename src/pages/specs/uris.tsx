@@ -94,7 +94,9 @@ export const uris = (
                 family
               </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                 blog
-              </SkyBlue>/?<Orange>from=5&digest=b287af</Orange>#about
+              </SkyBlue>/<SkyBlue>
+                idea.txt
+              </SkyBlue>?<Orange>from=5&digest=b287af</Orange>#about
             </Code>
           </Li>
           <Li>
