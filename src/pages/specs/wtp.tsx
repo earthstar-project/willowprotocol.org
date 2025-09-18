@@ -62,11 +62,21 @@ export const wtp = (
           <P>
             The <R n="data_model">Willow data model</R>{" "}
             specifies how to arrange data, but it does not prescribe how peers
-            can exchange it. In this document, we specify one possible protocol
-            for data exchange: the{" "}
+            can exchange it. The{" "}
             <Def n="wtp" r="WTP">
               Willow Transfer Protocol
-            </Def>. This document assumes familiarity with the{" "}
+            </Def>{" "}
+            is a fairly simple protocol with HTTP-inspired<Marginale>
+              While the semantics are reminiscent of HTTP, the <R n="wtp" />
+              {" "}
+              and HTTP wire encodings are completely unrelated.
+            </Marginale>{" "}
+            GET and PUT-like requests to allow a client to access and write
+            Willow data.
+          </P>
+
+          <P>
+            This document assumes familiarity with the{" "}
             <R n="data_model">Willow data model</R>.
           </P>
         </PreviewScope>
@@ -99,13 +109,13 @@ export const wtp = (
               <R n="d3_range_based_set_reconciliation">
                 range-based set reconciliation
               </R>, and it can send new <Rs n="Entry" /> and their{" "}
-              <Rs n="Payload" /> to the <R n="wtp_client" />. The{" "}
+              <Rs n="Payload" /> to the <R n="wtp_server" />. The{" "}
               <R n="wtp_server" />{" "}
               does not need to do anything but to reply to incoming requests —
               and it can always reply that it refused to do what was requested.
               The <R n="wtp_server" />{" "}
-              needs to maintain only a tiny, constant amount of state for each
-              connection (far eclipsed by the state necessary for maintaining
+              needs to maintain only a small, constant amount of state per
+              session (typically eclipsed by the state required for maintaining
               the network connection itself).
             </P>
           </PreviewScope>
@@ -113,15 +123,14 @@ export const wtp = (
           <P>
             Whereas the <R n="wgps" />{" "}
             assembles some sophisticated techniques to allow for high
-            confidentiality between completely untrusted peers, supports for
-            bidirectional eager forwarding of novel information, multiplexes
-            several independent data streams, and diligently optimises bandwidth
-            usage, the <R n="wtp" />{" "}
+            confidentiality between completely untrusted peers, supports
+            bidirectional eager forwarding of novel information, and multiplexes
+            several independent data streams, the <R n="wtp" />{" "}
             makes simplifying trust assumptions, has an unidirectionally flow of
-            initiative, places responsibility for avoiding head-of-line blocking
-            on the{" "}
-            <R n="wtp_client" />, and sacrifices bandwidth for simplicity. In
-            exchange, it goes easy on the computational resources of the{" "}
+            initiative, and places responsibility for avoiding head-of-line
+            blocking on the{" "}
+            <R n="wtp_client" />. In exchange, it goes easy on the computational
+            resources of the{" "}
             <R n="wtp_server" />, and it is actually enjoyable and
             straightforward to implement.
           </P>
@@ -220,7 +229,8 @@ export const wtp = (
             is message-based. The first message sent by each peer is a dedicated
             setup message. After having sent its setup message, the{" "}
             <R n="wtp_client" />{" "}
-            can send a number of request messages, in arbitrary order. The{" "}
+            can send any number of request messages, in arbitrary order. The
+            {" "}
             <R n="wtp_server" />{" "}
             replies to each request message with exactly one response message.
           </P>
@@ -312,7 +322,7 @@ export const wtp = (
                     comment: (
                       <>
                         The feature may or may not be available, depending on
-                        some unknown factor such as perhaps the{" "}
+                        some unspecified factor such as perhaps the{" "}
                         <R n="namespace" />, <R n="subspace" />{" "}
                         or other request data, or perhaps the weather. When
                         making requests which rely on this feature, the{" "}
@@ -339,10 +349,11 @@ export const wtp = (
             </Pseudocode>
 
             <P>
-              The <R n="WtpServerSetupMessage" /> combines a{" "}
-              <R n="wtp_challenge" /> with the <R n="Availability" />{" "}
-              for various features:<Alj>
-                TODO: add more features here as they come up in requests.
+              The <R n="WtpServerSetupMessage" /> consists of the{" "}
+              <R n="wtp_challenge" /> plus the <R n="Availability" />{" "}
+              information for various features:<Alj>
+                TODO: add remaining availability features here as they come up
+                in requests.
               </Alj>
             </P>
 
@@ -404,8 +415,8 @@ export const wtp = (
                       dedicatedLine: true,
                       segment: [
                         [
-                          "feature_req_specific",
-                          "wtp_feature_req_specific",
+                          "feature_get",
+                          "wtp_feature_get",
                         ],
                         <R n="Availability" />,
                       ],
@@ -423,8 +434,8 @@ export const wtp = (
                       dedicatedLine: true,
                       segment: [
                         [
-                          "feature_req_specific_payload",
-                          "wtp_feature_req_specific_payload",
+                          "feature_get_payload",
+                          "wtp_feature_get_payload",
                         ],
                         <R n="Availability" />,
                       ],
@@ -445,8 +456,8 @@ export const wtp = (
                       dedicatedLine: true,
                       segment: [
                         [
-                          "feature_req_specific_raw_slices",
-                          "wtp_feature_req_specific_raw_slices",
+                          "feature_get_raw_slices",
+                          "wtp_feature_get_raw_slices",
                         ],
                         <R n="Availability" />,
                       ],
@@ -466,8 +477,8 @@ export const wtp = (
                       dedicatedLine: true,
                       segment: [
                         [
-                          "feature_req_specific_authenticated_slices",
-                          "wtp_feature_req_specific_authenticated_slices",
+                          "feature_get_authenticated_slices",
+                          "wtp_feature_get_authenticated_slices",
                         ],
                         <R n="Availability" />,
                       ],
@@ -488,8 +499,8 @@ export const wtp = (
                       dedicatedLine: true,
                       segment: [
                         [
-                          "feature_req_specific_fancy_k",
-                          "wtp_feature_req_specific_fancy_k",
+                          "feature_get_fancy_k",
+                          "wtp_feature_get_fancy_k",
                         ],
                         <R n="Availability" />,
                       ],
@@ -1210,7 +1221,7 @@ export const wtp = (
                       comment: (
                         <>
                           The request was not processed. The{" "}
-                          <R n="wtp_feature_req_specific" /> of the{" "}
+                          <R n="wtp_feature_get" /> of the{" "}
                           <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
                         </>
@@ -1406,7 +1417,7 @@ export const wtp = (
                         <>
                           The request for a <R n="Payload" />{" "}
                           slice was not processed. The{" "}
-                          <R n="wtp_feature_req_specific_payload" /> of the{" "}
+                          <R n="wtp_feature_get_payload" /> of the{" "}
                           <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
                         </>
@@ -1424,8 +1435,8 @@ export const wtp = (
                           slice was not processed, because the{" "}
                           <R n="WtpRequestGetPartialVerification" /> was{" "}
                           <R n="wtp_request_get_partial_verification_options_none" />.
-                          The <R n="wtp_feature_req_specific_raw_slices" />{" "}
-                          of the <R n="WtpServerSetupMessage" />{" "}
+                          The <R n="wtp_feature_get_raw_slices" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
                         </>
                       ),
@@ -1443,8 +1454,7 @@ export const wtp = (
                           <R n="WtpRequestGetPartialVerification" /> was not
                           {" "}
                           <R n="wtp_request_get_partial_verification_options_none" />.
-                          The{" "}
-                          <R n="wtp_feature_req_specific_authenticated_slices" />
+                          The <R n="wtp_feature_get_authenticated_slices" />
                           {" "}
                           of the <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
@@ -1464,7 +1474,7 @@ export const wtp = (
                           <R n="WtpRequestGetPartialVerification" /> set{" "}
                           <R n="WtpPartialVerificationK" />{" "}
                           to a value other than <Code>1</Code>. The{" "}
-                          <R n="wtp_feature_req_specific_fancy_k" /> of the{" "}
+                          <R n="wtp_feature_get_fancy_k" /> of the{" "}
                           <R n="WtpServerSetupMessage" />{" "}
                           gives more information.
                         </>
