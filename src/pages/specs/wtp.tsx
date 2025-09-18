@@ -351,10 +351,7 @@ export const wtp = (
             <P>
               The <R n="WtpServerSetupMessage" /> consists of the{" "}
               <R n="wtp_challenge" /> plus the <R n="Availability" />{" "}
-              information for various features:<Alj>
-                TODO: add remaining availability features here as they come up
-                in requests.
-              </Alj>
+              information for various features:
             </P>
 
             <Pseudocode n="wtp_defs_server_setup_message">
@@ -2363,6 +2360,125 @@ export const wtp = (
                         ],
                       },
                     },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              The order in which the <R n="wtp_client" />{" "}
+                              would like to receive the{" "}
+                              <Rs n="LengthyAuthorisedEntry" />.
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "ordering",
+                            "WtpRequestGetManyOrdering",
+                          ],
+                          <ChoiceType
+                            multiline
+                            types={[
+                              {
+                                commented: {
+                                  comment: (
+                                    <>
+                                      The response{" "}
+                                      <Rs n="LengthyAuthorisedEntry" />{" "}
+                                      must be sorted ascendingly by{"  "}
+                                      <R n="entry_newer">novelty</R>{" "}
+                                      first, using the{" "}
+                                      <R n="entry_subspace_id" />{" "}
+                                      as tiebreaker, and <R n="entry_path" />
+                                      {" "}
+                                      as secondary tiebreaker.
+                                    </>
+                                  ),
+                                  dedicatedLine: true,
+                                  segment: (
+                                    <DefVariant
+                                      n="wtp_request_get_bulk_newest_then_subspace_then_path"
+                                      r="newest_then_subspace_then_path"
+                                    />
+                                  ),
+                                },
+                              },
+                              {
+                                commented: {
+                                  comment: (
+                                    <>
+                                      The response{" "}
+                                      <Rs n="LengthyAuthorisedEntry" />{" "}
+                                      must be sorted ascendingly by{"  "}
+                                      <R n="entry_subspace_id" />{" "}
+                                      first, using the <R n="entry_path" />{" "}
+                                      as tiebreaker, and{" "}
+                                      <R n="entry_timestamp" />{" "}
+                                      as secondary tiebreaker.
+                                    </>
+                                  ),
+                                  dedicatedLine: true,
+                                  segment: (
+                                    <DefVariant
+                                      n="wtp_request_get_bulk_subspace_then_path_then_newest"
+                                      r="subspace_then_path_then_newest"
+                                    />
+                                  ),
+                                },
+                              },
+                              {
+                                commented: {
+                                  comment: (
+                                    <>
+                                      The response{" "}
+                                      <Rs n="LengthyAuthorisedEntry" />{" "}
+                                      must be sorted either ascendingly by{"  "}
+                                      <R n="entry_newer">novelty</R>{" "}
+                                      first, using the{" "}
+                                      <R n="entry_subspace_id" />{" "}
+                                      as tiebreaker, and <R n="entry_path" />
+                                      {" "}
+                                      as secondary tiebreaker, or ascendingly by
+                                      {"  "}<R n="entry_subspace_id" />{" "}
+                                      first, using the <R n="entry_path" />{" "}
+                                      as tiebreaker, and{" "}
+                                      <R n="entry_timestamp" />{" "}
+                                      as secondary tiebreaker.
+                                    </>
+                                  ),
+                                  dedicatedLine: true,
+                                  segment: (
+                                    <DefVariant
+                                      n="wtp_request_get_bulk_either_works"
+                                      r="either_works"
+                                    />
+                                  ),
+                                },
+                              },
+                              {
+                                commented: {
+                                  comment: (
+                                    <>
+                                      The response{" "}
+                                      <Rs n="LengthyAuthorisedEntry" />{" "}
+                                      need not be sorted.
+                                    </>
+                                  ),
+                                  dedicatedLine: true,
+                                  segment: (
+                                    <DefVariant
+                                      n="wtp_request_get_bulk_sorted_whatever"
+                                      r="whatever"
+                                    />
+                                  ),
+                                },
+                              },
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
                   ]}
                 />
               </Pseudocode>
@@ -3029,14 +3145,6 @@ export const wtp = (
           <Hsection n="wtp_encodings" title="Encodings">
             <P>
               <Alj inline>TODO</Alj>
-            </P>
-
-            <P>
-              <Alj inline>
-                TODO: allow for a well-known default read capability, intended
-                for public data, and allow omitting the read capability from the
-                encodings to indicate the default one.
-              </Alj>
             </P>
           </Hsection>
         </Hsection>
