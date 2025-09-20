@@ -3384,50 +3384,42 @@ export const sync = (
                 title="PayloadRequestBindRequest"
                 noToc
               >
-                <P>
-                  <Alj inline>
-                    TODO: Finalise this message type before defining its
-                    encoding.
-                  </Alj>
-                </P>
-                {
-                  /* <EncodingRelationTemplate
-                  n="EncodeDataSendEntry"
-                  valType={<R n="DataSendEntry" />}
+                <EncodingRelationTemplate
+                  n="EncodePayloadRequestBindRequest"
+                  valType={<R n="PayloadRequestBindRequest" />}
                   bitfields={[
-                    bitfieldConstant([0]),
                     c64Tag(
-                      "offset",
-                      7,
+                      "sender_handle",
+                      4,
                       <>
-                        <ValAccess field="DataSendEntryOffset" />
+                        <ValAccess field="PayloadRequestBindRequestSenderHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "receiver_handle",
+                      4,
+                      <>
+                        <ValAccess field="PayloadRequestBindRequestReceiverHandle" />
                       </>,
                     ),
                   ]}
                   contents={[
-                    <C64Encoding id="offset" />,
-                    <CodeFor
-                      enc="EncodeEntryRelativeEntry"
-                      relativeTo={<R n="data_current_entry" />}
-                    >
-                      the <R n="Entry" /> of{" "}
-                      <ValAccess field="DataSendEntryEntry" />
+                    <C64Encoding id="sender_handle" />,
+                    <C64Encoding id="receiver_handle" />,
+                    <CodeFor isFunction enc="encode_namespace_id">
+                      <ValAccess field="PayloadRequestBindRequestNamespaceId" />
                     </CodeFor>,
-                    <CodeFor
-                      enc="EncodeAuthorisationToken"
-                      relativeTo={
-                        <>
-                          <R n="data_current_entry" /> and{" "}
-                          <ValAccess field="DataSendEntryEntry" />
-                        </>
-                      }
-                    >
-                      the <R n="AuthorisationToken" /> of{" "}
-                      <ValAccess field="DataSendEntryEntry" />
+                    <CodeFor isFunction enc="encode_subspace_id">
+                      <ValAccess field="PayloadRequestBindRequestSubspaceId" />
+                    </CodeFor>,
+                    <CodeFor enc="EncodePath">
+                      <ValAccess field="PayloadRequestBindRequestPath" />
+                    </CodeFor>,
+                    <CodeFor isFunction enc="encode_payload_digest">
+                      <ValAccess field="PayloadRequestBindRequestPayloadDigest" />
                     </CodeFor>,
                   ]}
-                /> */
-                }
+                />
 
                 <P>
                   <R n="PayloadRequestBindRequest" /> messages use the{" "}
