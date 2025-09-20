@@ -2277,7 +2277,7 @@ export const sync = (
                           segment: [
                             [
                               "sender_handle",
-                              "PayloadRequestBindRequestNamespaceIdSenderHandle",
+                              "PayloadRequestBindRequestSenderHandle",
                               "sender_handles",
                             ],
                             <R n="U64" />,
@@ -2304,7 +2304,7 @@ export const sync = (
                           segment: [
                             [
                               "receiver_handle",
-                              "PayloadRequestBindRequestNamespaceIdReceiverHandle",
+                              "PayloadRequestBindRequestReceiverHandle",
                               "receiver_handles",
                             ],
                             <R n="U64" />,
