@@ -17,6 +17,12 @@ export const about_us = (
         heading="About Us"
       >
         <P>
+          <Marginale>
+            <Img
+              src={<ResolveAsset asset={["about", "cinn.png"]} />}
+              alt="Cinnamon"
+            />
+          </Marginale>
           Willow started as a{" "}
           <A href={<ResolveAsset asset={["about", "soilsun.md"]} />}>
             minimalistic reimagining
@@ -33,91 +39,23 @@ export const about_us = (
         </P>
 
         <P>
-          Over the course of ten months, we put a tremendous amount of work and
-          care into the design of these protocols and the website which serves
-          as its introduction. Here’s a little bit about us.
+          <Marginale>
+            <Img
+              src={<ResolveAsset asset={["about", "wb.png"]} />}
+              alt="Aljoscha and Sam"
+            />
+          </Marginale>
+          Willow was designed by Aljoscha Meyer and Sam Gwilym, who have been
+          working together since 2022. Their first collaboration was a
+          proof-of-concept implementation of range based set reconciliation. But
+          they soon realised there was no-one around to say ‘no’, and have used
+          Willow as the pretext for spinning out a macro processor, a sink /
+          stream abstraction for Rust, and a new secure hash function.
         </P>
 
-        <Hsection title="Aljoscha Meyer" n="aljoscha_section">
-          <PreviewScope>
-            <P>
-              <Marginale inlineable>
-                <Img
-                  src={<ResolveAsset asset={["about", "aljoscha.png"]} />}
-                  alt="A webcam-angle drawing of Aljoscha in his room, as seen by gwil in their many video chats. Lovely purple curtains and a piano in the background (the sheet music is Bach, but you cannot tell from the drawing), big glasses and a big smile on his face."
-                />
-              </Marginale>
+        <P>Aljoscha's website and email.</P>
 
-              <Span style="font-style: italic">
-                I’m{" "}
-                <Def n="aljoscha" r="Aljoscha" rs="Aljoschas" wide />, a
-                computer scientist and fledgling researcher based in Berlin,
-                Germany. As an avid shaver of yaks who even tackles protocol
-                website creation by first writing a custom macro processor from
-                scratch, I am grateful that <R n="gwil" />{" "}
-                decided to team up on Willow. Turns out we actually got
-                something done this way that we are quite proud of. Now, how do
-                I turn any of this into a paper to justify the immense time
-                sink? Intrinsic motivation cannot possibly go that far, right?
-              </Span>
-
-              <Ul>
-                <Li>
-                  <AE href="https://aljoscha-meyer.de/">Website</AE>
-                </Li>
-                <Li>
-                  <AE href="mailto:mail@aljoscha-meyer.de">Email</AE>
-                </Li>
-              </Ul>
-            </P>
-          </PreviewScope>
-        </Hsection>
-
-        <Hsection
-          title={
-            <>
-              Sam <Quotes>gwil</Quotes> Gwilym
-            </>
-          }
-          n="gwil_section"
-        >
-          <PreviewScope>
-            <P>
-              <Marginale inlineable>
-                <Img
-                  src={<ResolveAsset asset={["about", "gwil.png"]} />}
-                  alt="A webcam-angle drawing of gwil in the studio, as seen by Aljoscha in their many video chats. Thankfully still drawn by gwil, however. Sunlight fills the room, the walls are full of drawings. Gwil grins as gwil often does, and gives a thumbs-up."
-                />
-              </Marginale>
-
-              <Span style="font-style: italic">
-                I’m{" "}
-                <Def n="gwil" r="gwil" rs="gwils" wide />. I’m a programmer,
-                illustrator, and parent living in the Hague, the Netherlands.
-                Despite my better judgement, I've been active in the
-                decentralised space for a couple of years now. I'm a core
-                maintainer for Earthstar and Willow's TypeScript and Rust
-                implementations. <Rb n="aljoscha" />{" "}
-                and I have really pushed each other to do our best work in
-                designing these protocols, though it's really all the wobbly
-                drawings for the site that have been the highlight of my
-                computer science career.
-              </Span>
-
-              <Ul>
-                <Li>
-                  <AE href="https://gwil.garden">Blog</AE>
-                </Li>
-                <Li>
-                  <AE href="https://post.lurk.org/@gwil">Mastodon</AE>
-                </Li>
-                <Li>
-                  <AE href="mailto:sam@gwil.garden">Email</AE>
-                </Li>
-              </Ul>
-            </P>
-          </PreviewScope>
-        </Hsection>
+        <P>Sam's website and email</P>
       </PageTemplate>
     </File>
   </Dir>
