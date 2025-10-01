@@ -54,7 +54,11 @@ export const about_us = (
         </P>
 
         <P>
-          Aljoscha is a computer scientist. He lives in Berlin.
+          <Def n="aljoscha" r="Aljoscha" rs="Aljoschas">
+            Aljoscha
+          </Def>{" "}
+          is a computer scientist. He lives in Berlin.
+
           <Ul>
             <Li>
               <AE href="https://aljoscha-meyer.de/">Website</AE>
@@ -66,7 +70,11 @@ export const about_us = (
         </P>
 
         <P>
-          Sam is a programmer and illustrator. She lives in The Hague.
+          <Def n="gwil" r="gwil" rs="gwils">
+            Sam
+          </Def>{" "}
+          is a programmer and illustrator. She lives in The Hague.
+
           <Ul>
             <Li>
               <AE href="https://gwil.garden">Website</AE>

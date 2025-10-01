@@ -6,6 +6,7 @@ import { File } from "macromania-outfs";
 import { ResolveAsset } from "macromania-assets";
 import { Expression } from "macromania";
 import { Hsection } from "macromania-hsection";
+import { Hidden } from "../macros.tsx";
 
 function SpecBreakdown(
   { title, tagline, emblem, features }: {
@@ -117,9 +118,13 @@ export const index = (
           <Li>
             <R n="specifications">Specifications</R>
           </Li>
-          <Li id="rust-nav">
-            <R n="rust">Rust</R>
-          </Li>
+
+          <Hidden>
+            <Li id="rust-nav">
+              <R n="rust">Rust</R>
+            </Li>
+          </Hidden>
+
           <Li>
             <R n="changes">News</R>
           </Li>

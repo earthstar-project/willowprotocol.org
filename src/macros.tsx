@@ -37,6 +37,12 @@ export function Gwil(
   );
 }
 
+export function Hidden(
+  _props: { children?: Expressions },
+): Expression {
+  return "";
+}
+
 /////////////////////////////
 // General Purpose Writing //
 /////////////////////////////
