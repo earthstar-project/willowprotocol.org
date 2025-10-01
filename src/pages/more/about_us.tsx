@@ -53,9 +53,32 @@ export const about_us = (
           stream abstraction for Rust, and a new secure hash function.
         </P>
 
-        <P>Aljoscha's website and email.</P>
+        <P>
+          Aljoscha is a computer scientist. He lives in Berlin.
+          <Ul>
+            <Li>
+              <AE href="https://aljoscha-meyer.de/">Website</AE>
+            </Li>
+            <Li>
+              <AE href="mailto:mail@aljoscha-meyer.de">Email</AE>
+            </Li>
+          </Ul>
+        </P>
 
-        <P>Sam's website and email</P>
+        <P>
+          Sam is a programmer and illustrator. She lives in The Hague.
+          <Ul>
+            <Li>
+              <AE href="https://gwil.garden">Website</AE>
+            </Li>
+            <Li>
+              <AE href="mailto:sam@gwil.garden">Email</AE>
+            </Li>
+            <Li>
+              <AE href="https://post.lurk.org/@gwil">Mastodon</AE>
+            </Li>
+          </Ul>
+        </P>
       </PageTemplate>
     </File>
   </Dir>
