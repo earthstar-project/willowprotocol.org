@@ -54,10 +54,12 @@ export const about_us = (
         </P>
 
         <P>
-          <Def n="aljoscha" r="Aljoscha" rs="Aljoschas">
-            Aljoscha
-          </Def>{" "}
-          is a computer scientist. He lives in Berlin.
+          <PreviewScope>
+            <Def n="aljoscha" r="Aljoscha" rs="Aljoschas">
+              Aljoscha
+            </Def>{" "}
+            is a computer scientist. He lives in Berlin.
+          </PreviewScope>
 
           <Ul>
             <Li>
@@ -70,10 +72,12 @@ export const about_us = (
         </P>
 
         <P>
-          <Def n="gwil" r="gwil" rs="gwils">
-            Sam
-          </Def>{" "}
-          is a programmer and illustrator. She lives in The Hague.
+          <PreviewScope>
+            <Def n="gwil" r="gwil" rs="gwils">
+              Sam
+            </Def>{" "}
+            is a programmer and illustrator. She lives in The Hague.
+          </PreviewScope>
 
           <Ul>
             <Li>

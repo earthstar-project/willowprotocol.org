@@ -905,3 +905,7 @@ code.terminal-input {
     //background-color: #232136;
 }
 
+.news-time {
+   color: var(--dark-green);
+   font-weight: normal;
+}

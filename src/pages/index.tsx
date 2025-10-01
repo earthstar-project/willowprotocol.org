@@ -20,7 +20,7 @@ function SpecBreakdown(
     <>
       <H3>{title}</H3>
       <P clazz="spec-tagline">
-        <Marginale>
+        <Marginale inlineable>
           {emblem}
         </Marginale>
         {tagline}
@@ -51,7 +51,7 @@ export const index = (
 
       <Div id="outline">
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["landing", "outline1.png"]} />}
               alt={`Emblem`}
@@ -63,7 +63,7 @@ export const index = (
         </P>
 
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["landing", "outline2.png"]} />}
               alt={`Emblem`}
@@ -74,7 +74,7 @@ export const index = (
         </P>
 
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["landing", "outline3.png"]} />}
               alt={`Emblem`}
@@ -85,7 +85,7 @@ export const index = (
         </P>
 
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["landing", "outline4.png"]} />}
               alt={`Emblem`}
@@ -96,7 +96,7 @@ export const index = (
         </P>
 
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["landing", "outline5.png"]} />}
               alt={`Emblem`}
