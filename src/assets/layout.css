@@ -7,7 +7,12 @@ body {
     
 }
 
-body:not(.isPreview) {
+body.isTooltip {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+body:not(.isTooltip) {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     padding-top: 4rem;
@@ -99,12 +104,12 @@ body:not(.isPreview) {
 
 /* Other styling */
 
-.previewContainer {
+.tooltipContainer {
   max-width: min(33.6rem, 100vw);
 }
 
 @media (min-width:874.6px) {
-  .previewContainer.wide {
+  .tooltipContainer.wide {
     max-width: min(calc(53.6rem + 18px), 100vw);
   }
 }

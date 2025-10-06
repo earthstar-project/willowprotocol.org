@@ -1082,7 +1082,7 @@ function addDataAttributes(
 
     previewPath.push(finalComponent);
 
-    data["preview-anchor"] = (
+    data["tooltip-anchor"] = (
       <impure
         fun={(ctx) => {
           return hrefTo(ctx, absoluteOutFsPath(previewPath));

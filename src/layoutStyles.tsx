@@ -66,7 +66,12 @@ body {
     ${dev ? "background-color: rgb(141, 141, 247) !important;" : ""}
 }
 
-body:not(.isPreview) {
+body.isTooltip {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+body:not(.isTooltip) {
     padding-left: ${paddingLeft}rem;
     padding-right: ${paddingRight}rem;
     padding-top: 4rem;
@@ -168,7 +173,7 @@ body:not(.isPreview) {
 
 /* Other styling */
 
-.previewContainer {
+.tooltipContainer {
   max-width: min(${paddingLeft + paddingRight + maxMain}rem, 100vw);
 }
 
@@ -177,7 +182,7 @@ body:not(.isPreview) {
       (paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia) +
     SCROLLBAR
   }px) {
-  .previewContainer.wide {
+  .tooltipContainer.wide {
     max-width: min(calc(${
     paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia
   }rem + 18px), 100vw);
