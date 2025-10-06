@@ -39,7 +39,7 @@ export const about_us = (
         </P>
 
         <P>
-          <Marginale>
+          <Marginale inlineable>
             <Img
               src={<ResolveAsset asset={["about", "wb.png"]} />}
               alt="Aljoscha and Sam"

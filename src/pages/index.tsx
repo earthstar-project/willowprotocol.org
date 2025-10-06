@@ -38,11 +38,18 @@ export const index = (
       htmlTitle="Home"
       headingId="willow"
       heading={
-        <Img
-          clazz="splash-image"
-          src={<ResolveAsset asset={["splash.png"]} />}
-          alt={`A detailed illustration. In the centre, a Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\". Connected to this emblem with dashed lines are various networks. In the top left, a network of computers being used by Alfie and Betty. On the right, Gemma, Epson, and Phoebe are networking with handheld devices. In the bottom left, Lemmy is crouched behind a server, trying to fix it. Below, Dalton heaves an enormous USB stick around. In the bottom right, Bip and Bop chat with each other. And at the top, a frustrated Numpty is unable to connect with anyone.`}
-        />
+        <>
+          <Img
+            clazz="only-narrow"
+            src="/assets/emblem.png"
+            alt={`A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word "Willow".`}
+          />
+          <Img
+            clazz="splash-image only-wide"
+            src={<ResolveAsset asset={["splash.png"]} />}
+            alt={`A detailed illustration. In the centre, a Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word \"Willow\". Connected to this emblem with dashed lines are various networks. In the top left, a network of computers being used by Alfie and Betty. On the right, Gemma, Epson, and Phoebe are networking with handheld devices. In the bottom left, Lemmy is crouched behind a server, trying to fix it. Below, Dalton heaves an enormous USB stick around. In the bottom right, Bip and Bop chat with each other. And at the top, a frustrated Numpty is unable to connect with anyone.`}
+          />
+        </>
       }
     >
       <P clazz="tagline wide">
