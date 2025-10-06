@@ -914,12 +914,6 @@ export const data_model = (
             structures for supporting them efficiently{" "}
             <R n="d3storage">here</R>.
           </P>
-
-          <P>
-            How can I contribute to Willow and support it? So glad you asked —
-            we have prepared a collection of pointers{" "}
-            <R n="projects_and_communities">here</R>.
-          </P>
         </Hsection>
 
         <Img
