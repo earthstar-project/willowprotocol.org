@@ -28,6 +28,10 @@ body:not(.isPreview) {
   display: block;
 }
 
+.only-wide {
+  display: none;
+}
+
 /* Start implementing L2 */
 
 @media (min-width:554.6px) {
@@ -69,6 +73,14 @@ body:not(.isPreview) {
 
     .sidenoteCounter {
         display: initial;
+    }
+    
+    .only-wide {
+      display: block;
+    }
+    
+    .only-narrow {
+      display: none;
     }
 }
 

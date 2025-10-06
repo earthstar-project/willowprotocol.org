@@ -37,6 +37,7 @@ import { CssDependency, JsDependency } from "macromania-previews";
 import { encodeHex } from "jsr:@std/encoding/hex";
 import { addEtag } from "./serverOptimisations.tsx";
 import { join as posixJoin } from "@std/path";
+import { Hidden } from "./macros.tsx";
 
 export function Page(
   props: PageTemplateProps & { children?: Expressions; name: string },
@@ -231,9 +232,11 @@ export function PageTemplate(
                     <Li>
                       <R n="specifications">Specs</R>
                     </Li>
-                    <Li>
-                      <R n="rust">Rust</R>
-                    </Li>
+                    <Hidden>
+                      <Li>
+                        <R n="rust">Rust</R>
+                      </Li>
+                    </Hidden>
                     <Li>
                       <R n="changes">News</R>
                     </Li>
