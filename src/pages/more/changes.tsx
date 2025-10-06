@@ -56,6 +56,7 @@ export const changes = (
         headingId="changes"
         heading="News, Improvements, and Necessary Changes"
         toc
+        parentId="more"
       >
         <P>
           Here, we maintain a changelog of breaking changes to our specs, and
