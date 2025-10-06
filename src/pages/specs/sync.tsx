@@ -2328,7 +2328,7 @@ export const sync = (
                 </P>
 
                 <P>
-                  <Wip fg="#000000" bg="#f7f5a5ff">
+                  <Wip fg="#000000" bg="#f7e4a5ff">
                     We will add the ability to query for arbitrary slices
                     (indexed in transformed chunks, not bytes) in the future;
                     this will be part of ongoing grant work.
