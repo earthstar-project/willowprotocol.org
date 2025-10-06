@@ -407,8 +407,7 @@ export const sync = (
 
         <Hsection n="sync_protocol" title="Protocol">
           <P>
-            The protocol is mostly message-based, with the exception of the
-            first few bytes of communication. To break symmetry, we refer to the
+            The protocol is message-based. To break symmetry, we refer to the
             peer that initiated the synchronisation session as{" "}
             <Def
               n="alfie"
