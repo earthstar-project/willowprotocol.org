@@ -2321,10 +2321,9 @@ export const sync = (
                   <R n="Payload" /> if the <R n="Entry" />’s{" "}
                   <R n="entry_timestamp" /> does not fall within both the{" "}
                   <R n="read_capability" /> corresponding to{" "}
-                  <R n="PayloadRequestBindRequestNamespaceIdSenderHandle" />
-                  {" "}
+                  <R n="PayloadRequestBindRequestSenderHandle" />{" "}
                   and that corresponding to{" "}
-                  <R n="PayloadRequestBindRequestNamespaceIdReceiverHandle" />.
+                  <R n="PayloadRequestBindRequestReceiverHandle" />.
                 </P>
 
                 <P>
