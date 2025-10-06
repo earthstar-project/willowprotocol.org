@@ -45,6 +45,7 @@ import {
   ValAccess,
 } from "../../encoding_macros.tsx";
 import { EncConditional, ValName } from "../../encoding_macros.tsx";
+import { Wip } from "macromania-wip";
 
 export const sync = (
   <Dir name="sync">
@@ -2327,11 +2328,11 @@ export const sync = (
                 </P>
 
                 <P>
-                  <Alj>
-                    TODO: add ability to query for arbitrary slices (indexed in
-                    transformed chunks, not bytes); this will be part of Bab
-                    grant work
-                  </Alj>
+                  <Wip fg="#000000" bg="#f7f5a5ff">
+                    We will add the ability to query for arbitrary slices
+                    (indexed in transformed chunks, not bytes) in the future;
+                    this will be part of ongoing grant work.
+                  </Wip>
                   <Rb n="PayloadRequestBindRequest" /> messages use the{" "}
                   <R n="PayloadRequestChannel" />.
                 </P>
