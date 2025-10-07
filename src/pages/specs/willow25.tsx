@@ -391,37 +391,46 @@ export const willow25 = (
             without the leading length indicator.
           </P>
 
-          <P>
-            The <R n="sync_default_namespace_id" /> is{" "}
-            <Sidenote
-              note={
-                <>
-                  This is an <R n="Ed25519Pk" />{" "}
-                  that we generated randomly, the corresponding secret key is
-                  {" "}
-                  <Alj inline>TODO</Alj>.<Alj inline>
-                    TODO ensure this is a communal namespace.
-                  </Alj>
-                </>
-              }
-            >
-              <Alj inline>TODO</Alj>
-            </Sidenote>. The <R n="sync_default_subspace_id" /> is equal to the
-            {" "}
-            <R n="sync_default_namespace_id" />.
-          </P>
+          <PreviewScope>
+            <P>
+              The{" "}
+              <Def n="willow25_default_namespace_id" r="default_namespace_id" />
+              {" "}
+              is{" "}
+              <Marginale>
+                This is an <R n="Ed25519Pk" />{" "}
+                we generated randomly, the corresponding secret key is{" "}
+                <Code>
+                  [94, 20, 172, 228, 210, 200, 2, 143, 200, 154, 143, 4, 118,
+                  91, 25, 210, 205, 117, 45, 145, 187, 55, 60, 12, 158, 212,
+                  118, 39, 107, 92, 69, 65]
+                </Code>.
+              </Marginale>
+              <Code>
+                [147, 78, 96, 33, 51, 158, 31, 1, 59, 169, 73, 0, 237, 194, 93,
+                141, 116, 192, 180, 229, 115, 118, 137, 16, 174, 15, 80, 125,
+                140, 129, 115, 24]
+              </Code>. This is a <R n="communal_namespace" />.
+            </P>
+
+            <P>
+              The{" "}
+              <Def n="willow25_default_subspace_id" r="default_subspace_id" />
+              {" "}
+              is equal to the <R n="willow25_default_namespace_id" />.
+            </P>
+          </PreviewScope>
 
           <P>
             The <R n="sync_default_payload_digest" /> is{" "}
-            <Sidenote
-              note={
-                <>
-                  This is the <R n="william3" /> digest of the empty string.
-                </>
-              }
-            >
-              <Alj inline>TODO</Alj>
-            </Sidenote>.
+            <Marginale>
+              This is the <R n="william3" /> digest of the empty string.
+            </Marginale>
+            <Code>
+              [59, 99, 143, 200, 242, 251, 104, 65, 131, 37, 163, 107, 71, 24,
+              255, 176, 125, 228, 87, 172, 48, 19, 147, 168, 69, 70, 106, 121,
+              238, 163, 40, 107]
+            </Code>.
           </P>
 
           <P>
@@ -435,18 +444,23 @@ export const willow25 = (
             </Li>
             <Li>
               <R n="communal_cap_namespace" /> of{" "}
-              <R n="sync_default_namespace_id" />,
+              <R n="willow25_default_namespace_id" />,
             </Li>
             <Li>
               <R n="communal_cap_user" /> of{" "}
-              <R n="sync_default_subspace_id" />, and
+              <R n="willow25_default_subspace_id" />, and
             </Li>
             <Li>
               empty <R n="communal_cap_delegations" />,
             </Li>
           </Ul>
           <P>
-            and whose <R n="mcat_sig" /> is <Alj inline>TODO</Alj>.
+            and whose <R n="mcat_sig" /> is the correct signature for{" "}
+            <Code>
+              <R n="default_entry" />(<R n="willow25_default_namespace_id" />,
+              {" "}
+              <R n="willow25_default_subspace_id" />)
+            </Code>.
           </P>
         </Hsection>
 
