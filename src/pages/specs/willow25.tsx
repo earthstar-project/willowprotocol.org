@@ -389,28 +389,35 @@ export const willow25 = (
             without the leading length indicator.
           </P>
 
-          <P>
-            The <R n="sync_default_namespace_id" /> is{" "}
-            <Marginale>
-              This is an <R n="Ed25519Pk" />{" "}
-              we generated randomly, the corresponding secret key is{" "}
+          <PreviewScope>
+            <P>
+              The{" "}
+              <Def n="willow25_default_namespace_id" r="default_namespace_id" />
+              {" "}
+              is{" "}
+              <Marginale>
+                This is an <R n="Ed25519Pk" />{" "}
+                we generated randomly, the corresponding secret key is{" "}
+                <Code>
+                  [94, 20, 172, 228, 210, 200, 2, 143, 200, 154, 143, 4, 118,
+                  91, 25, 210, 205, 117, 45, 145, 187, 55, 60, 12, 158, 212,
+                  118, 39, 107, 92, 69, 65]
+                </Code>.
+              </Marginale>
               <Code>
-                [94, 20, 172, 228, 210, 200, 2, 143, 200, 154, 143, 4, 118, 91,
-                25, 210, 205, 117, 45, 145, 187, 55, 60, 12, 158, 212, 118, 39,
-                107, 92, 69, 65]
-              </Code>.
-            </Marginale>
-            <Code>
-              [147, 78, 96, 33, 51, 158, 31, 1, 59, 169, 73, 0, 237, 194, 93,
-              141, 116, 192, 180, 229, 115, 118, 137, 16, 174, 15, 80, 125, 140,
-              129, 115, 24]
-            </Code>. This is a <R n="communal_namespace" />.
-          </P>
+                [147, 78, 96, 33, 51, 158, 31, 1, 59, 169, 73, 0, 237, 194, 93,
+                141, 116, 192, 180, 229, 115, 118, 137, 16, 174, 15, 80, 125,
+                140, 129, 115, 24]
+              </Code>. This is a <R n="communal_namespace" />.
+            </P>
 
-          <P>
-            The <R n="sync_default_subspace_id" /> is equal to the{" "}
-            <R n="sync_default_namespace_id" />.
-          </P>
+            <P>
+              The{" "}
+              <Def n="willow25_default_subspace_id" r="default_subspace_id" />
+              {" "}
+              is equal to the <R n="willow25_default_namespace_id" />.
+            </P>
+          </PreviewScope>
 
           <P>
             The <R n="sync_default_payload_digest" /> is{" "}
@@ -435,18 +442,23 @@ export const willow25 = (
             </Li>
             <Li>
               <R n="communal_cap_namespace" /> of{" "}
-              <R n="sync_default_namespace_id" />,
+              <R n="willow25_default_namespace_id" />,
             </Li>
             <Li>
               <R n="communal_cap_user" /> of{" "}
-              <R n="sync_default_subspace_id" />, and
+              <R n="willow25_default_subspace_id" />, and
             </Li>
             <Li>
               empty <R n="communal_cap_delegations" />,
             </Li>
           </Ul>
           <P>
-            and whose <R n="mcat_sig" /> is <Alj inline>TODO</Alj>.
+            and whose <R n="mcat_sig" /> is the correct signature for{" "}
+            <Code>
+              <R n="default_entry" />(<R n="willow25_default_namespace_id" />,
+              {" "}
+              <R n="willow25_default_subspace_id" />)
+            </Code>.
           </P>
         </Hsection>
 
