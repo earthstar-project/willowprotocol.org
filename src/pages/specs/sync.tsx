@@ -2865,14 +2865,22 @@ export const sync = (
                       "max_count",
                       2,
                       <>
-                        <ValAccess field="PioBindReadCapabilityMaxCount" />
+                        <ValAccess field="PioBindReadCapabilityMaxCount" />{" "}
+                        + 1 modulo{" "}
+                        <M>
+                          2^<Curly>64</Curly>
+                        </M>
                       </>,
                     ),
                     c64Tag(
                       "max_size",
                       2,
                       <>
-                        <ValAccess field="PioBindReadCapabilityMaxSize" />
+                        <ValAccess field="PioBindReadCapabilityMaxSize" />{" "}
+                        + 1 modulo{" "}
+                        <M>
+                          2^<Curly>64</Curly>
+                        </M>
                       </>,
                     ),
                   ]}

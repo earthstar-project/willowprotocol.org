@@ -18,6 +18,7 @@ import {
   AE,
   Alj,
   Blue,
+  Curly,
   Green,
   Gwil,
   MarginCaption,
@@ -732,7 +733,12 @@ export const grouping_entries = (
                         <R n="AreaOfInterest" />, an <R n="Entry" />’s{" "}
                         <R n="entry_timestamp" /> must be among the{" "}
                         <R n="aoi_count" /> <R n="entry_newer">newest</R>{" "}
-                        <Rs n="Entry" />, unless <R n="aoi_count" /> is zero.
+                        <Rs n="Entry" />. If the <R n="aoi_count" /> is{" "}
+                        <M>
+                          2^<Curly>64</Curly> - 1
+                        </M>{" "}
+                        (the greatest possible <R n="U64" />), then no{" "}
+                        <Rs n="Entry" /> are excluded.
                       </>
                     ),
                     dedicatedLine: true,
@@ -748,9 +754,14 @@ export const grouping_entries = (
                       <>
                         The total <Rs n="entry_payload_length" /> of all{" "}
                         <R n="aoi_include">included</R> <Rs n="Entry" />{" "}
-                        is at most <R n="aoi_size" />, unless <R n="aoi_size" />
+                        is at most <R n="aoi_size" />. If the <R n="aoi_size" />
                         {" "}
-                        is zero.
+                        is{" "}
+                        <M>
+                          2^<Curly>64</Curly> - 1
+                        </M>{" "}
+                        (the greatest possible <R n="U64" />), then no{" "}
+                        <Rs n="Entry" /> are excluded.
                       </>
                     ),
                     dedicatedLine: true,
@@ -783,7 +794,11 @@ export const grouping_entries = (
                 <AccessStruct field="aoi_count">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
-                is zero, or <R n="aoi_include_e" /> is among the{" "}
+                is{" "}
+                <M post=",">
+                  2^<Curly>64</Curly> - 1
+                </M>{" "}
+                or <R n="aoi_include_e" /> is among the{" "}
                 <AccessStruct field="aoi_count">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
@@ -794,8 +809,11 @@ export const grouping_entries = (
                 <AccessStruct field="aoi_size">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
-                is zero, or the sum of the <Rs n="entry_payload_length" /> of
-                {" "}
+                is{" "}
+                <M post=",">
+                  2^<Curly>64</Curly> - 1
+                </M>{" "}
+                or the sum of the <Rs n="entry_payload_length" /> of{" "}
                 <R n="aoi_include_e" /> and all <R n="entry_newer" />{" "}
                 <Rs n="Entry" /> in <R n="aoi_include_s" />{" "}
                 is less than or equal to{" "}
@@ -837,75 +855,24 @@ export const grouping_entries = (
                 </AccessStruct>, whose
               </Li>
               <Li>
-                <R n="aoi_count" /> is{" "}
-                <Ul>
-                  <Li>
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    is zero,
-                  </Li>
-                  <Li>
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    is zero, or
-                  </Li>
-                  <Li>
-                    the minimum of{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    and{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    otherwise, and whose
-                  </Li>
-                </Ul>
+                <R n="aoi_count" /> is the minimum of{" "}
+                <AccessStruct field="aoi_count">
+                  <R n="aoi_inter_a1" />
+                </AccessStruct>{" "}
+                and{" "}
+                <AccessStruct field="aoi_count">
+                  <R n="aoi_inter_a2" />
+                </AccessStruct>, and whose
               </Li>
               <Li>
-                <R n="aoi_size" /> is<Ul>
-                  <Li>
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    is zero,
-                  </Li>
-                  <Li>
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    is zero, or
-                  </Li>
-                  <Li>
-                    the minimum of{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    and{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    otherwise.
-                  </Li>
-                </Ul>
+                <R n="aoi_size" /> is the minimum of{" "}
+                <AccessStruct field="aoi_size">
+                  <R n="aoi_inter_a1" />
+                </AccessStruct>{" "}
+                and{" "}
+                <AccessStruct field="aoi_size">
+                  <R n="aoi_inter_a2" />
+                </AccessStruct>.
               </Li>
             </Ul>
           </PreviewScope>
