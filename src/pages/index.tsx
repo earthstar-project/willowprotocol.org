@@ -178,7 +178,7 @@ export const index = (
       />
 
       <SpecBreakdown
-        title={<R n="sync">W.G.P.S.</R>}
+        title={<R n="willow_confidential_sync">Confidential Sync</R>}
         tagline="Private and efficient synchronisation"
         emblem={
           <Img
@@ -197,7 +197,7 @@ export const index = (
       />
 
       <SpecBreakdown
-        title={<R n="drop_format">Drop Format</R>}
+        title={<R n="willow_drop_format">Drop Format</R>}
         tagline="Securely deliver data by any means possible."
         emblem={
           <Img

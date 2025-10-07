@@ -51,7 +51,7 @@ export const drop_format = (
                 transport Willow data using any of the means above.
               </MarginCaption>
             </Marginale>
-            The <R n="sync">WGPS</R>{" "}
+            The <R n="confidential_sync">Confidential Sync protocol</R>{" "}
             presents a way for two peers with an established connection to
             efficiently exchange data. But running the necessary infrastructure
             to establish such connections (e.g. a{" "}
@@ -169,7 +169,8 @@ export const drop_format = (
                   r="EncodeAuthorisationToken"
                   preview={
                     <P>
-                      A protocol parameter of the <R n="wgps" />, the{" "}
+                      A protocol parameter of the <R n="drop_format" />, the
+                      {" "}
                       <R n="relative_encoding_relation" /> for encoding{" "}
                       <Rs n="AuthorisationToken" />.
                     </P>

@@ -84,7 +84,10 @@ export const grouping_entries = (
           <Rs n="entry_timestamp" />. These definitions are not necessary for
           defining and understanding the core data model, but we make heavy use
           of them in our <R n="meadowcap">recommended capability system</R>{" "}
-          and our <R n="sync">recommended synchronisation protocol</R>.
+          and our{" "}
+          <R n="willow_confidential_sync">
+            recommended synchronisation protocol
+          </R>.
         </P>
 
         <Hsection n="ranges" title="Ranges">

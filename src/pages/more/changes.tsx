@@ -121,12 +121,13 @@ export const changes = (
                 </WillowRssItem>
 
                 <WillowRssItem
-                  title="Willow General Purpose Sync specification status promoted to ‘Candidate’"
+                  title="Willow Confidential Sync specification status promoted to ‘Candidate’"
                   name="wgps_candidate"
                   date={new Date(2024, 5, 19)}
                 >
                   <P>
-                    With a working implementation of the <R n="sync" /> in{" "}
+                    With a working implementation of the{" "}
+                    <R n="confidential_sync" /> in{" "}
                     <A
                       clazz="external"
                       href="https://github.com/earthstar-project/willow-js"
@@ -184,11 +185,11 @@ export const changes = (
                 >
                   <P>
                     A few months ago we published the{" "}
-                    <R n="sync" />, a synchronisation specification for securely
-                    and efficiently synchronising data over a network
-                    connection. However, there are many contexts where
-                    establishing such a connection is difficult, undesirable, or
-                    outright impossible.
+                    <R n="confidential_sync">Confidential Sync protocol</R>, a
+                    synchronisation specification for securely and efficiently
+                    synchronising data over a network connection. However, there
+                    are many contexts where establishing such a connection is
+                    difficult, undesirable, or outright impossible.
                   </P>
 
                   <P>
@@ -201,9 +202,9 @@ export const changes = (
 
                   <P>
                     This new protocol can be used in place of (or as a
-                    complement to) the{" "}
-                    <R n="sync" />, is relatively simple to implement, and has a
-                    mercifully short specification.
+                    complement to){"  "}
+                    <R n="confidential_sync" />, is relatively simple to
+                    implement, and has a mercifully short specification.
                   </P>
                 </WillowRssItem>
 
@@ -219,12 +220,12 @@ export const changes = (
                     >
                       willow-js
                     </A>, our own TypeScript implementation of the{" "}
-                    <R n="data_model" /> and the <R n="sync" />{" "}
-                    , now conforms to these specifications as of May 6th, 2024.
-                    This module can be used to create, query, and sync{" "}
-                    <Rs n="Entry" /> and their corresponding <Rs n="Payload" />
-                    {" "}
-                    in <Rs n="store" /> in the browser and Deno runtime.
+                    <R n="data_model" /> and <R n="confidential_sync" />{" "}
+                    (formerly the WGPS), now conforms to these specifications as
+                    of May 6th, 2024. This module can be used to create, query,
+                    and sync <Rs n="Entry" /> and their corresponding{" "}
+                    <Rs n="Payload" /> in <Rs n="store" />{" "}
+                    in the browser and Deno runtime.
                   </P>
 
                   <P>
@@ -302,9 +303,10 @@ export const changes = (
                   date={new Date(2024, 3, 26, 0)}
                 >
                   <P>
-                    We are progressing with implementing the Willow General
-                    Purpose Sync Protocol (WGPS), and have discovered some
-                    tweaks that make the protocol more powerful.
+                    We are progressing with implementing the Confidential Sync
+                    protocol (previously the Willow General Purpose Sync
+                    protocol), and have discovered some tweaks that make the
+                    protocol more powerful.
                   </P>
 
                   <P>

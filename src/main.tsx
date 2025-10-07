@@ -7,7 +7,7 @@ import { data_model } from "./pages/specs/data_model.tsx";
 import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
-import { sync } from "./pages/specs/sync.tsx";
+import { confidential_sync } from "./pages/specs/confidential_sync.tsx";
 import { drop_format } from "./pages/specs/drop_format.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
@@ -210,7 +210,7 @@ const exp = (
                 {meadowcap}
                 {encodings}
                 {drop_format}
-                {sync}
+                {confidential_sync}
                 {rbsr}
                 {lcmux}
                 {grouping_entries}

@@ -5,6 +5,7 @@ import { parseArgs } from "jsr:@std/cli/parse-args";
 
 const redirects: Record<string, string> = {
   "/specs/sideloading/": "/specs/drop-format/",
+  "/specs/sync/": "/specs/confidential-sync/",
 };
 
 const emblemFileNames = [
