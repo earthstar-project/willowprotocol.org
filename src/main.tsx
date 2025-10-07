@@ -46,7 +46,7 @@ import { Hidden } from "./macros.tsx";
 const ctx = new Context();
 
 const prettyPreviewsInfo: ScriptDependencyInfo = {
-  dep: ["pretty_previews.js"],
+  dep: ["webtt.js"],
   scriptProps: { defer: true, type: "module" },
 };
 

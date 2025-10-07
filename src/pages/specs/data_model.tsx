@@ -413,11 +413,23 @@ export const data_model = (
               <M>
                 2^<Curly>64</Curly> - 1
               </M>{" "}
-              (exclusive). <Rs n="Timestamp" />{" "}
-              are to be interpreted as a time in microseconds since the{" "}
-              <AE href="https://en.wikipedia.org/wiki/Unix_epoch">
-                Unix epoch
-              </AE>.
+              (exclusive). We highly recommend<Marginale>
+                This is merely a <Em>recommendation</Em>{" "}
+                because an implementation neither can nor should gauge or
+                enforce what users intended that 64-bit integer to mean. In
+                particular, we can imagine plenty of scenarios where using a
+                logical clock instead of physical time is appropriate. Please do
+                prefer TAI over UNIX time though, because UNIX time{" "}
+                <AE href="https://en.wikipedia.org/wiki/Unix_time#Leap_seconds">
+                  handles leap seconds
+                </AE>{" "}
+                in an abhorrent way.
+              </Marginale>{" "}
+              to interpret <Rs n="Timestamp" /> as microseconds in{" "}
+              <AE href="https://en.wikipedia.org/wiki/International_Atomic_Time">
+                International Atomic Time
+              </AE>{" "}
+              (aka <Em>TAI</Em>).
             </P>
           </PreviewScope>
 
@@ -901,12 +913,6 @@ export const data_model = (
             that a data store for Willow should support, and present some data
             structures for supporting them efficiently{" "}
             <R n="d3storage">here</R>.
-          </P>
-
-          <P>
-            How can I contribute to Willow and support it? So glad you asked —
-            we have prepared a collection of pointers{" "}
-            <R n="projects_and_communities">here</R>.
           </P>
         </Hsection>
 

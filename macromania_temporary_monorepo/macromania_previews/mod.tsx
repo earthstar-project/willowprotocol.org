@@ -183,11 +183,11 @@ export function PreviewScope(
       const headPropsTmp = p.headProps ?? {};
       const bodyPropsTmp = { ...p.bodyProps };
       if (bodyPropsTmp.clazz === undefined) {
-        bodyPropsTmp.clazz = "isPreview";
+        bodyPropsTmp.clazz = "isTooltip";
       } else if (Array.isArray(bodyPropsTmp.clazz)) {
-        bodyPropsTmp.clazz = [...bodyPropsTmp.clazz, "isPreview"];
+        bodyPropsTmp.clazz = [...bodyPropsTmp.clazz, "isTooltip"];
       } else {
-        bodyPropsTmp.clazz = [bodyPropsTmp.clazz, "isPreview"];
+        bodyPropsTmp.clazz = [bodyPropsTmp.clazz, "isTooltip"];
       }
 
       const fileName = `${p.name}.html`;

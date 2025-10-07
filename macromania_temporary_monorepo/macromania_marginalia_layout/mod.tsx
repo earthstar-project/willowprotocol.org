@@ -112,7 +112,7 @@ body {
     min-height: 100vh;
 }
 
-body.isPreview {
+body.isTooltip {
   padding-bottom: 0rem;
   padding-top: 0rem;
 }
@@ -210,7 +210,7 @@ body > * {
   }
 }
 
-.previewContainer {
+.tooltipContainer {
   max-width: ${opts_.maxWidthMain + opts_.paddingLeft + opts_.paddingRight}rem;
 }
 */

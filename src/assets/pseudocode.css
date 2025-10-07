@@ -91,7 +91,7 @@ code.pseudocode {
             color: var(--pseudo-fg-slightly-muted);
             padding-left: calc(1ch - 2px);
 
-            font-family: --var(font-mono)
+            font-family: --var(font-mono);
 
             p:first-child {
                 margin-top: 0;
@@ -111,8 +111,7 @@ code.pseudocode {
             border-right: dotted var(--pseudo-fg-muted) 2px;
             padding-left: calc(1ch - 2px);
             padding-right: calc(1ch - 2px);
-            font-family: --var(font-mono)
-
+            font-family: --var(font-mono);
             color: var(--pseudo-fg-slightly-muted);
         }
     }
@@ -150,7 +149,7 @@ code.pseudocode {
         display: none;
     }
 
-    [data-hl][data-preview-anchor] {
+    [data-hl][data-tooltip-anchor] {
         padding: 0;
     }
 
@@ -234,7 +233,7 @@ macromania_rustic
 }
 
 
-.pseudocode [data-hl][data-preview-anchor]:is(.rustic) {
+.pseudocode [data-hl][data-tooltip-anchor]:is(.rustic) {
     text-decoration: none;
 }
 

@@ -154,9 +154,7 @@ export const index = (
           "Works offline.",
           "Store any kind of data.",
           "Truly destructive editing.",
-          <>
-            Actually delete stuff with <R n="prefix_pruning" />.
-          </>,
+          "Actually delete stuff.",
           "End-to-end encryptable.",
           "Eventually consistent.",
         ]}
