@@ -105,7 +105,7 @@ export const rust = (
         </Li>
         <Li>
           <R n="rs-willow_sideload" />: Create and ingest <Rs n="drop" />{" "}
-          with the <R n="sideloading" />.
+          with the <R n="drop_format" />.
         </Li>
         <Li>
           <R n="rs-wgps" />: Securely and efficiently sync stores using{" "}

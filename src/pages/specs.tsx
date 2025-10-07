@@ -37,8 +37,8 @@ export const specs = (
           and privately synchronising Willow data.
         </Li>
         <Li>
-          <R n="sideloading">Sideloading</R>: A protocol for securely delivering
-          Willow data by whatever means possible.
+          <R n="willow_drop_format">Drop Format</R>: A protocol for securely
+          delivering Willow data by whatever means possible.
         </Li>
         <Li>
           <R n="willow25_spec">Willow’25</R>: A recommended set of parameters

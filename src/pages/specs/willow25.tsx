@@ -50,7 +50,7 @@ export const willow25 = (
             <R n="data_model">Willow data model</R>, the{" "}
             <R n="meadowcap">Meadowcap capability system</R>, the{" "}
             <R n="sync">Willow General Purpose Sync protocol</R>, and the{" "}
-            <R n="sideloading">sideloading specification</R>.
+            <R n="drop_format" />.
           </P>
         </PreviewScope>
 

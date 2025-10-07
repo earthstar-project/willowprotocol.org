@@ -11,8 +11,8 @@ export const tutorial_drop = (
       <P>
         In this tutorial we will use <R n="rs-willow_25-create_drop" /> and{" "}
         <R n="rs-willow_25-ingest_drop" /> to transport data between two{" "}
-        <R n="rs-willow_data_model-Store">Stores</R> via a{" "}
-        <R n="sideload_protocol">Sideloading</R> <R n="drop" />.
+        <R n="rs-willow_data_model-Store">Stores</R> using the{" "}
+        <R n="willow_drop_format" />.
       </P>
     }
     deps={[

@@ -8,7 +8,7 @@ import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
 import { sync } from "./pages/specs/sync.tsx";
-import { sideloading } from "./pages/specs/sideloading.tsx";
+import { drop_format } from "./pages/specs/drop_format.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
 import { handshake_and_encryption } from "./pages/specs/handshake_and_encryption.tsx";
@@ -209,7 +209,7 @@ const exp = (
                 {e2e}
                 {meadowcap}
                 {encodings}
-                {sideloading}
+                {drop_format}
                 {sync}
                 {rbsr}
                 {lcmux}

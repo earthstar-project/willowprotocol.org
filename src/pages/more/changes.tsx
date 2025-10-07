@@ -143,13 +143,13 @@ export const changes = (
                 </WillowRssItem>
 
                 <WillowRssItem
-                  title="Sideloading in willow-js"
+                  title="Drop Format in willow-js"
                   name="willow_js_0_5_0"
                   date={new Date(2024, 4, 29, 0)}
                 >
                   <P>
                     Last week we published the{" "}
-                    <R n="sideloading" />, and this week we have a working
+                    <R n="drop_format" />, and this week we have a working
                     implementation available via{" "}
                     <A
                       clazz="external"
@@ -178,7 +178,7 @@ export const changes = (
                 </WillowRssItem>
 
                 <WillowRssItem
-                  title="Willow Sideloading Protocol"
+                  title="Willow Drop Format"
                   name="sideload_spec"
                   date={new Date(2024, 4, 23, 0)}
                 >
@@ -192,13 +192,11 @@ export const changes = (
                   </P>
 
                   <P>
-                    The <R n="sideloading" />{" "}
-                    is a new protocol for securely delivering Willow data by
+                    The <R n="drop_format" />{" "}
+                    is a new encoding for securely delivering Willow data by
                     whatever means possible. We build upon the tradition of
-                    sneakernets to introduce the concept of the{" "}
-                    <R n="sidenet" />{" "}
-                    the sporadically online and ad-hoc infrastructure users
-                    already have.
+                    sneakernets make use of the sporadically online and ad-hoc
+                    infrastructure users already have.
                   </P>
 
                   <P>

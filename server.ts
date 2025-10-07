@@ -3,6 +3,10 @@ import { extname, join } from "@std/path";
 import { contentType } from "@std/media-types";
 import { parseArgs } from "jsr:@std/cli/parse-args";
 
+const redirects: Record<string, string> = {
+  "/specs/sideloading/": "/specs/drop-format/",
+};
+
 const emblemFileNames = [
   "a.png",
   "b.png",
@@ -32,6 +36,24 @@ Deno.serve(async (req: Request) => {
   const url = new URL(req.url);
   let normalisedPath = url.pathname;
   const extension = extname(url.pathname);
+
+  for (let key in redirects) {
+    if (normalisedPath.startsWith(key)) {
+      const redirectedPath = normalisedPath.replace(key, redirects[key]);
+
+      const redirectedUrl = new URL(
+        redirectedPath,
+        url,
+      );
+
+      console.log(301, "REDIRECT", normalisedPath, redirectedPath);
+
+      return Response.redirect(
+        redirectedUrl,
+        301,
+      );
+    }
+  }
 
   // If path has a trailing slash, add index.html
   if (normalisedPath.endsWith("/")) {

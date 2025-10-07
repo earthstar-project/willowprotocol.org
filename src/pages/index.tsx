@@ -197,7 +197,7 @@ export const index = (
       />
 
       <SpecBreakdown
-        title={<R n="sideloading">Sideloading</R>}
+        title={<R n="drop_format">Drop Format</R>}
         tagline="Securely deliver data by any means possible."
         emblem={
           <Img
