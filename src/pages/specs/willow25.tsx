@@ -48,9 +48,8 @@ export const willow25 = (
             is a set of recommended parameters that should work in a variety of
             settings. It provides parameter choices for the{" "}
             <R n="data_model">Willow data model</R>, the{" "}
-            <R n="meadowcap">Meadowcap capability system</R>, the{" "}
-            <R n="sync">Willow General Purpose Sync protocol</R>, and the{" "}
-            <R n="sideloading">sideloading specification</R>.
+            <R n="meadowcap">Meadowcap capability system</R>,{"  "}
+            <R n="willow_confidential_sync" />, and the <R n="drop_format" />.
           </P>
         </PreviewScope>
 
@@ -203,14 +202,17 @@ export const willow25 = (
           </P>
         </Hsection>
 
-        <Hsection n="willow25_wgps" title="WGPS Parameters">
+        <Hsection
+          n="willow25_confidential"
+          title="Confidential Sync Parameters"
+        >
           <P>
-            <Rb n="willow25" /> instantiates the <R n="sync">WGPS</R>{" "}
+            <Rb n="willow25" /> instantiates <R n="confidential_sync" />{" "}
             with the following parameters:
           </P>
 
           <Hsection
-            n="willow25_wgps_handshake"
+            n="willow25_cs_handshake"
             title="Handshake and Transport Encryption"
           >
             <P>
@@ -263,7 +265,7 @@ export const willow25 = (
             </P>
           </Hsection>
 
-          <Hsection n="willow25_wgps_general" title="General Parameters">
+          <Hsection n="willow25_cs_general" title="General Parameters">
             <P>
               The <Rs n="ReadCapability" /> are the <Rs n="Capability" />{" "}
               — as instantiated above — with a <R n="cap_mode" /> of{" "}
@@ -448,7 +450,7 @@ export const willow25 = (
           </P>
         </Hsection>
 
-        <Hsection n="willow25_wgps_encoding" title="Encoding Parameters">
+        <Hsection n="willow25_cs_encoding" title="Encoding Parameters">
           <P>
             The <R n="EncodeReadCapability" /> <R n="encoding_relation" /> is
             {" "}

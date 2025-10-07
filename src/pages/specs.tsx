@@ -33,12 +33,12 @@ export const specs = (
           access to Willow data.
         </Li>
         <Li>
-          <R n="sync">Synchronisation</R>: A network protocol for efficiently
-          and privately synchronising Willow data.
+          <R n="willow_confidential_sync">Confidential Sync</R>: A network
+          protocol for efficiently and privately synchronising Willow data.
         </Li>
         <Li>
-          <R n="sideloading">Sideloading</R>: A protocol for securely delivering
-          Willow data by whatever means possible.
+          <R n="willow_drop_format">Drop Format</R>: A protocol for securely
+          delivering Willow data by whatever means possible.
         </Li>
         <Li>
           <R n="willow25_spec">Willow’25</R>: A recommended set of parameters

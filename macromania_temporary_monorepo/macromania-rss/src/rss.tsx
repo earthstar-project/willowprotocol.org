@@ -36,6 +36,7 @@ export function RssFeed(
       pre={(ctx) => {
         const state = getRssState(ctx);
 
+        /*
         if (state.feeds.has(name)) {
           l.error(
             ctx,
@@ -43,6 +44,7 @@ export function RssFeed(
           );
           return ctx.halt();
         }
+        */
 
         state.activeFeeds.add(name);
       }}

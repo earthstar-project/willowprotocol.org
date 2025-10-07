@@ -766,7 +766,7 @@ export const data_model = (
                 with equal{" "}
                 <Rs n="NamespaceId" />. Doing so efficiently and in a
                 privacy-preserving way can be quite challenging, we recommend
-                our <R n="sync">Willow General Purpose Sync</R> protocol.
+                our <R n="willow_confidential_sync" /> protocol.
               </Marginale>
 
               <Marginale>
@@ -894,8 +894,8 @@ export const data_model = (
             How do we efficiently and securely compute <Rs n="store_join" />
             {" "}
             over a network to synchronise data between peers? Again, different
-            settings require different answers, but we provide the{" "}
-            <R n="sync">Willow General Purpose Sync</R>{" "}
+            settings require different answers, but we provide the{"  "}
+            <R n="confidential_sync" />{" "}
             protocol as a well-engineered, privacy-preserving solution that
             should be applicable to a wide range of scenarios.
           </P>

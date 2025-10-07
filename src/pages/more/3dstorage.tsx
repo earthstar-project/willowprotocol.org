@@ -77,10 +77,10 @@ export const threedstorage = (
             </Sidenote>.
 
             <P>
-              As for the requirements of syncing, we shall use the{" "}
-              <R n="sync">WGPS</R>{" "}
-              as a (somewhat demanding) baseline. The WGPS needs to compute{" "}
-              <Rs n="Fingerprint" /> for arbitrary{" "}
+              As for the requirements of syncing, we shall use{" "}
+              <R n="confidential_sync" />{" "}
+              as a (somewhat demanding) baseline. The Confidential Sync protocol
+              needs to compute <Rs n="Fingerprint" /> for arbitrary{" "}
               <Rs n="D3Range" />, to split arbitrary <Rs n="D3Range" />{" "}
               into multiple, roughly equally-sized subranges, and to constrain
               {" "}
