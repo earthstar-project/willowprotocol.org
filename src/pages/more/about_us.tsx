@@ -91,6 +91,13 @@ export const about_us = (
             </Li>
           </Ul>
         </P>
+
+        <Hsection title="Acknowledgements" n="special_thanks">
+          <P>
+            Our special thanks to Ar Nazeh, Marce Coll, Joakim Stai, and Cade
+            Diehm.
+          </P>
+        </Hsection>
       </PageTemplate>
     </File>
   </Dir>
