@@ -28,9 +28,9 @@ export const meadowcap = (
       <PageTemplate
         htmlTitle="Meadowcap"
         headingId="meadowcap"
-        heading={"Meadowcap"}
-        status="candidate"
-        statusDate="17.01.2024"
+        heading="Meadowcap"
+        status="final"
+        statusDate="21.11.2025"
         toc
         parentId="specifications"
       >
