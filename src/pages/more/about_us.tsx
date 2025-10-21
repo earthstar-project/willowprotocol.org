@@ -46,11 +46,12 @@ export const about_us = (
             />
           </Marginale>
           Willow was designed by Aljoscha Meyer and Sam Gwilym, who have been
-          working together since 2022. Their first collaboration was a
-          proof-of-concept implementation of range based set reconciliation. But
-          they soon realised there was no-one around to say ‘no’, and have used
-          Willow as the pretext for spinning out a macro processor, a sink /
-          stream abstraction for Rust, and a new secure hash function.
+          working together since 2022 as{" "}
+          <A clazz="external" href="https://worm-blossom.org">worm-blossom</A>.
+          Their first collaboration was a proof-of-concept implementation of
+          range based set reconciliation. They have used Willow as the pretext
+          for spinning out a macro processor, a sink / stream abstraction for
+          Rust, and a new secure hash function.
         </P>
 
         <P>

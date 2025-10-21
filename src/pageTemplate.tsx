@@ -252,6 +252,22 @@ export function PageTemplate(
 
                 <Div>
                   <Marginale inlineable>
+                    <A href="https://worm-blossom.org" clazz="funder">
+                      <Img
+                        src={<ResolveAsset asset={["graphics", "wb.png"]} />}
+                        alt="The emblem of worm-blossom."
+                      />
+                    </A>
+                  </Marginale>
+                  <P>
+                    Willow is a{" "}
+                    <A clazz="external" href="https://worm-blossom.org">
+                      worm-blossom
+                    </A>{" "}
+                    project.
+                  </P>
+
+                  <Marginale inlineable>
                     <A href="https://nlnet.nl" clazz="funder">
                       <Img
                         src={<ResolveAsset asset={["graphics", "nlnet.svg"]} />}
