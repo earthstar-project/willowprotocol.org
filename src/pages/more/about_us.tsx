@@ -92,10 +92,41 @@ export const about_us = (
           </Ul>
         </P>
 
-        <Hsection title="Acknowledgements" n="special_thanks">
+        <Hsection title="Special Thanks" n="special_thanks">
           <P>
-            Our special thanks to Ar Nazeh, Marce Coll, Joakim Stai, and Cade
-            Diehm.
+            <AE href="https://nuh.dev/">Nuh</AE>{" "}
+            realised that Willow could use capability systems for authorisation.
+            Thank you.
+          </P>
+
+          <P>
+            <AE href="https://frando.unbiskant.org/">Frando</AE>{" "}
+            has implemented, discussed, and improved several iterations of the
+            {" "}
+            <R n="willow_confidential_sync">Confidential Sync</R>{" "}
+            protocol. Thank you.
+          </P>
+
+          <P>
+            <AE href="https://dziban.net/">Marcelino Coll</AE>{" "}
+            reported a critical error in an early draft of the{" "}
+            <R n="willow_confidential_sync">Confidential Sync</R>{" "}
+            specification. Thank you.
+          </P>
+
+          <P>
+            <AE href="https://joakim.io/">Joakim</AE> pointed us to{" "}
+            <AE href="https://en.wikipedia.org/wiki/International_Atomic_Time">
+              International Atomic Time
+            </AE>{" "}
+            as a better choice than UNIX time for how to interpret timestamps.
+            Thank you.
+          </P>
+
+          <P>
+            <AE href="https://shiba.computer/">Cade</AE>{" "}
+            has been an inspiration and aspiration for Willow throughout its
+            creation. Thank you.
           </P>
         </Hsection>
       </PageTemplate>
