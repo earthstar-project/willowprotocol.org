@@ -92,38 +92,35 @@ export const about_us = (
           </Ul>
         </P>
 
-        <Hsection title="Acknowledgements" n="special_thanks">
+        <Hsection title="Special Thanks" n="special_thanks">
           <P>
-            Once upon a time, Willow had no notion of subspaces, instead there
-            were only the public keys of authors. There were no generalised
-            authorisation tokens either, only signatures. And then{" "}
             <AE href="https://nuh.dev/">Nuh</AE>{" "}
-            pointed out to us that we could plug in a capability system there.
-            Thank you for that!
+            realised that Willow could use capability systems for authorisation.
+            Thank you.
+          </P>
+
+          <P>
+            <AE href="https://frando.unbiskant.org/">Frando</AE>{" "}
+            has implemented, discussed, and improved several iterations of the
+            {" "}
+            <R n="willow_confidential_sync">Confidential Sync</R>{" "}
+            protocol. Thank you.
           </P>
 
           <P>
             <AE href="https://dziban.net/">Marcelino Coll</AE>{" "}
-            pointed out an error in an earlier draft of the{" "}
+            reported a critical error in an early draft of the{" "}
             <R n="willow_confidential_sync">Confidential Sync</R>{" "}
-            specification. In the process of fixing the confidentiality leak, we
-            also figured out how to make the protocol resistant against active
-            eavesdroppers. Without his careful reading, that might never have
-            happened!
+            specification. Thank you.
           </P>
 
           <P>
-            One calm day not too long ago,{" "}
-            <AE href="https://joakim.io/">Joakim</AE>{" "}
-            sent us an email with ample of information on how UNIX handles leap
-            seconds. Spoilers: it is bad. He also pointed us to{" "}
+            <AE href="https://joakim.io/">Joakim</AE> pointed us to{" "}
             <AE href="https://en.wikipedia.org/wiki/International_Atomic_Time">
               International Atomic Time
             </AE>{" "}
-            as the better alternative. This is now how we recommend setting
-            timestamps! Thank you for not letting us get away with duplicated
-            leap seconds that would have potentially caused the most confounding
-            bugs once every couple of years.
+            as a better choice than UNIX time for how to interpret timestamps.
+            Thank you.
           </P>
 
           <P>
