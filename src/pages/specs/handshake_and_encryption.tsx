@@ -396,7 +396,6 @@ export const handshake_and_encryption = (
                 <Def n="hs_initiator" r="initiator" rs="initiators" />, and the
                 other peer the{" "}
                 <Def n="hs_responder" r="responder" rs="responders" />.
-                <Gwil>Unhorrify the styling please.</Gwil>
               </P>
             </PreviewScope>
 
@@ -454,54 +453,6 @@ export const handshake_and_encryption = (
                 </AE>, with <Code>num_outputs</Code> set to two.
               </P>
             </PreviewScope>
-
-            <Style>
-              {`#handshake_container {
-    .hs_row {
-        display: flex;
-
-        >p {
-            margin: 0;
-            flex: 1;
-        }
-
-        >p:nth-child(even) {
-            background: #ffbf001f;
-        }
-
-        >p:nth-child(odd) {
-            background: #a500ff1f;
-        }
-    }
-
-    .hs_row:nth-child(even) {
-        background: #e6e4e4;
-    }
-
-    .handshake_header {
-        text-align: center;
-        font-weight: bold;
-    }
-
-    .rowgroup {
-        padding: 0.2rem;
-        border: 1px solid black;
-        margin: 0.2rem;
-    }
-
-    .groupHeader {
-        text-align: center;
-    }
-
-    .groupHeader.left {
-        text-align: left;
-    }
-
-    .groupHeader.right {
-        text-align: right;
-    }
-}`}
-            </Style>
 
             <Div id="handshake_container" clazz="wide">
               <HandshakeHeader>Setup</HandshakeHeader>
@@ -649,7 +600,7 @@ export const handshake_and_encryption = (
               />
 
               <HandshakeHeader>
-                <Code>--- e --{">"}</Code>
+                e →
               </HandshakeHeader>
 
               <RowGroup
@@ -719,7 +670,7 @@ export const handshake_and_encryption = (
               />
 
               <HandshakeHeader>
-                <Code>{"<"}-- e, ee, s, es ---</Code>
+                ← e, ee, s, es
               </HandshakeHeader>
 
               <RowGroup
@@ -1033,7 +984,7 @@ export const handshake_and_encryption = (
               />
 
               <HandshakeHeader>
-                <Code>--- s, se --{">"}</Code>
+                s, se →
               </HandshakeHeader>
 
               <RowGroup
