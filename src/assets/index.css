@@ -907,3 +907,56 @@ code.terminal-input {
     color: var(--dark-green);
     font-weight: normal;
 }
+
+.confidentiality-levels tbody {
+    border: none;
+}
+
+
+.confidentiality-levels tr:nth-child(1) {
+    border-top: 1px solid black;
+    
+    th {
+        background: var(--nearly-black);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(2) {
+    border-top: 1px solid var(--dark-green);
+    
+    th {
+        background: var(--dark-green);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(3) {
+    border-top: 1px solid var(--green);
+
+    th {
+        background: var(--green);
+    }
+}
+
+.confidentiality-levels tr:nth-child(4) {
+    border-top: 1px solid var(--light-green);
+
+    th {
+        background: var(--light-green);
+    }
+}
+
+.confidentiality-levels th, td {
+    padding: 0.5rem;
+}
+
+.confidentiality-levels td {
+    text-align: left;
+}

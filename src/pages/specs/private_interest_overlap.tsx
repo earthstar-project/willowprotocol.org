@@ -1532,14 +1532,10 @@ export const private_interest_overlap = (
               We now list the information we wish to keep confidential. We group
               it in four levels, based on which kind of peer or attacker is
               allowed to glean which information.
-              <Gwil>
-                Worst table styling ever, Alj asks for help. Might need multiple
-                rows instead of nested lists?
-              </Gwil>
             </P>
 
             <PreviewScope>
-              <Table>
+              <Table clazz="confidentiality-levels">
                 <Tbody>
                   <Tr>
                     <Th scope="row">
