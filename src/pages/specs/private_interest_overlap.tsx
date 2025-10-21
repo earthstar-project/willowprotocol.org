@@ -1079,6 +1079,15 @@ export const private_interest_overlap = (
 
               <PiiExample
                 leftPath={["a"]}
+                rightPath={["a"]}
+                rightSs="Gemma"
+                imageName="any-a_gemma-a"
+              >
+                This is a special case where both peers detect the overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
                 rightPath={["a", "b"]}
                 rightSs="Gemma"
                 overlap
