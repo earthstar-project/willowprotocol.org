@@ -526,7 +526,7 @@ export const drop_format = (
         </Hsection>
 
         <Img
-          src="/assets/sideload/sideload_emblem.png"
+          src={<ResolveAsset asset={["sideload", "sideload_emblem.png"]} />}
           alt={`A Sideloading emblem: A stylised drawing of tufty grass growing in between the cracks of paving stones, next to a graffiti-styled rendition of the word "Sideload".`}
         />
       </PageTemplate>

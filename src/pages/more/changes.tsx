@@ -55,7 +55,6 @@ export const changes = (
         htmlTitle="News, Improvements, and Necessary Changes"
         headingId="changes"
         heading="News, Improvements, and Necessary Changes"
-        toc
         parentId="more"
       >
         <P>
