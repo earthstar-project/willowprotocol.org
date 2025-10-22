@@ -405,7 +405,7 @@ export const timestamps_really = (
           <P>
             The correct trade-off depends on the specific situation, it might
             even be impossible to know in advance. If this sounds discouraging,
-            remember that centralised systems cannot tolerate ", em("any"), "
+            remember that centralised systems cannot tolerate <Em>any</Em>
             period of disconnectivity.
           </P>
 

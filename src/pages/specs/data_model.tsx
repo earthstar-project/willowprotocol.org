@@ -157,8 +157,7 @@ export const data_model = (
 
         <P>
           Now we can <Em>almost</Em>{" "}
-          ", em("almost"), " delve into the precise definition of these
-          concepts.
+          delve into the precise definition of these concepts.
         </P>
 
         <Hsection n="willow_parameters" title="Parameters">

@@ -501,63 +501,6 @@ export const willow25 = (
           </P>
         </Hsection>
 
-        {
-          /*
-
-				hsection("es6_wgps_encoding", "Encoding Parameters", [
-					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding function needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
-
-					pinformative(
-						"The ", r("encode_group_member"), " function encodes each ", r("PsiGroup"), " member (i.e., each Edwards25519 curve point) ", link("according to RFC8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the <R n="enumcap_namespace"/>."
-					),
-
-					pinformative(
-						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The ", r("encode_read_capability"), " function is ", r("encode_mc_capability"), ", except you omit encoding the ", r("communal_cap_namespace"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_sync_signature"), " function maps each <R n="sync_signature"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The total order on <R n="SubspaceId"/> (i.e., on <R n="Ed25519Pk"/>) orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and <R n="sync_default_subspace_id"/> is indeed the unique least element.",
-					),
-
-					pinformative(
-						"The ", r("encode_static_token"), " function is ", r("encode_mc_capability"), ", encoding relative to the ", r("full_area"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each <R n="DynamicToken"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each <R n="Fingerprint"/> (which is already a sequence of bytes) to itself."
-					),
-				]),
-
-			hsection("es6_friendly_paths", "Friendly paths", [
-				pinformative("While Willow's <Rs n="Path"/> are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
-					id: "es6_friendly_path",
-					singular: "friendly path",
-					plural: "friendly paths",
-				}, "friendly paths"), "."),
-				pinformative("A path is considered ", r("es6_friendly_path", 'friendly'), " if every byte of its bytestrings belong to the set of ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."),
-				pinformative("This makes it possible to provide legible encodings of paths, e.g. ", path('blog', 'recipes', 'chocolate_pizza'), ", and to input paths using a keyboard.")
-			]),
-
-			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
-	 */
-        }
-
         <Img
           src={<ResolveAsset asset={["willow_25", "emblem.png"]} />}
           alt={`A Willow'25 emblem: A drawing of a simplified Willow emblem next to a large, red, '25.`}
