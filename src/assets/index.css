@@ -907,3 +907,107 @@ code.terminal-input {
     color: var(--dark-green);
     font-weight: normal;
 }
+
+.confidentiality-levels tbody {
+    border: none;
+}
+
+
+.confidentiality-levels tr:nth-child(1) {
+    border-top: 1px solid black;
+    
+    th {
+        background: var(--nearly-black);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(2) {
+    border-top: 1px solid var(--dark-green);
+    
+    th {
+        background: var(--dark-green);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(3) {
+    border-top: 1px solid var(--green);
+
+    th {
+        background: var(--green);
+    }
+}
+
+.confidentiality-levels tr:nth-child(4) {
+    border-top: 1px solid var(--light-green);
+
+    th {
+        background: var(--light-green);
+    }
+}
+
+.confidentiality-levels th, td {
+    padding: 0.5rem;
+}
+
+.confidentiality-levels td {
+    text-align: left;
+}
+
+#handshake_container {
+    .hs_row {
+        display: flex;
+
+        >p {
+            margin: 0;
+            padding: 0.5rem;
+            flex: 1;
+        }
+        
+        >p:nth-child(even) {
+            background: #ffbf001f;
+        }
+
+        >p:nth-child(odd) {
+            background: #a500ff1f;
+        }
+    }
+    
+    .hs_row:nth-child(2), .hs_row:nth-child(1) {
+        border-top: 1px solid var(--nearly-black);
+    }
+
+    .hs_row:nth-child(even) {
+        background: #e6e4e4;
+    }
+
+    .handshake_header {
+        text-align: center;
+        font-weight: bold;
+        padding: 0.5rem;
+    }
+
+    .rowgroup {
+        margin-bottom: 1rem;
+    }
+
+    .groupHeader {
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .groupHeader.left {
+        text-align: left;
+    }
+
+    .groupHeader.right {
+        text-align: right;
+    }
+}

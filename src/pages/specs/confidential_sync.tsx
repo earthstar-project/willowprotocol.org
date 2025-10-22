@@ -56,8 +56,8 @@ export const confidential_sync = (
         heading="Willow Confidential Sync"
         toc
         bibliography
-        status="candidate"
-        statusDate="10.04.2025"
+        status="proposal"
+        statusDate="21.11.2025"
         parentId="specifications"
       >
         <PreviewScope>
