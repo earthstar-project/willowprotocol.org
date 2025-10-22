@@ -1079,6 +1079,16 @@ export const private_interest_overlap = (
 
               <PiiExample
                 leftPath={["a"]}
+                rightPath={["a"]}
+                rightSs="Gemma"
+                overlap
+                imageName="any-a_gemma-a"
+              >
+                This is a special case where both peers detect the overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
                 rightPath={["a", "b"]}
                 rightSs="Gemma"
                 overlap
@@ -1210,13 +1220,10 @@ export const private_interest_overlap = (
                       <Rs n="pi_path" /> but one has a <R n="pi_ss" /> of{" "}
                       <R n="ss_any" /> whereas the other has a concrete{" "}
                       <R n="pi_ss" />, then <Em>both</Em>{" "}
-                      peers will detect the overlap<omnomnom>
-                        <Alj>
-                          TODO: refer to the example drawing we will surely add
-                        </Alj>
-                      </omnomnom>. In this special case, the peer with the{" "}
-                      <R n="pi_ss" /> of <R n="ss_any" /> should <Em>not</Em>
+                      peers will detect the overlap. In this special case, the
+                      peer with the <R n="pi_ss" /> of <R n="ss_any" /> should
                       {" "}
+                      <Em>not</Em>{" "}
                       announce an overlap, and the peer with the concrete{" "}
                       <R n="pi_ss" /> simply sends its <R n="read_capability" />
                       {" "}
@@ -1523,14 +1530,10 @@ export const private_interest_overlap = (
               We now list the information we wish to keep confidential. We group
               it in four levels, based on which kind of peer or attacker is
               allowed to glean which information.
-              <Gwil>
-                Worst table styling ever, Alj asks for help. Might need multiple
-                rows instead of nested lists?
-              </Gwil>
             </P>
 
             <PreviewScope>
-              <Table>
+              <Table clazz="confidentiality-levels">
                 <Tbody>
                   <Tr>
                     <Th scope="row">
