@@ -51,37 +51,44 @@ Entrypoint for the main stylesheet.
 }
 
 .orange,
-.orange a {
+.orange a,
+a.orange[data-ref] {
     color: var(--wong-orange);
 }
 
 .sky-blue,
-.sky-blue a {
+.sky-blue a,
+a.sky-blue[data-ref]  {
     color: var(--wong-blue);
 }
 
 .green,
-.green a {
+.green a,
+a.green[data-ref]  {
     color: var(--wong-green);
 }
 
 .yellow,
-.yellow a {
+.yellow a,
+a.yellow[data-ref] {
     color: var(--wong-yellow);
 }
 
 .blue,
-.blue a {
+.blue a,
+a.blue[data-ref]  {
     color: var(--wong-blue);
 }
 
 .vermillion,
-.vermillion a {
+.vermillion a,
+a.vermillion[data-ref]  {
     color: var(--wong-vermillion);
 }
 
 .purple,
-.purple a {
+.purple a,
+a.purple[data-ref]  {
     color: var(--wong-purple);
 }
 

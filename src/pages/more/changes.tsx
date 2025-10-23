@@ -55,7 +55,6 @@ export const changes = (
         htmlTitle="News, Improvements, and Necessary Changes"
         headingId="changes"
         heading="News, Improvements, and Necessary Changes"
-        toc
         parentId="more"
       >
         <P>
@@ -94,6 +93,81 @@ export const changes = (
               path={{ relativity: 2, components: [`rss_news.xml`] }}
             >
               <Ul>
+                <WillowRssItem
+                  title="A lot of everything"
+                  name="big_update_2025"
+                  date={new Date(2025, 10, 23)}
+                >
+                  <P>
+                    In the past year we built up a tremendous reservoir of
+                    unpublished work which we are finally making public. From
+                    here on out our updates will be shorter and more frequent.
+                    If you would like to keep up with our work in a more
+                    informal format, we’ve launched{" "}
+                    <A href="https://willowprotocol.org" clazz="external">
+                      worm-blossom.org
+                    </A>, where we discuss the development of Willow and much
+                    more besides.
+                  </P>
+
+                  <omnomnom>
+                    We have a brand new Rust section with tutorials for using
+                    the new Willow crates which we’ll be releasing in the coming
+                    weeks and months.
+                  </omnomnom>
+
+                  <P>
+                    We’ve done extensive work to the{" "}
+                    <R n="willow_confidential_sync">Confidential Sync</R>{" "}
+                    (formally W.G.P.S) spec, and made it man-in-the-middle
+                    attack resistant through the notion of{" "}
+                    <R n="private_interest_overlap" /> and{" "}
+                    <R n="handshake_and_encryption">
+                      Handshake and Transport Encryption
+                    </R>. Confidential Sync now supports streaming verification
+                    of payloads, and its multiplexing system has been promoted
+                    to a totally independent specification dubbed{" "}
+                    <R n="lcmux" />.
+                  </P>
+
+                  <P>
+                    The <R n="willow_drop_format">Drop Format</R>{" "}
+                    (formally Sideloading protocol) now supports the inclusion
+                    of entries without any available payload. We have also
+                    created a more efficient encoding which will make drops
+                    smaller.
+                  </P>
+
+                  <P>
+                    We’ve added{" "}
+                    <R n="willow25_spec" />, a recommended set of parameters for
+                    the Willow Data model, Meadowcap, Confidential Sync, and
+                    Drop Format.
+                  </P>
+
+                  <P>
+                    These are major changes that have brought about some spec
+                    status changes. Because the changes to Confidential Sync
+                    have been so broad, we’ve demoted its status to{" "}
+                    <R n="status_proposal" />{" "}
+                    until we’ve finished building our Rust implementation of it.
+                    But on the upside, Drop format has been promoted to{" "}
+                    <R n="status_candidate" />, and Meadowcap is now{" "}
+                    <R n="status_final" />!
+                  </P>
+
+                  <P>
+                    There’s a lot more we’ve added besides. Dozens of news
+                    illustrations and diagrams have been added to the site.
+                    We’ve added ActivityPub to the <R n="willow_compared" />
+                    {" "}
+                    page. We’ve updated and redesigned nearly every page,
+                    including the landing page.
+                  </P>
+
+                  <P>We hope you enjoy the changes!</P>
+                </WillowRssItem>
+
                 <WillowRssItem
                   title="Rust implementation of Meadowcap released"
                   name="meadowcap_rs_0_1_0"
@@ -297,6 +371,24 @@ export const changes = (
               </P>
 
               <Ul>
+                <WillowRssItem
+                  title="Changes to Confidential Sync and Drop Format"
+                  name="big_changes_2025"
+                  date={new Date(2025, 10, 23)}
+                >
+                  <P>
+                    We have made sweeping (and breaking) changes to{" "}
+                    <R n="willow_confidential_sync" /> (formally W.G.P.S.).
+                  </P>
+
+                  <P>
+                    We have made breaking changes to{" "}
+                    <R n="willow_drop_format" />{" "}
+                    (formally Sideloading protocol), allowing for entries with
+                    no available payload and a more efficient encoding.
+                  </P>
+                </WillowRssItem>
+
                 <WillowRssItem
                   title="Sync protocol tweaks"
                   name="prefingerprints_and_payload_transformations"
