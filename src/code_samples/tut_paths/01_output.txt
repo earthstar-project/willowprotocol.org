@@ -1,1 +1,1 @@
-A path with nothing in it: Path([])
+A path with nothing in it: Path(<empty>)

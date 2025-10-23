@@ -219,12 +219,10 @@ const exp = (
                 {willow25}
               </Dir>
 
-              <Hidden>
-                <Dir name="rust">
-                  {rust}
-                  {tutorials}
-                </Dir>
-              </Hidden>
+              <Dir name="rust">
+                {rust}
+                {tutorials}
+              </Dir>
 
               <Dir name="more">
                 {more}
