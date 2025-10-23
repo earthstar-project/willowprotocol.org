@@ -428,7 +428,9 @@ export const data_model = (
               <AE href="https://en.wikipedia.org/wiki/International_Atomic_Time">
                 International Atomic Time
               </AE>{" "}
-              (aka <Em>TAI</Em>).
+              (aka{" "}
+              <Em>TAI</Em>) since the J1900 reference epoch (1900-01-01 at noon)
+              TAI.
             </P>
           </PreviewScope>
 
