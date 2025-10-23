@@ -1,10 +1,10 @@
-A path with nothing in it: Path([])
-A path with two components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])])
-Another path with two components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])])
-A path with three components: Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101]), Component([100, 101, 115, 105, 103, 110])])
-ideas_path (Path([Component([105, 100, 101, 97, 115])])) is a prefix of long_path (Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101]), Component([100, 101, 115, 105, 103, 110])]))!
-Path([]) is a prefix of long_path!
-Path([Component([105, 100, 101, 97, 115])]) is a prefix of long_path!
-Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101])]) is a prefix of long_path!
-Path([Component([105, 100, 101, 97, 115]), Component([103, 97, 109, 101]), Component([100, 101, 115, 105, 103, 110])]) is a prefix of long_path!
-The longest common prefix of long_path and another_long_path is: Path([Component([105, 100, 101, 97, 115])])
+A path with nothing in it: Path(<empty>)
+A path with two components: Path(/ideas/game)
+Another path with two components: Path(/ideas/game)
+A path with three components: Path(/ideas/game/design)
+ideas_path (Path(/ideas)) is a prefix of long_path (Path(/ideas/game/design))!
+Path(<empty>) is a prefix of long_path!
+Path(/ideas) is a prefix of long_path!
+Path(/ideas/game) is a prefix of long_path!
+Path(/ideas/game/design) is a prefix of long_path!
+The longest common prefix of long_path and another_long_path is: Path(/ideas)

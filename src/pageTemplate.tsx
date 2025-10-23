@@ -37,7 +37,6 @@ import { CssDependency, JsDependency } from "macromania-previews";
 import { encodeHex } from "jsr:@std/encoding/hex";
 import { addEtag } from "./serverOptimisations.tsx";
 import { join as posixJoin } from "@std/path";
-import { Hidden } from "./macros.tsx";
 
 export function Page(
   props: PageTemplateProps & { children?: Expressions; name: string },
@@ -136,7 +135,7 @@ export function PageTemplate(
                   name="description"
                   content={htmlDescription
                     ? <exps x={htmlDescription} />
-                    : "Protocols for synchronisable data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."}
+                    : "Peer-to-peer protocols which scale up, down, and sideways. Sychronisable data storage, fine-grained access control, private and efficient synchronisation, and secure data delivery by any means possible."}
                 />
                 <Script>let FF_FOUC_FIX;</Script>
                 {/*to prevent Firefox FOUC, this must be here*/}
@@ -232,18 +231,15 @@ export function PageTemplate(
                     <Li>
                       <R n="specifications">Specs</R>
                     </Li>
-                    <Hidden>
-                      <Li>
-                        <R n="rust">Rust</R>
-                      </Li>
-                    </Hidden>
+                    <Li>
+                      <R n="rust">Rust</R>
+                    </Li>
                     <Li>
                       <R n="changes">News</R>
                     </Li>
                     <Li>
                       <R n="about">About Us</R>
                     </Li>
-
                     <Li>
                       <R n="more">More</R>
                     </Li>

@@ -8,7 +8,7 @@ import { ensureDir } from "@std/fs";
 
 // Rustdoc JSON output is still unstable, so we need to pin the output version.
 // TODO: They don't actually seem to support this yet.
-const JSON_VERSIONS = [46, 53];
+const JSON_VERSIONS = [46, 53, 56];
 
 type SymbolKind = "type" | "fn" | "interface" | "constant" | "module";
 
@@ -141,8 +141,6 @@ export function DefsDocsRs(props: DocsRsProps): Expression {
         // TODO: log an error if this request fails.
         const res = await fetch(jsonUrl);
 
-        console.log({ jsonUrl, res });
-
         switch (res.status) {
           case 404:
           case 500:
@@ -181,6 +179,7 @@ const innerToUrlIdentifier: Record<string, string> = {
   "struct": "struct",
   "enum": "enum",
   "constant": "constant",
+  "macro": "macro",
 };
 
 /** This works with version 46 of the Rustdoc JSON schema */
@@ -332,6 +331,7 @@ function walkIndex(
       break;
     }
     case "type_alias":
+    case "macro":
     case "constant":
     case "enum": {
       const itemName = item["name"];

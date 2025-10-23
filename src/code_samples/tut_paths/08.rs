@@ -28,4 +28,14 @@ fn main() {
     for prefix in long_path.all_prefixes() {
         println!("{:?} is a prefix of long_path!", prefix)
     }
+
+    let component4 = Component::new(b"art").unwrap();
+    let another_long_path = Path::from_components(&[component1, component2, component4]).unwrap();
+    println!(
+        "The longest common prefix of long_path and another_long_path is: {:?}",
+        ideas_path.longest_common_prefix(&another_long_path)
+    );
+
+    let path2 = path!("/ideas/game/music");
+    println!("A path created with the path! macro: {:?}", path2);
 }

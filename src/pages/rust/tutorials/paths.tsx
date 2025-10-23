@@ -16,20 +16,19 @@ export const tutorial_paths = (
     name="path"
     preamble={
       <P>
-        <Gwil>And indicate that this'll take like ten minutes.</Gwil>
         In this tutorial you will construct and compare <Rs n="Path" />{" "}
-        using the <R n="rs-willow_25-Path" /> API.
+        using the <R n="rs-willow25-paths-Path" /> API.
       </P>
     }
-    deps={["willow_25"]}
-    title={"Create a path"}
+    deps={["willow25"]}
+    title="Create a path"
     otherPrereqs={<></>}
   >
     <>
       <Hsection title="Construct an empty path" n="tut-path-1">
         <P>
-          We'll now create an empty <R n="rs-willow_25-Path" /> using{" "}
-          <R n="rs-willow_data_model-Path-new_empty" />.
+          We'll now create an empty <R n="rs-willow25-paths-Path" /> using{" "}
+          <R n="rs-willow25-paths-Path-new" />.
         </P>
 
         <P>
@@ -53,9 +52,10 @@ export const tutorial_paths = (
 
       <Hsection title="Append components to a path" n="tut-path-2">
         <P>
-          We'll now create two <R n="rs-willow_25-Component">Components</R>{" "}
-          and append them to a <R n="rs-willow_25-Path" /> using{" "}
-          <R n="rs-willow_data_model-Path-append" />.
+          We'll now create two <R n="rs-willow25-paths-Component">Components</R>
+          {" "}
+          and append them to a <R n="rs-willow25-paths-Path" /> using{" "}
+          <R n="rs-willow25-paths-Path-append_component" />.
         </P>
 
         <P>
@@ -96,7 +96,7 @@ export const tutorial_paths = (
               },
               end: {
                 line: 1,
-                character: 103,
+                character: 45,
               },
               properties: {
                 class: "addition",
@@ -112,8 +112,8 @@ export const tutorial_paths = (
       >
         <P>
           We'll now append a slice of{" "}
-          <R n="rs-willow_25-Component">Components</R> using{" "}
-          <R n="rs-willow_data_model-Path-append_slice" />.
+          <R n="rs-willow25-paths-Component">Components</R> using{" "}
+          <R n="rs-willow25-paths-Path-append_components" />.
         </P>
 
         <P>
@@ -154,7 +154,7 @@ export const tutorial_paths = (
               },
               end: {
                 line: 2,
-                character: 109,
+                character: 51,
               },
               properties: {
                 class: "addition",
@@ -166,8 +166,8 @@ export const tutorial_paths = (
 
       <Hsection title="Create a new path with a slice" n="tut-path-4">
         <P>
-          We'll now create a new <R n="rs-willow_25-Path" />{" "}
-          with a slice of many <R n="rs-willow_data_model-Component" />.
+          We'll now create a new <R n="rs-willow25-paths-Path" />{" "}
+          with a slice of many <R n="rs-willow25-paths-Component" />.
         </P>
 
         <P>
@@ -208,7 +208,7 @@ export const tutorial_paths = (
               },
               end: {
                 line: 3,
-                character: 148,
+                character: 54,
               },
               properties: {
                 class: "addition",
@@ -223,10 +223,9 @@ export const tutorial_paths = (
         n="tut-path-5"
       >
         <P>
-          Next we'll use <R n="rs-willow_data_model-Path-is_prefix_of" />{" "}
-          to check if one <R n="rs-willow_25-Path" /> is a <R n="path_prefix" />
-          {" "}
-          of another.
+          Next we'll use <R n="rs-willow25-paths-Path-is_prefix_of" />{" "}
+          to check if one <R n="rs-willow25-paths-Path" /> is a{" "}
+          <R n="path_prefix" /> of another.
         </P>
 
         <P>
@@ -267,7 +266,7 @@ export const tutorial_paths = (
               },
               end: {
                 line: 4,
-                character: 203,
+                character: 78,
               },
               properties: {
                 class: "addition",
@@ -280,8 +279,8 @@ export const tutorial_paths = (
       <Hsection title="Iterate through all prefixes of a path" n="tut-path-6">
         <P>
           Next we'll iterate through all of a{" "}
-          <R n="rs-willow_25-Path" />'s possible prefixes using{" "}
-          <R n="rs-willow_data_model-Path-all_prefixes" />.
+          <R n="rs-willow25-paths-Path" />'s possible prefixes using{" "}
+          <R n="rs-willow25-paths-Path-all_prefixes" />.
         </P>
 
         <P>
@@ -322,7 +321,7 @@ export const tutorial_paths = (
               },
               end: {
                 line: 8,
-                character: 144,
+                character: 50,
               },
               properties: {
                 class: "addition",
@@ -337,10 +336,9 @@ export const tutorial_paths = (
         n="tut-path-7"
       >
         <P>
-          Finally we'll use{" "}
-          <R n="rs-willow_data_model-Path-longest_common_prefix" />{" "}
+          We'll use <R n="rs-willow25-paths-Path-longest_common_prefix" />{" "}
           to determine the longest common prefix of two{" "}
-          <R n="rs-willow_25-Path" />s.
+          <R n="rs-willow25-paths-Path" />s.
         </P>
 
         <P>
@@ -381,7 +379,64 @@ export const tutorial_paths = (
               },
               end: {
                 line: 9,
-                character: 108,
+                character: 77,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+      </Hsection>
+
+      <Hsection
+        title="Create a path with the path! macro"
+        n="tut-path-8"
+      >
+        <P>
+          Finally we'll use <R n="rs-willow25-paths-path" /> macro{" "}
+          to easily create a new <R n="rs-willow25-paths-Path" />.
+        </P>
+
+        <P>
+          Add the following code to <Code>src/main.rs</Code>:
+        </P>
+
+        <RustSample
+          path={["src", "code_samples", "tut_paths", "08.rs"]}
+          decorations={[
+            {
+              start: {
+                line: 38,
+                character: 0,
+              },
+              end: {
+                line: 40,
+                character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+
+        <P>
+          Run <TerminalInput>cargo run</TerminalInput>{" "}
+          again, and you should see the following output:
+        </P>
+
+        <TerminalOutput
+          path={["src", "code_samples", "tut_paths", "08_output.txt"]}
+          decorations={[
+            {
+              start: {
+                line: 10,
+                character: 0,
+              },
+              end: {
+                line: 10,
+                character: 60,
               },
               properties: {
                 class: "addition",
@@ -393,52 +448,59 @@ export const tutorial_paths = (
 
       <Hsection title="Summary" n="tut-path-summary">
         <P>
-          In this tutorial we used the <R n="rs-willow_25-Path" />{" "}
+          In this tutorial we used the <R n="rs-willow25-paths-Path" />{" "}
           API to construct and compare paths:
         </P>
 
         <Ul>
           <Li>
-            We added the <R n="rs-willow_25" />{" "}
+            We added the <R n="rs-willow25" />{" "}
             crate as a dependency to a Rust project.
           </Li>
           <Li>
-            We constructed an empty <R n="rs-willow_25-Path" />.
+            We constructed an empty <R n="rs-willow25-paths-Path" />.
           </Li>
           <Li>
-            We appended <R n="rs-willow_25-Component">Components</R> to an empty
-            {" "}
-            <R n="rs-willow_25-Path" />.
+            We appended <R n="rs-willow25-paths-Component">Components</R>{" "}
+            to an empty <R n="rs-willow25-paths-Path" />.
           </Li>
           <Li>
-            We appended a slice of <R n="rs-willow_25-Component">Components</R>
-            {" "}
-            to an empty <R n="rs-willow_25-Path" />.
+            We appended a slice of{" "}
+            <R n="rs-willow25-paths-Component">Components</R> to an empty{" "}
+            <R n="rs-willow25-paths-Path" />.
           </Li>
           <Li>
-            We constructed a new <R n="rs-willow_25-Path" /> with a slice of
-            {" "}
-            <R n="rs-willow_25-Component">Components</R>.
+            We constructed a new <R n="rs-willow25-paths-Path" />{" "}
+            with a slice of <R n="rs-willow25-paths-Component">Components</R>.
           </Li>
           <Li>
-            We checked if one <R n="rs-willow_25-Path" />{" "}
+            We checked if one <R n="rs-willow25-paths-Path" />{" "}
             was a prefix of another.
           </Li>
           <Li>
             We iterated through all possible prefixes of a{" "}
-            <R n="rs-willow_25-Path" />.
+            <R n="rs-willow25-paths-Path" />.
           </Li>
           <Li>
             We determined the longest common prefix of two{" "}
-            <R n="rs-willow_25-Path">Paths</R>.
+            <R n="rs-willow25-paths-Path">Paths</R>.
+          </Li>
+          <Li>
+            We created a new <R n="rs-willow25-paths-Path" /> with the{" "}
+            <R n="rs-willow25-paths-path" /> macro.
           </Li>
         </Ul>
 
-        <P>
-          <Rs n="Path" /> are perhaps the most fundamental concept of the{" "}
-          <R n="data_model" />, and with this experience you're ready to{" "}
-          <R n="tut-entry">create an entry</R>.
-        </P>
+        <omnomnom>
+          <P>
+            <Rs n="Path" /> are perhaps the most fundamental concept of the{" "}
+            <R n="data_model" />
+
+            , and with this experience you're ready to{" "}
+            <R n="tut-entry">create an entry</R>
+            .
+          </P>
+        </omnomnom>
       </Hsection>
     </>
   </TutorialTemplate>

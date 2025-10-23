@@ -126,11 +126,9 @@ export const index = (
             <R n="specifications">Specifications</R>
           </Li>
 
-          <Hidden>
-            <Li id="rust-nav">
-              <R n="rust">Rust</R>
-            </Li>
-          </Hidden>
+          <Li id="rust-nav">
+            <R n="rust">Rust</R>
+          </Li>
 
           <Li>
             <R n="changes">News</R>
