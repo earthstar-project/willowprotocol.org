@@ -412,7 +412,7 @@ export const data_model = (
               <M>
                 2^<Curly>64</Curly> - 1
               </M>{" "}
-              (exclusive). We highly recommend<Marginale>
+              (inclusive). We highly recommend<Marginale>
                 This is merely a <Em>recommendation</Em>{" "}
                 because an implementation neither can nor should gauge or
                 enforce what users intended that 64-bit integer to mean. In
