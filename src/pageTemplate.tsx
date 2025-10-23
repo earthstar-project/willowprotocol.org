@@ -135,7 +135,7 @@ export function PageTemplate(
                   name="description"
                   content={htmlDescription
                     ? <exps x={htmlDescription} />
-                    : "Protocols for synchronisable data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."}
+                    : "Peer-to-peer protocols which scale up, down, and sideways. Sychronisable data storage, fine-grained access control, private and efficient synchronisation, and secure data delivery by any means possible."}
                 />
                 <Script>let FF_FOUC_FIX;</Script>
                 {/*to prevent Firefox FOUC, this must be here*/}

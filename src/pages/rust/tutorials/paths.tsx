@@ -336,8 +336,7 @@ export const tutorial_paths = (
         n="tut-path-7"
       >
         <P>
-          Finally we'll use{" "}
-          <R n="rs-willow25-paths-Path-longest_common_prefix" />{" "}
+          We'll use <R n="rs-willow25-paths-Path-longest_common_prefix" />{" "}
           to determine the longest common prefix of two{" "}
           <R n="rs-willow25-paths-Path" />s.
         </P>
@@ -390,6 +389,63 @@ export const tutorial_paths = (
         />
       </Hsection>
 
+      <Hsection
+        title="Create a path with the path! macro"
+        n="tut-path-8"
+      >
+        <P>
+          Finally we'll use <R n="rs-willow25-paths-path" /> macro{" "}
+          to easily create a new <R n="rs-willow25-paths-Path" />.
+        </P>
+
+        <P>
+          Add the following code to <Code>src/main.rs</Code>:
+        </P>
+
+        <RustSample
+          path={["src", "code_samples", "tut_paths", "08.rs"]}
+          decorations={[
+            {
+              start: {
+                line: 38,
+                character: 0,
+              },
+              end: {
+                line: 40,
+                character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+
+        <P>
+          Run <TerminalInput>cargo run</TerminalInput>{" "}
+          again, and you should see the following output:
+        </P>
+
+        <TerminalOutput
+          path={["src", "code_samples", "tut_paths", "08_output.txt"]}
+          decorations={[
+            {
+              start: {
+                line: 10,
+                character: 0,
+              },
+              end: {
+                line: 10,
+                character: 60,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+      </Hsection>
+
       <Hsection title="Summary" n="tut-path-summary">
         <P>
           In this tutorial we used the <R n="rs-willow25-paths-Path" />{" "}
@@ -428,6 +484,10 @@ export const tutorial_paths = (
           <Li>
             We determined the longest common prefix of two{" "}
             <R n="rs-willow25-paths-Path">Paths</R>.
+          </Li>
+          <Li>
+            We created a new <R n="rs-willow25-paths-Path" /> with the{" "}
+            <R n="rs-willow25-paths-path" /> macro.
           </Li>
         </Ul>
 
