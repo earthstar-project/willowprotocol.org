@@ -98,7 +98,7 @@ export const rust = (
           you'd like to contribute to our implementations, please see the{" "}
           <A
             clazz="external"
-            href="https://github.com/earthstar-project/willow-rs/"
+            href="https://codeberg.org/worm-blossom/willow_rs"
           >
             willow-rs Git repository
           </A>.
