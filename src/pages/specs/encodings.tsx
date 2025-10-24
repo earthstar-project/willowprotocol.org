@@ -728,9 +728,6 @@ export const encodings = (
               />
 
               <P>
-                <Gwil>
-                  Either make this visually more pleasing or remove it again.
-                </Gwil>
                 An example: encoding the <R n="Path" />{" "}
                 <Path components={["blog", "ideas", "fun"]} /> with{" "}
                 <R n="encode_path" /> yields
@@ -2943,8 +2940,8 @@ export const encodings = (
           <P>
             We now define some relative encodings which take care to not reveal
             certain parts of the values being encoded. We use these in the{" "}
-            <R n="private_interest_overlap" /> parts of"  "}
-            <R n="confidential_sync"/ >.
+            <R n="private_interest_overlap" /> parts of{" "}
+            <R n="confidential_sync" />.
           </P>
 
           <P>

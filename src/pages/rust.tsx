@@ -50,7 +50,8 @@ export const rust = (
             alt="Betty is riding a giant crab, while Alfie screams, hanging on to a claw."
           />
         </Marginale>
-        We're implementing Willow's <R n="specifications" />{"  "}
+        We're implementing Willow's <R n="specifications">specifications</R>
+        {" "}
         in Rust. You can use them through the <R n="rs-willow25" />{" "}
         crate, which pre-configures all the specifications with secure,
         efficient parameters.
