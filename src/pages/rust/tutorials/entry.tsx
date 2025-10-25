@@ -15,7 +15,13 @@ export const tutorial_entry = (
     }
     deps={["willow_25"]}
     title="Create an entry"
-    otherPrereqs=""
+    otherPrereqs={
+      <P>
+        Additionally, knowledge of the <R n="rs-willow25-Path" />{" "}
+        API would be helpful. If you're not yet familiar, please see our{" "}
+        <R n="tut-path">dedicated tutorial for paths</R>.
+      </P>
+    }
   >
     <>
       <Hsection title="Create an entry" n="tut-entry-1">
