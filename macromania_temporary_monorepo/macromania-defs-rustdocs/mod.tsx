@@ -8,7 +8,7 @@ import { ensureDir } from "@std/fs";
 
 // Rustdoc JSON output is still unstable, so we need to pin the output version.
 // TODO: They don't actually seem to support this yet.
-const JSON_VERSIONS = [46, 53, 56];
+const JSON_VERSIONS = [46, 53, 54, 56];
 
 type SymbolKind = "type" | "fn" | "interface" | "constant" | "module";
 

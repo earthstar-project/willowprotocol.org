@@ -1,43 +1,23 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-use willow_25::{Component, Entry, NamespaceId25, Path, PayloadDigest25, SubspaceId25};
+use willow25::prelude::*;
 
 fn main() {
-    let namespace_id = NamespaceId25::new_communal();
-    let (subspace_id, _key) = SubspaceId25::new();
+    let namespace_id = NamespaceId::from([0; NAMESPACE_ID_WIDTH]);
+    let subspace_id = SubspaceId::from([1; SUBSPACE_ID_WIDTH]);
 
-    let path_component = Component::new(b"blog").unwrap();
-    let path = Path::new_singleton(path_component).unwrap();
+    let entry = Entry::builder()
+        .namespace_id(namespace_id)
+        .subspace_id(subspace_id)
+        .path(path!("/blog/idea/1"))
+        .now().unwrap()
+        .payload(b"Dear reader, I've got a great idea")
+        .build().unwrap();
 
-    let duration = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-    let timestamp = duration.as_micros();
+    let oops = Entry::prefilled_builder(&entry)
+        .path(path!("/blog/idea"))
+        .timestamp(entry.timestamp() + 10.minutes())
+        .payload(b"")
+        .build().unwrap();
 
-    let payload = b"hello";
-    let digest = PayloadDigest25::new_from_slice(payload);
-
-    let entry = Entry::new(
-        namespace_id,
-        subspace_id,
-        path,
-        timestamp as u64,
-        payload.len() as u64,
-        digest,
-    );
-
-    let payload2 = b"bye-bye";
-    let digest2 = PayloadDigest25::new_from_slice(payload2);
-
-    let entry2 = Entry::new(
-        entry.namespace_id().clone(),
-        entry.subspace_id().clone(),
-        entry.path().clone(),
-        entry.timestamp() + 1,
-        payload2.len() as u64,
-        digest2,
-    );
-
-    if entry2.is_newer_than(&entry) {
-        println!("entry2 is newer than entry!")
-    } else {
-        panic!("entry is newer than entry2?!")
-    }
+    println!("{:#?}", entry);
+    println!("{:#?}", oops);
 }

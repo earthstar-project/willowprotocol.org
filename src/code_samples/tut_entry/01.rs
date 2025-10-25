@@ -1,27 +1,16 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-use willow_25::{Component, Entry, NamespaceId25, Path, PayloadDigest25, SubspaceId25};
+use willow25::prelude::*;
 
 fn main() {
-    let namespace_id = NamespaceId25::new_communal();
-    let (subspace_id, _key) = SubspaceId25::new();
+    let namespace_id = NamespaceId::from([0; NAMESPACE_ID_WIDTH]);
+    let subspace_id = SubspaceId::from([1; SUBSPACE_ID_WIDTH]);
 
-    let path_component = Component::new(b"blog").unwrap();
-    let path = Path::new_singleton(path_component).unwrap();
+    let entry = Entry::builder()
+        .namespace_id(namespace_id)
+        .subspace_id(subspace_id)
+        .path(path!("/blog/idea/1"))
+        .now().unwrap()
+        .payload(b"Dear reader, I've got a great idea")
+        .build().unwrap();
 
-    let duration = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
-    let timestamp = duration.as_micros();
-
-    let payload = b"hello";
-    let digest = PayloadDigest25::new_from_slice(payload);
-
-    let entry = Entry::new(
-        namespace_id,
-        subspace_id,
-        path,
-        timestamp as u64,
-        payload.len() as u64,
-        digest,
-    );
-
-    println!("An entry: {:?}", entry);
+    println!("{:#?}", entry);
 }

@@ -1,5 +1,5 @@
-import { Code, P } from "macromania-html";
-import { R, Rs } from "macromania-defref";
+import { Code, Li, P, Ul } from "macromania-html";
+import { R } from "macromania-defref";
 import { Hsection } from "macromania-hsection";
 import { RustSample, TerminalInput, TerminalOutput } from "../../../macros.tsx";
 import { TutorialTemplate } from "../tutorials.tsx";
@@ -9,19 +9,13 @@ export const tutorial_entry = (
     name="entry"
     preamble={
       <P>
-        We'll now create a new <R n="rs-willow_25-Entry" />{" "}
+        We'll now create a new <R n="rs-willow25-entry-Entry" />{" "}
         and all its constituent fields.
       </P>
     }
     deps={["willow_25"]}
     title="Create an entry"
-    otherPrereqs={
-      <P>
-        Additionally, knowledge of the <R n="rs-willow_25-Path" />{" "}
-        API would be helpful. If you're not yet familiar, please see our{" "}
-        <R n="tut-path">dedicated tutorial for paths</R>.
-      </P>
-    }
+    otherPrereqs=""
   >
     <>
       <Hsection title="Create an entry" n="tut-entry-1">
@@ -44,11 +38,10 @@ export const tutorial_entry = (
         />
       </Hsection>
 
-      <Hsection title="Compare with another entry" n="tut-entry-2">
+      <Hsection title="Create an Entry based off another one" n="tut-entry-2">
         <P>
-          Next, we'll compare two <R n="rs-willow_25-Entry">Entries</R> using
-          {" "}
-          <R n="rs-willow_data_model-Entry-is_newer_than" />.
+          Next, we'll create an <R n="rs-willow25-entry-Entry" />{" "}
+          which is mostly identical to an earlier one.
         </P>
 
         <P>
@@ -61,12 +54,25 @@ export const tutorial_entry = (
           decorations={[
             {
               start: {
-                line: 25,
+                line: 14,
                 character: 0,
               },
               end: {
-                line: 42,
+                line: 19,
                 character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+            {
+              start: {
+                line: 21,
+                character: 0,
+              },
+              end: {
+                line: 21,
+                character: 19,
               },
               properties: {
                 class: "addition",
@@ -86,12 +92,12 @@ export const tutorial_entry = (
           decorations={[
             {
               start: {
-                line: 6,
+                line: 18,
                 character: 0,
               },
               end: {
-                line: 6,
-                character: 27,
+                line: 35,
+                character: 1,
               },
               properties: {
                 class: "addition",
@@ -102,13 +108,12 @@ export const tutorial_entry = (
       </Hsection>
 
       <Hsection
-        title="Check if this entry would be pruned by another"
+        title="Compare entries"
         n="tut-entry-3"
       >
         <P>
-          Next, we'll compare two <R n="rs-willow_25-Entry">Entries</R> using
-          {" "}
-          <R n="rs-willow_data_model-Entry-is_pruned_by" />.
+          Finally, we'll compare how the two{" "}
+          <R n="rs-willow25-entry-Entry">Entries</R> relate to each other.
         </P>
 
         <P>
@@ -121,12 +126,12 @@ export const tutorial_entry = (
           decorations={[
             {
               start: {
-                line: 43,
+                line: 23,
                 character: 0,
               },
               end: {
-                line: 61,
-                character: 0,
+                line: 26,
+                character: 19,
               },
               properties: {
                 class: "addition",
@@ -136,47 +141,36 @@ export const tutorial_entry = (
         />
 
         <P>
-          In your terminal, run{" "}
-          <TerminalInput>cargo run</TerminalInput>, and you should see the
-          following output:
+          When running this code with{" "}
+          <TerminalInput>cargo run</TerminalInput>, all assertions should pass!
         </P>
-
-        <TerminalOutput
-          path={["src", "code_samples", "tut_entry", "03_output.txt"]}
-          decorations={[
-            {
-              start: {
-                line: 7,
-                character: 0,
-              },
-              end: {
-                line: 7,
-                character: 33,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-          ]}
-        />
       </Hsection>
 
       <Hsection title="Summary" n="tut-entry-summary">
         <P>
-          In this tutorial we used the <R n="rs-willow_25-Entry" />{" "}
-          API to create and compare entries. We also used various APIs from the
-          {" "}
-          <R n="rs-willow_25" /> crate, such as{" "}
-          <R n="rs-willow_25-NamespaceId25" /> and{" "}
-          <R n="rs-willow_25-PayloadDigest25" />, to provide the details we
-          needed to create an <R n="rs-willow_25-Entry" />.
+          In this tutorial we used the <R n="rs-willow25-entry-Entry" />{" "}
+          API to create and compare entries:
         </P>
 
-        <P>
-          <Rs n="Entry" />{" "}
-          come into their element when you have many of them. In the next
-          tutorial, we will <R n="tut-grouping">work with groupings</R>.
-        </P>
+        <Ul>
+          <Li>
+            We used an <R n="rs-willow25-entry-EntryBuilder" />{" "}
+            to construct an immutable <R n="rs-willow25-entry-Entry" />.
+          </Li>
+          <Li>
+            We used the <R n="rs-willow25-entry-Entry-prefilled_builder" />{" "}
+            method to create an entry based on a prior one.
+          </Li>
+          <Li>
+            We accessed fields of the entries with methods such as{" "}
+            <R n="rs-willow25-entry-Entrylike-namespace_id" />.
+          </Li>
+          <Li>
+            We compared entries with methods such as{" "}
+            <R n="rs-willow25-entry-EntrylikeExt-is_newer_than" /> and{" "}
+            <R n="rs-willow25-entry-EntrylikeExt-is_pruned_by" />.
+          </Li>
+        </Ul>
       </Hsection>
     </>
   </TutorialTemplate>

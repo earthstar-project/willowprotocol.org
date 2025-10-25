@@ -71,10 +71,10 @@ export const rust = (
           <Li>
             <R n="tut-path">Create a Path</R>
           </Li>
+          <Li>
+            <R n="tut-entry">Create an Entry</R>
+          </Li>
           <omnomnom>
-            <Li>
-              <R n="tut-entry">Create an Entry</R>
-            </Li>
             <Li>
               <R n="tut-grouping">Work with groupings</R>
             </Li>
