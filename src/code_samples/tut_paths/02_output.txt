@@ -1,0 +1,2 @@
+A path with nothing in it: Path(<empty>)
+A path with two components: Path(/ideas/game)

@@ -1,14 +1,61 @@
 {
   "imports": {
-    "std/": "https://deno.land/std@0.204.0/",
-    "katex": "npm:katex@0.16.9",
-    "macro": "./tsgen.ts"
+    "@aljoschameyer/loggingutils": "jsr:@aljoscha-meyer/logging-utils@^1.0.0",
+    "@std/assert": "jsr:@std/assert@^1.0.13",
+    "@std/media-types": "jsr:@std/media-types@^1.1.0",
+    "@std/path": "jsr:@std/path@^1.0.9",
+    "std_fmt": "jsr:@std/fmt@^0.221.0",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
+    "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania-assets": "./macromania_temporary_monorepo/macromania_assets/mod.tsx",
+    "macromania-config": "./macromania_temporary_monorepo/macromania_config/mod.tsx",
+    "macromania-counters": "./macromania_temporary_monorepo/macromania_counters/mod.tsx",
+    "macromania-defref": "./macromania_temporary_monorepo/macromania_defref/mod.tsx",
+    "macromania-figures": "./macromania_temporary_monorepo/macromania_figures/mod.tsx",
+    "macromania-fs": "./macromania_temporary_monorepo/macromania_fs/mod.tsx",
+    "macromania-hsection": "./macromania_temporary_monorepo/macromania_hsection/mod.tsx",
+    "macromania-html": "./macromania_temporary_monorepo/macromania_html/mod.tsx",
+    "macromania-html-utils": "./macromania_temporary_monorepo/macromania_html_utils/mod.tsx",
+    "macromania-katex": "./macromania_temporary_monorepo/macromania_katex/mod.tsx",
+    "macromania-katex-macros": "./macromania_temporary_monorepo/macromania_katex_macros/mod.tsx",
+    "macromania-logger": "./macromania_temporary_monorepo/macromania_logger/mod.tsx",
+    "macromania-marginalia": "./macromania_temporary_monorepo/macromania_marginalia/mod.tsx",
+    "macromania-names": "./macromania_temporary_monorepo/macromania_names/mod.tsx",
+    "macromania-outfs": "./macromania_temporary_monorepo/macromania_outfs/mod.tsx",
+    "macromania-previews": "./macromania_temporary_monorepo/macromania_previews/mod.tsx",
+    "macromania-webserverroot": "./macromania_temporary_monorepo/macromania_webserverroot/mod.tsx",
+    "macromania-pseudocode": "./macromania_temporary_monorepo/macromania_pseudocode/mod.tsx",
+    "macromania-rustic": "./macromania_temporary_monorepo/macromania_rustic/mod.tsx",
+    "macromania-bib": "./macromania_temporary_monorepo/macromania_bib/mod.tsx",
+    "macromania-bib/": "./macromania_temporary_monorepo/macromania_bib/",
+    "macromania-wip": "./macromania_temporary_monorepo/macromania_wip/mod.tsx",
+    "macromania-emit-latex": "./macromania_temporary_monorepo/macromania_emit_latex/mod.tsx",
+    "macromania-defs-rustdocs": "./macromania_temporary_monorepo/macromania-defs-rustdocs/mod.tsx",
+    "macromania-shiki": "./macromania_temporary_monorepo/macromania_shiki/mod.tsx",
+    "macromania-rss": "./macromania_temporary_monorepo/macromania-rss/mod.ts"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "macromaniajsx",
+    "lib": ["deno.ns", "dom"],
+    "strict": true
   },
   "tasks": {
-    "build": "cd willowtest && deno run --allow-read --allow-write main.ts",
-    "build-watch": "cd willowtest && deno run --watch --allow-read --allow-write main.ts",
-    "server": "deno run --allow-read --allow-net server.ts"
+    "build": "deno run -A ./src/main.tsx",
+    "watch": "deno run --watch -A ./src/main.tsx",
+    "serve": "deno run -A ./server.ts",
+    "dev": "deno run -A ./server.ts --dev"
   },
-  "include": ["willowtest"],
-  "exclude": ["willowtest/build", "willowtest/named_assets"]
+  "include": ["src", "deps.ts", "devServer.ts"],
+  "exclude": ["build"],
+
+  "lint": {
+    "include": ["src/"],
+    "rules": {
+      "tags": ["recommended"],
+      "exclude": ["jsx-no-useless-fragment", "jsx-key"]
+    }
+  }
 }

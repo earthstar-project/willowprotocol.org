@@ -1,7 +1,5 @@
 {
-  "co.gwil.deno.config.formatOnSave" : "false",
-  "deno.enablePaths" : [
-    "willowtest",
-    "deno.json"
-  ]
+  "co.gwil.deno.config.formatOnSave" : "true",
+  "workspace.preview_type" : "custom",
+  "workspace.preview_url" : "http:\/\/localhost:8000"
 }

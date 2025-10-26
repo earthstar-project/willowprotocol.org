@@ -1,0 +1,3 @@
+Instantiated the store!
+We ingested the entry!
+We got our entry back out!

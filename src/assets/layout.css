@@ -1,0 +1,116 @@
+
+/* Automatically generated from src/layoutStyles.tsx */
+
+/* Start implementing L1 */
+
+body {
+    
+}
+
+body.isTooltip {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+body:not(.isTooltip) {
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    padding-top: 4rem;
+    padding-bottom: 2rem;
+}
+
+.toc {
+    
+    display: none;
+}
+
+.marginale, .sidenoteCounter {
+    
+    display: none;
+}
+
+.marginale.inlineable, .sidenoteCounter.inlineable {
+  display: block;
+}
+
+.only-wide {
+  display: none;
+}
+
+/* Start implementing L2 */
+
+@media (min-width:554.6px) {
+    #wrapContent {
+        
+        width: 32rem;
+        margin: 0 auto;
+    }
+}
+
+/* Start implementing L3 */
+
+@media (min-width:874.6px) {
+    #wrapContent {
+        width: 52rem;
+
+        >*:not(section, main), section>*:not(section, main)  {
+            max-width: 32rem;
+        }
+
+        .wide {
+          max-width: 52rem;
+          clear: right;
+        }
+        
+        > ul, section > ul {
+          max-width: calc(32rem - 1.25em);
+        }
+    }
+
+    .marginale {
+      display: initial;
+      float: right;
+      clear: right;
+      position: relative;
+      width: 18rem;
+      margin-right: -20rem;
+    }
+
+    .sidenoteCounter {
+        display: initial;
+    }
+    
+    .only-wide {
+      display: block;
+    }
+    
+    .only-narrow {
+      display: none;
+    }
+}
+
+/* Start implementing L4 */
+
+@media (min-width:1341.8px) {
+    .toc {
+        display: initial;
+        width: 13rem;
+        position: fixed;
+        top: 6.5rem;
+        transform: translateX(-14.6rem);
+        padding-left: 0;
+    }
+}
+
+/* Other styling */
+
+.tooltipContainer {
+  max-width: min(33.6rem, 100vw);
+}
+
+@media (min-width:874.6px) {
+  .tooltipContainer.wide {
+    max-width: min(calc(53.6rem + 18px), 100vw);
+  }
+}
+

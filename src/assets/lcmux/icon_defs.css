@@ -1,0 +1,99 @@
+.lcmux-dr {
+  white-space: pre;
+}
+
+.fully-bound-dr:before {
+  width: 17px;
+  height: 17px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/fully_bound_small.png');
+  background-size: 17px 17px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.me-freed-dr:before {
+  width: 17px;
+  height: 17px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/me_freed_small.png');
+  background-size: 17px 17px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.you-freed-dr:before {
+  width: 17px;
+  height: 17px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/you_freed_small.png');
+  background-size: 17px 17px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.awaiting-deletion-dr:before {
+  width: 18px;
+  height: 17px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/waiting_small.png');
+  background-size: 18px 17px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.fully-deleted-dr:before {
+  width: 18px;
+  height: 18px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/finished_small.png');
+  background-size: 18px 18px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.hopefully-bound-dr:before {
+  width: 19px;
+  height: 20px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/optimistically_bound_small.png');
+  background-size: 19px 20px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.hopefully-me-freed-dr:before {
+  width: 18px;
+  height: 19px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/optimistically_me_freed_small.png');
+  background-size: 18px 19px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 2px;
+}
+
+.dropped-dr:before {
+  width: 16px;
+  height: 20px;
+  content: " ";
+  display: inline-block;
+  background-image: url('/assets/lcmux/handles/rejected_small.png');
+  background-size: 16px 20px;
+  margin-right: 0.1ch;
+  position: relative;
+  top: 1px;
+}

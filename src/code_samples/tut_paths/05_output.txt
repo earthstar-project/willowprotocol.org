@@ -1,0 +1,5 @@
+A path with nothing in it: Path(<empty>)
+A path with two components: Path(/ideas/game)
+Another path with two components: Path(/ideas/game)
+A path with three components: Path(/ideas/game/design)
+ideas_path (Path(/ideas)) is a prefix of long_path (Path(/ideas/game/design))!

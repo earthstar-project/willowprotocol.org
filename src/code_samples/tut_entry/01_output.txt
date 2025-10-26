@@ -1,0 +1,18 @@
+Entry {
+    namespace_id: NamespaceId(
+        +0000000000000000000000000000000000000000000000000000000000000000,
+    ),
+    subspace_id: SubspaceId(
+        0101010101010101010101010101010101010101010101010101010101010101,
+    ),
+    path: Path(
+        /blog/idea/1,
+    ),
+    timestamp: Timestamp(
+        814676859787575,
+    ),
+    payload_length: 34,
+    payload_digest: PayloadDigest(
+        70a4247d8038f6022fa34bd205685ee443dfd1202b384cc440ecc86adf45e58b,
+    ),
+}

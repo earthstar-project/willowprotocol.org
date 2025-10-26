@@ -1,0 +1,11 @@
+{
+  "version": "3",
+  "remote": {
+    "https://deno.land/std@0.204.0/fmt/colors.ts": "c51c4642678eb690dcf5ffee5918b675bf01a33fba82acf303701ae1a4f8c8d9",
+    "https://deno.land/x/logging_utils@v10.0/deps.ts": "1b27dc43357ce3edb11d55d0d91e8c7c41868d64dcf09c31857e2936a9bec8e9",
+    "https://deno.land/x/logging_utils@v10.0/mod.ts": "09bf55c9635878962fe5ddcc19d87d6cfdb62385ce062a49f9df1d098c513feb",
+    "https://raw.githubusercontent.com/worm-blossom/macromania/main/deps.ts": "8d6e33b37efd28a06bf9fbff8160d1b60fcccc0fac0e43c04ad7c379d50e322c",
+    "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts": "bd789b21489036660b5db8e093d333ec6c4a322f2c9cafd317a57da936f6bc65",
+    "https://raw.githubusercontent.com/worm-blossom/macromania/main/stack.ts": "722f5ba600251b39cda4a512c00d3d64bb147795e958fe319c29c25b56fbd0b3"
+  }
+}
