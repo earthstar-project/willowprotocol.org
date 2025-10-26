@@ -41,7 +41,6 @@ import { contentAddress } from "./assetTransforms.tsx";
 import { addEtag, ServerOptimisations } from "./serverOptimisations.tsx";
 import { encodeHex } from "jsr:@std/encoding/hex";
 import { join as posixJoin } from "@std/path/posix";
-import { Hidden } from "./macros.tsx";
 
 const ctx = new Context();
 

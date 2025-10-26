@@ -9,14 +9,14 @@ export const tutorial_drop = (
     name="drop"
     preamble={
       <P>
-        In this tutorial we will use <R n="rs-willow_25-create_drop" /> and{" "}
-        <R n="rs-willow_25-ingest_drop" /> to transport data between two{" "}
+        In this tutorial we will use <R n="rs-willow25-create_drop" /> and{" "}
+        <R n="rs-willow25-ingest_drop" /> to transport data between two{" "}
         <R n="rs-willow_data_model-Store">Stores</R> using the{" "}
         <R n="willow_drop_format" />.
       </P>
     }
     deps={[
-      "willow_25",
+      "willow25",
       "willow-store-simple-sled",
       "sled",
       "smol",
@@ -56,7 +56,7 @@ export const tutorial_drop = (
       <Hsection title="Create a drop" n="tut-drop-2">
         <P>
           Next, we'll create a <R n="drop" /> using{" "}
-          <R n="rs-willow_25-create_drop" /> and store it in a{" "}
+          <R n="rs-willow25-create_drop" /> and store it in a{" "}
           <Code>{"Vec<u8>"}</Code>.
         </P>
 
@@ -126,7 +126,7 @@ export const tutorial_drop = (
         <P>
           Finally, we'll create a new <R n="rs-willow_data_model-Store" />{" "}
           and ingest the <R n="drop" /> into it using{" "}
-          <R n="rs-willow_25-ingest_drop" />.
+          <R n="rs-willow25-ingest_drop" />.
         </P>
 
         <RustSample
@@ -200,12 +200,12 @@ export const tutorial_drop = (
 
         <Li>
           We created an{" "}
-          <R n="rs-willow_25-Entry" />, authorised it, and ingested in the store
+          <R n="rs-willow25-Entry" />, authorised it, and ingested in the store
           with <R n="rs-willow_data_model-Store-ingest_entry" />.
         </Li>
 
         <Li>
-          We used <R n="rs-willow_25-create_drop" /> to create a drop of an{" "}
+          We used <R n="rs-willow25-create_drop" /> to create a drop of an{" "}
           <R n="Area" /> of the{" "}
           <R n="rs-willow_store_simple_sled-StoreSimpleSled" />'s contents.
         </Li>
@@ -213,7 +213,7 @@ export const tutorial_drop = (
         <Li>
           We created another{" "}
           <R n="rs-willow_store_simple_sled-StoreSimpleSled" />, and used{" "}
-          <R n="rs-willow_25-ingest_drop" />{" "}
+          <R n="rs-willow25-ingest_drop" />{" "}
           to ingest the drop we'd just created into that store.
         </Li>
       </Hsection>

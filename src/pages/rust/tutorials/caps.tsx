@@ -16,17 +16,17 @@ export const tutorial_caps = (
     preamble={
       <P>
         In this tutorial we'll create{" "}
-        <R n="rs-willow_25-Capability">Capabilities</R> for{" "}
+        <R n="rs-willow25-Capability">Capabilities</R> for{" "}
         <R n="communal_namespace">communal</R> and{" "}
         <R n="owned_namespace">owned</R>
         namespaces, and use them to create{" "}
-        <R n="rs-willow_25-AuthorisedEntry">AuthorisedEntries</R>.
+        <R n="rs-willow25-AuthorisedEntry">AuthorisedEntries</R>.
       </P>
     }
-    deps={["willow_25"]}
+    deps={["willow25"]}
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow_25-Area" />{" "}
+        Additionally, knowledge of the <R n="rs-willow25-Area" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-grouping">dedicated tutorial for groupings</R>.
       </P>
@@ -35,7 +35,7 @@ export const tutorial_caps = (
     <>
       <Hsection title="Owned capabilities" n="tut-caps-1">
         <P>
-          Firstly we'll create a <R n="rs-willow_25-Capability" /> for a{" "}
+          Firstly we'll create a <R n="rs-willow25-Capability" /> for a{" "}
           <R n="owned_namespace" /> and delegate it.
         </P>
 
@@ -60,7 +60,7 @@ export const tutorial_caps = (
 
       <Hsection title="Communal capabilities" n="tut-caps-2">
         <P>
-          Next we'll create two <R n="rs-willow_25-Capability">Capabilities</R>
+          Next we'll create two <R n="rs-willow25-Capability">Capabilities</R>
           {" "}
           for a <R n="communal_namespace" /> and delegate it.
         </P>
@@ -102,11 +102,11 @@ export const tutorial_caps = (
 
       <Hsection title="Authorised entries" n="tut-caps-3">
         <P>
-          Finally we'll create two <R n="rs-willow_25-Entry">Entries</R>{" "}
+          Finally we'll create two <R n="rs-willow25-Entry">Entries</R>{" "}
           and try to create{" "}
-          <R n="rs-willow_25-AuthorisationToken">AuthorisationTokens</R>{" "}
+          <R n="rs-willow25-AuthorisationToken">AuthorisationTokens</R>{" "}
           for them using one of the{" "}
-          <R n="rs-willow_25-Capability">Capabilities</R> we created.
+          <R n="rs-willow25-Capability">Capabilities</R> we created.
         </P>
 
         <P>
@@ -164,15 +164,15 @@ export const tutorial_caps = (
         <Ul>
           <Li>
             We created an <R n="owned_namespace">owned</R>{" "}
-            <R n="rs-willow_25-Capability" /> and delegated it.
+            <R n="rs-willow25-Capability" /> and delegated it.
           </Li>
           <Li>
             Created two <R n="owned_namespace">communal</R>{" "}
-            <R n="rs-willow_25-Capability">Capabilities</R>.
+            <R n="rs-willow25-Capability">Capabilities</R>.
           </Li>
           <Li>
-            Used a communal <R n="rs-willow_25-Capability" /> to create an{" "}
-            <R n="rs-willow_25-AuthorisationToken" />{" "}
+            Used a communal <R n="rs-willow25-Capability" /> to create an{" "}
+            <R n="rs-willow25-AuthorisationToken" />{" "}
             for an entry, and demonstrated an unauthorised attempt to do so.
           </Li>
         </Ul>

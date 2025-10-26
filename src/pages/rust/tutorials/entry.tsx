@@ -13,11 +13,11 @@ export const tutorial_entry = (
         and all its constituent fields.
       </P>
     }
-    deps={["willow_25"]}
+    deps={["willow25"]}
     title="Create an entry"
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow25-Path" />{" "}
+        Additionally, knowledge of the <R n="rs-willow25-paths-Path" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-path">dedicated tutorial for paths</R>.
       </P>

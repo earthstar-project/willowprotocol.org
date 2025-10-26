@@ -74,7 +74,8 @@ export const rust = (
           <Li>
             <R n="tut-entry">Create an Entry</R>
           </Li>
-          <omnomnom>
+          {
+            /* <omnomnom>
             <Li>
               <R n="tut-grouping">Work with groupings</R>
             </Li>
@@ -87,7 +88,8 @@ export const rust = (
             <Li>
               <R n="tut-drop">Create and ingest a sidedrop</R>
             </Li>
-          </omnomnom>
+          </omnomnom> */
+          }
         </Ul>
       </Hsection>
 

@@ -9,7 +9,7 @@ Entry {
         /blog/idea/1,
     ),
     timestamp: Timestamp(
-        3970371413027222,
+        814676859787575,
     ),
     payload_length: 34,
     payload_digest: PayloadDigest(
@@ -27,7 +27,7 @@ Entry {
         /blog/idea,
     ),
     timestamp: Timestamp(
-        3970372013027222,
+        814677459787575,
     ),
     payload_length: 0,
     payload_digest: PayloadDigest(

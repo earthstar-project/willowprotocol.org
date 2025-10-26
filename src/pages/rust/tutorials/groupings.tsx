@@ -19,13 +19,13 @@ export const tutorial_groupings = (
         In this tutorial you will construct and compare various{" "}
         <Rs n="grouping_entries">entry groupings</Rs> with the{" "}
         <R n="rs-willow_data_model-grouping-Range" />,{" "}
-        <R n="rs-willow_25-Range3d" />, and <R n="rs-willow_25-Area" /> APIs.
+        <R n="rs-willow25-Range3d" />, and <R n="rs-willow25-Area" /> APIs.
       </P>
     }
-    deps={["willow_25", "willow_data_model"]}
+    deps={["willow25", "willow_data_model"]}
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow_25-Entry" />{" "}
+        Additionally, knowledge of the <R n="rs-willow25-Entry" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-entry">dedicated tutorial for entries</R>.
       </P>
@@ -60,9 +60,8 @@ export const tutorial_groupings = (
 
       <Hsection title="Areas" n="tut-grouping-2">
         <P>
-          Next we'll create some <R n="rs-willow_25-Area">Areas</R> and some
-          {" "}
-          <R n="rs-willow_25-Entry">Entries</R> to test against them.
+          Next we'll create some <R n="rs-willow25-Area">Areas</R> and some{" "}
+          <R n="rs-willow25-Entry">Entries</R> to test against them.
         </P>
 
         <P>
@@ -141,8 +140,8 @@ export const tutorial_groupings = (
           </Li>
           <Li>
             Created some{"  "}
-            <R n="rs-willow_25-Entry">Entries</R>, and tested if they were
-            included by some <R n="rs-willow_25-Area">Areas</R> we'd created.
+            <R n="rs-willow25-Entry">Entries</R>, and tested if they were
+            included by some <R n="rs-willow25-Area">Areas</R> we'd created.
           </Li>
         </Ul>
 
