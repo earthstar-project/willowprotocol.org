@@ -96,7 +96,7 @@ export const changes = (
                 <WillowRssItem
                   title="A lot of everything"
                   name="big_update_2025"
-                  date={new Date(2025, 10, 23)}
+                  date={new Date(2025, 9, 26)}
                 >
                   <P>
                     In the past year we built up a tremendous reservoir of
@@ -374,7 +374,7 @@ export const changes = (
                 <WillowRssItem
                   title="Changes to Confidential Sync and Drop Format"
                   name="big_changes_2025"
-                  date={new Date(2025, 10, 23)}
+                  date={new Date(2025, 9, 26)}
                 >
                   <P>
                     We have made sweeping (and breaking) changes to{" "}
