@@ -104,7 +104,7 @@ export const changes = (
                     here on out our updates will be shorter and more frequent.
                     If you would like to keep up with our work in a more
                     informal format, we’ve launched{" "}
-                    <A href="https://willowprotocol.org" clazz="external">
+                    <A href="https://worm-blossom.org/" clazz="external">
                       worm-blossom.org
                     </A>, where we discuss the development of Willow and much
                     more besides.
