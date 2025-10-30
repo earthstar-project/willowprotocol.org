@@ -2646,8 +2646,17 @@ export const confidential_sync = (
                     total order
                   </AE>{" "}
                   on <R n="SubspaceId" /> with least element{" "}
-                  <R n="sync_default_subspace_id" />, in which for every
-                  non-maximal <R n="SubspaceId" />{" "}
+                  <DefValue
+                    n="sync_least_subspace_id"
+                    r="least_subspace_id"
+                    preview={
+                      <P>
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
+                        unique least <R n="SubspaceId" />.
+                      </P>
+                    }
+                  />, in which for every non-maximal <R n="SubspaceId" />{" "}
                   <DefValue noPreview n="subspace_successor_s" r="s" />{" "}
                   there exists a successor{" "}
                   <DefValue noPreview n="subspace_successor_t" r="t" />{" "}
@@ -2928,7 +2937,7 @@ export const confidential_sync = (
                   <DefValue n="previously_received_itemset_3drange" />. Both are
                   initialised to{"   "}
                   <Code>
-                    <R n="default_3d_range" />(<R n="sync_default_subspace_id" />)
+                    <R n="full_3d_range" />(<R n="sync_least_subspace_id" />)
                   </Code>. Upon receiving a{" "}
                   <R n="ReconciliationSendFingerprint" /> or{" "}
                   <R n="ReconciliationAnnounceEntries" />{" "}

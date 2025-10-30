@@ -379,9 +379,9 @@ export const grouping_entries = (
             <P>
               We define{" "}
               <Code>
-                <DefFunction n="default_3d_range" />(<DefValue
-                  n="default_3d_ss"
-                  r="default_subspace"
+                <DefFunction n="full_3d_range" />(<DefValue
+                  n="least_3d_ss"
+                  r="least_subspace"
                 />)
               </Code>{" "}
               to denote the <R n="D3Range" /> with the following members:
@@ -391,7 +391,7 @@ export const grouping_entries = (
               <Li>
                 <R n="D3RangeSubspace" /> is the <R n="open_range">open</R>{" "}
                 <R n="SubspaceRange" /> with <R n="SubspaceRangeStart" />{" "}
-                <R n="default_3d_ss" />,
+                <R n="least_3d_ss" />,
               </Li>
               <Li>
                 <R n="D3RangePath" /> is the <R n="open_range">open</R>{" "}
