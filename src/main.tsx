@@ -151,6 +151,8 @@ const exp = (
                   "favicon.svg": transformCopy,
                   "layout.css": transformCopy,
                   "textFonts.css": transformCopy,
+                  "meadowcap_emblem_standalone.png": transformCopy,
+                  "willow_emblem_standalone.png": transformCopy,
                 },
               }}
             />
