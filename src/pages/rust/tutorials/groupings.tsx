@@ -70,7 +70,7 @@ export const tutorial_groupings = (
               },
               end: {
                 line: 65,
-                character: 1,
+                character: 0,
               },
               properties: {
                 class: "addition",
@@ -98,7 +98,7 @@ export const tutorial_groupings = (
             (by way of creating{" "}
             <R n="rs-willow25-groupings-TimeRange">TimeRanges</R>), created new
             intersecting ranges from them, and used the{" "}
-            <R n="rs-willow25-groupings-CoordinatelikeExt-is_in" />{" "}
+            <R n="rs-willow25-groupings-CoordinatelikeExt-is_in">is_in</R>{" "}
             method to test for entry membership.
           </Li>
           <Li>
