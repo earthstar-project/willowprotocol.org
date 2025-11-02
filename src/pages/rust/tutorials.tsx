@@ -15,8 +15,9 @@ export const tutorials = (
   <Dir name="tutorials">
     {tutorial_paths}
     {tutorial_entry}
+    {tutorial_groupings}
     {
-      /* {tutorial_groupings}
+      /*
     {tutorial_caps}
     {tutorial_store}
     {tutorial_drop} */

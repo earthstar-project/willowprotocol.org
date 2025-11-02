@@ -60,25 +60,12 @@ export const tutorial_entry = (
           decorations={[
             {
               start: {
-                line: 14,
+                line: 16,
                 character: 0,
               },
               end: {
-                line: 19,
+                line: 23,
                 character: 0,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-            {
-              start: {
-                line: 21,
-                character: 0,
-              },
-              end: {
-                line: 21,
-                character: 19,
               },
               properties: {
                 class: "addition",
@@ -132,12 +119,12 @@ export const tutorial_entry = (
           decorations={[
             {
               start: {
-                line: 23,
+                line: 24,
                 character: 0,
               },
               end: {
-                line: 26,
-                character: 19,
+                line: 28,
+                character: 0,
               },
               properties: {
                 class: "addition",
@@ -177,6 +164,12 @@ export const tutorial_entry = (
             <R n="rs-willow25-entry-EntrylikeExt-is_pruned_by" />.
           </Li>
         </Ul>
+
+        <P>
+          Having created some individual entries, you can now move to the
+          tutorial for working with{" "}
+          <R n="tut-grouping">groupings of entries</R>.
+        </P>
       </Hsection>
     </>
   </TutorialTemplate>

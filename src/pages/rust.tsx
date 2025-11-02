@@ -1,7 +1,7 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
 import { A, Img, Li, P, Ul } from "macromania-html";
-import { R, Rs } from "macromania-defref";
+import { R } from "macromania-defref";
 import { DefsRustDocs } from "macromania-defs-rustdocs";
 import { Hsection } from "macromania-hsection";
 import { ResolveAsset } from "macromania-assets";
@@ -74,11 +74,11 @@ export const rust = (
           <Li>
             <R n="tut-entry">Create an Entry</R>
           </Li>
+          <Li>
+            <R n="tut-grouping">Work with groupings</R>
+          </Li>
           {
             /* <omnomnom>
-            <Li>
-              <R n="tut-grouping">Work with groupings</R>
-            </Li>
             <Li>
               <R n="tut-caps">Create and use capabilities</R>
             </Li>

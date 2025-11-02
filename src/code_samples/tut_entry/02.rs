@@ -12,12 +12,13 @@ fn main() {
         .payload(b"Dear reader, I've got a great idea")
         .build().unwrap();
 
+    println!("{:#?}", entry);
+
     let oops = Entry::prefilled_builder(&entry)
         .path(path!("/blog/idea"))
         .timestamp(entry.timestamp() + 10.minutes())
         .payload(b"")
         .build().unwrap();
 
-    println!("{:#?}", entry);
     println!("{:#?}", oops);
 }

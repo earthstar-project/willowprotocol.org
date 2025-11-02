@@ -1,14 +1,7 @@
-import { Dir, File } from "macromania-outfs";
-import { PageTemplate } from "../../../pageTemplate.tsx";
-import { Code, Li, Ol, P, Ul } from "macromania-html";
+import { Code, Li, P, Ul } from "macromania-html";
 import { R, Rs } from "macromania-defref";
 import { Hsection } from "macromania-hsection";
-import {
-  Gwil,
-  RustSample,
-  TerminalInput,
-  TerminalOutput,
-} from "../../../macros.tsx";
+import { RustSample, TerminalInput, TerminalOutput } from "../../../macros.tsx";
 import { TutorialTemplate } from "../tutorials.tsx";
 
 export const tutorial_paths = (
@@ -491,16 +484,11 @@ export const tutorial_paths = (
           </Li>
         </Ul>
 
-        <omnomnom>
-          <P>
-            <Rs n="Path" /> are perhaps the most fundamental concept of the{" "}
-            <R n="data_model" />
-
-            , and with this experience you're ready to{" "}
-            <R n="tut-entry">create an entry</R>
-            .
-          </P>
-        </omnomnom>
+        <P>
+          <Rs n="Path" /> are perhaps the most fundamental concept of the{" "}
+          <R n="data_model" />, and with this experience you’re ready to{" "}
+          <R n="tut-entry">create some entries</R>.
+        </P>
       </Hsection>
     </>
   </TutorialTemplate>
