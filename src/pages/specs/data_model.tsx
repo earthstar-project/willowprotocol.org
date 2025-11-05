@@ -619,9 +619,9 @@ export const data_model = (
                 <Li>
                   <Code>
                     <AccessStruct field="entry_timestamp">
-                      <R n="new_e2" />
+                      <R n="new_e1" />
                     </AccessStruct>
-                    {" < "}
+                    {" > "}
                     <AccessStruct field="entry_timestamp">
                       <R n="new_e2" />
                     </AccessStruct>
@@ -631,7 +631,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_timestamp">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_timestamp">
@@ -651,9 +651,9 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_digest">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
-                      {" < "}
+                      {" > "}
                       <AccessStruct field="entry_payload_digest">
                         <R n="new_e2" />
                       </AccessStruct>
@@ -664,7 +664,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_timestamp">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_timestamp">
@@ -676,7 +676,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_digest">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_payload_digest">
@@ -688,9 +688,9 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_length">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
-                      {" < "}
+                      {" > "}
                       <AccessStruct field="entry_payload_length">
                         <R n="new_e2" />
                       </AccessStruct>
