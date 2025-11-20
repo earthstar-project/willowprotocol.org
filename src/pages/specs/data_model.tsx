@@ -1,7 +1,18 @@
 import { Dir, File } from "macromania-outfs";
 import { AE, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  Code,
+  Div,
+  Em,
+  Figcaption,
+  Figure,
+  Img,
+  Li,
+  Noscript,
+  P,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -17,6 +28,7 @@ import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Rsb } from "macromania-defref";
+import { ScriptDependency, StylesheetDependency } from "macromania-html-utils";
 
 export const data_model = (
   <Dir name="data-model">
@@ -154,6 +166,41 @@ export const data_model = (
           access to both namespaces and subspaces can be controlled through a
           variety of policies.
         </P>
+
+        <Hsection n="sim_data_model" title="Interactive Data Model">
+          <P>
+            Even with that full overview, it can be easier to understand
+            something by trying it yourself.
+          </P>
+          <Div id="sim-data-model">
+          </Div>
+
+          <P>Some suggested things to try:</P>
+          <Ul>
+            <Li>
+              As Alfie, add a new <R n="Entry" /> with the <R n="entry_path" />
+              {" "}
+              <Path components={["ideas"]} /> and a timestamp of 110.
+            </Li>
+            <Li>
+              Do the same, but with a timestamp of 90.
+            </Li>
+          </Ul>
+
+          <Noscript>
+            <P>
+              You must have JavaScript enabled to use the Interactive Data
+              Model.
+            </P>
+          </Noscript>
+          <ScriptDependency
+            dep={["sim_data_model.js"]}
+            scriptProps={{ defer: true }}
+          />
+          <StylesheetDependency
+            dep={["sim-data-model.css"]}
+          />
+        </Hsection>
 
         <P>
           Now we can <Em>almost</Em>{" "}
