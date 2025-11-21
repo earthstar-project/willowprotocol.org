@@ -1073,11 +1073,11 @@ function addDataAttributes(
   if (includeAnchor) {
     const previewPath = getPreviewPath(ctx);
 
-    let finalComponent = `${name}.html?def#${
+    let finalComponent = `${name}.html?def=${
       replacementId === undefined ? name : replacementId
     }`;
     for (const [key, value] of queryParams) {
-      finalComponent = `${finalComponent}&${key}#${value}`;
+      finalComponent = `${finalComponent}&${key}=${value}`;
     }
 
     previewPath.push(finalComponent);
