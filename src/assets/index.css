@@ -489,7 +489,7 @@ h1 img {
     width: 32rem;
 }
 
-table {
+table:not(#sim-data-model table) {
     width: 100%;
     border-collapse: collapse;
     margin: 0.5em 0;
@@ -500,7 +500,7 @@ main aside table {
     width: 100%;
 }
 
-tbody {
+tbody:not(#sim-data-model tbody) {
     border-top: 1px solid var(--light-green);
     border-bottom: 1px solid var(--light-green);
 }
@@ -960,7 +960,7 @@ code.terminal-input {
     }
 }
 
-.confidentiality-levels th, td {
+.confidentiality-levels th, .confidentiality-levels td {
     padding: 0.5rem;
 }
 
@@ -1017,4 +1017,16 @@ code.terminal-input {
     .groupHeader.right {
         text-align: right;
     }
+}
+
+#sim-data-model {
+    background: rgba(0,0,0,0.05);
+    height: 600px;
+    overflow: auto;
+    padding: 1em;
+    width: calc(100vw - (100vw - 100vw) - 50px);
+    margin-left: calc((-100vw + 100%) / 2);
+    margin-right: calc((-100vw + 100%) / 2);
+    z-index: 2;
+    backdrop-filter: blur(4px);
 }
