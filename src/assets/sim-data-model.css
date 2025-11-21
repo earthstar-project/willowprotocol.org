@@ -57,7 +57,7 @@
 	
 	.peer-pane {
 		flex: 1 0 0px;
-		min-width: 300px;
+		min-width: 290px;
 		display: flex;
 		flex-direction: column;
 		align-self: start;
@@ -179,7 +179,8 @@
 		
 		tr.entry-fields td.path {
 			color: var(--wong-blue);
-			overflow: auto;
+			
+		
 		}
 		
 		tr.entry-fields td.subspace {
@@ -189,8 +190,13 @@
 		
 		tr.entry-fields td.timestamp {
 			color: var(--wong-green);
-			overflow: auto;
 			width: 10ch;
+		}
+		
+		.overflow-protector {
+			height: calc(100% - var(--spaciousness) * 2);
+			width: calc(100% - var(--spaciousness) * 2);
+			overflow: auto;
 		}
 		
 		tr.entry-fields:nth-child(4n + 1), tr.entry-payload:nth-child(4n + 2) {
@@ -290,8 +296,8 @@
 		transform: scale(0.97, 0.97);
 	}
 	
-	.path-widget {
-			white-space: nowrap;
+	.path {
+		white-space: normal;
 	}
 	
 	.path-segment {
