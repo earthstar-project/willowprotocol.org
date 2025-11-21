@@ -1024,7 +1024,7 @@ code.terminal-input {
     height: 600px;
     overflow: auto;
     padding: 1em;
-    width: calc(100vw - (100vw - 100vw) - 2em);
+    width: calc(100vw - (100vw - 100vw) - 50px);
     margin-left: calc((-100vw + 100%) / 2);
     margin-right: calc((-100vw + 100%) / 2);
     z-index: 2;
