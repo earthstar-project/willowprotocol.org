@@ -2022,7 +2022,7 @@ export const encodings = (
                   <M>
                     <DefValue n="ccrpia_area_base" r="area_{-1}" />
                   </M>{" "}
-                  be the <R n="full_area" />.
+                  be the <R n="subspace_area" /> of <ValAccess field="communal_cap_user" />.
                 </P>
               }
               bitfields={[
