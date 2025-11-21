@@ -182,7 +182,7 @@ export const data_model = (
               For the purposes of this demonstration we omit the concept of{" "}
               <Rs n="entry_payload_digest" />.
             </Marginale>
-            Sometimes it's easier to understand by trying it for yourself. We
+            Some concepts are easier to understand by trying them out for yourself. We
             have created an interactive demonstration of how data between three
             peers is reconciled using the Willow Data Model.
           </P>
@@ -246,7 +246,7 @@ export const data_model = (
         </Hsection>
 
         <P>
-          Now we can <Em>almost</Em>{" "}
+          Now that we could develop some intuition for the data model, we can <Em>almost</Em>{" "}
           delve into the precise definition of these concepts.
         </P>
 
