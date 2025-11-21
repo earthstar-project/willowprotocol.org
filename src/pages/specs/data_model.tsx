@@ -1,5 +1,13 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import {
+  AE,
+  Curly,
+  Green,
+  NoWrap,
+  Path,
+  Purple,
+  Quotes,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Code,
@@ -10,6 +18,7 @@ import {
   Img,
   Li,
   Noscript,
+  Ol,
   P,
   Ul,
 } from "macromania-html";
@@ -169,23 +178,57 @@ export const data_model = (
 
         <Hsection n="sim_data_model" title="Interactive Data Model">
           <P>
-            Even with that full overview, it can be easier to understand
-            something by trying it yourself.
+            <Marginale>
+              For the purposes of this demonstration we omit the concept of{" "}
+              <Rs n="entry_payload_digest" />.
+            </Marginale>
+            Sometimes it's easier to understand by trying it for yourself. We
+            have created an interactive demonstration of how data between three
+            peers is reconciled using the Willow Data Model.
           </P>
           <Div id="sim-data-model">
           </Div>
 
-          <P>Some suggested things to try:</P>
-          <Ul>
+          <P>
+            Some suggested actions for experimenting with{" "}
+            <R n="prefix_pruning" />:
+          </P>
+          <Ol>
             <Li>
-              As Alfie, add a new <R n="Entry" /> with the <R n="entry_path" />
-              {" "}
-              <Path components={["ideas"]} /> and a timestamp of 110.
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>110</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
             </Li>
             <Li>
-              Do the same, but with a timestamp of 90.
+              Add another <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas", "song"]} /> and a timestamp of{" "}
+              <Green>120</Green>. Can it coexist with the entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
             </Li>
-          </Ul>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>130</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas", "song"]} />?
+            </Li>
+          </Ol>
+
+          <P>
+            A suggested action for experimenting with the concept of{" "}
+            <Rs n="subspace" />:
+          </P>
+
+          <Ol>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Betty</Purple> at{" "}
+              <Path components={["notes"]} /> and a timestamp of{" "}
+              <Green>110</Green>, and sync with{" "}
+              <Purple>Gemma</Purple>. Is the existing entry by{" "}
+              <Purple>Gemma</Purple> at <Path components={["notes"]} />{" "}
+              overwritten?
+            </Li>
+          </Ol>
 
           <Noscript>
             <P>

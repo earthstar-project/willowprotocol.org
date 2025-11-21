@@ -1028,4 +1028,5 @@ code.terminal-input {
     margin-left: calc((-100vw + 100%) / 2);
     margin-right: calc((-100vw + 100%) / 2);
     z-index: 2;
+    backdrop-filter: blur(4px);
 }
