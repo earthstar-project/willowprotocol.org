@@ -58,13 +58,13 @@ a.orange[data-ref] {
 
 .sky-blue,
 .sky-blue a,
-a.sky-blue[data-ref]  {
+a.sky-blue[data-ref] {
     color: var(--wong-blue);
 }
 
 .green,
 .green a,
-a.green[data-ref]  {
+a.green[data-ref] {
     color: var(--wong-green);
 }
 
@@ -76,19 +76,19 @@ a.yellow[data-ref] {
 
 .blue,
 .blue a,
-a.blue[data-ref]  {
+a.blue[data-ref] {
     color: var(--wong-blue);
 }
 
 .vermillion,
 .vermillion a,
-a.vermillion[data-ref]  {
+a.vermillion[data-ref] {
     color: var(--wong-vermillion);
 }
 
 .purple,
 .purple a,
-a.purple[data-ref]  {
+a.purple[data-ref] {
     color: var(--wong-purple);
 }
 
@@ -272,14 +272,16 @@ div#outline p {
 
 .path_segment {
     padding: 0.1em 0.3em;
-    transform: skewX(-13deg);
     display: inline-block;
     margin: 0 1px;
     background: rgba(0, 0, 0, 0.05);
+    clip-path: polygon(0.4em 0%, 100% 0%, calc(100% - 0.4em) 100%, 0% 100%);
+    padding-left: 0.45em;
+    padding-right: 0.45em;
+    margin-left: -0.25em;
 }
 
 .path_segment_txt {
-    transform: skewX(13deg);
     display: inline-block;
 }
 
@@ -922,10 +924,10 @@ code.terminal-input {
 
 .confidentiality-levels tr:nth-child(1) {
     border-top: 1px solid black;
-    
+
     th {
         background: var(--nearly-black);
-        
+
         a {
             color: white;
         }
@@ -934,10 +936,10 @@ code.terminal-input {
 
 .confidentiality-levels tr:nth-child(2) {
     border-top: 1px solid var(--dark-green);
-    
+
     th {
         background: var(--dark-green);
-        
+
         a {
             color: white;
         }
@@ -960,7 +962,8 @@ code.terminal-input {
     }
 }
 
-.confidentiality-levels th, td {
+.confidentiality-levels th,
+td {
     padding: 0.5rem;
 }
 
@@ -977,7 +980,7 @@ code.terminal-input {
             padding: 0.5rem;
             flex: 1;
         }
-        
+
         >p:nth-child(even) {
             background: #ffbf001f;
         }
@@ -986,8 +989,9 @@ code.terminal-input {
             background: #a500ff1f;
         }
     }
-    
-    .hs_row:nth-child(2), .hs_row:nth-child(1) {
+
+    .hs_row:nth-child(2),
+    .hs_row:nth-child(1) {
         border-top: 1px solid var(--nearly-black);
     }
 
