@@ -22,6 +22,16 @@
 		z-index: 3;
 	}
 	
+	*[data-tooltip-anchor] {
+		text-decoration: underline;
+		text-decoration-style: dotted;
+		text-decoration-color: black;
+	}
+	
+	th[data-tooltip-anchor] {
+		text-decoration-color: white;
+	}
+ 	
 	button.sync {
 		color: var(--wong-green);
 		transform: translateX(calc(-1 * var(--sync-button-size) / 2 - 1px));
@@ -137,6 +147,12 @@
 		th.subspace {
 			width: 8ch;
 			background: var(--wong-purple);
+		}
+		
+		th.subspace, th.path, th.timestamp {
+			a:hover {
+				color: white;
+			}
 		}
 		
 		th.timestamp {
