@@ -2880,11 +2880,7 @@ export const confidential_sync = (
                       "max_count",
                       2,
                       <>
-                        <ValAccess field="PioBindReadCapabilityMaxCount" />{" "}
-                        + 1 modulo{" "}
-                        <M>
-                          2^<Curly>64</Curly>
-                        </M>
+                        <ValAccess field="PioBindReadCapabilityMaxCount" />
                       </>,
                     ),
                     c64Tag(
