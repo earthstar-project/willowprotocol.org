@@ -171,9 +171,10 @@ export const confidential_sync = (
                 to Alfie, despite that putting her total number of transmissions
                 above the limit of 100.
               </Marginale>{" "}
-              per <R n="namespace" />. The <R n="area_empty">non-empty</R>{" "}
-              <Rs n="aoi_intersection" /> of <Rs n="AreaOfInterest" />{" "}
-              from both peers contain the <Rs n="Entry" /> to synchronise.
+              per <R n="namespace" />. The non-empty <Rs n="aoi_intersection" />
+              {" "}
+              of <Rs n="AreaOfInterest" /> from both peers contain the{" "}
+              <Rs n="Entry" /> to synchronise.
             </P>
 
             <P>

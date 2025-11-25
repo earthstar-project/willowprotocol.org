@@ -83,11 +83,7 @@ export const grouping_entries = (
           <Rs n="entry_path" />, and{" "}
           <Rs n="entry_timestamp" />. These definitions are not necessary for
           defining and understanding the core data model, but we make heavy use
-          of them in our <R n="meadowcap">recommended capability system</R>{" "}
-          and our{" "}
-          <R n="willow_confidential_sync">
-            recommended synchronisation protocol
-          </R>.
+          of them throughout our other specifications.
         </P>
 
         <Hsection n="ranges" title="Ranges">
@@ -101,17 +97,14 @@ export const grouping_entries = (
               <R n="closed_range" /> or an <R n="open_range" />. A{" "}
               <Def n="closed_range" r="closed range" rs="closed ranges" />{" "}
               consists of a{" "}
-              <Def n="start_value" r="start value" rs="start values" /> and an
-              {" "}
-              <Def n="end_value" r="end value" rs="end values" /> , an{" "}
+              <Def n="start_value" r="start value" rs="start values" />{" "}
+              and a strictly greater{" "}
+              <Def n="end_value" r="end value" rs="end values" />, an{" "}
               <Def n="open_range" r="open range" rs="open ranges" />{" "}
               consists only of a <R n="start_value" />. A <R n="range" />{" "}
               <Def n="range_include" r="include">includes</Def>{" "}
               all values greater than or equal to its <R n="start_value" />{" "}
-              and strictly less than its <R n="end_value" />{" "}
-              (if it is has one). A <R n="range" /> is{" "}
-              <Def n="range_empty" r="empty" /> if it{" "}
-              <R n="range_include">includes</R> no values.
+              and strictly less than its <R n="end_value" /> (if it is has one).
             </P>
           </PreviewScope>
 
@@ -292,7 +285,7 @@ export const grouping_entries = (
             <P>
               Let <DefValue n="rangeisectr1" r="r1" /> and{" "}
               <DefValue n="rangeisectr2" r="r2" /> be <Rs n="range" />{" "}
-              (over the same types of values). The{" "}
+              (over the same types of values). The (non-empty){" "}
               <Def n="range_intersection" r="intersection" rs="intersections" />
               {" "}
               of <R n="rangeisectr1" /> and <R n="rangeisectr2" />{" "}
@@ -307,7 +300,11 @@ export const grouping_entries = (
               <R n="rangeisectr1" /> and <R n="rangeisectr2" />{" "}
               (if exactly one of them is a <R n="closed_range" />), or no{" "}
               <R n="end_value" /> (if both <R n="rangeisectr1" /> and{" "}
-              <R n="rangeisectr2" /> are <Rs n="open_range" />).
+              <R n="rangeisectr2" /> are{" "}
+              <Rs n="open_range" />). If the resulting range would have a{" "}
+              <R n="end_value" /> less than or equal to the{" "}
+              <R n="start_value" />, the <R n="range_intersection" />{" "}
+              is not defined.
             </P>
           </PreviewScope>
 
@@ -576,15 +573,6 @@ export const grouping_entries = (
 
           <PreviewScope>
             <P>
-              An <R n="Area" /> is <Def n="area_empty" r="empty" /> if it{" "}
-              <R n="area_include">includes</R> no{" "}
-              <Rs n="Entry" />. This is the case if and only if its{" "}
-              <R n="AreaTime" /> is <R n="range_empty" />.
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
               An <R n="Area" />{" "}
               <Def n="area_include_area" r="include">includes</Def> another{" "}
               <R n="Area" /> if the first <R n="Area" />{" "}
@@ -737,11 +725,8 @@ export const grouping_entries = (
                         <R n="entry_timestamp" /> must be among the{" "}
                         <R n="aoi_count" /> <R n="entry_newer">newest</R>{" "}
                         <Rs n="Entry" />. If the <R n="aoi_count" /> is{" "}
-                        <M>
-                          2^<Curly>64</Curly> - 1
-                        </M>{" "}
-                        (the greatest possible <R n="U64" />), then no{" "}
-                        <Rs n="Entry" /> are excluded.
+                        <M>0</M>, then no{" "}
+                        <Rs n="Entry" /> are excluded instead.
                       </>
                     ),
                     dedicatedLine: true,
