@@ -1,7 +1,27 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import {
+  AE,
+  Curly,
+  Green,
+  NoWrap,
+  Path,
+  Purple,
+  Quotes,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  Code,
+  Div,
+  Em,
+  Figcaption,
+  Figure,
+  Img,
+  Li,
+  Noscript,
+  Ol,
+  P,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -17,6 +37,7 @@ import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Rsb } from "macromania-defref";
+import { ScriptDependency, StylesheetDependency } from "macromania-html-utils";
 
 export const data_model = (
   <Dir name="data-model">
@@ -155,8 +176,77 @@ export const data_model = (
           variety of policies.
         </P>
 
+        <Hsection n="sim_data_model" title="Interactive Data Model">
+          <P>
+            <Marginale>
+              For the purposes of this demonstration we omit the concept of{" "}
+              <Rs n="entry_payload_digest" />.
+            </Marginale>
+            Some concepts are easier to understand by trying them out for yourself. We
+            have created an interactive demonstration of how data between three
+            peers is reconciled using the Willow Data Model.
+          </P>
+          <Div id="sim-data-model">
+          </Div>
+
+          <P>
+            Some suggested actions for experimenting with{" "}
+            <R n="prefix_pruning" />:
+          </P>
+          <Ol>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>110</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
+            </Li>
+            <Li>
+              Add another <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas", "song"]} /> and a timestamp of{" "}
+              <Green>120</Green>. Can it coexist with the entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
+            </Li>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>130</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas", "song"]} />?
+            </Li>
+          </Ol>
+
+          <P>
+            A suggested action for experimenting with the concept of{" "}
+            <Rs n="subspace" />:
+          </P>
+
+          <Ol>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Betty</Purple> at{" "}
+              <Path components={["notes"]} /> and a timestamp of{" "}
+              <Green>110</Green>, and sync with{" "}
+              <Purple>Gemma</Purple>. Is the existing entry by{" "}
+              <Purple>Gemma</Purple> at <Path components={["notes"]} />{" "}
+              overwritten?
+            </Li>
+          </Ol>
+
+          <Noscript>
+            <P>
+              You must have JavaScript enabled to use the Interactive Data
+              Model.
+            </P>
+          </Noscript>
+          <ScriptDependency
+            dep={["sim_data_model.js"]}
+            scriptProps={{ defer: true }}
+          />
+          <StylesheetDependency
+            dep={["sim-data-model.css"]}
+          />
+        </Hsection>
+
         <P>
-          Now we can <Em>almost</Em>{" "}
+          Now that we could develop some intuition for the data model, we can <Em>almost</Em>{" "}
           delve into the precise definition of these concepts.
         </P>
 

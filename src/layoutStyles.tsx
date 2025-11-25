@@ -118,13 +118,22 @@ body:not(.isTooltip) {
     #wrapContent {
         width: ${maxMain + paddingMarginalia + marginalia}rem;
 
-        >*:not(section, main), section>*:not(section, main)  {
+        >*:not(section, main), section>*:not(section, main, #sim-data-model)  {
             max-width: ${maxMain}rem;
         }
 
         .wide {
           max-width: ${maxMain + paddingMarginalia + marginalia}rem;
           clear: right;
+        }
+        
+        .verywide {
+            position: relative;
+            min-width: calc(100vw - calc(${
+    paddingLeft + paddingRight
+  }rem + 0.5 * calc(100vw - ${maxMain}rem)));
+            max-width: calc(100vw - ${paddingLeft}rem - 2 * ${paddingRight}rem);
+            clear: right;
         }
         
         > ul, section > ul {
