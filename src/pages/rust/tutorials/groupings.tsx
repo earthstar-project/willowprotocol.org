@@ -69,7 +69,7 @@ export const tutorial_groupings = (
                 character: 0,
               },
               end: {
-                line: 65,
+                line: 63,
                 character: 0,
               },
               properties: {
