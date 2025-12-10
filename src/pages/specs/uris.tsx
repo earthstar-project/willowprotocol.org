@@ -270,8 +270,11 @@ export const uris = (
               with the <Rs n="dot_segment" />
               <Marginale>
                 <Rsb n="dot_segment" />{" "}
-                are fairly useless in absolute URIs, but they become important
-                for constructing <R n="uri_references">URI References</R>.
+                are fairly useless (they do not add any expressivity), but{" "}
+                <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.3">
+                  RFC 3986
+                </AE>{" "}
+                requires supporting them.
               </Marginale>{" "}
               of{" "}
               <AE href="https://datatracker.ietf.org/doc/html/rfc3986#section-3.3">
