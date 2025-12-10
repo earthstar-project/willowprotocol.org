@@ -66,7 +66,12 @@ body {
     ${dev ? "background-color: rgb(141, 141, 247) !important;" : ""}
 }
 
-body:not(.isPreview) {
+body.isTooltip {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+body:not(.isTooltip) {
     padding-left: ${paddingLeft}rem;
     padding-right: ${paddingRight}rem;
     padding-top: 4rem;
@@ -85,6 +90,10 @@ body:not(.isPreview) {
 
 .marginale.inlineable, .sidenoteCounter.inlineable {
   display: block;
+}
+
+.only-wide {
+  display: none;
 }
 
 /* Start implementing L2 */
@@ -109,13 +118,22 @@ body:not(.isPreview) {
     #wrapContent {
         width: ${maxMain + paddingMarginalia + marginalia}rem;
 
-        >*:not(section, main), section>*:not(section, main)  {
+        >*:not(section, main), section>*:not(section, main, #sim-data-model)  {
             max-width: ${maxMain}rem;
         }
 
         .wide {
           max-width: ${maxMain + paddingMarginalia + marginalia}rem;
           clear: right;
+        }
+        
+        .verywide {
+            position: relative;
+            min-width: calc(100vw - calc(${
+    paddingLeft + paddingRight
+  }rem + 0.5 * calc(100vw - ${maxMain}rem)));
+            max-width: calc(100vw - ${paddingLeft}rem - 2 * ${paddingRight}rem);
+            clear: right;
         }
         
         > ul, section > ul {
@@ -134,6 +152,14 @@ body:not(.isPreview) {
 
     .sidenoteCounter {
         display: initial;
+    }
+    
+    .only-wide {
+      display: block;
+    }
+    
+    .only-narrow {
+      display: none;
     }
 }
 
@@ -156,7 +182,7 @@ body:not(.isPreview) {
 
 /* Other styling */
 
-.previewContainer {
+.tooltipContainer {
   max-width: min(${paddingLeft + paddingRight + maxMain}rem, 100vw);
 }
 
@@ -165,7 +191,7 @@ body:not(.isPreview) {
       (paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia) +
     SCROLLBAR
   }px) {
-  .previewContainer.wide {
+  .tooltipContainer.wide {
     max-width: min(calc(${
     paddingLeft + paddingRight + maxMain + paddingMarginalia + marginalia
   }rem + 18px), 100vw);

@@ -728,9 +728,6 @@ export const encodings = (
               />
 
               <P>
-                <Gwil>
-                  Either make this visually more pleasing or remove it again.
-                </Gwil>
                 An example: encoding the <R n="Path" />{" "}
                 <Path components={["blog", "ideas", "fun"]} /> with{" "}
                 <R n="encode_path" /> yields
@@ -2025,7 +2022,7 @@ export const encodings = (
                   <M>
                     <DefValue n="ccrpia_area_base" r="area_{-1}" />
                   </M>{" "}
-                  be the <R n="full_area" />.
+                  be the <R n="subspace_area" /> of <ValAccess field="communal_cap_user" />.
                 </P>
               }
               bitfields={[
@@ -2346,11 +2343,11 @@ export const encodings = (
           <P>
             Relative encodings for{" "}
             <Rs n="MeadowcapAuthorisationToken" />, suitable for the{" "}
-            <R n="EncodeAuthorisationToken" /> relation of the{" "}
-            <R n="sync">WGPS</R>. It encodes <Rs n="AuthorisationToken" />{" "}
-            relative to the previously transmitted <R n="AuthorisedEntry" />
+            <R n="EncodeAuthorisationToken" /> relation of{"  "}
+            <R n="confidential_sync" />. It encodes{" "}
+            <Rs n="AuthorisationToken" /> relative to the previously transmitted
             {" "}
-            (in particular, its{" "}
+            <R n="AuthorisedEntry" /> (in particular, its{" "}
             <R n="AuthorisationToken" />) and relative to the <R n="Entry" />
             {" "}
             which is being authorised.
@@ -2943,8 +2940,8 @@ export const encodings = (
           <P>
             We now define some relative encodings which take care to not reveal
             certain parts of the values being encoded. We use these in the{" "}
-            <R n="private_interest_overlap" /> parts of the{" "}
-            <R n="sync">WGPS</R>.
+            <R n="private_interest_overlap" /> parts of{" "}
+            <R n="confidential_sync" />.
           </P>
 
           <P>

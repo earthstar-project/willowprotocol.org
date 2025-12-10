@@ -28,13 +28,13 @@ import {
 import { C64Standalone } from "../../encoding_macros.tsx";
 import { RawBytes } from "../../encoding_macros.tsx";
 
-export const sideloading = (
-  <Dir name="sideloading">
+export const drop_format = (
+  <Dir name="drop-format">
     <File name="index.html">
       <PageTemplate
-        htmlTitle="Willow Sideloading Protocol"
-        headingId="sideloading"
-        heading="Willow Sideloading Protocol"
+        htmlTitle="Willow Drop Format"
+        headingId="willow_drop_format"
+        heading="Willow Drop Format"
         toc
         status="proposal"
         parentId="specifications"
@@ -51,7 +51,7 @@ export const sideloading = (
                 transport Willow data using any of the means above.
               </MarginCaption>
             </Marginale>
-            The <R n="sync">WGPS</R>{" "}
+            The <R n="confidential_sync">Confidential Sync protocol</R>{" "}
             presents a way for two peers with an established connection to
             efficiently exchange data. But running the necessary infrastructure
             to establish such connections (e.g. a{" "}
@@ -63,8 +63,7 @@ export const sideloading = (
           </P>
 
           <P>
-            The <Def n="sideloading_protocol">Willow Sideloading Protocol</Def>
-            {" "}
+            The <Def n="drop_format">Willow Drop Format</Def>{" "}
             presents a way for peers to transmit data to each other
             asynchronously and via completely user-improvised channels.
           </P>
@@ -72,8 +71,8 @@ export const sideloading = (
 
         <PreviewScope>
           <P>
-            Instead of statefully coordinating which data to exchange, the
-            Sideloading Protocol uses{" "}
+            Instead of statefully coordinating which data to exchange, the Drop
+            Format encodes{" "}
             <Def n="drop" rs="drops">drops</Def>, arbitrary sets of{" "}
             <Rs n="Entry" /> and <Rs n="Payload" />{" "}
             compiled into a single bytestring. A <R n="drop" />{" "}
@@ -87,17 +86,15 @@ export const sideloading = (
             <Marginale inlineable>
               <Img
                 src={<ResolveAsset asset={["sideload", "example_flow.png"]} />}
-                alt={`A diagram of a sidenet. An old computer connects to a newer desktop computer via a USB key. The newer desktop computer connects to a smartphone via email. The smartphone connects to another smartphone via a messaging app. And that smartphone connects to a laptop via a local wireless connection.`}
+                alt={`A diagram of an ad-hoc network. An old computer connects to a newer desktop computer via a USB key. The newer desktop computer connects to a smartphone via email. The smartphone connects to another smartphone via a messaging app. And that smartphone connects to a laptop via a local wireless connection.`}
               />
               <MarginCaption>
-                An example flow of Willow data travelling through the{" "}
-                <R n="sidenet" />, first via USB key, then email, then a
-                messaging app, then local wireless.
+                An example flow of Willow data travelling from device to device,
+                first via USB key, then email, then a messaging app, then local
+                wireless.
               </MarginCaption>
             </Marginale>
-            <Rsb n="drop" />{" "}
-            are then shared via the informal ad-hoc infrastructure we refer to
-            as the <Def n="sidenet" r="Sidenet" rs="Sidenets" />:
+            <Rsb n="drop" /> are then shared via informal ad-hoc infrastructure:
           </P>
           <Ul>
             <Li>USB keys</Li>
@@ -110,22 +107,13 @@ export const sideloading = (
               Or <Em>whatever means users have at hand</Em>.
             </Li>
           </Ul>
-          <P>
-            In contrast with{" "}
-            <AE href="https://en.wikipedia.org/wiki/Sneakernet">
-              sneakernets
-            </AE>{" "}
-            which only use physically transported storage devices, the{" "}
-            <R n="sidenet" />{" "}
-            also includes the internet and other established networks.
-          </P>
         </PreviewScope>
 
         <P>
           <Rsb n="drop" />{" "}
           will often undoubtedly contain stale data that users are already aware
-          of or no longer need. But what the{" "}
-          <R n="sideloading_protocol">Sideloading Protocol</R>{" "}
+          of or no longer need. But what the <R n="drop_format">Drop Format</R>
+          {" "}
           gives up in efficiency it more than makes up for in simplicity and
           flexibility. It is simple to implement, and works with the
           infrastructure users already have.
@@ -139,19 +127,18 @@ export const sideloading = (
           </R>), drops are always fully encrypted.
         </P>
 
-        <Hsection n="sideload_parameters" title="Parameters">
+        <Hsection n="drop_format_parameters" title="Parameters">
           <PreviewScope>
             <P>
               <Marginale>
                 See <R n="willow25" />{" "}
                 for a default recommendation of parameters.
               </Marginale>
-              In order to use the sideloading protocol, one must first specify a
-              full suite of instantiations of the{" "}
+              In order to use the drop format, one must first specify a full
+              suite of instantiations of the{" "}
               <R n="willow_parameters">
                 parameters of the core Willow data model
-              </R>. In addition to this, the sideloading protocol requires the
-              following:
+              </R>. In addition to this, the drop format requires the following:
             </P>
 
             <Ul>
@@ -182,7 +169,8 @@ export const sideloading = (
                   r="EncodeAuthorisationToken"
                   preview={
                     <P>
-                      A protocol parameter of the <R n="wgps" />, the{" "}
+                      A protocol parameter of the <R n="drop_format" />, the
+                      {" "}
                       <R n="relative_encoding_relation" /> for encoding{" "}
                       <Rs n="AuthorisationToken" />.
                     </P>
@@ -230,10 +218,10 @@ export const sideloading = (
           </PreviewScope>
         </Hsection>
 
-        <Hsection n="sideload_protocol" title="Protocol">
+        <Hsection n="drop_format_desc" title="Format">
           <PreviewScope>
             <P>
-              Let <DefValue n="side_entries" r="entries" /> a sequence of{" "}
+              Let <DefValue n="drop_entries" r="entries" /> a sequence of{" "}
               pairs of a <Rs n="PossiblyAuthorisedEntry" />{" "}
               and either a full corresponding{" "}
               <Sidenote
@@ -298,7 +286,7 @@ export const sideloading = (
               bitfields={[]}
               contents={[
                 <C64Standalone>
-                  the length (number) of <R n="side_entries" />
+                  the length (number) of <R n="drop_entries" />
                 </C64Standalone>,
                 <CodeFor enc="encode_namespace_id" isFunction>
                   <R n="sl_namespace" />
@@ -328,7 +316,7 @@ export const sideloading = (
                   }
                   iter={
                     <>
-                      <R n="side_entries" />
+                      <R n="drop_entries" />
                     </>
                   }
                 >
@@ -521,7 +509,7 @@ export const sideloading = (
 
           <P>
             The the <R n="drop" /> corresponding to the sequence{" "}
-            <R n="side_entries" /> is the result of applying <R n="encrypt" />
+            <R n="drop_entries" /> is the result of applying <R n="encrypt" />
             {" "}
             to <R n="side_contents" />.
           </P>
@@ -533,12 +521,12 @@ export const sideloading = (
             <R n="drop" />" can be transported by whatever means a single
             bytestring can be transferred, to be decrypted and the recovered
             {" "}
-            <R n="side_entries" /> ingested by its intended recipient.
+            <R n="drop_entries" /> ingested by its intended recipient.
           </P>
         </Hsection>
 
         <Img
-          src="/assets/sideload/sideload_emblem.png"
+          src={<ResolveAsset asset={["sideload", "sideload_emblem.png"]} />}
           alt={`A Sideloading emblem: A stylised drawing of tufty grass growing in between the cracks of paving stones, next to a graffiti-styled rendition of the word "Sideload".`}
         />
       </PageTemplate>

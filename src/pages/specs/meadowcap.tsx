@@ -28,9 +28,9 @@ export const meadowcap = (
       <PageTemplate
         htmlTitle="Meadowcap"
         headingId="meadowcap"
-        heading={"Meadowcap"}
-        status="candidate"
-        statusDate="17.01.2024"
+        heading="Meadowcap"
+        status="final"
+        statusDate="21.11.2025"
         toc
         parentId="specifications"
       >
@@ -940,10 +940,12 @@ export const meadowcap = (
                           <R n="communal_prev_cap" />
                         </AccessStruct>
                       </CodeFor>,
-                      <CodeFor enc="encode_area_in_area" isFunction>
-                        <AccessStruct field="communal_new_area">
-                          <R n="communal_prev_area" />
-                        </AccessStruct>
+                      <CodeFor
+                        enc="encode_area_in_area"
+                        isFunction
+                        relativeTo={<R n="communal_prev_area" />}
+                      >
+                        <R n="communal_new_area" />
                       </CodeFor>,
                       <CodeFor enc="encode_user_pk" isFunction>
                         <R n="communal_new_user" />
@@ -1270,7 +1272,7 @@ export const meadowcap = (
               <Ul>
                 <Li>
                   If{" "}
-                  <AccessStruct field="owned_prev_cap">
+                  <AccessStruct field="owned_cap_delegations">
                     <R n="owned_prev_cap" />
                   </AccessStruct>{" "}
                   is empty, then <R n="owned_handover" />{" "}
@@ -1281,10 +1283,12 @@ export const meadowcap = (
                     idPrefix="owned_handover1"
                     bitfields={[]}
                     contents={[
-                      <CodeFor enc="encode_area_in_area" isFunction>
-                        <AccessStruct field="owned_new_area">
-                          <R n="owned_prev_area" />
-                        </AccessStruct>
+                      <CodeFor
+                        enc="encode_area_in_area"
+                        isFunction
+                        relativeTo={<R n="owned_prev_area" />}
+                      >
+                        <R n="owned_new_area" />
                       </CodeFor>,
                       <CodeFor enc="encode_user_sig" isFunction>
                         <AccessStruct field="owned_cap_initial_authorisation">

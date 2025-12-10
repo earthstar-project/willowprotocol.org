@@ -45,18 +45,19 @@ import {
   ValAccess,
 } from "../../encoding_macros.tsx";
 import { EncConditional, ValName } from "../../encoding_macros.tsx";
+import { Wip } from "macromania-wip";
 
-export const sync = (
-  <Dir name="sync">
+export const confidential_sync = (
+  <Dir name="confidential-sync">
     <File name="index.html">
       <PageTemplate
-        htmlTitle="Willow General Purpose Sync Protocol"
-        headingId="sync"
-        heading={"Willow General Purpose Sync Protocol"}
+        htmlTitle="Willow Confidential Sync"
+        headingId="willow_confidential_sync"
+        heading="Willow Confidential Sync"
         toc
         bibliography
-        status="candidate"
-        statusDate="10.04.2025"
+        status="proposal"
+        statusDate="21.11.2025"
         parentId="specifications"
       >
         <PreviewScope>
@@ -65,8 +66,8 @@ export const sync = (
             specifies how to arrange data, but it does not prescribe how peers
             should synchronise data. In this document, we specify one possible
             way for performing synchronisation: the{" "}
-            <Def n="wgps" r="WGPS">
-              Willow General Purpose Sync (WGPS) protocol
+            <Def n="confidential_sync" r="Confidential Sync">
+              Willow Confidential Sync protocol
             </Def>. This document assumes familiarity with the{" "}
             <R n="data_model">Willow data model</R>.
           </P>
@@ -80,11 +81,11 @@ export const sync = (
                 alt={`An ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualisations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.`}
               />
             </Marginale>
-            The WGPS aims to be appropriate for a variety of networking
+            Confidential Sync aims to be appropriate for a variety of networking
             settings, particularly those of peer-to-peer systems where the
             replicating parties might not necessarily trust each other. Quite a
-            bit of engineering went into the WGPS to satisfy the following
-            requirements:
+            bit of engineering went into the Confidential Sync protocol to
+            satisfy the following requirements:
           </P>
 
           <Ul>
@@ -121,14 +122,14 @@ export const sync = (
           </Ul>
 
           <P>
-            The WGPS provides a shared vocabulary for peers to communicate with,
-            but nothing more. It cannot and does not force peers to use it
-            efficiently or to use the most efficient data structures internally.
-            That is a feature! Implementations can start out with inefficient
-            but simple implementation choices and later replace those with
-            better-scaling ones. Throughout that evolution, the implementations
-            stay compatible with any other implementation, regardless of its
-            degree of sophistication.
+            Confidential Sync provides a shared vocabulary for peers to
+            communicate with, but nothing more. It cannot and does not force
+            peers to use it efficiently or to use the most efficient data
+            structures internally. That is a feature! Implementations can start
+            out with inefficient but simple implementation choices and later
+            replace those with better-scaling ones. Throughout that evolution,
+            the implementations stay compatible with any other implementation,
+            regardless of its degree of sophistication.
           </P>
         </Hsection>
 
@@ -144,9 +145,8 @@ export const sync = (
             noToc
           >
             <P>
-              The WGPS lets two peers determine which <Rs n="namespace" /> and
-              {" "}
-              <Rs n="Area" />{" "}
+              Confidential Sync lets two peers determine which{" "}
+              <Rs n="namespace" /> and <Rs n="Area" />{" "}
               therein they share an interest in, without leaking any data that
               only one of them wishes to synchronise. We explain the underlying
               {" "}
@@ -171,14 +171,16 @@ export const sync = (
                 to Alfie, despite that putting her total number of transmissions
                 above the limit of 100.
               </Marginale>{" "}
-              per <R n="namespace" />. The <R n="area_empty">non-empty</R>{" "}
-              <Rs n="aoi_intersection" /> of <Rs n="AreaOfInterest" />{" "}
-              from both peers contain the <Rs n="Entry" /> to synchronise.
+              per <R n="namespace" />. The non-empty <Rs n="aoi_intersection" />
+              {" "}
+              of <Rs n="AreaOfInterest" /> from both peers contain the{" "}
+              <Rs n="Entry" /> to synchronise.
             </P>
 
             <P>
-              The WGPS synchronises these <Rs n="area_intersection" /> via{" "}
-              <R n="d3rbsr" />, a technique we{" "}
+              Confidential Sync synchronises these <Rs n="area_intersection" />
+              {" "}
+              via <R n="d3rbsr" />, a technique we{" "}
               <R n="d3_range_based_set_reconciliation">
                 explain in detail here
               </R>.
@@ -194,8 +196,8 @@ export const sync = (
               After performing{" "}
               <R n="d3rbsr">set reconciliation</R>, peers might receive new{" "}
               <Rs n="Entry" /> that fall into their shared{" "}
-              <Rs n="AreaOfInterest" />. Hence, the WGPS allows peers to
-              transmit <Rs n="Entry" /> unsolicitedly.
+              <Rs n="AreaOfInterest" />. Hence, Confidential Sync allows peers
+              to transmit <Rs n="Entry" /> unsolicitedly.
             </P>
           </Hsection>
 
@@ -242,7 +244,7 @@ export const sync = (
               should be able to work with the data they had received so far. But
               this can only be done safely if they can verify that the data is
               indeed a prefix of the expected{" "}
-              <R n="Payload" />. To enable this, the WGPS expects{" "}
+              <R n="Payload" />. To enable this, Confidential Sync expects{" "}
               <R n="PayloadDigest" /> to be the digest of a{" "}
               <AE href="https://worm-blossom.github.io/bab/">
                 Merkle-tree-based hash function
@@ -270,9 +272,9 @@ export const sync = (
             <Marginale>
               See <R n="willow25" /> for a default recommendation of parameters.
             </Marginale>
-            The WGPS is generic over specific cryptographic primitives. In order
-            to use it, one must first specify a full suite of instantiations of
-            the{" "}
+            Confidential Sync is generic over specific cryptographic primitives.
+            In order to use it, one must first specify a full suite of
+            instantiations of the{" "}
             <R n="willow_parameters">
               parameters of the core Willow data model
             </R>, as well as the following parameters:
@@ -311,7 +313,7 @@ export const sync = (
               <R n="private_interest_overlap">
                 private area overlap detection sub-spec
               </R>). The handshake and encryption of the communication channel
-              are out of scope of the WGPS,<Marginale>
+              are out of scope of Confidential Sync,<Marginale>
                 We recommend a handshake and subsequent encryption scheme{" "}
                 <R n="handshake_and_encryption">here</R>.
               </Marginale>{" "}
@@ -406,8 +408,7 @@ export const sync = (
 
         <Hsection n="sync_protocol" title="Protocol">
           <P>
-            The protocol is mostly message-based, with the exception of the
-            first few bytes of communication. To break symmetry, we refer to the
+            The protocol is message-based. To break symmetry, we refer to the
             peer that initiated the synchronisation session as{" "}
             <Def
               n="alfie"
@@ -416,7 +417,7 @@ export const sync = (
                 <>
                   <P>
                     <Def fake n="alfie">Alfie</Def>{" "}
-                    refers to the peer that initiated a WGPS synchronisation
+                    refers to the peer that initiated a Confidential Sync
                     session. We use this terminology to break symmetry in the
                     protocol.
                   </P>
@@ -430,7 +431,7 @@ export const sync = (
                 <>
                   <P>
                     <Def fake n="betty">Betty</Def>{" "}
-                    refers to the peer that accepted a WGPS synchronisation
+                    refers to the peer that accepted a Confidential Sync
                     session. We use this terminology to break symmetry in the
                     protocol.
                   </P>
@@ -452,8 +453,8 @@ export const sync = (
           </P>
 
           <P>
-            The WGPS is a purely message-based protocol, built on top of{" "}
-            <R n="lcmux" />. Both peers act as an{" "}
+            Confidential Sync is a purely message-based protocol, built on top
+            of <R n="lcmux" />. Both peers act as an{" "}
             <R n="lcmux_c">LCMUX client</R> and an{" "}
             <R n="lcmux_s">LCMUX server</R>{" "}
             simultaneously. There are several kinds of messages, which the peers
@@ -470,7 +471,7 @@ export const sync = (
               comment={
                 <>
                   The different <Rs n="resource_handle" /> employed by the{" "}
-                  <R n="wgps" />.
+                  <R n="confidential_sync" />.
                 </>
               }
               id={[
@@ -539,7 +540,7 @@ export const sync = (
               comment={
                 <>
                   The different <Rs n="logical_channel" /> employed by the{" "}
-                  <R n="wgps" />.
+                  <R n="confidential_sync" />.
                 </>
               }
               id={[
@@ -1143,8 +1144,9 @@ export const sync = (
                 <R n="d3_range_based_set_reconciliation" /> to{" "}
                 <R n="sync_post_sync_forwarding">eager forwarding</R> of new
                 {" "}
-                <Rs n="Entry" />. Roughly speaking, the WGPS supports this by
-                annotating <R n="ReconciliationSendFingerprint" /> and{" "}
+                <Rs n="Entry" />. Roughly speaking, Confidential Sync supports
+                this by annotating <R n="ReconciliationSendFingerprint" /> and
+                {" "}
                 <R n="ReconciliationAnnounceEntries" />{" "}
                 messages which an id for the original <Quotes>root</Quotes>{" "}
                 <R n="D3Range" />{" "}
@@ -1634,13 +1636,10 @@ export const sync = (
                                 transformed
                               </R>) <R n="Payload" /> <R n="Chunk" />{" "}
                               that will be transmitted for{" "}
-                              <R n="ReconciliationSendEntryEntry" />. Set this
-                              to the total number of <Rs n="Chunk" />{" "}
-                              to indicate that no <Rs n="Chunk" />{" "}
-                              will be transmitted. In this case, the receiver
-                              must act as if it had received a{" "}
-                              <R n="ReconciliationTerminatePayload" />{" "}
-                              message immediately after this message.
+                              <R n="ReconciliationSendEntryEntry" />. If you
+                              will not transmit any{" "}
+                              <Rs n="Chunk" />, this can be set arbitrarily
+                              (zero is a good choice).
                             </>
                           ),
                           dedicatedLine: true,
@@ -1721,9 +1720,9 @@ export const sync = (
                               <Rs n="Chunk" /> obtained by applying{" "}
                               <R n="transform_payload" /> to the{" "}
                               <R n="Payload" /> of the receiver’s{" "}
-                              <R n="reconciliation_current_entry" />
-                              <R n="Entry" />, starting at the{" "}
-                              <R n="ReconciliationSendEntryOffset" />{" "}
+                              <R n="reconciliation_current_entry" />, starting
+                              at the <R n="ReconciliationSendEntryOffset" />
+                              {" "}
                               of the corresponding{" "}
                               <R n="ReconciliationSendEntry" />{" "}
                               message plus the number of <Rs n="Chunk" />{" "}
@@ -2280,7 +2279,7 @@ export const sync = (
                           segment: [
                             [
                               "sender_handle",
-                              "PayloadRequestBindRequestNamespaceIdSenderHandle",
+                              "PayloadRequestBindRequestSenderHandle",
                               "sender_handles",
                             ],
                             <R n="U64" />,
@@ -2307,7 +2306,7 @@ export const sync = (
                           segment: [
                             [
                               "receiver_handle",
-                              "PayloadRequestBindRequestNamespaceIdReceiverHandle",
+                              "PayloadRequestBindRequestReceiverHandle",
                               "receiver_handles",
                             ],
                             <R n="U64" />,
@@ -2324,18 +2323,17 @@ export const sync = (
                   <R n="Payload" /> if the <R n="Entry" />’s{" "}
                   <R n="entry_timestamp" /> does not fall within both the{" "}
                   <R n="read_capability" /> corresponding to{" "}
-                  <R n="PayloadRequestBindRequestNamespaceIdSenderHandle" />
-                  {" "}
+                  <R n="PayloadRequestBindRequestSenderHandle" />{" "}
                   and that corresponding to{" "}
-                  <R n="PayloadRequestBindRequestNamespaceIdReceiverHandle" />.
+                  <R n="PayloadRequestBindRequestReceiverHandle" />.
                 </P>
 
                 <P>
-                  <Alj>
-                    TODO: add ability to query for arbitrary slices (indexed in
-                    transformed chunks, not bytes); this will be part of Bab
-                    grant work
-                  </Alj>
+                  <Wip fg="#000000" bg="#f7e4a5ff">
+                    We will add the ability to query for arbitrary slices
+                    (indexed in transformed chunks, not bytes) in the future;
+                    this will be part of ongoing grant work.
+                  </Wip>
                   <Rb n="PayloadRequestBindRequest" /> messages use the{" "}
                   <R n="PayloadRequestChannel" />.
                 </P>
@@ -2560,8 +2558,9 @@ export const sync = (
 
           <Hsection n="sync_encodings" title="Encodings">
             <P>
-              We now describe how to encode the various messages of the WGPS.
-              When a peer receives bytes it cannot decode, this is an error.
+              We now describe how to encode the various messages of Confidential
+              Sync. When a peer receives bytes it cannot decode, this is an
+              error.
             </P>
 
             <Hsection n="sync_encoding_params" title="Parameters">
@@ -2582,7 +2581,8 @@ export const sync = (
                     n="EncodeReadCapability"
                     preview={
                       <P>
-                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
                         <R n="relative_encoding_relation" /> for encoding{" "}
                         <Rs n="ReadCapability" />.
                       </P>
@@ -2607,7 +2607,8 @@ export const sync = (
                     n="EncodeEnumerationCapability"
                     preview={
                       <P>
-                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
                         <R n="relative_encoding_relation" /> for encoding{" "}
                         <Rs n="EnumerationCapability" />.
                       </P>
@@ -2646,8 +2647,17 @@ export const sync = (
                     total order
                   </AE>{" "}
                   on <R n="SubspaceId" /> with least element{" "}
-                  <R n="sync_default_subspace_id" />, in which for every
-                  non-maximal <R n="SubspaceId" />{" "}
+                  <DefValue
+                    n="sync_least_subspace_id"
+                    r="least_subspace_id"
+                    preview={
+                      <P>
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
+                        unique least <R n="SubspaceId" />.
+                      </P>
+                    }
+                  />, in which for every non-maximal <R n="SubspaceId" />{" "}
                   <DefValue noPreview n="subspace_successor_s" r="s" />{" "}
                   there exists a successor{" "}
                   <DefValue noPreview n="subspace_successor_t" r="t" />{" "}
@@ -2670,7 +2680,8 @@ export const sync = (
                     n="EncodeAuthorisationToken"
                     preview={
                       <P>
-                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
                         <R n="relative_encoding_relation" /> for encoding{" "}
                         <Rs n="AuthorisationToken" />.
                       </P>
@@ -2689,7 +2700,8 @@ export const sync = (
                     n="EncodeFingerprint"
                     preview={
                       <P>
-                        A protocol parameter of the <R n="wgps" />, the{" "}
+                        A protocol parameter of <R n="confidential_sync" />, the
+                        {" "}
                         <R n="encoding_relation" /> for encoding{" "}
                         <Rs n="Fingerprint" />.
                       </P>
@@ -2876,7 +2888,11 @@ export const sync = (
                       "max_size",
                       2,
                       <>
-                        <ValAccess field="PioBindReadCapabilityMaxSize" />
+                        <ValAccess field="PioBindReadCapabilityMaxSize" />{" "}
+                        + 1 modulo{" "}
+                        <M>
+                          2^<Curly>64</Curly>
+                        </M>
                       </>,
                     ),
                   ]}
@@ -2918,7 +2934,7 @@ export const sync = (
                   <DefValue n="previously_received_itemset_3drange" />. Both are
                   initialised to{"   "}
                   <Code>
-                    <R n="default_3d_range" />(<R n="sync_default_subspace_id" />)
+                    <R n="full_3d_range" />(<R n="sync_least_subspace_id" />)
                   </Code>. Upon receiving a{" "}
                   <R n="ReconciliationSendFingerprint" /> or{" "}
                   <R n="ReconciliationAnnounceEntries" />{" "}
@@ -3387,50 +3403,42 @@ export const sync = (
                 title="PayloadRequestBindRequest"
                 noToc
               >
-                <P>
-                  <Alj inline>
-                    TODO: Finalise this message type before defining its
-                    encoding.
-                  </Alj>
-                </P>
-                {
-                  /* <EncodingRelationTemplate
-                  n="EncodeDataSendEntry"
-                  valType={<R n="DataSendEntry" />}
+                <EncodingRelationTemplate
+                  n="EncodePayloadRequestBindRequest"
+                  valType={<R n="PayloadRequestBindRequest" />}
                   bitfields={[
-                    bitfieldConstant([0]),
                     c64Tag(
-                      "offset",
-                      7,
+                      "sender_handle",
+                      4,
                       <>
-                        <ValAccess field="DataSendEntryOffset" />
+                        <ValAccess field="PayloadRequestBindRequestSenderHandle" />
+                      </>,
+                    ),
+                    c64Tag(
+                      "receiver_handle",
+                      4,
+                      <>
+                        <ValAccess field="PayloadRequestBindRequestReceiverHandle" />
                       </>,
                     ),
                   ]}
                   contents={[
-                    <C64Encoding id="offset" />,
-                    <CodeFor
-                      enc="EncodeEntryRelativeEntry"
-                      relativeTo={<R n="data_current_entry" />}
-                    >
-                      the <R n="Entry" /> of{" "}
-                      <ValAccess field="DataSendEntryEntry" />
+                    <C64Encoding id="sender_handle" />,
+                    <C64Encoding id="receiver_handle" />,
+                    <CodeFor isFunction enc="encode_namespace_id">
+                      <ValAccess field="PayloadRequestBindRequestNamespaceId" />
                     </CodeFor>,
-                    <CodeFor
-                      enc="EncodeAuthorisationToken"
-                      relativeTo={
-                        <>
-                          <R n="data_current_entry" /> and{" "}
-                          <ValAccess field="DataSendEntryEntry" />
-                        </>
-                      }
-                    >
-                      the <R n="AuthorisationToken" /> of{" "}
-                      <ValAccess field="DataSendEntryEntry" />
+                    <CodeFor isFunction enc="encode_subspace_id">
+                      <ValAccess field="PayloadRequestBindRequestSubspaceId" />
+                    </CodeFor>,
+                    <CodeFor enc="EncodePath">
+                      <ValAccess field="PayloadRequestBindRequestPath" />
+                    </CodeFor>,
+                    <CodeFor isFunction enc="encode_payload_digest">
+                      <ValAccess field="PayloadRequestBindRequestPayloadDigest" />
                     </CodeFor>,
                   ]}
-                /> */
-                }
+                />
 
                 <P>
                   <R n="PayloadRequestBindRequest" /> messages use the{" "}
@@ -3555,6 +3563,10 @@ export const sync = (
             </Hsection>
           </Hsection>
         </Hsection>
+        <Img
+          src={<ResolveAsset asset={["sync", "wgps_emblem.png"]} />}
+          alt={`A Confidential Sync emblem: A stylised drawing of a grapevine next to hand-lettered typewriter style rendition of 'Confidential Sync'.`}
+        />
       </PageTemplate>
     </File>
   </Dir>

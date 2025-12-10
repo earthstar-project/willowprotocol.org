@@ -1,31 +1,18 @@
 import { File } from "macromania-outfs";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { A, Li, P, Ul } from "macromania-html";
-import { R, Rs } from "macromania-defref";
+import { A, Img, Li, P, Ul } from "macromania-html";
+import { R } from "macromania-defref";
 import { DefsRustDocs } from "macromania-defs-rustdocs";
 import { Hsection } from "macromania-hsection";
-import { Gwil } from "../macros.tsx";
+import { ResolveAsset } from "macromania-assets";
+import { Marginale } from "macromania-marginalia";
 
 const rustdocs_willow_data_model = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/willow_data_model.json"),
 );
 
-const rustdocs_meadowcap = JSON.parse(
-  await Deno.readTextFile("./rustdocs/source_json/meadowcap.json"),
-);
-
-const rustdocs_sideload = JSON.parse(
-  await Deno.readTextFile("./rustdocs/source_json/willow_sideload.json"),
-);
-
-const rustdocs_willow_25 = JSON.parse(
-  await Deno.readTextFile("./rustdocs/source_json/willow_25.json"),
-);
-
-const rustdocs_simple_store_sled = JSON.parse(
-  await Deno.readTextFile(
-    "./rustdocs/source_json/willow_store_simple_sled.json",
-  ),
+const rustdocs_willow25 = JSON.parse(
+  await Deno.readTextFile("./rustdocs/source_json/willow25.json"),
 );
 
 export const rust = (
@@ -46,38 +33,8 @@ export const rust = (
         cachingPath={["rustdocs", "cached_defs"]}
       />
       <DefsRustDocs
-        crate="meadowcap"
-        json={rustdocs_meadowcap}
-        prefix="rs-"
-        typeClass="rustic type"
-        functionClass="rustic function"
-        interfaceClass="rustic interface"
-        depsCss={[{ dep: ["pseudocode.css"] }]}
-        cachingPath={["rustdocs", "cached_defs"]}
-      />
-      <DefsRustDocs
-        crate="willow_sideload"
-        json={rustdocs_sideload}
-        prefix="rs-"
-        typeClass="rustic type"
-        functionClass="rustic function"
-        interfaceClass="rustic interface"
-        depsCss={[{ dep: ["pseudocode.css"] }]}
-        cachingPath={["rustdocs", "cached_defs"]}
-      />
-      <DefsRustDocs
-        crate="willow-store-simple-sled"
-        json={rustdocs_simple_store_sled}
-        prefix="rs-"
-        typeClass="rustic type"
-        functionClass="rustic function"
-        interfaceClass="rustic interface"
-        depsCss={[{ dep: ["pseudocode.css"] }]}
-        cachingPath={["rustdocs", "cached_defs"]}
-      />
-      <DefsRustDocs
-        crate="willow_25"
-        json={rustdocs_willow_25}
+        crate="willow25"
+        json={rustdocs_willow25}
         prefix="rs-"
         typeClass="rustic type"
         functionClass="rustic function"
@@ -87,44 +44,28 @@ export const rust = (
       />
 
       <P>
-        <Gwil>
-          Illustration of Betty with a cowboy hat on riding a giant crab here.
-        </Gwil>
-        We've implemented Willow's <R n="specifications" />{"  "}
-        in Rust. You can add secure, efficient, peer-to-peer storage to your
-        applications by using these crates:
+        <Marginale>
+          <Img
+            src={<ResolveAsset asset={["rust", "crab.png"]} />}
+            alt="Betty is riding a giant crab, while Alfie screams, hanging on to a claw."
+          />
+        </Marginale>
+        We're implementing Willow's <R n="specifications">specifications</R>
+        {" "}
+        in Rust. You can use them through the <R n="rs-willow25" />{" "}
+        crate, which pre-configures all the specifications with secure,
+        efficient parameters.
       </P>
-      <Ul>
-        <Li>
-          <R n="rs-willow_data_model" />: Utilities and traits for working with
-          Willow's <R n="data_model" />.
-        </Li>
-        <Li>
-          <R n="rs-meadowcap" />: Mint and verify capabilities with{" "}
-          <R n="meadowcap" />.
-        </Li>
-        <Li>
-          <R n="rs-willow_sideload" />: Create and ingest <Rs n="drop" />{" "}
-          with the <R n="sideloading" />.
-        </Li>
-        <Li>
-          <R n="rs-wgps" />: Securely and efficiently sync stores using{" "}
-          <R n="wgps" />.
-        </Li>
-        <Li>
-          <R n="rs-willow_store_simple_sled" />: sled-powered persistent storage
-          implementing the <R n="rs-willow_data_model-Store" /> trait.
-        </Li>
-        <Li>
-          <R n="rs-willow_25" />: All of the above preconfigured with secure and
-          efficient parameters from <R n="willow25" />.
-        </Li>
-      </Ul>
-
+      <P>
+        The <R n="rs-willow25" /> crate currently implements the{" "}
+        <R n="data_model" />. Over the coming weeks, we'll add implementations
+        of <R n="meadowcap" />, persistent storage, and the{" "}
+        <R n="willow_drop_format" />.
+      </P>
       <Hsection n="rs_tutorials" title="Tutorials">
         <P>
-          Learn everything you need to get started with these step-by-step
-          tutorials.
+          Get started with our step-by-step tutorials, which we'll be adding to
+          as we add more features to <R n="rs-willow25" />.
         </P>
         <Ul>
           <Li>
@@ -136,15 +77,19 @@ export const rust = (
           <Li>
             <R n="tut-grouping">Work with groupings</R>
           </Li>
-          <Li>
-            <R n="tut-caps">Create and use capabilities</R>
-          </Li>
-          <Li>
-            <R n="tut-store">Work with a Store</R>
-          </Li>
-          <Li>
-            <R n="tut-drop">Create and ingest a sidedrop</R>
-          </Li>
+          {
+            /* <omnomnom>
+            <Li>
+              <R n="tut-caps">Create and use capabilities</R>
+            </Li>
+            <Li>
+              <R n="tut-store">Work with a Store</R>
+            </Li>
+            <Li>
+              <R n="tut-drop">Create and ingest a sidedrop</R>
+            </Li>
+          </omnomnom> */
+          }
         </Ul>
       </Hsection>
 
@@ -156,7 +101,7 @@ export const rust = (
           you'd like to contribute to our implementations, please see the{" "}
           <A
             clazz="external"
-            href="https://github.com/earthstar-project/willow-rs/"
+            href="https://codeberg.org/worm-blossom/willow_rs"
           >
             willow-rs Git repository
           </A>.

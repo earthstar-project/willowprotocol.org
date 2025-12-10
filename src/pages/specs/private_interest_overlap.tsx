@@ -1079,6 +1079,16 @@ export const private_interest_overlap = (
 
               <PiiExample
                 leftPath={["a"]}
+                rightPath={["a"]}
+                rightSs="Gemma"
+                overlap
+                imageName="any-a_gemma-a"
+              >
+                This is a special case where both peers detect the overlap.
+              </PiiExample>
+
+              <PiiExample
+                leftPath={["a"]}
                 rightPath={["a", "b"]}
                 rightSs="Gemma"
                 overlap
@@ -1210,11 +1220,10 @@ export const private_interest_overlap = (
                       <Rs n="pi_path" /> but one has a <R n="pi_ss" /> of{" "}
                       <R n="ss_any" /> whereas the other has a concrete{" "}
                       <R n="pi_ss" />, then <Em>both</Em>{" "}
-                      peers will detect the overlap<Alj>
-                        TODO: refer to the example drawing we will surely add
-                      </Alj>. In this special case, the peer with the{" "}
-                      <R n="pi_ss" /> of <R n="ss_any" /> should <Em>not</Em>
+                      peers will detect the overlap. In this special case, the
+                      peer with the <R n="pi_ss" /> of <R n="ss_any" /> should
                       {" "}
+                      <Em>not</Em>{" "}
                       announce an overlap, and the peer with the concrete{" "}
                       <R n="pi_ss" /> simply sends its <R n="read_capability" />
                       {" "}
@@ -1316,10 +1325,9 @@ export const private_interest_overlap = (
             <P>
               Note that peers need to store a potentially unbounded number of
               hash-boolean pairs that they receive, but they do not have an
-              unbounded amount of memory. In the <R n="sync">WGPS</R>, we employ
-              {" "}
-              <R n="lcmux">LCMUX</R> and the notion of{" "}
-              <Rs n="resource_handle" />{" "}
+              unbounded amount of memory. In{" "}
+              <R n="confidential_sync" />, we employ <R n="lcmux">LCMUX</R>{" "}
+              and the notion of <Rs n="resource_handle" />{" "}
               to deal with this problem. When resource limits are communicated
               and enforced, how should peers select which{" "}
               <Rs n="PrivateInterest" /> they submit?
@@ -1478,10 +1486,10 @@ export const private_interest_overlap = (
 
           <P>
             Throughout the following, Alfie and Betty are honest peers, Muriarty
-            is a malicious peer who may deviate arbitrarily from the WGPS, and
-            Epson is an active eavesdropper on the networking layer who can
-            read, modify, drop, or insert arbitrary bytes on a WGPS
-            communication channel.
+            is a malicious peer who may deviate arbitrarily from Confidential
+            Sync, and Epson is an active eavesdropper on the networking layer
+            who can read, modify, drop, or insert arbitrary bytes on a
+            Confidential Sync communication channel.
           </P>
 
           <Hsection n="pio_threat_model" title="Threat Model">
@@ -1522,14 +1530,10 @@ export const private_interest_overlap = (
               We now list the information we wish to keep confidential. We group
               it in four levels, based on which kind of peer or attacker is
               allowed to glean which information.
-              <Gwil>
-                Worst table styling ever, Alj asks for help. Might need multiple
-                rows instead of nested lists?
-              </Gwil>
             </P>
 
             <PreviewScope>
-              <Table>
+              <Table clazz="confidentiality-levels">
                 <Tbody>
                   <Tr>
                     <Th scope="row">
@@ -1660,10 +1664,9 @@ export const private_interest_overlap = (
               Consequently, <Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and
               {" "}
               <Rs n="Path" />{" "}
-              that cannot be guessed are never leaked by using the WGPS.
-              Conversely, attackers <Em>can</Em> confirm their guesses about
-              {" "}
-              <Rs n="PrivateInterest" />{" "}
+              that cannot be guessed are never leaked by using Confidential
+              Sync. Conversely, attackers <Em>can</Em>{" "}
+              confirm their guesses about <Rs n="PrivateInterest" />{" "}
               to some degree. Hence, it is important to keep{" "}
               <Rs n="NamespaceId" />, <Rs n="SubspaceId" />, and <Rs n="Path" />
               {" "}
