@@ -247,7 +247,7 @@ export function PreviewScope(
 
   return (
     <lifecycle pre={pre} post={post}>
-      <Config options={[<ConfigWebserverRoot linkType="absolute" />]}>
+      <Config options={[<ConfigWebserverRoot linkType="absolute" alwaysUseDomain />]}>
         <map fun={createPreviews}>
           <exps x={children} />
         </map>

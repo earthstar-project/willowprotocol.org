@@ -114,7 +114,7 @@ const exp = (
 
     <Dir name="build">
       <ServerOptimisations>
-        <ServerRoot url="">
+        <ServerRoot url="https://willowprotocol.org/">
           <Dir name="assets">
             {/* See https://github.com/worm-blossom/macromania-assets */}
             <Assets

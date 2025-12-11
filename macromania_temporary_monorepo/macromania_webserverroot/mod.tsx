@@ -26,6 +26,10 @@ export type WebserverRootConfig = {
    * absolute links, or to always choose the shorter link (default).
    */
   linkType: "relative" | "absolute" | "shorter";
+  /**
+   * Whether to include the domain even when creating a link within the same page. Defaults to false.
+   */
+  alwaysUseDomain?: boolean;
 };
 
 const [getConfig, ConfigWebserverRoot] = createConfigOptions<
@@ -33,7 +37,7 @@ const [getConfig, ConfigWebserverRoot] = createConfigOptions<
   WebserverRootConfig
 >(
   "ConfigWebserverRoot",
-  () => ({ linkType: "shorter" }),
+  () => ({ linkType: "shorter", alwaysUseDomain: false }),
   (old, update) => update,
 );
 export { ConfigWebserverRoot };
@@ -217,26 +221,34 @@ export function hrefTo(ctx: Context, target: OutFsPath): string {
     return ``;
   }
 
-  if (linkType === "absolute") {
-    return absoluteHref(targetInfo, targetAbsolutePath, currentServerUrl);
+  if (linkType === "absolute" || !!config.alwaysUseDomain) {
+    return absoluteHref(
+      targetInfo,
+      targetAbsolutePath,
+      currentServerUrl,
+      !!config.alwaysUseDomain,
+    );
   } else if (linkType === "relative") {
     return relativeHref(
       targetInfo,
       targetAbsolutePath,
       currentServerUrl,
       currentAbsolutePath,
+      !!config.alwaysUseDomain,
     );
   } else {
     const absolute = absoluteHref(
       targetInfo,
       targetAbsolutePath,
       currentServerUrl,
+      !!config.alwaysUseDomain,
     );
     const relative = relativeHref(
       targetInfo,
       targetAbsolutePath,
       currentServerUrl,
       currentAbsolutePath,
+      !!config.alwaysUseDomain,
     );
 
     return absolute.length < relative.length ? absolute : relative;
@@ -247,6 +259,7 @@ function absoluteHref(
   targetInfo: ServerInfo | null,
   targetAbsolutePath: string[],
   currentServerUrl: string | null,
+  alwaysUseDomain: boolean,
 ): string {
   const targetUrl = nullableInfoToUrl(targetInfo);
 
@@ -255,7 +268,7 @@ function absoluteHref(
     : targetAbsolutePath;
 
   if (
-    targetUrl === currentServerUrl || targetUrl === null
+    (targetUrl === currentServerUrl && !alwaysUseDomain) || targetUrl === null
   ) {
     return `${join("/", ...sliced)}`;
   } else {
@@ -280,11 +293,17 @@ function relativeHref(
   targetAbsolutePath: string[],
   currentServerUrl: string | null,
   currentAbsolutePath: string[],
+  alwaysUseDomain: boolean,
 ): string {
   const targetUrl = nullableInfoToUrl(targetInfo);
 
   if (targetUrl !== currentServerUrl) {
-    return absoluteHref(targetInfo, targetAbsolutePath, currentServerUrl);
+    return absoluteHref(
+      targetInfo,
+      targetAbsolutePath,
+      currentServerUrl,
+      alwaysUseDomain,
+    );
   }
 
   return `${
