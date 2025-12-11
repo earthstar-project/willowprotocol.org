@@ -214,6 +214,7 @@ export function hrefTo(ctx: Context, target: OutFsPath): string {
   const targetAbsolutePath = resolveRelativePath(ctx, target).components;
 
   if (
+    !config.alwaysUseDomain &&
     currentServerUrl === nullableInfoToUrl(targetInfo) &&
     JSON.stringify(currentAbsolutePath) ===
       JSON.stringify(targetAbsolutePath)

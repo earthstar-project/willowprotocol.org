@@ -1,6 +1,8 @@
 import { getNameAndDebug } from "../macromania_names_id/mod.tsx";
 import {
   addName,
+  Config,
+  ConfigWebserverRoot,
   dependencyJs,
   hrefToName,
   IdA,
@@ -1049,7 +1051,7 @@ function mathLink(
   }
 
   let exp = <MHref url={url} children={children} />;
-  
+
   // The following line causes a parsing error when the `data` contains an equals sign (`=`), and there seems to be no way to escape it.
   // exp = data === undefined ? exp : <MData data={data}>{exp}</MData>;
 
@@ -1086,11 +1088,15 @@ function addDataAttributes(
     previewPath.push(finalComponent);
 
     data["tooltip-anchor"] = (
-      <impure
-        fun={(ctx) => {
-          return hrefTo(ctx, absoluteOutFsPath(previewPath));
-        }}
-      />
+      // <Config
+      //   options={[<ConfigWebserverRoot linkType="absolute" alwaysUseDomain />]}
+      // >
+        <impure
+          fun={(ctx) => {
+            return hrefTo(ctx, absoluteOutFsPath(previewPath));
+          }}
+        />
+      // </Config>
     );
   }
 
