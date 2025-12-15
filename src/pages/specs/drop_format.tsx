@@ -470,7 +470,7 @@ export const drop_format = (
                       </CodeFor>,
                       <CodeFor
                         enc="SideloadingEncodeAuthorisationToken"
-                        notStandalone
+                        // notStandalone
                         relativeTo={
                           <>
                             the pair of (<R n="sl_e">
@@ -508,7 +508,7 @@ export const drop_format = (
           </PreviewScope>
 
           <P>
-            The the <R n="drop" /> corresponding to the sequence{" "}
+            Then the <R n="drop" /> corresponding to the sequence{" "}
             <R n="drop_entries" /> is the result of applying <R n="encrypt" />
             {" "}
             to <R n="side_contents" />.
