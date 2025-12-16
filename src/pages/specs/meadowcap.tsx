@@ -669,7 +669,7 @@ export const meadowcap = (
               <StructDef
                 comment={
                   <>
-                    A capability that implements <Rs n="communal_namespace" />
+                    A capability that implements <Rs n="communal_namespace" />.
                   </>
                 }
                 id={[
@@ -993,7 +993,7 @@ export const meadowcap = (
               <StructDef
                 comment={
                   <>
-                    A capability that implements <Rs n="owned_namespace" />
+                    A capability that implements <Rs n="owned_namespace" />.
                   </>
                 }
                 id={[

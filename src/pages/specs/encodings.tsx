@@ -1245,7 +1245,7 @@ export const encodings = (
                     <Code>
                       <AccessStruct field="TimeRangeStart">
                         <ValAccess field="AreaTime" />
-                      </AccessStruct>
+                      </AccessStruct>{" "}
                       -{" "}
                       <AccessStruct field="TimeRangeStart">
                         <RelAccess field="AreaTime" />
@@ -1272,7 +1272,7 @@ export const encodings = (
                     <Code>
                       <AccessStruct field="TimeRangeEnd">
                         <ValAccess field="AreaTime" />
-                      </AccessStruct>
+                      </AccessStruct>{" "}
                       -{" "}
                       <AccessStruct field="TimeRangeStart">
                         <RelAccess field="AreaTime" />
@@ -2022,7 +2022,8 @@ export const encodings = (
                   <M>
                     <DefValue n="ccrpia_area_base" r="area_{-1}" />
                   </M>{" "}
-                  be the <R n="subspace_area" /> of <ValAccess field="communal_cap_user" />.
+                  be the <R n="subspace_area" /> of{" "}
+                  <ValAccess field="communal_cap_user" />.
                 </P>
               }
               bitfields={[
