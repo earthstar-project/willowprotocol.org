@@ -536,6 +536,9 @@ export const drop_format = (
                             <Li>
                               <RawBytes lowercase noPeriod>
                                 the{" "}
+                                <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
+                                  64-grouped
+                                </AE>{" "}
                                 <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
                                   baseline verifiable slice stream
                                 </AE>{" "}
@@ -593,6 +596,9 @@ export const drop_format = (
                                     </C64Standalone>,
                                     <RawBytes>
                                       the{" "}
+                                      <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
+                                        64-grouped
+                                      </AE>{" "}
                                       <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
                                         baseline verifiable slice stream
                                       </AE>{" "}
