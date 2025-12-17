@@ -79,6 +79,9 @@ export const specs = (
           <Li>
             <R n="lcmux">Multiplexing and Flow Control</R>
           </Li>
+          <Li>
+            <R n="uris">Willow URIs</R>
+          </Li>
         </Ul>
       </Nav>
     </PageTemplate>
