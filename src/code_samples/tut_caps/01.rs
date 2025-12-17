@@ -1,37 +1,16 @@
-use willow_25::{
-    AccessMode, Area, AreaSubspace, Capability, NamespaceId25, Path, Range, SubspaceId25,
-};
+use rand::rngs::OsRng;
+use willow25::prelude::*;
 
 fn main() {
-    // Owned capabilities
+    let mut csprng = OsRng;
 
-    let (alfie_id, alfie_key) = SubspaceId25::new();
-    let (my_namespace, my_namespace_secret) = NamespaceId25::new_owned();
+    let (alfie_id, alfie_secret) = randomly_generate_subspace(&mut csprng);
+    let communal_namespace_id = NamespaceId::from_bytes(&[17; 32]);
 
-    let root_cap = Capability::new_owned(
-        my_namespace,
-        &my_namespace_secret,
-        alfie_id.clone(),
-        AccessMode::Read,
-    )
-    .unwrap();
+    // Create a new communal capability.
+    // To use it, we'll need Alfie's secret.
+    let communal_cap =
+        WriteCapability::new_communal(communal_namespace_id.clone(), alfie_id.clone());
 
-    println!("An owned namespace capability: {:#?}", root_cap);
-
-    let (betty_id, betty_key) = SubspaceId25::new();
-
-    let only_blogs_area = Area::new(
-        AreaSubspace::Any,
-        Path::from_slices(&["blog"]).unwrap(),
-        Range::new_open(0),
-    );
-
-    let cap_for_betty = root_cap
-        .delegate(&alfie_key, &betty_id, &only_blogs_area)
-        .unwrap();
-
-    println!(
-        "A delegated owned namespace cap for Betty: {:#?}",
-        cap_for_betty
-    );
+    println!("A communal capability: {:#?}", communal_cap);
 }

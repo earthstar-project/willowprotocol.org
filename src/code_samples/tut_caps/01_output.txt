@@ -1,1 +1,14 @@
-TODO - Nicer printing of objects!
+A communal capability: WriteCapability {
+    genesis: Communal(
+        CommunalGenesis {
+            access_mode: Write,
+            namespace_key: NamespaceId(
+                -1111111111111111111111111111111111111111111111111111111111111111,
+            ),
+            user_key: SubspaceId(
+                e28e9da138838ebed5eabdbaa7d4ed8bfc10213be3c3df1b2cb38a7585e38957,
+            ),
+        },
+    ),
+    delegations: [],
+}

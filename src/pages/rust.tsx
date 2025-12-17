@@ -77,11 +77,12 @@ export const rust = (
           <Li>
             <R n="tut-grouping">Work with groupings</R>
           </Li>
+          <Li>
+            <R n="tut-caps">Create and use capabilities</R>
+          </Li>
           {
             /* <omnomnom>
-            <Li>
-              <R n="tut-caps">Create and use capabilities</R>
-            </Li>
+
             <Li>
               <R n="tut-store">Work with a Store</R>
             </Li>
