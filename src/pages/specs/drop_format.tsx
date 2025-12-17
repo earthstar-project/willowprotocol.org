@@ -623,26 +623,6 @@ export const drop_format = (
                               </EncIterator>
                             </Li>
                           </Ul>
-
-                          {
-                            /* <EncIterator
-                            val={
-                              <>
-                                <M>j</M>-th slice{" "}
-                                <M>
-                                  <DefValue n="drop_slice_j" r="slice_j" />
-                                </M>
-                              </>
-                            }
-                            iter={
-                              <>
-                                <R n="sl_payload_slices" />
-                              </>
-                            }
-                          >
-                            TODO
-                          </EncIterator> */
-                          }
                         </Li>
                       </Ul>,
                     ]}
@@ -662,10 +642,9 @@ export const drop_format = (
 
         <Hsection n="sideload_transport" title="Transport">
           <P>
-            Once created, a{" "}
-            <R n="drop" />" can be transported by whatever means a single
-            bytestring can be transferred, to be decrypted and the recovered
-            {" "}
+            Once created, a <R n="drop" />{" "}
+            can be transported by whatever means a single bytestring can be
+            transferred, to be decrypted and the recovered{" "}
             <R n="drop_entries" /> ingested by its intended recipient.
           </P>
         </Hsection>
