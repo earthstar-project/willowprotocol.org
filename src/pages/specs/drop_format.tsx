@@ -273,18 +273,7 @@ export const drop_format = (
           </PreviewScope>
 
           <P>
-            Then,{" "}
-            <DefValue
-              n="side_contents"
-              r="contents"
-              preview={
-                <>
-                  The unencrypted encoding of a sequence of{" "}
-                  <Rs n="AuthorisedEntry" /> and optionally their{" "}
-                  <Rs n="Payload" />, as used in a <R n="drop" />.
-                </>
-              }
-            />{" "}
+            Then, the actual <R n="drop" />{" "}
             is the concatenation of the following:
           </P>
 
@@ -631,21 +620,18 @@ export const drop_format = (
               ]}
             />
           </PreviewScope>
-
-          <P>
-            Then the <R n="drop" /> corresponding to the sequence{" "}
-            <R n="drop_entries" /> is the result of applying <R n="encrypt" />
-            {" "}
-            to <R n="side_contents" />.
-          </P>
         </Hsection>
 
         <Hsection n="sideload_transport" title="Transport">
           <P>
             Once created, a <R n="drop" />{" "}
             can be transported by whatever means a single bytestring can be
-            transferred, to be decrypted and the recovered{" "}
-            <R n="drop_entries" /> ingested by its intended recipient.
+            transferred, so that the decoded <R n="drop_entries" />{" "}
+            can be ingested by its recipients.
+          </P>
+
+          <P>
+            We <Em>highly</Em> recommend encrypting drops for transport.
           </P>
         </Hsection>
 
