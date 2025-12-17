@@ -63,8 +63,9 @@ export const tutorial_caps = (
         <P>
           Next we'll use the <R n="rs-willow25-authorisation-WriteCapability" />
           {" "}
-          we created and use it to turn a <R n="rs-willow25-entry-Entry" />{" "}
-          into a <R n="rs-willow25-authorisation-AuthorisedEntry" />.
+          we created and use it to turn an <R n="rs-willow25-entry-Entry" />
+          {" "}
+          into an <R n="rs-willow25-authorisation-AuthorisedEntry" />.
         </P>
 
         <P>
@@ -120,7 +121,7 @@ export const tutorial_caps = (
       <Hsection title="Owned capabilities and delegation" n="tut-caps-3">
         <P>
           Finally we'll create a{" "}
-          <R n="rs-willow25-authorisation-WriteCapability" /> for a{" "}
+          <R n="rs-willow25-authorisation-WriteCapability" /> for an{" "}
           <R n="owned_namespace" />, delegate it, and use it to produce an{" "}
           <R n="rs-willow25-authorisation-AuthorisedEntry" />.
         </P>
@@ -183,14 +184,15 @@ export const tutorial_caps = (
             <R n="rs-willow25-authorisation-WriteCapability" />.
           </Li>
           <Li>
-            We then used it to turn a <R n="rs-willow25-entry-Entry" /> into a
+            We then used it to turn an <R n="rs-willow25-entry-Entry" /> into an
             {" "}
             <R n="rs-willow25-authorisation-AuthorisedEntry" />.
           </Li>
           <Li>
-            Created an <R n="owned_namespace">owned</R>{" "}
+            Finally, we created an <R n="owned_namespace">owned</R>{" "}
             <R n="rs-willow25-authorisation-WriteCapability" />, delegated it,
-            and used it to turn a <R n="rs-willow25-entry-Entry" /> into a{" "}
+            and used it to turn an <R n="rs-willow25-entry-Entry" /> into an
+            {" "}
             <R n="rs-willow25-authorisation-AuthorisedEntry" />
           </Li>
         </Ul>
