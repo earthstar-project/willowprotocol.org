@@ -120,19 +120,11 @@ export const drop_format = (
           infrastructure users already have.
         </P>
 
-        <P>
-          Finally, given that this protocol cannot interactively authorise users
-          (e.g. via{" "}
-          <R n="private_interest_overlap">
-            private interest intersection
-          </R>), drops are always fully encrypted.
-        </P>
-
         <Hsection n="drop_format_parameters" title="Parameters">
           <PreviewScope>
             <P>
               <Marginale>
-                See <R n="willow25" />{" "}
+                See <R n="willow25_drop_format" />{" "}
                 for a default recommendation of parameters.
               </Marginale>
               In order to use the drop format, one must first specify a full
@@ -215,10 +207,6 @@ export const drop_format = (
                   <R n="sl_default_ssid" />,{" "}
                   <R n="sl_default_payload_digest" />)
                 </Code>, and
-              </Li>
-              <Li>
-                a function <DefFunction n="encrypt" />{" "}
-                which encrypts the final compiled encoding.
               </Li>
             </Ul>
           </PreviewScope>
