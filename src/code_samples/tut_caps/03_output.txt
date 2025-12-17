@@ -1,1 +1,57 @@
-TODO - Nicer printing of objects!
+A communal capability: WriteCapability {
+    genesis: Communal(
+        CommunalGenesis {
+            access_mode: Write,
+            namespace_key: NamespaceId(
+                -1111111111111111111111111111111111111111111111111111111111111111,
+            ),
+            user_key: SubspaceId(
+                e28e9da138838ebed5eabdbaa7d4ed8bfc10213be3c3df1b2cb38a7585e38957,
+            ),
+        },
+    ),
+    delegations: [],
+}
+Entry for communal namespace was authorised!
+A delegated owned capability: WriteCapability {
+    genesis: Owned(
+        OwnedGenesis {
+            access_mode: Write,
+            namespace_key: NamespaceId(
+                -7e9f5c443cd2b20e3cda33f1e9deb614f8a5215526cd84a69b34b8254f458011,
+            ),
+            user_key: SubspaceId(
+                e28e9da138838ebed5eabdbaa7d4ed8bfc10213be3c3df1b2cb38a7585e38957,
+            ),
+            initial_authorisation: ed25519::Signature {
+                R: 0x9f88df74d7b9218ad350c311df15b18a5d5918e67a5d0cf449240ab2ba46ee19,
+                s: 0x611df642f680487ae3b86dfbe6ca7521f7d0a863a73cae6f489bcb03c4823205,
+            },
+        },
+    ),
+    delegations: [
+        Delegation {
+            area: Area {
+                subspace: Some(
+                    SubspaceId(
+                        7f010d66a791de15d84c3d8f6973ba4fcf8581874b497b036d1b20d46fd7d60f,
+                    ),
+                ),
+                path: Path(
+                    <empty>,
+                ),
+                times: Timestamp(
+                    0,
+                )..,
+            },
+            user: SubspaceId(
+                7f010d66a791de15d84c3d8f6973ba4fcf8581874b497b036d1b20d46fd7d60f,
+            ),
+            signature: ed25519::Signature {
+                R: 0x4fca226c8b31334a260225e51f7c932ebfbe4404b8c9d8d889914059648a0f6f,
+                s: 0x179e00882bddea4d658cbc33079cbec2e5254829c00b46baa3043ecbba78740f,
+            },
+        },
+    ],
+}
+Entry for owned namespace was authorised!

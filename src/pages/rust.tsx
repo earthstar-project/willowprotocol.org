@@ -58,9 +58,9 @@ export const rust = (
       </P>
       <P>
         The <R n="rs-willow25" /> crate currently implements the{" "}
-        <R n="data_model" />. Over the coming weeks, we'll add implementations
-        of <R n="meadowcap" />, persistent storage, and the{" "}
-        <R n="willow_drop_format" />.
+        <R n="data_model" /> and{" "}
+        <R n="meadowcap" />. Over the coming weeks, we'll add implementations of
+        persistent storage, and the <R n="willow_drop_format" />.
       </P>
       <Hsection n="rs_tutorials" title="Tutorials">
         <P>
@@ -77,11 +77,12 @@ export const rust = (
           <Li>
             <R n="tut-grouping">Work with groupings</R>
           </Li>
+          <Li>
+            <R n="tut-caps">Create and use capabilities</R>
+          </Li>
           {
             /* <omnomnom>
-            <Li>
-              <R n="tut-caps">Create and use capabilities</R>
-            </Li>
+
             <Li>
               <R n="tut-store">Work with a Store</R>
             </Li>

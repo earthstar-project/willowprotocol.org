@@ -156,7 +156,7 @@ export const tutorial_entry = (
           </Li>
           <Li>
             We accessed fields of the entries with methods such as{" "}
-            <R n="rs-willow25-entry-Entrylike-namespace_id" />.
+            <R n="rs-willow25-groupings-Namespaced-namespace_id" />.
           </Li>
           <Li>
             We compared entries with methods such as{" "}

@@ -106,6 +106,11 @@ export const tutorial_groupings = (
             and did the same things!
           </Li>
         </Ul>
+        <P>
+          Now that we know about groupings, we can move on to the tutorial for
+          {" "}
+          <R n="tut-caps">creating and working with capabilities</R>.
+        </P>
       </Hsection>
     </>
   </TutorialTemplate>
