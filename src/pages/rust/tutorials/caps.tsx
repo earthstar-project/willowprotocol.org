@@ -78,11 +78,11 @@ export const tutorial_caps = (
           decorations={[
             {
               start: {
-                line: 16,
+                line: 21,
                 character: 0,
               },
               end: {
-                line: 30,
+                line: 39,
                 character: 0,
               },
               properties: {
@@ -136,11 +136,11 @@ export const tutorial_caps = (
           decorations={[
             {
               start: {
-                line: 31,
+                line: 41,
                 character: 0,
               },
               end: {
-                line: 65,
+                line: 82,
                 character: 0,
               },
               properties: {
