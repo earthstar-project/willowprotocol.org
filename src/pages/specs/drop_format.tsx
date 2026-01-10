@@ -44,7 +44,9 @@ export const drop_format = (
           <P>
             <Marginale inlineable>
               <Img
-                src={<ResolveAsset asset={["sideload", "sideload_spot.png"]} />}
+                src={
+                  <ResolveAsset asset={["dropformat", "dropformat_spot.png"]} />
+                }
                 alt={`An ornamental drawing of various characters transporting and discovering cardboard boxes. Dalton is looking at a map, unaware of the cardboard boxes behind the bush next to them. Alfie is transporting two cardboard boxes on the back of a bicycle. Betty is preparing to launch a cardboard box with a catapult, and seems rather pleased about it.`}
               />
               <MarginCaption>
@@ -85,7 +87,9 @@ export const drop_format = (
           <P>
             <Marginale inlineable>
               <Img
-                src={<ResolveAsset asset={["sideload", "example_flow.png"]} />}
+                src={
+                  <ResolveAsset asset={["dropformat", "example_flow.png"]} />
+                }
                 alt={`A diagram of an ad-hoc network. An old computer connects to a newer desktop computer via a USB key. The newer desktop computer connects to a smartphone via email. The smartphone connects to another smartphone via a messaging app. And that smartphone connects to a laptop via a local wireless connection.`}
               />
               <MarginCaption>
@@ -162,7 +166,7 @@ export const drop_format = (
                 </Marginale>
                 A <R n="relative_encoding_relation" />{" "}
                 <DefType
-                  n="SideloadingEncodeAuthorisationToken"
+                  n="DropformatEncodeAuthorisationToken"
                   r="EncodeAuthorisationToken"
                   preview={
                     <P>
@@ -459,7 +463,7 @@ export const drop_format = (
                         </Code>
                       </CodeFor>,
                       <CodeFor
-                        enc="SideloadingEncodeAuthorisationToken"
+                        enc="DropformatEncodeAuthorisationToken"
                         // notStandalone
                         relativeTo={
                           <>
@@ -593,7 +597,7 @@ export const drop_format = (
           </PreviewScope>
         </Hsection>
 
-        <Hsection n="sideload_transport" title="Transport">
+        <Hsection n="dropformat_transport" title="Transport">
           <P>
             Once created, a <R n="drop" />{" "}
             can be transported by whatever means a single bytestring can be
@@ -607,8 +611,8 @@ export const drop_format = (
         </Hsection>
 
         <Img
-          src={<ResolveAsset asset={["sideload", "sideload_emblem.png"]} />}
-          alt={`A Sideloading emblem: A stylised drawing of tufty grass growing in between the cracks of paving stones, next to a graffiti-styled rendition of the word "Sideload".`}
+          src={<ResolveAsset asset={["dropformat", "dropformat_emblem.png"]} />}
+          alt={`A Drop Format emblem: A stylised drawing of tufty grass growing in between the cracks of paving stones, next to a graffiti-styled rendition of the words "Drop Format".`}
         />
       </PageTemplate>
     </File>

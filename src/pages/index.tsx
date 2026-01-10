@@ -180,7 +180,7 @@ export const index = (
         tagline="Private and efficient synchronisation"
         emblem={
           <Img
-            src={<ResolveAsset asset={["landing", "spec_wgps.png"]} />}
+            src={<ResolveAsset asset={["landing", "spec_confidential_sync.png"]} />}
             alt={`Emblem`}
           />
         }
@@ -199,7 +199,7 @@ export const index = (
         tagline="Securely deliver data by any means possible."
         emblem={
           <Img
-            src={<ResolveAsset asset={["landing", "spec_sideloading.png"]} />}
+            src={<ResolveAsset asset={["landing", "spec_dropformat.png"]} />}
             alt={`Emblem`}
           />
         }

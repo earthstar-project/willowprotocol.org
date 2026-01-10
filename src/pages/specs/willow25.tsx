@@ -317,7 +317,7 @@ export const willow25 = (
           </P>
 
           <P>
-            The <R n="SideloadingEncodeAuthorisationToken" /> relation is{" "}
+            The <R n="DropformatEncodeAuthorisationToken" /> relation is{" "}
             <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
           </P>
 

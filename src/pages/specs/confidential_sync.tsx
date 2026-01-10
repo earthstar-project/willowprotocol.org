@@ -3564,7 +3564,7 @@ export const confidential_sync = (
           </Hsection>
         </Hsection>
         <Img
-          src={<ResolveAsset asset={["sync", "wgps_emblem.png"]} />}
+          src={<ResolveAsset asset={["sync", "confidential_sync_emblem.png"]} />}
           alt={`A Confidential Sync emblem: A stylised drawing of a grapevine next to hand-lettered typewriter style rendition of 'Confidential Sync'.`}
         />
       </PageTemplate>

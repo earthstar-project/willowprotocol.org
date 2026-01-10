@@ -1316,7 +1316,7 @@ export const uris = (
                   </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>?<Orange>
-                    hints=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
+                    hints=wcsp%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
                   </Orange>
                 </Code>
               </Li>
@@ -1697,7 +1697,7 @@ export const uris = (
                   </Purple>.<Vermillion>alfie</Vermillion>/<SkyBlue>
                     blog
                   </SkyBlue>?area&<Orange>
-                    hints=wgps%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
+                    hints=wcsp%3A%2F%2Fworm-blossom.org%3A1234%2Fexample;wtp%3A%2F%2Fworm-blossom.org%3A1235%2Fexample
                   </Orange>
                 </Code>
               </Li>
