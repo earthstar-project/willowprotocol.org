@@ -77,10 +77,9 @@ export const drop_format = (
             <Def n="drop" rs="drops">drops</Def>, arbitrary sets of{" "}
             <Rs n="Entry" /> and <Rs n="Payload" />{" "}
             compiled into a single bytestring. A <R n="drop" />{" "}
-            can then be treated as a kind of static <R n="store" /> which can be
-            {" "}
-            <R n="store_join">joined</R> with any other <R n="store" />{" "}
-            as per the <R n="data_model">Willow Data Model</R>.
+            can then be treated as a kind of static set of <Rs n="store" />{" "}
+            which can be <R n="store_join">joined</R> with any other{" "}
+            <Rs n="store" /> as per the <R n="data_model">Willow Data Model</R>.
           </P>
 
           <P>
@@ -218,7 +217,7 @@ export const drop_format = (
             is a collection of entries, together with verifiable subslices of
             their payloads. The payload slice verification relies on{" "}
             <AE href="https://worm-blossom.github.io/bab/">Bab</AE>;{" "}
-            <Rs n="drop" /> store the{" "}
+            <Rs n="drop" /> store{" "}
             <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
               baseline verifiable slice streams
             </AE>{" "}
@@ -232,13 +231,9 @@ export const drop_format = (
               and a sequence of non-overlapping slices of payload{" "}
               <AE href="https://worm-blossom.github.io/bab/#chunk">chunks</AE>
               {" "}
-              with stricly increasing start offsets. The{" "}
-              <Rs n="PossiblyAuthorisedEntry" /> must all come from a single
-              {" "}
-              <R n="namespace" /> with <R n="NamespaceId" />{" "}
-              <DefValue n="sl_namespace" r="namespace" />. The Sideloading
-              Protocol then defines how to encode this sequence as a single
-              bytestring (the corresponding <R n="drop" />).
+              with stricly increasing start offsets. The Drop Format then
+              defines how to encode this sequence as a single bytestring (the
+              corresponding <R n="drop" />).
             </P>
           </PreviewScope>
 
@@ -274,9 +269,6 @@ export const drop_format = (
                 <C64Standalone>
                   the length (number) of <R n="drop_entries" />
                 </C64Standalone>,
-                <CodeFor enc="encode_namespace_id" isFunction>
-                  <R n="sl_namespace" />
-                </CodeFor>,
                 <EncIterator
                   val={
                     <>
@@ -315,6 +307,21 @@ export const drop_format = (
                       bitfieldIff(
                         <>
                           <Code>
+                            <AccessStruct field="entry_namespace_id">
+                              <R n="sl_e" />
+                            </AccessStruct>{" "}
+                            !={" "}
+                            <AccessStruct field="entry_namespace_id">
+                              <R n="sl_e">
+                                entry_<Curly>i-1</Curly>
+                              </R>
+                            </AccessStruct>
+                          </Code>
+                        </>,
+                      ),
+                      bitfieldIff(
+                        <>
+                          <Code>
                             <AccessStruct field="entry_subspace_id">
                               <R n="sl_e" />
                             </AccessStruct>{" "}
@@ -327,65 +334,12 @@ export const drop_format = (
                           </Code>
                         </>,
                       ),
-                      {
-                        count: 1,
-                        content: (
-                          <>
-                            <Code>1</Code> if{" "}
-                            <Code>
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e" />
-                              </AccessStruct>{" "}
-                              {"> "}
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e">
-                                  entry_<Curly>i-1</Curly>
-                                </R>
-                              </AccessStruct>
-                            </Code>, <Code>0</Code> if{" "}
-                            <Code>
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e" />
-                              </AccessStruct>{" "}
-                              {"< "}
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e">
-                                  entry_<Curly>i-1</Curly>
-                                </R>
-                              </AccessStruct>
-                            </Code>, arbitrary if{" "}
-                            <Code>
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e" />
-                              </AccessStruct>{" "}
-                              {"== "}
-                              <AccessStruct field="entry_timestamp">
-                                <R n="sl_e">
-                                  entry_<Curly>i-1</Curly>
-                                </R>
-                              </AccessStruct>
-                            </Code>.
-                          </>
-                        ),
-                      },
                       c64Tag(
-                        "timediff",
+                        "timestamp",
                         2,
-                        <>
-                          <Code>
-                            abs(
-                            <AccessStruct field="entry_timestamp">
-                              <R n="sl_e" />
-                            </AccessStruct>{" "}
-                            -{" "}
-                            <AccessStruct field="entry_timestamp">
-                              <R n="sl_e">
-                                entry_<Curly>i-1</Curly>
-                              </R>
-                            </AccessStruct>
-                            )
-                          </Code>
-                        </>,
+                        <AccessStruct field="entry_timestamp">
+                          <R n="sl_e" />
+                        </AccessStruct>,
                       ),
                       c64Tag(
                         "payload_len",
@@ -439,6 +393,29 @@ export const drop_format = (
                         condition={
                           <>
                             <Code>
+                              <AccessStruct field="entry_namespace_id">
+                                <R n="sl_e" />
+                              </AccessStruct>{" "}
+                              !={" "}
+                              <AccessStruct field="entry_namespace_id">
+                                <R n="sl_e">
+                                  entry_<Curly>i-1</Curly>
+                                </R>
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        }
+                      >
+                        <CodeFor notStandalone enc="encode_namespace_id">
+                          <AccessStruct field="entry_namespace_id">
+                            <R n="sl_e" />
+                          </AccessStruct>
+                        </CodeFor>
+                      </EncConditional>,
+                      <EncConditional
+                        condition={
+                          <>
+                            <Code>
                               <AccessStruct field="entry_subspace_id">
                                 <R n="sl_e" />
                               </AccessStruct>{" "}
@@ -472,7 +449,7 @@ export const drop_format = (
                           <R n="sl_e" />
                         </AccessStruct>
                       </CodeFor>,
-                      <C64Encoding id="timediff" />,
+                      <C64Encoding id="timestamp" />,
                       <C64Encoding id="payload_len" />,
                       <CodeFor enc="encode_payload_digest">
                         <Code>
