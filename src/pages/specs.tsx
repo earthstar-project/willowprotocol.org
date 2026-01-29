@@ -41,8 +41,12 @@ export const specs = (
           delivering Willow data by whatever means possible.
         </Li>
         <Li>
+          <R n="wtp_spec">Willow Transfer Protocol</R>: A network protocol for
+          simple, request-response-based data synchronisation.
+        </Li>
+        <Li>
           <R n="willow25_spec">Willow’25</R>: A recommended set of parameters
-          for the four main specifications.
+          for the other specifications.
         </Li>
       </Ul>
 

@@ -7,6 +7,7 @@ import { data_model } from "./pages/specs/data_model.tsx";
 import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
+import { wtp } from "./pages/specs/wtp.tsx";
 import { uris } from "./pages/specs/uris.tsx";
 import { confidential_sync } from "./pages/specs/confidential_sync.tsx";
 import { drop_format } from "./pages/specs/drop_format.tsx";
@@ -211,6 +212,7 @@ const exp = (
                 {e2e}
                 {meadowcap}
                 {encodings}
+                {wtp}
                 {uris}
                 {drop_format}
                 {confidential_sync}
