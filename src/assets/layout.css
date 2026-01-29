@@ -7,7 +7,12 @@ body {
     
 }
 
-body:not(.isPreview) {
+body.isTooltip {
+    margin-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+body:not(.isTooltip) {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
     padding-top: 4rem;
@@ -28,6 +33,10 @@ body:not(.isPreview) {
   display: block;
 }
 
+.only-wide {
+  display: none;
+}
+
 /* Start implementing L2 */
 
 @media (min-width:554.6px) {
@@ -44,13 +53,20 @@ body:not(.isPreview) {
     #wrapContent {
         width: 52rem;
 
-        >*:not(section, main), section>*:not(section, main)  {
+        >*:not(section, main), section>*:not(section, main, #sim-data-model)  {
             max-width: 32rem;
         }
 
         .wide {
           max-width: 52rem;
           clear: right;
+        }
+        
+        .verywide {
+            position: relative;
+            min-width: calc(100vw - calc(1.6rem + 0.5 * calc(100vw - 32rem)));
+            max-width: calc(100vw - 0.8rem - 2 * 0.8rem);
+            clear: right;
         }
         
         > ul, section > ul {
@@ -70,6 +86,14 @@ body:not(.isPreview) {
     .sidenoteCounter {
         display: initial;
     }
+    
+    .only-wide {
+      display: block;
+    }
+    
+    .only-narrow {
+      display: none;
+    }
 }
 
 /* Start implementing L4 */
@@ -87,12 +111,12 @@ body:not(.isPreview) {
 
 /* Other styling */
 
-.previewContainer {
+.tooltipContainer {
   max-width: min(33.6rem, 100vw);
 }
 
 @media (min-width:874.6px) {
-  .previewContainer.wide {
+  .tooltipContainer.wide {
     max-width: min(calc(53.6rem + 18px), 100vw);
   }
 }

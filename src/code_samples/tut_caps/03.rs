@@ -1,96 +1,83 @@
-use willow_25::{
-    AccessMode, Area, AreaSubspace, AuthorisedEntry, Capability, Entry, NamespaceId25, Path,
-    PayloadDigest25, Range, SubspaceId25,
-};
+use rand::rngs::OsRng;
+use willow25::prelude::*;
 
 fn main() {
-    // Owned capabilities
+  let mut csprng = OsRng;
 
-    let (alfie_id, alfie_key) = SubspaceId25::new();
-    let (my_namespace, my_namespace_secret) = NamespaceId25::new_owned();
+  let (alfie_id, alfie_secret) =
+    randomly_generate_subspace(&mut csprng);
+  let communal_namespace_id =
+    NamespaceId::from_bytes(&[17; 32]);
 
-    let root_cap = Capability::new_owned(
-        my_namespace,
-        &my_namespace_secret,
-        alfie_id.clone(),
-        AccessMode::Read,
-    )
-    .unwrap();
-
-    println!("An owned namespace capability: {:#?}", root_cap);
-
-    let (betty_id, betty_key) = SubspaceId25::new();
-
-    let only_blogs_area = Area::new(
-        AreaSubspace::Any,
-        Path::from_slices(&["blog"]).unwrap(),
-        Range::new_open(0),
+  // Create a new communal capability.
+  // To use it, we'll need Alfie's secret.
+  let communal_cap =
+    WriteCapability::new_communal(
+      communal_namespace_id.clone(),
+      alfie_id.clone(),
     );
 
-    let cap_for_betty = root_cap
-        .delegate(&alfie_key, &betty_id, &only_blogs_area)
-        .unwrap();
+  println!("A communal capability: {:#?}", communal_cap);
 
-    println!(
-        "A delegated owned namespace cap for Betty: {:#?}",
-        cap_for_betty
+  let entry_communal = Entry::builder()
+    .namespace_id(communal_namespace_id.clone())
+    .subspace_id(alfie_id.clone())
+    .path(path!("/ideas"))
+    .timestamp(12345)
+    .payload(b"chocolate with mustard")
+    .build().unwrap();
+
+  // Authorise the entry using the communal
+  // capability and Alfie's secret.
+  let communal_authed = entry_communal
+    .into_authorised_entry(
+      &communal_cap,
+      &alfie_secret,
     );
 
-    // Communal capabilities
+  assert!(communal_authed.is_ok());
+  println!("Entry for communal namespace was authorised!");
 
-    let communal_namespace = NamespaceId25::new_communal();
+  // Create the keypair of an owned namespace.
+  let (owned_namespace_id, namespace_secret) =
+    randomly_generate_owned_namespace(&mut csprng);
 
-    let alfie_communal_cap =
-        Capability::new_communal(communal_namespace.clone(), alfie_id, AccessMode::Write).unwrap();
+  // Create a new owned capability by using
+  // the namespace secret.
+  // To delegate it, we'll need Alfie's secret.
+  let mut owned_cap = WriteCapability::new_owned(&namespace_secret, alfie_id);
 
-    println!(
-        "A communal namespace cap for Alfie: {:#?}",
-        alfie_communal_cap
-    );
+  // Create a keypair for Betty.
+  let (betty_id, betty_secret) =
+    randomly_generate_subspace(&mut csprng);
 
-    let betty_communal_cap = Capability::new_communal(
-        communal_namespace.clone(),
-        betty_id.clone(),
-        AccessMode::Write,
-    )
-    .unwrap();
+  // Delegate our owned cap to Betty,
+  // restricting her to her own subspace.
+  // To use it, we'll need Betty's secret.
+  owned_cap.delegate(
+    &alfie_secret,
+    Area::new_subspace_area(betty_id.clone()),
+    betty_id.clone(),
+  );
 
-    println!(
-        "A communal namespace cap for betty: {:#?}",
-        betty_communal_cap
-    );
+  println!(
+    "A delegated owned capability: {:#?}",
+    owned_cap,
+  );
 
-    // Authorised entries
+  let entry_owned = Entry::builder()
+    .namespace_id(owned_namespace_id.clone())
+    .subspace_id(betty_id)
+    .path(path!("/blog"))
+    .timestamp(45689)
+    .payload(b"worried about alfie...")
+    .build().unwrap();
 
-    let betty_entry = Entry::new(
-        communal_namespace.clone(),
-        betty_id.clone(),
-        Path::new_empty(),
-        100,
-        0,
-        PayloadDigest25::default(),
-    );
+  // Authorise the entry using the owned
+  // capability and Betty's secret.
+  let owned_authed = entry_owned
+    .into_authorised_entry(&owned_cap, &betty_secret);
 
-    let valid_token = betty_communal_cap
-        .authorisation_token(&betty_entry, betty_key)
-        .unwrap();
-
-    let authorised_entry = AuthorisedEntry::new(betty_entry, valid_token).unwrap();
-
-    println!("An authorised entry: {:?}", authorised_entry);
-
-    let (_muriarty_id, muriarty_key) = SubspaceId25::new();
-
-    let malicious_entry = Entry::new(
-        communal_namespace,
-        betty_id,
-        Path::from_slices(&["i", "stink"]).unwrap(),
-        100,
-        0,
-        PayloadDigest25::default(),
-    );
-
-    let signing_error = betty_communal_cap.authorisation_token(&malicious_entry, muriarty_key);
-
-    println!("A signing error: {:?}", signing_error);
+  assert!(owned_authed.is_ok());
+  println!("Entry for owned namespace was authorised!")
 }

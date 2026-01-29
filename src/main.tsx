@@ -7,9 +7,10 @@ import { data_model } from "./pages/specs/data_model.tsx";
 import { willow25 } from "./pages/specs/willow25.tsx";
 import { e2e } from "./pages/specs/e2e.tsx";
 import { rbsr } from "./pages/specs/rbsr.tsx";
-import { sync } from "./pages/specs/sync.tsx";
 import { wtp } from "./pages/specs/wtp.tsx";
-import { sideloading } from "./pages/specs/sideloading.tsx";
+import { uris } from "./pages/specs/uris.tsx";
+import { confidential_sync } from "./pages/specs/confidential_sync.tsx";
+import { drop_format } from "./pages/specs/drop_format.tsx";
 import { grouping_entries } from "./pages/specs/grouping_entries.tsx";
 import { private_interest_overlap } from "./pages/specs/private_interest_overlap.tsx";
 import { handshake_and_encryption } from "./pages/specs/handshake_and_encryption.tsx";
@@ -46,7 +47,7 @@ import { join as posixJoin } from "@std/path/posix";
 const ctx = new Context();
 
 const prettyPreviewsInfo: ScriptDependencyInfo = {
-  dep: ["pretty_previews.js"],
+  dep: ["webtt.js"],
   scriptProps: { defer: true, type: "module" },
 };
 
@@ -114,7 +115,7 @@ const exp = (
 
     <Dir name="build">
       <ServerOptimisations>
-        <ServerRoot url="">
+        <ServerRoot url="https://willowprotocol.org/">
           <Dir name="assets">
             {/* See https://github.com/worm-blossom/macromania-assets */}
             <Assets
@@ -152,6 +153,8 @@ const exp = (
                   "favicon.svg": transformCopy,
                   "layout.css": transformCopy,
                   "textFonts.css": transformCopy,
+                  "meadowcap_emblem_standalone.png": transformCopy,
+                  "willow_emblem_standalone.png": transformCopy,
                 },
               }}
             />
@@ -209,9 +212,10 @@ const exp = (
                 {e2e}
                 {meadowcap}
                 {encodings}
-                {sideloading}
-                {sync}
                 {wtp}
+                {uris}
+                {drop_format}
+                {confidential_sync}
                 {rbsr}
                 {lcmux}
                 {grouping_entries}

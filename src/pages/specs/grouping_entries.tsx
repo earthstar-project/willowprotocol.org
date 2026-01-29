@@ -18,6 +18,7 @@ import {
   AE,
   Alj,
   Blue,
+  Curly,
   Green,
   Gwil,
   MarginCaption,
@@ -82,8 +83,7 @@ export const grouping_entries = (
           <Rs n="entry_path" />, and{" "}
           <Rs n="entry_timestamp" />. These definitions are not necessary for
           defining and understanding the core data model, but we make heavy use
-          of them in our <R n="meadowcap">recommended capability system</R>{" "}
-          and our <R n="sync">recommended synchronisation protocol</R>.
+          of them throughout our other specifications.
         </P>
 
         <Hsection n="ranges" title="Ranges">
@@ -97,17 +97,14 @@ export const grouping_entries = (
               <R n="closed_range" /> or an <R n="open_range" />. A{" "}
               <Def n="closed_range" r="closed range" rs="closed ranges" />{" "}
               consists of a{" "}
-              <Def n="start_value" r="start value" rs="start values" /> and an
-              {" "}
-              <Def n="end_value" r="end value" rs="end values" /> , an{" "}
+              <Def n="start_value" r="start value" rs="start values" />{" "}
+              and a strictly greater{" "}
+              <Def n="end_value" r="end value" rs="end values" />, an{" "}
               <Def n="open_range" r="open range" rs="open ranges" />{" "}
               consists only of a <R n="start_value" />. A <R n="range" />{" "}
               <Def n="range_include" r="include">includes</Def>{" "}
               all values greater than or equal to its <R n="start_value" />{" "}
-              and strictly less than its <R n="end_value" />{" "}
-              (if it is has one). A <R n="range" /> is{" "}
-              <Def n="range_empty" r="empty" /> if it{" "}
-              <R n="range_include">includes</R> no values.
+              and strictly less than its <R n="end_value" /> (if it is has one).
             </P>
           </PreviewScope>
 
@@ -288,7 +285,7 @@ export const grouping_entries = (
             <P>
               Let <DefValue n="rangeisectr1" r="r1" /> and{" "}
               <DefValue n="rangeisectr2" r="r2" /> be <Rs n="range" />{" "}
-              (over the same types of values). The{" "}
+              (over the same types of values). The (non-empty){" "}
               <Def n="range_intersection" r="intersection" rs="intersections" />
               {" "}
               of <R n="rangeisectr1" /> and <R n="rangeisectr2" />{" "}
@@ -303,7 +300,11 @@ export const grouping_entries = (
               <R n="rangeisectr1" /> and <R n="rangeisectr2" />{" "}
               (if exactly one of them is a <R n="closed_range" />), or no{" "}
               <R n="end_value" /> (if both <R n="rangeisectr1" /> and{" "}
-              <R n="rangeisectr2" /> are <Rs n="open_range" />).
+              <R n="rangeisectr2" /> are{" "}
+              <Rs n="open_range" />). If the resulting range would have a{" "}
+              <R n="end_value" /> less than or equal to the{" "}
+              <R n="start_value" />, the <R n="range_intersection" />{" "}
+              is not defined.
             </P>
           </PreviewScope>
 
@@ -375,9 +376,9 @@ export const grouping_entries = (
             <P>
               We define{" "}
               <Code>
-                <DefFunction n="default_3d_range" />(<DefValue
-                  n="default_3d_ss"
-                  r="default_subspace"
+                <DefFunction n="full_3d_range" />(<DefValue
+                  n="least_3d_ss"
+                  r="least_subspace"
                 />)
               </Code>{" "}
               to denote the <R n="D3Range" /> with the following members:
@@ -387,7 +388,7 @@ export const grouping_entries = (
               <Li>
                 <R n="D3RangeSubspace" /> is the <R n="open_range">open</R>{" "}
                 <R n="SubspaceRange" /> with <R n="SubspaceRangeStart" />{" "}
-                <R n="default_3d_ss" />,
+                <R n="least_3d_ss" />,
               </Li>
               <Li>
                 <R n="D3RangePath" /> is the <R n="open_range">open</R>{" "}
@@ -572,15 +573,6 @@ export const grouping_entries = (
 
           <PreviewScope>
             <P>
-              An <R n="Area" /> is <Def n="area_empty" r="empty" /> if it{" "}
-              <R n="area_include">includes</R> no{" "}
-              <Rs n="Entry" />. This is the case if and only if its{" "}
-              <R n="AreaTime" /> is <R n="range_empty" />.
-            </P>
-          </PreviewScope>
-
-          <PreviewScope>
-            <P>
               An <R n="Area" />{" "}
               <Def n="area_include_area" r="include">includes</Def> another{" "}
               <R n="Area" /> if the first <R n="Area" />{" "}
@@ -732,7 +724,9 @@ export const grouping_entries = (
                         <R n="AreaOfInterest" />, an <R n="Entry" />’s{" "}
                         <R n="entry_timestamp" /> must be among the{" "}
                         <R n="aoi_count" /> <R n="entry_newer">newest</R>{" "}
-                        <Rs n="Entry" />, unless <R n="aoi_count" /> is zero.
+                        <Rs n="Entry" />. If the <R n="aoi_count" /> is{" "}
+                        <M>0</M>, then no{" "}
+                        <Rs n="Entry" /> are excluded instead.
                       </>
                     ),
                     dedicatedLine: true,
@@ -748,9 +742,14 @@ export const grouping_entries = (
                       <>
                         The total <Rs n="entry_payload_length" /> of all{" "}
                         <R n="aoi_include">included</R> <Rs n="Entry" />{" "}
-                        is at most <R n="aoi_size" />, unless <R n="aoi_size" />
+                        is at most <R n="aoi_size" />. If the <R n="aoi_size" />
                         {" "}
-                        is zero.
+                        is{" "}
+                        <M>
+                          2^<Curly>64</Curly> - 1
+                        </M>{" "}
+                        (the greatest possible <R n="U64" />), then no{" "}
+                        <Rs n="Entry" /> are excluded.
                       </>
                     ),
                     dedicatedLine: true,
@@ -783,7 +782,11 @@ export const grouping_entries = (
                 <AccessStruct field="aoi_count">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
-                is zero, or <R n="aoi_include_e" /> is among the{" "}
+                is{" "}
+                <M post=",">
+                  2^<Curly>64</Curly> - 1
+                </M>{" "}
+                or <R n="aoi_include_e" /> is among the{" "}
                 <AccessStruct field="aoi_count">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
@@ -794,8 +797,11 @@ export const grouping_entries = (
                 <AccessStruct field="aoi_size">
                   <R n="aoi_include_a" />
                 </AccessStruct>{" "}
-                is zero, or the sum of the <Rs n="entry_payload_length" /> of
-                {" "}
+                is{" "}
+                <M post=",">
+                  2^<Curly>64</Curly> - 1
+                </M>{" "}
+                or the sum of the <Rs n="entry_payload_length" /> of{" "}
                 <R n="aoi_include_e" /> and all <R n="entry_newer" />{" "}
                 <Rs n="Entry" /> in <R n="aoi_include_s" />{" "}
                 is less than or equal to{" "}
@@ -837,75 +843,24 @@ export const grouping_entries = (
                 </AccessStruct>, whose
               </Li>
               <Li>
-                <R n="aoi_count" /> is{" "}
-                <Ul>
-                  <Li>
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    is zero,
-                  </Li>
-                  <Li>
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    is zero, or
-                  </Li>
-                  <Li>
-                    the minimum of{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    and{" "}
-                    <AccessStruct field="aoi_count">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    otherwise, and whose
-                  </Li>
-                </Ul>
+                <R n="aoi_count" /> is the minimum of{" "}
+                <AccessStruct field="aoi_count">
+                  <R n="aoi_inter_a1" />
+                </AccessStruct>{" "}
+                and{" "}
+                <AccessStruct field="aoi_count">
+                  <R n="aoi_inter_a2" />
+                </AccessStruct>, and whose
               </Li>
               <Li>
-                <R n="aoi_size" /> is<Ul>
-                  <Li>
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    is zero,
-                  </Li>
-                  <Li>
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    if{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    is zero, or
-                  </Li>
-                  <Li>
-                    the minimum of{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a1" />
-                    </AccessStruct>{" "}
-                    and{" "}
-                    <AccessStruct field="aoi_size">
-                      <R n="aoi_inter_a2" />
-                    </AccessStruct>{" "}
-                    otherwise.
-                  </Li>
-                </Ul>
+                <R n="aoi_size" /> is the minimum of{" "}
+                <AccessStruct field="aoi_size">
+                  <R n="aoi_inter_a1" />
+                </AccessStruct>{" "}
+                and{" "}
+                <AccessStruct field="aoi_size">
+                  <R n="aoi_inter_a2" />
+                </AccessStruct>.
               </Li>
             </Ul>
           </PreviewScope>

@@ -17,8 +17,11 @@ export const tutorials = (
     {tutorial_entry}
     {tutorial_groupings}
     {tutorial_caps}
+    {
+      /*
     {tutorial_store}
-    {tutorial_drop}
+    {tutorial_drop} */
+    }
   </Dir>
 );
 

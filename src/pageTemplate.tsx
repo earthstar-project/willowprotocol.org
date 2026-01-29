@@ -135,7 +135,7 @@ export function PageTemplate(
                   name="description"
                   content={htmlDescription
                     ? <exps x={htmlDescription} />
-                    : "Protocols for synchronisable data stores. The best parts? Fine-grained permissions, a keen approach to privacy, destructive edits, and a dainty bandwidth and memory footprint."}
+                    : "Peer-to-peer protocols which scale up, down, and sideways. Sychronisable data storage, fine-grained access control, private and efficient synchronisation, and secure data delivery by any means possible."}
                 />
                 <Script>let FF_FOUC_FIX;</Script>
                 {/*to prevent Firefox FOUC, this must be here*/}
@@ -240,7 +240,6 @@ export function PageTemplate(
                     <Li>
                       <R n="about">About Us</R>
                     </Li>
-
                     <Li>
                       <R n="more">More</R>
                     </Li>
@@ -248,6 +247,22 @@ export function PageTemplate(
                 </Nav>
 
                 <Div>
+                  <Marginale inlineable>
+                    <A href="https://worm-blossom.org" clazz="funder">
+                      <Img
+                        src={<ResolveAsset asset={["graphics", "wb.png"]} />}
+                        alt="The emblem of worm-blossom."
+                      />
+                    </A>
+                  </Marginale>
+                  <P>
+                    Willow is a{" "}
+                    <A clazz="external" href="https://worm-blossom.org">
+                      worm-blossom
+                    </A>{" "}
+                    project.
+                  </P>
+
                   <Marginale inlineable>
                     <A href="https://nlnet.nl" clazz="funder">
                       <Img

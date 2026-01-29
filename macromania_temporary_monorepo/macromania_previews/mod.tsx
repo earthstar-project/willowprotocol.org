@@ -143,7 +143,7 @@ export function PreviewScope(
   function post(ctx: Context) {
     setState(ctx, previousState);
 
-    // Any css and js dependencies that got registered in this preview scope should also be registered in the parent scope (which will transitievly extend to all ancestors).
+    // Any css and js dependencies that got registered in this preview scope should also be registered in the parent scope (which will transitively extend to all ancestors).
     for (const cssDep of myState.cssDeps) {
       if (previousState && previousState.cssDeps.indexOf(cssDep) === -1) {
         previousState.cssDeps.push(cssDep);
@@ -183,11 +183,11 @@ export function PreviewScope(
       const headPropsTmp = p.headProps ?? {};
       const bodyPropsTmp = { ...p.bodyProps };
       if (bodyPropsTmp.clazz === undefined) {
-        bodyPropsTmp.clazz = "isPreview";
+        bodyPropsTmp.clazz = "isTooltip";
       } else if (Array.isArray(bodyPropsTmp.clazz)) {
-        bodyPropsTmp.clazz = [...bodyPropsTmp.clazz, "isPreview"];
+        bodyPropsTmp.clazz = [...bodyPropsTmp.clazz, "isTooltip"];
       } else {
-        bodyPropsTmp.clazz = [bodyPropsTmp.clazz, "isPreview"];
+        bodyPropsTmp.clazz = [bodyPropsTmp.clazz, "isTooltip"];
       }
 
       const fileName = `${p.name}.html`;
@@ -246,13 +246,17 @@ export function PreviewScope(
   }
 
   return (
-    <lifecycle pre={pre} post={post}>
-      <Config options={[<ConfigWebserverRoot linkType="absolute" />]}>
+    <Config
+      options={[
+        <ConfigWebserverRoot linkType="absolute" alwaysUseDomain />,
+      ]}
+    >
+      <lifecycle pre={pre} post={post}>
         <map fun={createPreviews}>
           <exps x={children} />
         </map>
-      </Config>
-    </lifecycle>
+      </lifecycle>
+    </Config>
   );
 }
 

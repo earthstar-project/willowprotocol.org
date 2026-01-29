@@ -1,0 +1,19 @@
+{
+  "name": "@gwil/mrss",
+  "imports": {
+    "@std/path": "jsr:@std/path@^1.0.7",
+    "macromania": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromania-logger": "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_logger/mod.tsx",
+    "macromania-outfs": "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_outfs/mod.tsx",
+    "macromania-webserverroot": "https://github.com/worm-blossom/macromania_temporary_monorepo/raw/main/macromania_webserverroot/mod.tsx",
+    "macromaniajsx/jsx-dev-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts",
+    "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts"
+  },
+  "exports": {
+    ".": "mod.ts"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "macromaniajsx"
+  }
+}

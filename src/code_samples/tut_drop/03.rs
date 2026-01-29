@@ -58,7 +58,7 @@ fn main() {
                 println!("We ingested the entry!")
             }
 
-            // Encode a sideloading drop into a Vec<u8>
+            // Encode a drop into a Vec<u8>
             let full_area = Area::new_full();
             let drop_destination = IntoVec::<u8>::new();
             let intovec_with_drop = create_drop(

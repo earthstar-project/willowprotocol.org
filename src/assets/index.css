@@ -51,37 +51,44 @@ Entrypoint for the main stylesheet.
 }
 
 .orange,
-.orange a {
+.orange a,
+a.orange[data-ref] {
     color: var(--wong-orange);
 }
 
 .sky-blue,
-.sky-blue a {
+.sky-blue a,
+a.sky-blue[data-ref]  {
     color: var(--wong-blue);
 }
 
 .green,
-.green a {
+.green a,
+a.green[data-ref]  {
     color: var(--wong-green);
 }
 
 .yellow,
-.yellow a {
+.yellow a,
+a.yellow[data-ref] {
     color: var(--wong-yellow);
 }
 
 .blue,
-.blue a {
+.blue a,
+a.blue[data-ref]  {
     color: var(--wong-blue);
 }
 
 .vermillion,
-.vermillion a {
+.vermillion a,
+a.vermillion[data-ref]  {
     color: var(--wong-vermillion);
 }
 
 .purple,
-.purple a {
+.purple a,
+a.purple[data-ref]  {
     color: var(--wong-purple);
 }
 
@@ -133,7 +140,7 @@ h6 {
     padding-top: 0.5em;
     margin-bottom: 0.5em;
 
-    > a[data-ref].hsection {
+    >a[data-ref].hsection {
         color: var(--nearly-black);
         text-decoration: none;
     }
@@ -249,6 +256,14 @@ nav.ctas ul li#rust-nav a[data-ref]:hover {
     color: var(--wong-vermillion);
     border: 1px solid var(--wong-vermillion);
     text-decoration: none;
+}
+
+div#outline {
+    font-size: 1.5rem;
+}
+
+div#outline p {
+    margin: 2rem 0;
 }
 
 .path {
@@ -403,7 +418,7 @@ a.ref,
 }
 
 a.ref:hover,
-dfn > a:hover,
+dfn>a:hover,
 .enclosing a:hover {
     background: rgba(255, 228, 0, 0.199);
     text-decoration-color: var(--nearly-black);
@@ -421,16 +436,14 @@ dfn > a:hover,
 hr {
     border: 0;
     height: 1px;
-    background-image: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0),
-        var(--dark-green),
-        rgba(0, 0, 0, 0)
-    );
+    background-image: linear-gradient(to right,
+            rgba(0, 0, 0, 0),
+            var(--dark-green),
+            rgba(0, 0, 0, 0));
     margin: 2.2rem 0;
 }
 
-footer > nav > ul {
+footer>nav>ul {
     display: flex;
     gap: 1ch;
     padding: 0;
@@ -476,7 +489,7 @@ h1 img {
     width: 32rem;
 }
 
-table {
+table:not(#sim-data-model table) {
     width: 100%;
     border-collapse: collapse;
     margin: 0.5em 0;
@@ -487,7 +500,7 @@ main aside table {
     width: 100%;
 }
 
-tbody {
+tbody:not(#sim-data-model tbody) {
     border-top: 1px solid var(--light-green);
     border-bottom: 1px solid var(--light-green);
 }
@@ -594,7 +607,7 @@ th {
     background-size: 480px;
 }
 
-nav.toc > ol {
+nav.toc>ol {
     padding-left: 1.5em;
 }
 
@@ -620,7 +633,7 @@ nav.toc > ol {
 /* DefRef */
 /**********/
 
-a[data-preview-anchor] {
+a[data-tooltip-anchor] {
     text-decoration-line: underline;
     text-decoration-style: dotted;
     text-decoration-color: var(--nearly-black);
@@ -630,7 +643,7 @@ dfn {
     font-style: italic;
 }
 
-dfn > a[data-preview-anchor] {
+dfn>a[data-tooltip-anchor] {
     text-decoration: none;
 }
 
@@ -643,7 +656,7 @@ dfn > a[data-preview-anchor] {
     font-size: 0.9rem;
     margin-bottom: 1em;
 
-    > .sidenoteCounter {
+    >.sidenoteCounter {
         margin-right: 0.2rem;
     }
 }
@@ -658,13 +671,13 @@ dfn > a[data-preview-anchor] {
     user-select: none;
 }
 
-.marginale > img {
+.marginale>img {
     padding: 0;
     margin: 0;
 }
 
 /************/
-/* Previews */
+/* Tooltips */
 /************/
 
 @keyframes fadeIn {
@@ -677,7 +690,7 @@ dfn > a[data-preview-anchor] {
     }
 }
 
-.previewContainer {
+.tooltipContainer {
     position: absolute;
     background: inherit;
     box-shadow: 5px 5px 10px 0px rgba(68, 68, 68, 0.8);
@@ -693,7 +706,7 @@ iframe {
     height: inherit;
 }
 
-.previewFadeout {
+.tooltipFadeout {
     visibility: hidden;
     opacity: 0;
     transition:
@@ -701,12 +714,12 @@ iframe {
         opacity 0.07s linear;
 }
 
-[data-hl][data-preview-anchor] {
+[data-hl][data-tooltip-anchor] {
     border-radius: 5px;
     transition: background-color 0.5s ease;
 }
 
-.isPreview {
+.isTooltip {
     overflow: hidden;
 }
 
@@ -753,25 +766,25 @@ span.katex {
     line-height: 1.3;
 }
 
-.toc li > a {
+.toc li>a {
     display: inline-block;
     text-decoration: none;
     transition: all 0.125s ease-in-out;
 }
 
-.toc li:nth-last-child(1 of .tocVisible) > a {
+.toc li:nth-last-child(1 of .tocVisible)>a {
     transform: scale(1.05);
     transform-origin: left;
     color: var(--nearly-black);
 }
 
-.toc li:has(li.tocVisible):nth-last-child(1 of .tocVisible) > a,
-li:has(+ li.tocVisible) li.tocVisible:nth-last-child(1 of .tocVisible) > a {
+.toc li:has(li.tocVisible):nth-last-child(1 of .tocVisible)>a,
+li:has(+ li.tocVisible) li.tocVisible:nth-last-child(1 of .tocVisible)>a {
     color: var(--dark-green);
     transform: none;
 }
 
-.toc li > a:hover {
+.toc li>a:hover {
     color: var(--main-fg);
 }
 
@@ -853,39 +866,39 @@ a.bib {
     font-size: 1rem;
 }
 
-.code_sample > .shiki {
+.code_sample>.shiki {
     overflow-x: auto;
     padding: 1rem 0;
     border-radius: 0.2rem;
 }
 
-.code_sample > .shiki code {
+.code_sample>.shiki code {
     background: none;
 }
 
-.code_sample > .shiki .line {
+.code_sample>.shiki .line {
     padding: 0 1rem;
 }
 
-.code_sample > .shiki .line::before{
-   content: "\200B";
+.code_sample>.shiki .line::before {
+    content: "\200B";
 }
 
-.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span {
+.code_sample>.shiki:has(.line.addition) .line:not(.line.addition)>span {
     opacity: 0.4;
 }
 
-.code_sample > .shiki .line.addition {
+.code_sample>.shiki .line.addition {
     background: rgba(149, 255, 197, 0.2);
     display: inline-block;
     width: calc(100% - 2rem);
 }
 
-.code_sample > .shiki span.addition {
+.code_sample>.shiki span.addition {
     background: rgba(149, 255, 197, 0.2);
 }
 
-.code_sample > .shiki:has(.line.addition) .line:not(.line.addition) > span.addition {
+.code_sample>.shiki:has(.line.addition) .line:not(.line.addition)>span.addition {
     opacity: 1;
 }
 
@@ -893,7 +906,127 @@ a.bib {
 
 
 code.terminal-input {
-    //color: #e0def4;
-    //background-color: #232136;
+    /*color: #e0def4;*/
+    /*background-color: #232136;*/
 }
 
+.news-time {
+    color: var(--dark-green);
+    font-weight: normal;
+}
+
+.confidentiality-levels tbody {
+    border: none;
+}
+
+
+.confidentiality-levels tr:nth-child(1) {
+    border-top: 1px solid black;
+    
+    th {
+        background: var(--nearly-black);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(2) {
+    border-top: 1px solid var(--dark-green);
+    
+    th {
+        background: var(--dark-green);
+        
+        a {
+            color: white;
+        }
+    }
+}
+
+.confidentiality-levels tr:nth-child(3) {
+    border-top: 1px solid var(--green);
+
+    th {
+        background: var(--green);
+    }
+}
+
+.confidentiality-levels tr:nth-child(4) {
+    border-top: 1px solid var(--light-green);
+
+    th {
+        background: var(--light-green);
+    }
+}
+
+.confidentiality-levels th, .confidentiality-levels td {
+    padding: 0.5rem;
+}
+
+.confidentiality-levels td {
+    text-align: left;
+}
+
+#handshake_container {
+    .hs_row {
+        display: flex;
+
+        >p {
+            margin: 0;
+            padding: 0.5rem;
+            flex: 1;
+        }
+        
+        >p:nth-child(even) {
+            background: #ffbf001f;
+        }
+
+        >p:nth-child(odd) {
+            background: #a500ff1f;
+        }
+    }
+    
+    .hs_row:nth-child(2), .hs_row:nth-child(1) {
+        border-top: 1px solid var(--nearly-black);
+    }
+
+    .hs_row:nth-child(even) {
+        background: #e6e4e4;
+    }
+
+    .handshake_header {
+        text-align: center;
+        font-weight: bold;
+        padding: 0.5rem;
+    }
+
+    .rowgroup {
+        margin-bottom: 1rem;
+    }
+
+    .groupHeader {
+        text-align: center;
+        padding: 0.5rem;
+    }
+
+    .groupHeader.left {
+        text-align: left;
+    }
+
+    .groupHeader.right {
+        text-align: right;
+    }
+}
+
+#sim-data-model {
+    background: rgba(0,0,0,0.05);
+    height: 600px;
+    overflow: auto;
+    padding: 1em;
+    width: calc(100vw - (100vw - 100vw) - 50px);
+    margin-left: calc((-100vw + 100%) / 2);
+    margin-right: calc((-100vw + 100%) / 2);
+    z-index: 2;
+    backdrop-filter: blur(4px);
+}

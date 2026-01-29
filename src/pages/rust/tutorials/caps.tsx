@@ -16,27 +16,28 @@ export const tutorial_caps = (
     preamble={
       <P>
         In this tutorial we'll create{" "}
-        <R n="rs-willow_25-Capability">Capabilities</R> for{" "}
-        <R n="communal_namespace">communal</R> and{" "}
-        <R n="owned_namespace">owned</R>
-        namespaces, and use them to create{" "}
-        <R n="rs-willow_25-AuthorisedEntry">AuthorisedEntries</R>.
+        <R n="rs-willow25-authorisation-WriteCapability">Write capabilities</R>
+        {" "}
+        for <R n="communal_namespace">communal</R> and{" "}
+        <R n="owned_namespace">owned</R> namespaces, and use them to create{" "}
+        <R n="rs-willow25-authorisation-AuthorisedEntry">AuthorisedEntries</R>.
       </P>
     }
-    deps={["willow_25"]}
+    deps={["willow25", "rand@0.8.0"]}
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow_25-Area" />{" "}
+        Additionally, knowledge of the <R n="rs-willow25-groupings-Area" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-grouping">dedicated tutorial for groupings</R>.
       </P>
     }
   >
     <>
-      <Hsection title="Owned capabilities" n="tut-caps-1">
+      <Hsection title="Communal capabilities" n="tut-caps-1">
         <P>
-          Firstly we'll create a <R n="rs-willow_25-Capability" /> for a{" "}
-          <R n="owned_namespace" /> and delegate it.
+          First we'll create a{" "}
+          <R n="rs-willow25-authorisation-WriteCapability" /> for a{" "}
+          <R n="communal_namespace" />.
         </P>
 
         <P>
@@ -58,11 +59,13 @@ export const tutorial_caps = (
         />
       </Hsection>
 
-      <Hsection title="Communal capabilities" n="tut-caps-2">
+      <Hsection title="Authorising an entry" n="tut-caps-2">
         <P>
-          Next we'll create two <R n="rs-willow_25-Capability">Capabilities</R>
+          Next we'll use the <R n="rs-willow25-authorisation-WriteCapability" />
           {" "}
-          for a <R n="communal_namespace" /> and delegate it.
+          we created and use it to turn an <R n="rs-willow25-entry-Entry" />
+          {" "}
+          into an <R n="rs-willow25-authorisation-AuthorisedEntry" />.
         </P>
 
         <P>
@@ -75,11 +78,11 @@ export const tutorial_caps = (
           decorations={[
             {
               start: {
-                line: 37,
+                line: 21,
                 character: 0,
               },
               end: {
-                line: 60,
+                line: 39,
                 character: 0,
               },
               properties: {
@@ -97,16 +100,30 @@ export const tutorial_caps = (
 
         <TerminalOutput
           path={["src", "code_samples", "tut_caps", "02_output.txt"]}
+          decorations={[
+            {
+              start: {
+                line: 14,
+                character: 0,
+              },
+              end: {
+                line: 14,
+                character: 44,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
         />
       </Hsection>
 
-      <Hsection title="Authorised entries" n="tut-caps-3">
+      <Hsection title="Owned capabilities and delegation" n="tut-caps-3">
         <P>
-          Finally we'll create two <R n="rs-willow_25-Entry">Entries</R>{" "}
-          and try to create{" "}
-          <R n="rs-willow_25-AuthorisationToken">AuthorisationTokens</R>{" "}
-          for them using one of the{" "}
-          <R n="rs-willow_25-Capability">Capabilities</R> we created.
+          Finally we'll create a{" "}
+          <R n="rs-willow25-authorisation-WriteCapability" /> for an{" "}
+          <R n="owned_namespace" />, delegate it, and use it to produce an{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />.
         </P>
 
         <P>
@@ -119,24 +136,11 @@ export const tutorial_caps = (
           decorations={[
             {
               start: {
-                line: 0,
+                line: 41,
                 character: 0,
               },
               end: {
-                line: 4,
-                character: 0,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-            {
-              start: {
-                line: 62,
-                character: 0,
-              },
-              end: {
-                line: 95,
+                line: 82,
                 character: 0,
               },
               properties: {
@@ -154,33 +158,55 @@ export const tutorial_caps = (
 
         <TerminalOutput
           path={["src", "code_samples", "tut_caps", "03_output.txt"]}
+          decorations={[{
+            start: {
+              line: 15,
+              character: 0,
+            },
+            end: {
+              line: 56,
+              character: 41,
+            },
+            properties: {
+              class: "addition",
+            },
+          }]}
         />
       </Hsection>
 
       <Hsection title="Summary" n="tut-caps-summary">
         <P>
-          In this tutorial, we explored <R n="meadowcap" />'s APIs:
+          In this tutorial, we explored <R n="willow25" />'s authorisation APIs:
         </P>
         <Ul>
           <Li>
-            We created an <R n="owned_namespace">owned</R>{" "}
-            <R n="rs-willow_25-Capability" /> and delegated it.
+            We created an <R n="communal_namespace">communal</R>{" "}
+            <R n="rs-willow25-authorisation-WriteCapability" />.
           </Li>
           <Li>
-            Created two <R n="owned_namespace">communal</R>{" "}
-            <R n="rs-willow_25-Capability">Capabilities</R>.
+            We then used it to turn an <R n="rs-willow25-entry-Entry" /> into an
+            {" "}
+            <R n="rs-willow25-authorisation-AuthorisedEntry" />.
           </Li>
           <Li>
-            Used a communal <R n="rs-willow_25-Capability" /> to create an{" "}
-            <R n="rs-willow_25-AuthorisationToken" />{" "}
-            for an entry, and demonstrated an unauthorised attempt to do so.
+            Finally, we created an <R n="owned_namespace">owned</R>{" "}
+            <R n="rs-willow25-authorisation-WriteCapability" />, delegated it,
+            and used it to turn an <R n="rs-willow25-entry-Entry" /> into an
+            {" "}
+            <R n="rs-willow25-authorisation-AuthorisedEntry" />
           </Li>
         </Ul>
 
-        <P>
-          We've now practiced everything we need to move on to the next
-          tutorial: <R n="tut-store">Working with stores</R>.
-        </P>
+        <omnomnom>
+          {
+            /*
+          <P>
+            We've now practiced everything we need to move on to the next
+            tutorial: <R n="tut-store">Working with stores</R>.
+          </P>
+          */
+          }
+        </omnomnom>
       </Hsection>
     </>
   </TutorialTemplate>

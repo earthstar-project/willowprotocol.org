@@ -686,13 +686,6 @@ export const rbsr = (
             secure hash functions.
           </P>
         </Hsection>
-
-        {
-          /*
-
-      pinformative(""),
-   */
-        }
       </PageTemplate>
     </File>
   </Dir>

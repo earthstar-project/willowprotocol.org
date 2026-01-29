@@ -1,11 +1,11 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Alj, Curly, NoWrap, Path } from "../../macros.tsx";
+import { AE, Alj, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import { Br, Code, Em, Img, Li, P, Ul } from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
-import { Def, R, Rb, Rs } from "macromania-defref";
+import { Def, R, Rb, Rc, Rs } from "macromania-defref";
 import {
   AccessStruct,
   ArrayType,
@@ -48,9 +48,8 @@ export const willow25 = (
             is a set of recommended parameters that should work in a variety of
             settings. It provides parameter choices for the{" "}
             <R n="data_model">Willow data model</R>, the{" "}
-            <R n="meadowcap">Meadowcap capability system</R>, the{" "}
-            <R n="sync">Willow General Purpose Sync protocol</R>, and the{" "}
-            <R n="sideloading">sideloading specification</R>.
+            <R n="meadowcap">Meadowcap capability system</R>,{"  "}
+            <R n="willow_confidential_sync" />, and the <R n="drop_format" />.
           </P>
         </PreviewScope>
 
@@ -72,6 +71,20 @@ export const willow25 = (
 
           <PreviewScope>
             <P>
+              <Marginale>
+                There are some{" "}
+                <AE href="https://github.com/earthstar-project/willowprotocol.org/issues/175">
+                  nuances
+                </AE>{" "}
+                around <Quotes>just use ed25519 public keys</Quotes>{" "}
+                we have yet to define properly. We will likely go with the most
+                strict possible validation rules, as implemented by the Rust
+                {" "}
+                <AE href="https://github.com/dalek-cryptography/curve25519-dalek/issues/852">
+                  <Code>ed25519_dalek::VerifyingKey::verify_strict</Code>
+                </AE>{" "}
+                function.
+              </Marginale>
               We use <Def n="ed25519" r="Ed25519" />{" "}
               (<AE href="https://ed25519.cr.yp.to/">defined here</AE>) as the
               {" "}
@@ -84,11 +97,6 @@ export const willow25 = (
 
           <PreviewScope>
             <P>
-              <Marginale>
-                We are still debating whether to go with Blake3 instead of
-                William3. This is a <R n="status_proposal" />{" "}
-                document after all.
-              </Marginale>
               We use <DefFunction n="william3" r="WILLIAM3" />{" "}
               as the go-to hash function, which is defined as{" "}
               <AE href="https://worm-blossom.github.io/bab/#instantiations_william">
@@ -203,14 +211,177 @@ export const willow25 = (
           </P>
         </Hsection>
 
-        <Hsection n="willow25_wgps" title="WGPS Parameters">
+        <Hsection n="willow25_defaults" title="Default Values">
           <P>
-            <Rb n="willow25" /> instantiates the <R n="sync">WGPS</R>{" "}
+            Various specifications expect well-known default choices for some of
+            the cryptographic aspects of Willow. We consistently use the
+            following values:
+          </P>
+
+          <PreviewScope>
+            <P>
+              The{" "}
+              <Def n="willow25_default_namespace_id" r="default_namespace_id" />
+              {" "}
+              is{" "}
+              <Marginale>
+                This is an <R n="Ed25519Pk" />{" "}
+                we generated randomly, the corresponding secret key is{" "}
+                <Code>
+                  [94, 20, 172, 228, 210, 200, 2, 143, 200, 154, 143, 4, 118,
+                  91, 25, 210, 205, 117, 45, 145, 187, 55, 60, 12, 158, 212,
+                  118, 39, 107, 92, 69, 65]
+                </Code>.
+              </Marginale>
+              <Code>
+                [147, 78, 96, 33, 51, 158, 31, 1, 59, 169, 73, 0, 237, 194, 93,
+                141, 116, 192, 180, 229, 115, 118, 137, 16, 174, 15, 80, 125,
+                140, 129, 115, 24]
+              </Code>. This is a <R n="communal_namespace" />.
+            </P>
+
+            <P>
+              The{" "}
+              <Def n="willow25_default_subspace_id" r="default_subspace_id" />
+              {" "}
+              is equal to the <R n="willow25_default_namespace_id" />.
+            </P>
+          </PreviewScope>
+
+          <P>
+            The <R n="sync_default_payload_digest" /> is{" "}
+            <Marginale>
+              This is the <R n="william3" /> digest of the empty string.
+            </Marginale>
+            <Code>
+              [59, 99, 143, 200, 242, 251, 104, 65, 131, 37, 163, 107, 71, 24,
+              255, 176, 125, 228, 87, 172, 48, 19, 147, 168, 69, 70, 106, 121,
+              238, 163, 40, 107]
+            </Code>.
+          </P>
+
+          <P>
+            The <R n="sync_default_authorisation_token" /> is the{" "}
+            <R n="MeadowcapAuthorisationToken" /> whose <R n="mcat_cap" />{" "}
+            is the <R n="CommunalCapability" /> with an
+          </P>
+          <Ul>
+            <Li>
+              <R n="communal_cap_access_mode" /> of <R n="access_write" />,
+            </Li>
+            <Li>
+              <R n="communal_cap_namespace" /> of{" "}
+              <R n="willow25_default_namespace_id" />,
+            </Li>
+            <Li>
+              <R n="communal_cap_user" /> of{" "}
+              <R n="willow25_default_subspace_id" />, and
+            </Li>
+            <Li>
+              empty <R n="communal_cap_delegations" />,
+            </Li>
+          </Ul>
+          <P>
+            and whose <R n="mcat_sig" /> is the correct signature for{" "}
+            <Code>
+              <R n="default_entry" />(<R n="willow25_default_namespace_id" />,
+              {" "}
+              <R n="willow25_default_subspace_id" />)
+            </Code>.
+          </P>
+        </Hsection>
+
+        <Hsection n="willow25_drop_format" title="Drop Format Parameters">
+          <P>
+            <Rb n="willow25" /> instantiates the{" "}
+            <R n="willow_drop_format">Willow drop format</R>{" "}
+            with the following parameters:
+          </P>
+
+          <P>
+            The <R n="encode_namespace_id" />{" "}
+            function is the identity function (the <Rs n="NamespaceId" />{" "}
+            <Em>are</Em> bytestrings already).
+          </P>
+
+          <P>
+            The <R n="encode_subspace_id" />{" "}
+            function is the identity function (the <Rs n="SubspaceId" />{" "}
+            <Em>are</Em> bytestrings already).
+          </P>
+
+          <P>
+            The <R n="encode_payload_digest" />{" "}
+            function is the identity function (the <Rs n="PayloadDigest" />{" "}
+            <Em>are</Em> bytestrings already).
+          </P>
+
+          <P>
+            The <R n="DropformatEncodeAuthorisationToken" /> relation is{" "}
+            <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
+          </P>
+
+          <P>
+            The default values are defined in <Rc n="willow25_defaults" />.
+          </P>
+        </Hsection>
+
+        <Hsection n="willow25_uris" title="URI Parameters">
+          <P>
+            <Rb n="willow25" /> instantiates the <R n="uris">Willow URI spec</R>
+            {" "}
+            with the following parameters:
+          </P>
+
+          <P>
+            The <R n="URIEncodeNamespaceId" /> <R n="encoding_relation" />{" "}
+            admits as <Rs n="code" /> of a <R n="NamespaceId" /> (which is a
+            {" "}
+            <R n="dss_pk" />, i.e., a bytestring) any concatenation of
+          </P>
+          <Ul>
+            <Li>
+              the byte <Code>43</Code> (ASCII <Code>+</Code>) if{" "}
+              <R n="is_communal" /> maps the <R n="NamespaceId" /> to{" "}
+              <Code>true</Code>, or the byte <Code>45</Code> (ASCII{" "}
+              <Code>-</Code>) otherwise, and
+            </Li>
+            <Li>
+              a base-16 ASCII encoding of the <R n="NamespaceId" />{" "}
+              (lowercase is recommended, but uppercase is also allowed).
+            </Li>
+          </Ul>
+
+          <P>
+            The <R n="URIEncodeSubspaceId" /> <R n="encoding_relation" />{" "}
+            admits as <Rs n="code" /> of a <R n="SubspaceId" /> (which is a{" "}
+            <R n="dss_pk" />, i.e., a bytestring) any base-16 ASCII encoding of
+            the <R n="SubspaceId" />{" "}
+            (lowercase is recommended, but uppercase is also allowed).
+          </P>
+
+          <P>
+            The <R n="URIEncodePayloadDigest" /> <R n="encoding_relation" />
+            {" "}
+            admits as <Rs n="code" /> of a <R n="PayloadDigest" /> (which is a
+            {" "}
+            <R n="William3Digest" />, i.e., a bytestring) any base-16 ASCII
+            encoding of the <R n="PayloadDigest" />{" "}
+            (lowercase is recommended, but uppercase is also allowed).
+          </P>
+        </Hsection>
+
+        <Hsection
+          n="willow25_confidential"
+          title="Confidential Sync Parameters"
+        >
+          <P>
+            <Rb n="willow25" /> instantiates <R n="confidential_sync" />{" "}
             with the following parameters:
           </P>
 
           <Hsection
-            n="willow25_wgps_handshake"
+            n="willow25_cs_handshake"
             title="Handshake and Transport Encryption"
           >
             <P>
@@ -263,7 +434,7 @@ export const willow25 = (
             </P>
           </Hsection>
 
-          <Hsection n="willow25_wgps_general" title="General Parameters">
+          <Hsection n="willow25_cs_general" title="General Parameters">
             <P>
               The <Rs n="ReadCapability" /> are the <Rs n="Capability" />{" "}
               — as instantiated above — with a <R n="cap_mode" /> of{" "}
@@ -389,158 +560,43 @@ export const willow25 = (
             without the leading length indicator.
           </P>
 
-          <P>
-            The <R n="sync_default_namespace_id" /> is{" "}
-            <Sidenote
-              note={
-                <>
-                  This is an <R n="Ed25519Pk" />{" "}
-                  that we generated randomly, the corresponding secret key is
-                  {" "}
-                  <Alj inline>TODO</Alj>.<Alj inline>
-                    TODO ensure this is a communal namespace.
-                  </Alj>
-                </>
-              }
-            >
-              <Alj inline>TODO</Alj>
-            </Sidenote>. The <R n="sync_default_subspace_id" /> is equal to the
-            {" "}
-            <R n="sync_default_namespace_id" />.
-          </P>
+          <Hsection n="willow25_cs_encoding" title="Encoding Parameters">
+            <P>
+              The <R n="EncodeReadCapability" /> <R n="encoding_relation" /> is
+              {" "}
+              <R n="EncodeMcCapabilityRelativePrivateInterest" />.
+            </P>
 
-          <P>
-            The <R n="sync_default_payload_digest" /> is{" "}
-            <Sidenote
-              note={
-                <>
-                  This is the <R n="william3" /> digest of the empty string.
-                </>
-              }
-            >
-              <Alj inline>TODO</Alj>
-            </Sidenote>.
-          </P>
+            <P>
+              The <R n="EncodeEnumerationCapability" />{" "}
+              <R n="encoding_relation" /> is{" "}
+              <R n="EncodeMcEnumerationCapabilityRelativePrivateInterest" />.
+            </P>
 
-          <P>
-            The <R n="sync_default_authorisation_token" /> is the{" "}
-            <R n="MeadowcapAuthorisationToken" /> whose <R n="mcat_cap" />{" "}
-            is the <R n="CommunalCapability" /> with an
-          </P>
-          <Ul>
-            <Li>
-              <R n="communal_cap_access_mode" /> of <R n="access_write" />,
-            </Li>
-            <Li>
-              <R n="communal_cap_namespace" /> of{" "}
-              <R n="sync_default_namespace_id" />,
-            </Li>
-            <Li>
-              <R n="communal_cap_user" /> of{" "}
-              <R n="sync_default_subspace_id" />, and
-            </Li>
-            <Li>
-              empty <R n="communal_cap_delegations" />,
-            </Li>
-          </Ul>
-          <P>
-            and whose <R n="mcat_sig" /> is <Alj inline>TODO</Alj>.
-          </P>
+            <P>
+              The <R n="encoding_function" /> for <R n="SubspaceId" /> is — like
+              {" "}
+              <R n="encode_user_pk" />{" "}
+              — the identity function. The total order on <R n="SubspaceId" />
+              {" "}
+              is the numeric order on <R n="Ed25519Pk" />{" "}
+              (interpreted as big-endian, unsigned integers).
+            </P>
+
+            <P>
+              The <R n="EncodeFingerprint" /> <R n="encoding_relation" />{" "}
+              is the identity function (<R n="william3" /> digests <Em>are</Em>
+              {" "}
+              bytestrings already).
+            </P>
+
+            <P>
+              The <R n="EncodeAuthorisationToken" /> <R n="encoding_relation" />
+              {" "}
+              is <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
+            </P>
+          </Hsection>
         </Hsection>
-
-        <Hsection n="willow25_wgps_encoding" title="Encoding Parameters">
-          <P>
-            The <R n="EncodeReadCapability" /> <R n="encoding_relation" /> is
-            {" "}
-            <R n="EncodeMcCapabilityRelativePrivateInterest" />.
-          </P>
-
-          <P>
-            The <R n="EncodeEnumerationCapability" />{" "}
-            <R n="encoding_relation" /> is{" "}
-            <R n="EncodeMcEnumerationCapabilityRelativePrivateInterest" />.
-          </P>
-
-          <P>
-            The <R n="encoding_function" /> for <R n="SubspaceId" /> is — like
-            {" "}
-            <R n="encode_user_pk" /> — the identity function. The total order on
-            {" "}
-            <R n="SubspaceId" /> is the numeric order on <R n="Ed25519Pk" />
-            {" "}
-            (interpreted as big-endian, unsigned integers).
-          </P>
-
-          <P>
-            The <R n="EncodeFingerprint" /> <R n="encoding_relation" />{" "}
-            is the identity function (<R n="william3" /> digests <Em>are</Em>
-            {" "}
-            bytestrings already).
-          </P>
-
-          <P>
-            The <R n="EncodeAuthorisationToken" /> <R n="encoding_relation" />
-            {" "}
-            is <R n="EncodeMeadowcapAuthorisationTokenRelative" />.
-          </P>
-        </Hsection>
-
-        {
-          /*
-
-				hsection("es6_wgps_encoding", "Encoding Parameters", [
-					pinformative("Whenever any encoding function needs to encode a ", r("cinn25519"), "public key, use ", r("encode_cinn_pk"), ". Whenever any encoding function needs to encode a signature or a digest, just use the signature or the digest itself (they already are sequences of bytes)."),
-
-					pinformative(
-						"The ", r("encode_group_member"), " function encodes each ", r("PsiGroup"), " member (i.e., each Edwards25519 curve point) ", link("according to RFC8032", "https://datatracker.ietf.org/doc/html/rfc8032#section-5.1.2"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_subspace_capability"), " function is ", r("encode_mc_subspace_capability"), ", except you omit encoding the <R n="enumcap_namespace"/>."
-					),
-
-					pinformative(
-						"The ", r("encode_sync_subspace_signature"), " function maps each ", r("sync_subspace_signature"), " (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The ", r("encode_read_capability"), " function is ", r("encode_mc_capability"), ", except you omit encoding the ", r("communal_cap_namespace"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_sync_signature"), " function maps each <R n="sync_signature"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The total order on <R n="SubspaceId"/> (i.e., on <R n="Ed25519Pk"/>) orders by ", r("cinn_shortname"), " first (lexicographically), and by ", r("cinn_pk_pk"), " second (again lexicographically). This ordering fulfils the necessary properties, and <R n="sync_default_subspace_id"/> is indeed the unique least element.",
-					),
-
-					pinformative(
-						"The ", r("encode_static_token"), " function is ", r("encode_mc_capability"), ", encoding relative to the ", r("full_area"), "."
-					),
-
-					pinformative(
-						"The ", r("encode_dynamic_token"), " function maps each <R n="DynamicToken"/> (i.e., each ed25519 signature, which is already a sequence of bytes) to itself."
-					),
-
-					pinformative(
-						"The ", r("encode_fingerprint"), " function maps each <R n="Fingerprint"/> (which is already a sequence of bytes) to itself."
-					),
-				]),
-
-			hsection("es6_friendly_paths", "Friendly paths", [
-				pinformative("While Willow's <Rs n="Path"/> are defined as sequences of bytestrings, Earthstar defines a subset of these as human-readable ", def({
-					id: "es6_friendly_path",
-					singular: "friendly path",
-					plural: "friendly paths",
-				}, "friendly paths"), "."),
-				pinformative("A path is considered ", r("es6_friendly_path", 'friendly'), " if every byte of its bytestrings belong to the set of ascii encodings of the following characters: ", code("-.0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_"), ", that is, alphanumerics and ", code("-"), ", ", code("."), ", and ", code("_"), "."),
-				pinformative("This makes it possible to provide legible encodings of paths, e.g. ", path('blog', 'recipes', 'chocolate_pizza'), ", and to input paths using a keyboard.")
-			]),
-
-			img(asset("earthstar/emblem.png"), `An Earthstar emblem: A stylised drawing of three Earthstars (a type of mushroom) sitting on a mossy knoll, with a silhoette of a rabbit in the background, all next to a hand-lettered cursive of the word "Meadowcap".`),
-	 */
-        }
 
         <Img
           src={<ResolveAsset asset={["willow_25", "emblem.png"]} />}

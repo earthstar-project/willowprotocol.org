@@ -1,7 +1,27 @@
 import { Dir, File } from "macromania-outfs";
-import { AE, Curly, NoWrap, Path, Quotes } from "../../macros.tsx";
+import {
+  AE,
+  Curly,
+  Green,
+  NoWrap,
+  Path,
+  Purple,
+  Quotes,
+} from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  Code,
+  Div,
+  Em,
+  Figcaption,
+  Figure,
+  Img,
+  Li,
+  Noscript,
+  Ol,
+  P,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -17,6 +37,7 @@ import { M } from "macromania-katex";
 import { PreviewScope } from "macromania-previews";
 import { Pseudocode } from "macromania-pseudocode";
 import { Rsb } from "macromania-defref";
+import { ScriptDependency, StylesheetDependency } from "macromania-html-utils";
 
 export const data_model = (
   <Dir name="data-model">
@@ -155,10 +176,78 @@ export const data_model = (
           variety of policies.
         </P>
 
+        <Hsection n="sim_data_model" title="Interactive Data Model">
+          <P>
+            <Marginale>
+              For the purposes of this demonstration we omit the concept of{" "}
+              <Rs n="entry_payload_digest" />.
+            </Marginale>
+            Some concepts are easier to understand by trying them out for yourself. We
+            have created an interactive demonstration of how data between three
+            peers is reconciled using the Willow Data Model.
+          </P>
+          <Div id="sim-data-model">
+          </Div>
+
+          <P>
+            Some suggested actions for experimenting with{" "}
+            <R n="prefix_pruning" />:
+          </P>
+          <Ol>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>110</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
+            </Li>
+            <Li>
+              Add another <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas", "song"]} /> and a timestamp of{" "}
+              <Green>120</Green>. Can it coexist with the entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas"]} />?
+            </Li>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Alfie</Purple> at{" "}
+              <Path components={["ideas"]} /> and a timestamp of{" "}
+              <Green>130</Green>. What happens to the existing entry by{" "}
+              <Purple>Alfie</Purple> at <Path components={["ideas", "song"]} />?
+            </Li>
+          </Ol>
+
+          <P>
+            A suggested action for experimenting with the concept of{" "}
+            <Rs n="subspace" />:
+          </P>
+
+          <Ol>
+            <Li>
+              Add a new <R n="Entry" /> as <Purple>Betty</Purple> at{" "}
+              <Path components={["notes"]} /> and a timestamp of{" "}
+              <Green>110</Green>, and sync with{" "}
+              <Purple>Gemma</Purple>. Is the existing entry by{" "}
+              <Purple>Gemma</Purple> at <Path components={["notes"]} />{" "}
+              overwritten?
+            </Li>
+          </Ol>
+
+          <Noscript>
+            <P>
+              You must have JavaScript enabled to use the Interactive Data
+              Model.
+            </P>
+          </Noscript>
+          <ScriptDependency
+            dep={["sim_data_model.js"]}
+            scriptProps={{ defer: true }}
+          />
+          <StylesheetDependency
+            dep={["sim-data-model.css"]}
+          />
+        </Hsection>
+
         <P>
-          Now we can <Em>almost</Em>{" "}
-          ", em("almost"), " delve into the precise definition of these
-          concepts.
+          Now that we could develop some intuition for the data model, we can <Em>almost</Em>{" "}
+          delve into the precise definition of these concepts.
         </P>
 
         <Hsection n="willow_parameters" title="Parameters">
@@ -413,11 +502,27 @@ export const data_model = (
               <M>
                 2^<Curly>64</Curly> - 1
               </M>{" "}
-              (exclusive). <Rs n="Timestamp" />{" "}
-              are to be interpreted as a time in microseconds since the{" "}
-              <AE href="https://en.wikipedia.org/wiki/Unix_epoch">
-                Unix epoch
-              </AE>.
+              (inclusive). We highly recommend<Marginale>
+                This is merely a <Em>recommendation</Em>{" "}
+                because an implementation neither can nor should gauge or
+                enforce what users intended that 64-bit integer to mean. In
+                particular, we can imagine plenty of scenarios where using a
+                logical clock instead of physical time is appropriate. Please do
+                prefer TAI over UNIX time though, because UNIX time{" "}
+                <AE href="https://en.wikipedia.org/wiki/Unix_time#Leap_seconds">
+                  handles leap seconds
+                </AE>{" "}
+                in an abhorrent way.
+              </Marginale>{" "}
+              to interpret <Rs n="Timestamp" /> as microseconds in{" "}
+              <AE href="https://en.wikipedia.org/wiki/International_Atomic_Time">
+                International Atomic Time
+              </AE>{" "}
+              (aka <Em>TAI</Em>) since the{" "}
+              <AE href="https://en.wikipedia.org/wiki/Epoch_(astronomy)#J2000">
+                J2000
+              </AE>{" "}
+              reference epoch (January 1, 2000, at noon, i.e., 12:00 TT).
             </P>
           </PreviewScope>
 
@@ -604,9 +709,9 @@ export const data_model = (
                 <Li>
                   <Code>
                     <AccessStruct field="entry_timestamp">
-                      <R n="new_e2" />
+                      <R n="new_e1" />
                     </AccessStruct>
-                    {" < "}
+                    {" > "}
                     <AccessStruct field="entry_timestamp">
                       <R n="new_e2" />
                     </AccessStruct>
@@ -616,7 +721,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_timestamp">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_timestamp">
@@ -636,9 +741,9 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_digest">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
-                      {" < "}
+                      {" > "}
                       <AccessStruct field="entry_payload_digest">
                         <R n="new_e2" />
                       </AccessStruct>
@@ -649,7 +754,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_timestamp">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_timestamp">
@@ -661,7 +766,7 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_digest">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
                       {" == "}
                       <AccessStruct field="entry_payload_digest">
@@ -673,9 +778,9 @@ export const data_model = (
                   <NoWrap>
                     <Code>
                       <AccessStruct field="entry_payload_length">
-                        <R n="new_e2" />
+                        <R n="new_e1" />
                       </AccessStruct>
-                      {" < "}
+                      {" > "}
                       <AccessStruct field="entry_payload_length">
                         <R n="new_e2" />
                       </AccessStruct>
@@ -754,7 +859,7 @@ export const data_model = (
                 with equal{" "}
                 <Rs n="NamespaceId" />. Doing so efficiently and in a
                 privacy-preserving way can be quite challenging, we recommend
-                our <R n="sync">Willow General Purpose Sync</R> protocol.
+                our <R n="willow_confidential_sync" /> protocol.
               </Marginale>
 
               <Marginale>
@@ -882,8 +987,8 @@ export const data_model = (
             How do we efficiently and securely compute <Rs n="store_join" />
             {" "}
             over a network to synchronise data between peers? Again, different
-            settings require different answers, but we provide the{" "}
-            <R n="sync">Willow General Purpose Sync</R>{" "}
+            settings require different answers, but we provide the{"  "}
+            <R n="confidential_sync" />{" "}
             protocol as a well-engineered, privacy-preserving solution that
             should be applicable to a wide range of scenarios.
           </P>
@@ -901,12 +1006,6 @@ export const data_model = (
             that a data store for Willow should support, and present some data
             structures for supporting them efficiently{" "}
             <R n="d3storage">here</R>.
-          </P>
-
-          <P>
-            How can I contribute to Willow and support it? So glad you asked —
-            we have prepared a collection of pointers{" "}
-            <R n="projects_and_communities">here</R>.
           </P>
         </Hsection>
 

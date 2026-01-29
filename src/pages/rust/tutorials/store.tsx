@@ -12,15 +12,15 @@ export const tutorial_store = (
       <P>
         In this tutorial we will instantiate a{" "}
         <R n="rs-willow_store_simple_sled-StoreSimpleSled" />{" "}
-        and use it to store and retrieve an <R n="rs-willow_25-Entry" /> and its
+        and use it to store and retrieve an <R n="rs-willow25-Entry" /> and its
         {" "}
         <R n="Payload" />.
       </P>
     }
-    deps={["willow_25", "willow-store-simple-sled", "ufotofu", "smol"]}
+    deps={["willow25", "willow-store-simple-sled", "ufotofu", "smol"]}
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow_25-Capability" />{" "}
+        Additionally, knowledge of the <R n="rs-willow25-Capability" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-caps">dedicated tutorial for capabilities</R>.
       </P>
@@ -57,8 +57,8 @@ export const tutorial_store = (
       <Hsection title="Ingest an entry" n="tut-store-2">
         <P>
           Next, we'll create a new{" "}
-          <R n="rs-willow_25-Entry" />, use that to create an{" "}
-          <R n="rs-willow_25-AuthorisedEntry" />, and ingest it into the
+          <R n="rs-willow25-Entry" />, use that to create an{" "}
+          <R n="rs-willow25-AuthorisedEntry" />, and ingest it into the
           <R n="rs-willow_store_simple_sled-StoreSimpleSled" /> we instantiated.
         </P>
 
@@ -128,7 +128,7 @@ export const tutorial_store = (
       <Hsection title="Append a payload" n="tut-store-3">
         <P>
           Next, we'll try and retrieve the payload of the{" "}
-          <R n="rs-willow_25-Entry" />{" "}
+          <R n="rs-willow25-Entry" />{" "}
           we just ingested, append some data to its payload, and then try to
           retrieve it again.
         </P>
@@ -198,7 +198,7 @@ export const tutorial_store = (
 
       <Hsection title="Query an area" n="tut-store-4">
         <P>
-          Next, we'll query an <R n="rs-willow_25-Area" />{" "}
+          Next, we'll query an <R n="rs-willow25-Area" />{" "}
           within the store and iterate through the results we get.
         </P>
 
@@ -267,7 +267,7 @@ export const tutorial_store = (
 
       <Hsection title="Forget an entry" n="tut-store-5">
         <P>
-          Finally, we'll forget the <R n="rs-willow_25-Entry" />{" "}
+          Finally, we'll forget the <R n="rs-willow25-Entry" />{" "}
           we ingested earlier.
         </P>
 
@@ -334,7 +334,7 @@ export const tutorial_store = (
 
           <Li>
             We created an{" "}
-            <R n="rs-willow_25-Entry" />, authorised it, and ingested in the
+            <R n="rs-willow25-Entry" />, authorised it, and ingested in the
             store with <R n="rs-willow_data_model-Store-ingest_entry" />.
           </Li>
 
@@ -343,14 +343,14 @@ export const tutorial_store = (
           </Li>
 
           <Li>
-            We queried an <R n="rs-willow_25-Area" /> using{" "}
+            We queried an <R n="rs-willow25-Area" /> using{" "}
             <R n="rs-willow_data_model-Store-query_area" />{" "}
             and iterated through the results.
           </Li>
 
           <Li>
             We used <R n="rs-willow_data_model-Store-forget_area" /> the{" "}
-            <R n="rs-willow_25-Entry" /> we originally ingested.
+            <R n="rs-willow25-Entry" /> we originally ingested.
           </Li>
         </Ul>
 

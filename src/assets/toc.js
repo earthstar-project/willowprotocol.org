@@ -5,7 +5,9 @@ const observer = new IntersectionObserver((entries) => {
     const tocEntry = document.querySelector(
       `li[data-hsection=${entry.target.dataset.hsection}]`,
     );
-    tocEntry.classList.toggle("tocVisible", entry.isIntersecting);
+    if (tocEntry !== null) {
+      tocEntry.classList.toggle("tocVisible", entry.isIntersecting);
+    }
   });
 }, { margin: "40px 0 40px 0" });
 
