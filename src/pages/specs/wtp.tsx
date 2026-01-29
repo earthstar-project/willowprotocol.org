@@ -54,8 +54,8 @@ export const wtp = (
         headingId="wtp_spec"
         heading="Willow Transfer Protocol"
         toc
-        status="proposal"
-        statusDate="19.09.2025"
+        status="sketch"
+        statusDate="29.01.2026"
         parentId="specifications"
       >
         <PreviewScope>
@@ -121,7 +121,7 @@ export const wtp = (
           </PreviewScope>
 
           <P>
-            Whereas the <R n="wgps" />{" "}
+            Whereas the <R n="willow_confidential_sync">Confidential Sync protocol</R>{" "}
             assembles some sophisticated techniques to allow for high
             confidentiality between completely untrusted peers, supports
             bidirectional eager forwarding of novel information, and multiplexes

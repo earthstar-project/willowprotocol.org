@@ -320,7 +320,7 @@ export function PageTemplate(
   );
 }
 
-export type SpecStatus = "final" | "candidate" | "proposal";
+export type SpecStatus = "final" | "candidate" | "proposal" | "sketch";
 
 function RenderSpecStatus(
   { status }: { status: SpecStatus },

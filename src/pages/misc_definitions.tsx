@@ -1,7 +1,16 @@
 import { Dir, File } from "macromania-outfs";
 import { Code, Em, Hr, Li, P, Ul } from "macromania-html";
 import { PageTemplate } from "../pageTemplate.tsx";
-import { AE, Curly, Green, Orange, Quotes, SkyBlue } from "../macros.tsx";
+import {
+  AE,
+  Curly,
+  Green,
+  Orange,
+  Purple,
+  Quotes,
+  SkyBlue,
+  Vermillion,
+} from "../macros.tsx";
 import { PreviewScope } from "macromania-previews";
 import { DefFunction, DefType, DefValue, DefVariant } from "macromania-rustic";
 import { M } from "macromania-katex";
@@ -201,6 +210,22 @@ export const misc_definitions = (
               time. If we got it really wrong, there may be fundamental changes.
               While we would be delighted by outside implementation efforts and
               reports of stumbling blocks, we will happily save you the effort.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              <Purple>
+                <Def
+                  n="status_sketch"
+                  r="Sketch"
+                  refClass="purple"
+                  defClass="purple"
+                />
+              </Purple>{" "}
+              means we are sharing an early draft. You should <Em>not</Em>{" "}
+              try implementing this yet, but feedback on the design is very
+              welcome!
             </P>
           </PreviewScope>
         </Hsection>
