@@ -243,6 +243,11 @@ export function PageTemplate(
                     <Li>
                       <R n="more">More</R>
                     </Li>
+                    <Li>
+                      <AE href="https://opencollective.com/worm-blossom">
+                        Support Us
+                      </AE>
+                    </Li>
                   </Ul>
                 </Nav>
 
