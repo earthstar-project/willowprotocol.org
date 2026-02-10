@@ -735,7 +735,7 @@ export const encodings = (
 
               <P>
                 <Code>
-                  <Orange>0C</Orange> <SkyBlue>03</SkyBlue> <Green>00 04</Green>
+                  <Orange>C</Orange><SkyBlue>3</SkyBlue> <Green>00 04</Green>
                   {" "}
                   <Purple>62 6C 6F 67</Purple> <Yellow>00 05</Yellow>{" "}
                   <Blue>69 64 65 61 73</Blue> <Vermillion>66 75 6E</Vermillion>
