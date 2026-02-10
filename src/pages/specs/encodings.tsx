@@ -735,16 +735,16 @@ export const encodings = (
 
               <P>
                 <Code>
-                  <Orange>C</Orange><SkyBlue>3</SkyBlue> <Green>00 04</Green>
+                  <Orange>C</Orange><SkyBlue>3</SkyBlue> <Green>04</Green>
                   {" "}
-                  <Purple>62 6C 6F 67</Purple> <Yellow>00 05</Yellow>{" "}
+                  <Purple>62 6C 6F 67</Purple> <Yellow>05</Yellow>{" "}
                   <Blue>69 64 65 61 73</Blue> <Vermillion>66 75 6E</Vermillion>
                 </Code>, because
               </P>
               <Ul>
                 <Li>
                   <Code>
-                    <Orange>0C</Orange>
+                    <Orange>C</Orange>
                   </Code>{" "}
                   is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
                   <R n="c64_width" /> <M>4</M>{" "}
@@ -752,7 +752,7 @@ export const encodings = (
                 </Li>
                 <Li>
                   <Code>
-                    <SkyBlue>03</SkyBlue>
+                    <SkyBlue>3</SkyBlue>
                   </Code>{" "}
                   is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
                   <R n="c64_width" /> <M>4</M> for the number of{" "}
@@ -766,7 +766,7 @@ export const encodings = (
                 </Li>
                 <Li>
                   <Code>
-                    <Green>00 04</Green>
+                    <Green>04</Green>
                   </Code>{" "}
                   is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
                   <R n="c64_width" /> <M>8</M> for the length of{" "}
@@ -786,7 +786,7 @@ export const encodings = (
                 </Li>
                 <Li>
                   <Code>
-                    <Yellow>00 05</Yellow>
+                    <Yellow>05</Yellow>
                   </Code>{" "}
                   is the <R n="c64_minimal" /> <R n="c64_tag" /> of{" "}
                   <R n="c64_width" /> <M>8</M> for the length of{" "}
