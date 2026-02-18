@@ -2630,7 +2630,25 @@ export const encodings = (
                     <Ul>
                       <Li>
                         zero, if <R n="owncap_prior_cap" /> is a{" "}
-                        <R n="CommunalCapability" />, or else
+                        <R n="CommunalCapability" />, or if{" "}
+                        <Code>
+                          <ValAccess field="owned_cap_user" /> !={" "}
+                          <AccessStruct field="owned_cap_user">
+                            <AccessStruct field="capability_inner">
+                              <R n="owncap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, or if{" "}
+                        <Code>
+                          <ValAccess field="owned_cap_initial_authorisation" />
+                          {" "}
+                          !={" "}
+                          <AccessStruct field="owned_cap_initial_authorisation">
+                            <AccessStruct field="capability_inner">
+                              <R n="owncap_prior_cap" />
+                            </AccessStruct>
+                          </AccessStruct>
+                        </Code>, and else
                       </Li>
                       <Li>
                         a natural number (possibly zero) less than or equal to
