@@ -33,6 +33,6 @@ fn main() {
   let another_long_path = Path::from_components(&[component1, component2, component4]).unwrap();
   println!(
     "The longest common prefix of long_path and another_long_path is: {:?}",
-    ideas_path.longest_common_prefix(&another_long_path)
+    long_path.longest_common_prefix(&another_long_path)
   );
 }
