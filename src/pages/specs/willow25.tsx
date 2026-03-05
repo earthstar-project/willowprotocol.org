@@ -282,7 +282,17 @@ export const willow25 = (
             </Li>
           </Ul>
           <P>
-            and whose <R n="mcat_sig" /> is the correct signature for{" "}
+            and whose <R n="mcat_sig" /> is the correct signature<Marginale>
+              That signature is{" "}
+              <Code>
+                [149, 102, 47, 26, 70, 113, 114, 184, 62, 108, 253, 99, 43, 252,
+                101, 159, 127, 61, 86, 248, 177, 195, 52, 183, 27, 177, 171, 79,
+                4, 66, 175, 75, 179, 71, 242, 237, 58, 151, 136, 166, 205, 102,
+                219, 6, 227, 87, 33, 155, 39, 237, 251, 112, 146, 95, 149, 84,
+                49, 246, 154, 78, 67, 190, 145, 0]
+              </Code>.
+            </Marginale>{" "}
+            for{" "}
             <Code>
               <R n="default_entry" />(<R n="willow25_default_namespace_id" />,
               {" "}
