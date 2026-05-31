@@ -18,6 +18,7 @@ import { PreviewScope } from "macromania-previews";
 import { DefVariant } from "macromania-rustic";
 import {
   Bitfield,
+  bitfieldConstant,
   bitfieldIff,
   C64Encoding,
   c64Tag,
@@ -270,9 +271,6 @@ export const drop_format = (
               idPrefix="sl_enc"
               bitfields={[]}
               contents={[
-                <C64Standalone>
-                  the length (number) of <R n="drop_entries" />
-                </C64Standalone>,
                 <EncIterator
                   val={
                     <>
@@ -308,6 +306,13 @@ export const drop_format = (
                   <Encoding
                     idPrefix="sl_enc_nested"
                     bitfields={[
+                      bitfieldConstant([0]),
+                      bitfieldIff(
+                        <>
+                          <R n="sl_e" /> is the final <R n="Entry" /> of{" "}
+                          <R n="drop_entries" />.
+                        </>,
+                      ),
                       bitfieldIff(
                         <>
                           <Code>
@@ -344,17 +349,6 @@ export const drop_format = (
                         <AccessStruct field="entry_timestamp">
                           <R n="sl_e" />
                         </AccessStruct>,
-                      ),
-                      c64Tag(
-                        "payload_len",
-                        2,
-                        <>
-                          <Code>
-                            <AccessStruct field="entry_payload_length">
-                              <R n="sl_e" />
-                            </AccessStruct>
-                          </Code>
-                        </>,
                       ),
                       {
                         count: 2,
@@ -454,7 +448,13 @@ export const drop_format = (
                         </AccessStruct>
                       </CodeFor>,
                       <C64Encoding id="timestamp" />,
-                      <C64Encoding id="payload_len" />,
+                      <C64Standalone>
+                        <Code>
+                          <AccessStruct field="entry_payload_length">
+                            <R n="sl_e" />
+                          </AccessStruct>
+                        </Code>
+                      </C64Standalone>,
                       <CodeFor enc="encode_payload_digest">
                         <Code>
                           <AccessStruct field="entry_payload_digest">
@@ -483,18 +483,18 @@ export const drop_format = (
                       </CodeFor>,
                       <Ul>
                         <Li>
-                          If bits <Bitfield id={"slice_mode"} /> are{" "}
+                          If bits <Bitfield id="slice_mode" /> are{" "}
                           <Code>00</Code>: the empty string.
                         </Li>
                         <Li>
-                          If bits <Bitfield id={"slice_mode"} /> are{" "}
+                          If bits <Bitfield id="slice_mode" /> are{" "}
                           <Code>01</Code>:{" "}
                           <RawBytes lowercase noPeriod>
                             the payload of <R n="sl_e" />
                           </RawBytes>.
                         </Li>
                         <Li>
-                          If bits <Bitfield id={"slice_mode"} /> are{" "}
+                          If bits <Bitfield id="slice_mode" /> are{" "}
                           <Code>10</Code>: the concatenation of{" "}
                           <Ul>
                             <Li>
@@ -518,8 +518,73 @@ export const drop_format = (
                           </Ul>
                         </Li>
                         <Li>
-                          If bits <Bitfield id={"slice_mode"} /> are{" "}
-                          <Code>11</Code>: the concatenation of{" "}
+                          If bits <Bitfield id="slice_mode" /> are{" "}
+                          <Code>11</Code>:{" "}
+                          <EncIterator
+                            val={
+                              <>
+                                <M>
+                                  <DefValue n="drop_slice_j" r="slice_j" />
+                                </M>
+                              </>
+                            }
+                            iter={
+                              <>
+                                <R n="sl_payload_slices" />
+                              </>
+                            }
+                          >
+                            <Encoding
+                              idPrefix="sl_enc_nested_nested"
+                              bitfields={[
+                                bitfieldConstant([1]),
+                                c64Tag(
+                                  "offset",
+                                  3,
+                                  <>
+                                    the start chunk index of{" "}
+                                    <R n="drop_slice_j" />{" "}
+                                    minus the end chunk index of the previously
+                                    encoded slice for this entry (or zero if
+                                    {" "}
+                                    <Code>j == 0</Code>)
+                                  </>,
+                                ),
+                                c64Tag(
+                                  "slice_len",
+                                  4,
+                                  <>
+                                    the length of <R n="drop_slice_j" />{" "}
+                                    in chunks
+                                  </>,
+                                ),
+                              ]}
+                              contents={[
+                                <C64Encoding id="offset" />,
+                                <C64Encoding id="slice_len" />,
+                                <RawBytes>
+                                  the{" "}
+                                  <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
+                                    64-grouped
+                                  </AE>{" "}
+                                  <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
+                                    baseline verifiable slice stream
+                                  </AE>{" "}
+                                  of <R n="drop_slice_j" />, with the maximal
+                                  {" "}
+                                  <AE href="https://worm-blossom.github.io/bab/#left_skip">
+                                    left-skip
+                                  </AE>{" "}
+                                  such that the only omitted node data has been
+                                  included in the encoding of an earlier slice
+                                  in <R n="sl_payload_slices" />
+                                </RawBytes>,
+                              ]}
+                            />
+                          </EncIterator>
+
+                          {
+                            /* the concatenation of{" "}
                           <Ul>
                             <Li>
                               <C64Standalone notStandalone>
@@ -534,59 +599,10 @@ export const drop_format = (
                               </C64Standalone>, and
                             </Li>
                             <Li>
-                              <EncIterator
-                                val={
-                                  <>
-                                    <M>
-                                      <DefValue n="drop_slice_j" r="slice_j" />
-                                    </M>
-                                  </>
-                                }
-                                iter={
-                                  <>
-                                    <R n="sl_payload_slices" />
-                                  </>
-                                }
-                              >
-                                <Encoding
-                                  idPrefix="sl_enc_nested_nested"
-                                  bitfields={[]}
-                                  contents={[
-                                    <C64Standalone>
-                                      the start chunk index of{" "}
-                                      <R n="drop_slice_j" />{" "}
-                                      minus the end chunk index of the
-                                      previously encoded slice for this entry
-                                      (or zero for the first slice of the entry)
-                                    </C64Standalone>,
-                                    <C64Standalone>
-                                      the length of <R n="drop_slice_j" />{" "}
-                                      in chunks
-                                    </C64Standalone>,
-                                    <RawBytes>
-                                      the{" "}
-                                      <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
-                                        64-grouped
-                                      </AE>{" "}
-                                      <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
-                                        baseline verifiable slice stream
-                                      </AE>{" "}
-                                      of{" "}
-                                      <R n="drop_slice_j" />, with the maximal
-                                      {" "}
-                                      <AE href="https://worm-blossom.github.io/bab/#left_skip">
-                                        left-skip
-                                      </AE>{" "}
-                                      such that the only omitted node data has
-                                      been included in the encoding of an
-                                      earlier slice in{" "}
-                                      <R n="sl_payload_slices" />
-                                    </RawBytes>,
-                                  ]}
-                                />
-                              </EncIterator>
+
                             </Li>
-                          </Ul>
+                          </Ul> */
+                          }
                         </Li>
                       </Ul>,
                     ]}
