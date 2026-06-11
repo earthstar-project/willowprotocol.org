@@ -99,7 +99,7 @@ export const willow25 = (
             <P>
               We use <DefFunction n="william3" r="WILLIAM3" />{" "}
               as the go-to hash function, which is defined as{" "}
-              <AE href="https://worm-blossom.github.io/bab/#instantiations_william">
+              <AE href="https://bab-hash.org/spec#instantiations_william">
                 part of the Bab specification
               </AE>. We write{" "}
               <DefType n="William3Digest" rs="William3Digests" />{" "}
@@ -564,7 +564,7 @@ export const willow25 = (
             The <R n="transform_payload" /> function maps each <R n="Payload" />
             {" "}
             to the corresponding Bab{" "}
-            <AE href="https://worm-blossom.github.io/bab/#light">
+            <AE href="https://bab-hash.org/spec#light">
               light verifiable stream
             </AE>{" "}
             without the leading length indicator.

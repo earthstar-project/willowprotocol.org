@@ -137,7 +137,7 @@ export const drop_format = (
                 parameters of the core Willow data model
               </R>. The <R n="hash_payload" />{" "}
               parameter of the data model must be a member of the{" "}
-              <AE href="https://worm-blossom.github.io/bab/">
+              <AE href="https://bab-hash.org/">
                 Bab family of hash functions
               </AE>. In addition to this, the drop format requires the
               following:
@@ -221,9 +221,9 @@ export const drop_format = (
             A <R n="drop" />{" "}
             is a collection of entries, together with verifiable subslices of
             their payloads. The payload slice verification relies on{" "}
-            <AE href="https://worm-blossom.github.io/bab/">Bab</AE>;{" "}
+            <AE href="https://bab-hash.org/">Bab</AE>;{" "}
             <Rs n="drop" /> store{" "}
-            <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
+            <AE href="https://bab-hash.org/spec#baseline_slice">
               baseline verifiable slice streams
             </AE>{" "}
             of payload slices.
@@ -234,7 +234,7 @@ export const drop_format = (
               Let <DefValue n="drop_entries" r="entries" /> a sequence of{" "}
               pairs of a <Rs n="PossiblyAuthorisedEntry" />{" "}
               and a sequence of non-overlapping slices of payload{" "}
-              <AE href="https://worm-blossom.github.io/bab/#chunk">chunks</AE>
+              <AE href="https://bab-hash.org/spec#chunk">chunks</AE>
               {" "}
               with stricly increasing start offsets. The Drop Format then
               defines how to encode this sequence as a single bytestring (the
@@ -505,10 +505,10 @@ export const drop_format = (
                             <Li>
                               <RawBytes lowercase noPeriod>
                                 the{" "}
-                                <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
+                                <AE href="https://bab-hash.org/spec#kgrouped_baseline">
                                   64-grouped
                                 </AE>{" "}
-                                <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
+                                <AE href="https://bab-hash.org/spec#baseline_slice">
                                   baseline verifiable slice stream
                                 </AE>{" "}
                                 of the single slice in{" "}
@@ -564,15 +564,15 @@ export const drop_format = (
                                 <C64Encoding id="slice_len" />,
                                 <RawBytes>
                                   the{" "}
-                                  <AE href="https://worm-blossom.github.io/bab/#kgrouped_baseline">
+                                  <AE href="https://bab-hash.org/spec#kgrouped_baseline">
                                     64-grouped
                                   </AE>{" "}
-                                  <AE href="https://worm-blossom.github.io/bab/#baseline_slice">
+                                  <AE href="https://bab-hash.org/spec#baseline_slice">
                                     baseline verifiable slice stream
                                   </AE>{" "}
                                   of <R n="drop_slice_j" />, with the maximal
                                   {" "}
-                                  <AE href="https://worm-blossom.github.io/bab/#left_skip">
+                                  <AE href="https://bab-hash.org/spec#left_skip">
                                     left-skip
                                   </AE>{" "}
                                   such that the only omitted node data has been

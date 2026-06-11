@@ -178,7 +178,7 @@ export const wtp = (
               parameters of the core Willow data model
             </R>. The <R n="hash_payload" /> function must be a member of the
             {" "}
-            <AE href="https://worm-blossom.github.io/bab/">
+            <AE href="https://bab-hash.org/">
               Bab family of hash functions
             </AE>. Additionally, the <R n="wtp" />{" "}
             requires the following parameters:
@@ -1130,7 +1130,7 @@ export const wtp = (
                             <R n="WtpRequestGetSliceFrom" /> and{" "}
                             <R n="WtpRequestGetSliceLength" /> are numbers of
                             {" "}
-                            <AE href="https://worm-blossom.github.io/bab/#chunk">
+                            <AE href="https://bab-hash.org/spec#chunk">
                               Bab chunks
                             </AE>. The response then contains not a raw subslice
                             of the{" "}
@@ -1167,10 +1167,10 @@ export const wtp = (
                       Options for controlling the Bab-based, verifiable
                       transmission of a <R n="Payload" /> slice. Bab-based{" "}
                       <R n="Payload" /> slice transmission uses Bab’s{" "}
-                      <AE href="https://worm-blossom.github.io/bab/#kgrouped">
+                      <AE href="https://bab-hash.org/spec#kgrouped">
                         k-grouped light
                       </AE>{" "}
-                      <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
+                      <AE href="https://bab-hash.org/spec#slice_streaming">
                         slice streaming
                       </AE>, with the value of <Code>k</Code>{" "}
                       specified in these options.
@@ -1186,11 +1186,11 @@ export const wtp = (
                         comment: (
                           <>
                             The{" "}
-                            <AE href="https://worm-blossom.github.io/bab/#k">
+                            <AE href="https://bab-hash.org/spec#k">
                               <Code>k</Code>
                             </AE>{" "}
                             in{" "}
-                            <AE href="https://worm-blossom.github.io/bab/#kgrouped">
+                            <AE href="https://bab-hash.org/spec#kgrouped">
                               k-grouped
                             </AE>{" "}
                             verifiable streaming.
@@ -1212,7 +1212,7 @@ export const wtp = (
                         comment: (
                           <>
                             The{" "}
-                            <AE href="https://worm-blossom.github.io/bab/#left_skip">
+                            <AE href="https://bab-hash.org/spec#left_skip">
                               <Code>left_skip</Code>
                             </AE>{" "}
                             for the slice stream.
@@ -1234,7 +1234,7 @@ export const wtp = (
                         comment: (
                           <>
                             The{" "}
-                            <AE href="https://worm-blossom.github.io/bab/#right_skip">
+                            <AE href="https://bab-hash.org/spec#right_skip">
                               <Code>right_skip</Code>
                             </AE>{" "}
                             for the slice stream.
@@ -1646,7 +1646,7 @@ export const wtp = (
                 <R n="wtp_request_get_partial_verification_options_none" />,
                 then the response indicates the length of the response slice,
                 measured in{" "}
-                <AE href="https://worm-blossom.github.io/bab/#chunk">
+                <AE href="https://bab-hash.org/spec#chunk">
                   Bab chunks
                 </AE>. In both cases, the indicated slice length must not exceed
                 the originally requested <R n="WtpRequestGetSliceLength" />.
@@ -1658,7 +1658,7 @@ export const wtp = (
                 of the request was{" "}
                 <R n="wtp_request_get_partial_verification_options_none" />, and
                 of the{" "}
-                <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
+                <AE href="https://bab-hash.org/spec#slice_streaming">
                   k-grouped light verifiable slice stream
                 </AE>{" "}
                 over the indicated number of chunks otherwise, omitting the
@@ -1879,17 +1879,17 @@ export const wtp = (
 
                             <P>
                               Otherwise, this is the number of{" "}
-                              <AE href="https://worm-blossom.github.io/bab/#chunk">
+                              <AE href="https://bab-hash.org/spec#chunk">
                                 Bab chunks
                               </AE>{" "}
                               this response provides. Note that the actual data
                               it transmits consists of more than just those
                               chunks; it also includes the verification data of
                               the requested{" "}
-                              <AE href="https://worm-blossom.github.io/bab/#kgrouped">
+                              <AE href="https://bab-hash.org/spec#kgrouped">
                                 k-grouped light
                               </AE>{" "}
-                              <AE href="https://worm-blossom.github.io/bab/#slice_streaming">
+                              <AE href="https://bab-hash.org/spec#slice_streaming">
                                 slice stream
                               </AE>. The length of the actually transmitted{" "}
                               <R n="WtpPayloadResponseSliceData" />{" "}
@@ -2591,7 +2591,7 @@ export const wtp = (
                             <R n="WtpRequestPutSliceFrom" /> and{" "}
                             <R n="WtpRequestPutSliceLength" /> are numbers of
                             {" "}
-                            <AE href="https://worm-blossom.github.io/bab/#chunk">
+                            <AE href="https://bab-hash.org/spec#chunk">
                               Bab chunks
                             </AE>. Then, the transmitted <R n="Payload" />{" "}
                             slice is not a raw subslice of the{" "}
