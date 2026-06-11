@@ -246,7 +246,7 @@ export const confidential_sync = (
               indeed a prefix of the expected{" "}
               <R n="Payload" />. To enable this, Confidential Sync expects{" "}
               <R n="PayloadDigest" /> to be the digest of a{" "}
-              <AE href="https://worm-blossom.github.io/bab/">
+              <AE href="https://bab-hash.org/">
                 Merkle-tree-based hash function
               </AE>.
             </P>
@@ -368,7 +368,7 @@ export const confidential_sync = (
                 To give an example of how this construction maps to verifiable
                 streaming: <R n="transform_payload" /> could map a{" "}
                 <R n="Payload" /> to a{" "}
-                <AE href="https://worm-blossom.github.io/bab/#baseline">
+                <AE href="https://bab-hash.org/spec#baseline">
                   Bab baseline verifiable stream
                 </AE>.
               </Marginale>{" "}
