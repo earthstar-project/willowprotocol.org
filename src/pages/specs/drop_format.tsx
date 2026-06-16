@@ -221,8 +221,8 @@ export const drop_format = (
             A <R n="drop" />{" "}
             is a collection of entries, together with verifiable subslices of
             their payloads. The payload slice verification relies on{" "}
-            <AE href="https://bab-hash.org/">Bab</AE>;{" "}
-            <Rs n="drop" /> store{" "}
+            <AE href="https://bab-hash.org/">Bab</AE>; <Rs n="drop" /> store
+            {" "}
             <AE href="https://bab-hash.org/spec#baseline_slice">
               baseline verifiable slice streams
             </AE>{" "}
@@ -234,8 +234,7 @@ export const drop_format = (
               Let <DefValue n="drop_entries" r="entries" /> a sequence of{" "}
               pairs of a <Rs n="PossiblyAuthorisedEntry" />{" "}
               and a sequence of non-overlapping slices of payload{" "}
-              <AE href="https://bab-hash.org/spec#chunk">chunks</AE>
-              {" "}
+              <AE href="https://bab-hash.org/spec#chunk">chunks</AE>{" "}
               with stricly increasing start offsets. The Drop Format then
               defines how to encode this sequence as a single bytestring (the
               corresponding <R n="drop" />).
@@ -306,13 +305,7 @@ export const drop_format = (
                   <Encoding
                     idPrefix="sl_enc_nested"
                     bitfields={[
-                      bitfieldConstant([0]),
-                      bitfieldIff(
-                        <>
-                          <R n="sl_e" /> is the final <R n="Entry" /> of{" "}
-                          <R n="drop_entries" />.
-                        </>,
-                      ),
+                      bitfieldConstant([0, 1]),
                       bitfieldIff(
                         <>
                           <Code>
@@ -582,32 +575,14 @@ export const drop_format = (
                               ]}
                             />
                           </EncIterator>
-
-                          {
-                            /* the concatenation of{" "}
-                          <Ul>
-                            <Li>
-                              <C64Standalone notStandalone>
-                                the number in slices in{" "}
-                                <R n="sl_payload_slices" />
-                              </C64Standalone>,
-                            </Li>
-                            <Li>
-                              <C64Standalone notStandalone>
-                                the final chunk index (inclusive) of the final
-                                slice in <R n="sl_payload_slices" />
-                              </C64Standalone>, and
-                            </Li>
-                            <Li>
-
-                            </Li>
-                          </Ul> */
-                          }
                         </Li>
                       </Ul>,
                     ]}
                   />
                 </EncIterator>,
+                <>
+                  The byte <Code>0x00</Code>.
+                </>,
               ]}
             />
           </PreviewScope>
