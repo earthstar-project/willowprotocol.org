@@ -10,7 +10,7 @@
     "macromaniajsx/jsx-runtime": "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts"
   },
   "exports": {
-    ".": "mod.ts"
+    ".": "./mod.ts"
   },
   "compilerOptions": {
     "jsx": "react-jsxdev",
