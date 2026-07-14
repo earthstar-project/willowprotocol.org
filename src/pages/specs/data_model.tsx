@@ -182,9 +182,9 @@ export const data_model = (
               For the purposes of this demonstration we omit the concept of{" "}
               <Rs n="entry_payload_digest" />.
             </Marginale>
-            Some concepts are easier to understand by trying them out for yourself. We
-            have created an interactive demonstration of how data between three
-            peers is reconciled using the Willow Data Model.
+            Some concepts are easier to understand by trying them out for
+            yourself. We have created an interactive demonstration of how data
+            between three peers is reconciled using the Willow Data Model.
           </P>
           <Div id="sim-data-model">
           </Div>
@@ -246,8 +246,9 @@ export const data_model = (
         </Hsection>
 
         <P>
-          Now that we could develop some intuition for the data model, we can <Em>almost</Em>{" "}
-          delve into the precise definition of these concepts.
+          Now that we could develop some intuition for the data model, we can
+          {" "}
+          <Em>almost</Em> delve into the precise definition of these concepts.
         </P>
 
         <Hsection n="willow_parameters" title="Parameters">
@@ -683,10 +684,9 @@ export const data_model = (
               <Def n="path_extension" r="extension" rs="extensions" /> of{" "}
               <R n="prefix_s" />. The{" "}
               <Def n="path_difference" r="difference" rs="differences" />{"  "}
-              from
-              <R n="prefix_s" /> to <R n="prefix_t" /> is the <R n="Path" />
+              from <R n="prefix_s" /> to <R n="prefix_t" /> is the{" "}
+              <R n="Path" /> whose concatenation to <R n="prefix_s" /> yields
               {" "}
-              whose concatenation to <R n="prefix_s" /> yields{" "}
               <R n="prefix_t" />. Any two <Rs n="Path" /> are{" "}
               <Def n="path_related" r="related" /> is one is a{" "}
               <R n="path_prefix" /> of the other.

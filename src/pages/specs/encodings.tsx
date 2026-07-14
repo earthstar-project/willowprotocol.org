@@ -1,4 +1,4 @@
-import { Curly, Gwil, NoWrap, Path } from "../../macros.tsx";
+import { Curly, NoWrap, Path } from "../../macros.tsx";
 import {
   ArbitraryBitsAreZero,
   Bitfield,
@@ -735,8 +735,8 @@ export const encodings = (
 
               <P>
                 <Code>
-                  <Orange>C</Orange><SkyBlue>3</SkyBlue> <Green>04</Green>
-                  {" "}
+                  <Orange>C</Orange>
+                  <SkyBlue>3</SkyBlue> <Green>04</Green>{" "}
                   <Purple>62 6C 6F 67</Purple> <Yellow>05</Yellow>{" "}
                   <Blue>69 64 65 61 73</Blue> <Vermillion>66 75 6E</Vermillion>
                 </Code>, because
@@ -851,8 +851,10 @@ export const encodings = (
                     <R n="EncodePathRelativePath_prefix_count" />
                   </C64Standalone>,
                   <CodeFor enc="EncodePath">
-                    the <R n="path_difference" /> from <RelName /> to{" "}
-                    <ValName />
+                    the <R n="path_difference" /> from the <R n="Path" />{" "}
+                    consisting of the first{" "}
+                    <R n="EncodePathRelativePath_prefix_count" />{" "}
+                    <Rs n="Component" /> of <ValName /> to <ValName /> proper
                   </CodeFor>,
                 ]}
                 canonic={{
