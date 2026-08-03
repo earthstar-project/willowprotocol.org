@@ -25,7 +25,7 @@ fn main() {
     .path(path!("/ideas"))
     .timestamp(12345)
     .payload(b"chocolate with mustard")
-    .build().unwrap();
+    .build();
 
   // Authorise the entry using the communal
   // capability and Alfie's secret.
@@ -71,7 +71,7 @@ fn main() {
     .path(path!("/blog"))
     .timestamp(45689)
     .payload(b"worried about alfie...")
-    .build().unwrap();
+    .build();
 
   // Authorise the entry using the owned
   // capability and Betty's secret.

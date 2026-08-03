@@ -10,7 +10,7 @@ fn main() {
     .path(path!("/blog/idea/1"))
     .now().unwrap()
     .payload(b"Dear reader, I've got a great idea")
-    .build().unwrap();
+    .build();
 
   println!("{:#?}", entry);
 
@@ -18,7 +18,7 @@ fn main() {
     .path(path!("/blog/idea"))
     .timestamp(entry.timestamp() + 10.minutes())
     .payload(b"")
-    .build().unwrap();
+    .build();
 
   println!("{:#?}", oops);
 }

@@ -11,7 +11,7 @@ fn main() {
     .path(path!("/"))
     .timestamp(17)
     .payload(b"bla")
-    .build().unwrap();
+    .build();
 
   // Check inclusion in some ranges of timestamps.
   assert!(entry.is_in(&TimeRange::new(5.into(), Some(19.into()))));
@@ -41,7 +41,7 @@ fn main() {
     .path(path!("/blog/breakfast"))
     .timestamp(100)
     .payload(b"I made the most delicious pancakes today.")
-    .build().unwrap();
+    .build();
 
   let betty_late_blog_entry = Entry::builder()
     .namespace_id(namespace_id.clone())
@@ -49,7 +49,7 @@ fn main() {
     .path(path!("/blog/dinner"))
     .timestamp(800)
     .payload(b"Salmon is great when you're low on time.")
-    .build().unwrap();
+    .build();
 
   let late_time_range = TimeRange::new_closed(500.into(), 1000.into());
   let any_late_blog_area = Area::new(None, path!("/blog"), late_time_range);
