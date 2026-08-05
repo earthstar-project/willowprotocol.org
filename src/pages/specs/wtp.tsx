@@ -85,7 +85,7 @@ export const wtp = (
           <PreviewScope>
             <P>
               The <R n="wtp" /> is an asymmetric protocol in which a{" "}
-              <Def n="wtp_client" r="client" rs="server" />{" "}
+              <Def n="wtp_client" r="client" rs="clients" />{" "}
               proactively sends requests to a purely reactive{" "}
               <Def n="wtp_server" r="server" rs="servers" />, who replies with a
               single response to each request. The <R n="wtp_client" />{" "}
@@ -121,7 +121,8 @@ export const wtp = (
           </PreviewScope>
 
           <P>
-            Whereas the <R n="willow_confidential_sync">Confidential Sync protocol</R>{" "}
+            Whereas the{" "}
+            <R n="willow_confidential_sync">Confidential Sync protocol</R>{" "}
             assembles some sophisticated techniques to allow for high
             confidentiality between completely untrusted peers, supports
             bidirectional eager forwarding of novel information, and multiplexes
@@ -1292,8 +1293,11 @@ export const wtp = (
                       comment: (
                         <>
                           The <R n="wtp_server" />{" "}
-                          chose to not meaningfully answer this request. It also
-                          chose to not tell the <R n="wtp_client" /> why.
+                          chose to not meaningfully answer this request. The
+                          {" "}
+                          <R n="wtp_feature_get" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
                         </>
                       ),
                     },
@@ -1326,21 +1330,6 @@ export const wtp = (
                           <R n="AuthorisedEntry" />. The response contains it,
                           unless <R n="WtpRequestGetSkipEntry" /> was{" "}
                           <Code>true</Code>.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
-                        "not_processed",
-                        "WtpResponseGetStatusCodeNotProcessed",
-                      ],
-                      comment: (
-                        <>
-                          The request was not processed. The{" "}
-                          <R n="wtp_feature_get" /> of the{" "}
-                          <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
                         </>
                       ),
                     },
@@ -1455,8 +1444,8 @@ export const wtp = (
                     {
                       tuple: true,
                       id: [
-                        "unexpected_timestamp",
-                        "WtpResponseGetStatusCodeUnexpectedTimestamp",
+                        "too_new",
+                        "WtpResponseGetStatusCodeTooNew",
                       ],
                       comment: (
                         <>
@@ -1522,9 +1511,10 @@ export const wtp = (
                         <>
                           The <R n="wtp_server" /> chose to not anwer with a
                           {" "}
-                          <R n="Payload" /> slice. It also chose to not tell the
-                          {" "}
-                          <R n="wtp_client" /> why.
+                          <R n="Payload" /> slice. The{" "}
+                          <R n="wtp_feature_get_payload" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
                         </>
                       ),
                     },
@@ -1539,22 +1529,6 @@ export const wtp = (
                           The request could be processed, and a prefix of the
                           requested <R n="Payload" />{" "}
                           slice is part of this response.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
-                        "not_processed",
-                        "WtpResponseGetPayloadStatusCodeNotProcessed",
-                      ],
-                      comment: (
-                        <>
-                          The request for a <R n="Payload" />{" "}
-                          slice was not processed. The{" "}
-                          <R n="wtp_feature_get_payload" /> of the{" "}
-                          <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
                         </>
                       ),
                     },
@@ -1673,7 +1647,7 @@ export const wtp = (
               </P>
 
               <P>
-                If the <R n="WtpRequestGetSliceFrom" /> exceeds{" "}
+                If the <R n="WtpRequestGetSliceFrom" /> exceeds the{" "}
                 <R n="entry_payload_length" /> of the addressed{" "}
                 <R n="AuthorisedEntry" />, the message must be treated as if
                 {" "}
@@ -1817,12 +1791,12 @@ export const wtp = (
                             The information concerning the requested{" "}
                             <R n="Payload" />. Must be{" "}
                             <R n="wtp_request_get_payload_response_none" />{" "}
-                            if and only if{"  "}
+                            if and only if the{"  "}
                             <R n="WtpResponseGetStatusCodeField" /> field is not
                             {" "}
                             <R n="WtpResponseGetStatusCodeYay" /> or{" "}
                             <R n="WtpResponseGetPayloadStatusCodeField" />{" "}
-                            field is not{" "}
+                            the field is not{" "}
                             <R n="WtpResponseGetPayloadStatusCodeYay" />.
                           </>
                         ),
@@ -2679,8 +2653,11 @@ export const wtp = (
                       comment: (
                         <>
                           The <R n="wtp_server" />{" "}
-                          chose to not meaningfully answer this request. It also
-                          chose to not tell the <R n="wtp_client" /> why.
+                          chose to not meaningfully answer this request. The
+                          {" "}
+                          <R n="wtp_feature_put" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
                         </>
                       ),
                     },
@@ -2711,21 +2688,6 @@ export const wtp = (
                           The request could be processed, and the{" "}
                           <R n="wtp_server" /> was interested in the{" "}
                           <R n="AuthorisedEntry" /> it received.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
-                        "not_processed",
-                        "WtpResponsePutStatusCodeNotProcessed",
-                      ],
-                      comment: (
-                        <>
-                          The request was not processed. The{" "}
-                          <R n="wtp_feature_put" /> of the{" "}
-                          <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
                         </>
                       ),
                     },
@@ -2830,9 +2792,10 @@ export const wtp = (
                       comment: (
                         <>
                           The <R n="wtp_server" /> chose to not ingest the{" "}
-                          <R n="Payload" /> slice. It also chose to not tell the
-                          {" "}
-                          <R n="wtp_client" /> why.
+                          <R n="Payload" /> slice. The{" "}
+                          <R n="wtp_feature_put_payload" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
                         </>
                       ),
                     },
@@ -2864,21 +2827,6 @@ export const wtp = (
                           <R n="Payload" /> slice, and it contained data the
                           {" "}
                           <R n="wtp_server" /> did not have before.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
-                        "not_processed",
-                        "WtpResponsePutPayloadStatusCodeNotProcessed",
-                      ],
-                      comment: (
-                        <>
-                          The <R n="Payload" /> slice was discarded. The{" "}
-                          <R n="wtp_feature_put_payload" /> of the{" "}
-                          <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
                         </>
                       ),
                     },
