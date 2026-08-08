@@ -7,4 +7,4 @@ Path(<empty>) is a prefix of long_path!
 Path(/ideas) is a prefix of long_path!
 Path(/ideas/game) is a prefix of long_path!
 Path(/ideas/game/design) is a prefix of long_path!
-The longest common prefix of long_path and another_long_path is: Path(/ideas)
+The longest common prefix of long_path and another_long_path is: Path(/ideas/game)
