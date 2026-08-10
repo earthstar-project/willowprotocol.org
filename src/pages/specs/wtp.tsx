@@ -444,49 +444,6 @@ export const wtp = (
                       comment: (
                         <>
                           Whether the <R n="wtp_server" /> supports serving{" "}
-                          raw, byte-indexed <Rs n="Payload" />{" "}
-                          slices in its responses to <R n="WtpRequestGet" />
-                          {" "}
-                          messages (as opposed to Bab-based authenticated
-                          slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_raw_slices",
-                          "wtp_feature_get_raw_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
-                          Bab authenticated <Rs n="Payload" />{" "}
-                          slices in its responses to <R n="WtpRequestGet" />
-                          {" "}
-                          messages (as opposed to raw, byte-indexed slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_authenticated_slices",
-                          "wtp_feature_get_authenticated_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
                           Bab authenticated <Rs n="Payload" />{" "}
                           slices in its responses to <R n="WtpRequestGet" />
                           {" "}
@@ -1018,8 +975,11 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
-                            The start offset (zero-indexed, inclusive) of the
-                            requested <R n="Payload" /> slice.
+                            The start offset (zero-indexed, inclusive, in units
+                            of{" "}
+                            <AE href="https://bab-hash.org/spec#chunk">
+                              Bab chunks
+                            </AE>) of the requested <R n="Payload" /> slice.
                           </>
                         ),
                         dedicatedLine: true,
@@ -1038,7 +998,10 @@ export const wtp = (
                         comment: (
                           <>
                             The length of the requested <R n="Payload" />{" "}
-                            slice. Note that requesting a very large slice might
+                            slice, in units of{" "}
+                            <AE href="https://bab-hash.org/spec#chunk">
+                              Bab chunks
+                            </AE>. Note that requesting a very large slice might
                             result in a very large reply, which could take a
                             very long time to transmit, blocking off possibly
                             smaller replies to other requests. Hence,{" "}
@@ -1064,24 +1027,9 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
-                            If this is{" "}
-                            <R n="wtp_request_get_partial_verification_options_none" />,
-                            then the <R n="WtpRequestGetSliceFrom" /> and{" "}
-                            <R n="WtpRequestGetSliceLength" />{" "}
-                            fields are number of bytes, and the response simply
-                            contains (a prefix of) the <R n="Payload" />{" "}
-                            slice as raw bytes. If{" "}
-                            <R n="WtpPartialVerification" /> is given, however,
-                            {" "}
-                            <R n="WtpRequestGetSliceFrom" /> and{" "}
-                            <R n="WtpRequestGetSliceLength" /> are numbers of
-                            {" "}
-                            <AE href="https://bab-hash.org/spec#chunk">
-                              Bab chunks
-                            </AE>. The response then contains not a raw subslice
-                            of the{" "}
-                            <R n="Payload" />, but part of a Bab verifiable
-                            stream. The details are described on the{" "}
+                            Specifies details of the verifiable Bab stream for
+                            the payload slice that the client is requesting. The
+                            precise semantics are given on the{" "}
                             <R n="WtpPartialVerification" /> struct.
                           </>
                         ),
@@ -1092,15 +1040,7 @@ export const wtp = (
                             "WtpRequestGetPartialVerification",
                             "partial_verification",
                           ],
-                          <ChoiceType
-                            types={[
-                              <R n="WtpPartialVerification" />,
-                              <DefVariant
-                                n="wtp_request_get_partial_verification_options_none"
-                                r="none"
-                              />,
-                            ]}
-                          />,
+                          <R n="WtpPartialVerification" />,
                         ],
                       },
                     },
@@ -1480,44 +1420,6 @@ export const wtp = (
                     {
                       tuple: true,
                       id: [
-                        "no_raw_slices",
-                        "WtpResponseGetPayloadStatusCodeNoRawSlices",
-                      ],
-                      comment: (
-                        <>
-                          The request for a <R n="Payload" />{" "}
-                          slice was not processed, because the{" "}
-                          <R n="WtpRequestGetPartialVerification" /> was{" "}
-                          <R n="wtp_request_get_partial_verification_options_none" />.
-                          The <R n="wtp_feature_get_raw_slices" /> of the{" "}
-                          <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
-                        "no_authenticated_slices",
-                        "WtpResponseGetPayloadStatusCodeNoAuthenticatedSlices",
-                      ],
-                      comment: (
-                        <>
-                          The request for a <R n="Payload" />{" "}
-                          slice was not processed, because the{" "}
-                          <R n="WtpRequestGetPartialVerification" /> was not
-                          {" "}
-                          <R n="wtp_request_get_partial_verification_options_none" />.
-                          The <R n="wtp_feature_get_authenticated_slices" />
-                          {" "}
-                          of the <R n="WtpServerSetupMessage" />{" "}
-                          gives more information.
-                        </>
-                      ),
-                    },
-                    {
-                      tuple: true,
-                      id: [
                         "no_fancy_k",
                         "WtpResponseGetPayloadStatusCodeNoFancyK",
                       ],
@@ -1552,36 +1454,20 @@ export const wtp = (
                 More specifically, the response does not have to contain the
                 complete requested slice, but merely a prefix of it. The
                 response first indicates how much of the requested slice is
-                actually part of the response. If the{" "}
-                <R n="WtpRequestGetPartialVerification" /> of the request was
-                {" "}
-                <R n="wtp_request_get_partial_verification_options_none" />, the
-                response simply states the number of <R n="Payload" />{" "}
-                bytes it contains, starting at the requested{" "}
-                <R n="WtpRequestGetSliceFrom" />. If the{" "}
-                <R n="WtpRequestGetPartialVerification" /> of the request was
-                {" "}
-                <Em>not</Em>{" "}
-                <R n="wtp_request_get_partial_verification_options_none" />,
-                then the response indicates the length of the response slice,
-                measured in{" "}
+                actually part of the response, in units of{" "}
                 <AE href="https://bab-hash.org/spec#chunk">
                   Bab chunks
-                </AE>. In both cases, the indicated slice length must not exceed
-                the originally requested <R n="WtpRequestGetSliceLength" />.
+                </AE>. The indicated slice length must not exceed the originally
+                requested <R n="WtpRequestGetSliceLength" />.
               </P>
 
               <P>
-                The slice data itself consists of raw <R n="Payload" />{" "}
-                bytes if the <R n="WtpRequestGetPartialVerification" />{" "}
-                of the request was{" "}
-                <R n="wtp_request_get_partial_verification_options_none" />, and
-                of the{" "}
+                The slice data itself consists of the{" "}
                 <AE href="https://bab-hash.org/spec#slice_streaming">
                   k-grouped light verifiable slice stream
                 </AE>{" "}
-                over the indicated number of chunks otherwise, omitting the
-                verification metadata indicated by the{" "}
+                over the indicated number of chunks, omitting the verification
+                metadata indicated by the{" "}
                 <R n="WtpPartialVerificationLeftSkip" /> and{" "}
                 <R n="WtpPartialVerificationRightSkip" />{" "}
                 of the request. Note that the{" "}
@@ -1784,27 +1670,13 @@ export const wtp = (
                           <>
                             <P>
                               The length of the prefix of the requested slice
-                              contained in this response.
-                            </P>
-
-                            <P>
-                              If the <R n="WtpRequestGetPartialVerification" />
-                              {" "}
-                              of the request was{" "}
-                              <R n="wtp_request_get_partial_verification_options_none" />,
-                              this is simply the number of bytes in the response
-                              slice.
-                            </P>
-
-                            <P>
-                              Otherwise, this is the number of{" "}
+                              contained in this response, in{" "}
                               <AE href="https://bab-hash.org/spec#chunk">
                                 Bab chunks
-                              </AE>{" "}
-                              this response provides. Note that the actual data
-                              it transmits consists of more than just those
-                              chunks; it also includes the verification data of
-                              the requested{" "}
+                              </AE>. Note that the actual data it transmits
+                              consists of more than just those chunks; it also
+                              includes the verification data of the requested
+                              {" "}
                               <AE href="https://bab-hash.org/spec#kgrouped">
                                 k-grouped light
                               </AE>{" "}
@@ -1812,9 +1684,9 @@ export const wtp = (
                                 slice stream
                               </AE>. The length of the actually transmitted{" "}
                               <R n="WtpPayloadResponseSliceData" />{" "}
-                              in bytes can (and must) be deterministically
-                              computed from the number of chunks and the index
-                              of the first included chunk.
+                              in bytes can be deterministically computed from
+                              the number of chunks and the index of the first
+                              included chunk.
                             </P>
                           </>
                         ),
@@ -1833,9 +1705,8 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
-                            The slice data, either as raw bytes or as a Bab
-                            stream. The length of this is given by (or can be
-                            derived from){" "}
+                            The slice data, as a verifiable Bab stream. The
+                            length of this can be derived from the{" "}
                             <R n="WtpPayloadResponseSliceLength" />.
                           </>
                         ),
@@ -2411,626 +2282,578 @@ export const wtp = (
                 <Alj inline>TODO</Alj>
               </P>
             </Hsection>
+
+            <Hsection n="wtp_request_put" title={<Code>RequestPut</Code>}>
+              <P>
+                The third and final kind of request lets the{" "}
+                <R n="wtp_client" /> push a contiguous slice of the{" "}
+                <R n="Payload" /> of an <R n="AuthorisedEntry" /> to the{" "}
+                <R n="wtp_server" />. The <R n="Payload" />{" "}
+                slice might be empty, which amounts to pushing only the{" "}
+                <R n="AuthorisedEntry" /> itself.
+              </P>
+
+              <Pseudocode n="wtp_defs_RequestPut">
+                <StructDef
+                  comment={
+                    <>
+                      Push a contiguous, possibly empty subslice of the{" "}
+                      <R n="Payload" /> of an <R n="AuthorisedEntry" /> to the
+                      {" "}
+                      <R n="wtp_server" />.
+                    </>
+                  }
+                  id={[
+                    "RequestPut",
+                    "WtpRequestPut",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="AuthorisedEntry" /> to push to the{" "}
+                            <R n="wtp_server" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "entry",
+                            "WtpRequestPutEntry",
+                            "entries",
+                          ],
+                          <R n="AuthorisedEntry" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The start offset (zero-indexed, inclusive, in units
+                            of{" "}
+                            <AE href="https://bab-hash.org/spec#chunk">
+                              Bab chunks
+                            </AE>) of the transmitted <R n="Payload" /> slice.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_from",
+                            "WtpRequestPutSliceFrom",
+                            "slice_from",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The length of the transmitted <R n="Payload" />{" "}
+                            slice, in units of{" "}
+                            <AE href="https://bab-hash.org/spec#chunk">
+                              Bab chunks
+                            </AE>.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_length",
+                            "WtpRequestPutSliceLength",
+                            "slice_length",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Specifies details of the verifiable Bab stream for
+                            the payload slice that the client is sending. The
+                            precise semantics are given on the
+                            <R n="WtpPartialVerification" /> struct.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "partial_verification",
+                            "WtpRequestPutPartialVerification",
+                            "partial_verification",
+                          ],
+                          <R n="WtpPartialVerification" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The slice data, as a verifiable Bab stream. The
+                            length of thiscan be derived from the{" "}
+                            <R n="WtpRequestPutSliceLength" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "slice_data",
+                            "WtpRequestPutSliceData",
+                            "slice_data",
+                          ],
+                          <SliceType>
+                            <R n="U8" />
+                          </SliceType>,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+            </Hsection>
+
+            <Hsection n="wtp_response_put" title={<Code>ResponsePut</Code>}>
+              <P>
+                The response to a <R n="WtpRequestPut" />{" "}
+                message starts with the <R n="wtp_request_id" /> of the{" "}
+                <R n="WtpRequestPut" />{" "}
+                message, followed by one of the following status codes:
+              </P>
+
+              <Pseudocode n="wtp_response_put_status_code_def">
+                <Enum
+                  comment={
+                    <>
+                      The different status codes in a response to a{" "}
+                      <R n="WtpRequestPut" />{" "}
+                      message. If multiple codes would apply, the one listed
+                      earliest takes precedence.
+                    </>
+                  }
+                  id={[
+                    "ResponsePutStatusCode",
+                    "WtpResponsePutStatusCode",
+                    "ResponsePutStatusCodes",
+                  ]}
+                  variants={[
+                    {
+                      tuple: true,
+                      id: [
+                        "nope",
+                        "WtpResponsePutStatusCodeNope",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{" "}
+                          chose to not meaningfully answer this request. The
+                          {" "}
+                          <R n="wtp_feature_put" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "too_annoying",
+                        "WtpResponsePutStatusCodeTooAnnoying",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{" "}
+                          chose to not meaningfully answer this request, because
+                          it does not want to spend its resources on this{" "}
+                          <R n="wtp_client" />{" "}
+                          right now. Intended for rate-limiting.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "yay",
+                        "WtpResponsePutStatusCodeYay",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, and the{" "}
+                          <R n="wtp_server" /> was interested in the{" "}
+                          <R n="AuthorisedEntry" /> it received.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "disinterested",
+                        "WtpResponsePutStatusCodeDisinterested",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, but the{" "}
+                          <R n="wtp_server" /> was not interested in the{" "}
+                          <R n="AuthorisedEntry" /> it received.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "old_news",
+                        "WtpResponsePutStatusCodeOldNews",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, and{" "}
+                          <R n="wtp_server" /> would have been interested in the
+                          {" "}
+                          <R n="AuthorisedEntry" />{" "}
+                          it received — if it had not stored that data already.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "very_old_news",
+                        "WtpResponsePutStatusCodeVeryOldNews",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, but the received{" "}
+                          <R n="AuthorisedEntry" />{" "}
+                          had to be deleted immediately due to{" "}
+                          <R n="prefix_pruning" />.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "unauthorised",
+                        "WtpResponsePutStatusCodeUnauthorised",
+                      ],
+                      comment: (
+                        <>
+                          <P>
+                            The <R n="AuthorisationToken" /> of the{" "}
+                            <R n="WtpRequestPutEntry" /> was invalid.
+                          </P>
+                        </>
+                      ),
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                Every <R n="WtpResponsePutStatusCode" /> but{" "}
+                <R n="WtpResponsePutStatusCodeYay" />{" "}
+                marks the end of the response. If the{" "}
+                <R n="WtpResponsePutStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponsePutStatusCodeYay" />, the response continues
+                with a secondary status code to indicate whether the requested
+                {" "}
+                <R n="Payload" /> slice can be served:
+              </P>
+
+              <Pseudocode n="wtp_response_put_payload_status_code_def">
+                <Enum
+                  comment={
+                    <>
+                      The different status codes indicating whether a{" "}
+                      <R n="Payload" /> slice was ingested in response to a{" "}
+                      <R n="WtpRequestPut" />{" "}
+                      message. If multiple codes would apply, the one listed
+                      earliest takes precedence.
+                    </>
+                  }
+                  id={[
+                    "ResponsePutPayloadStatusCode",
+                    "WtpResponsePutPayloadStatusCode",
+                    "ResponsePutPayloadStatusCodes",
+                  ]}
+                  variants={[
+                    {
+                      tuple: true,
+                      id: [
+                        "nope",
+                        "WtpResponsePutPayloadStatusCodeNope",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" /> chose to not ingest the{" "}
+                          <R n="Payload" /> slice. The{" "}
+                          <R n="wtp_feature_put_payload" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          may or may not provide more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "too_annoying",
+                        "WtpResponsePutPayloadStatusCodeTooAnnoying",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" /> chose to not ingest the{" "}
+                          <R n="Payload" />{" "}
+                          slice, because it does not want to spend its resources
+                          on this <R n="wtp_client" />{" "}
+                          right now. Intended for rate-limiting.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "yay",
+                        "WtpResponsePutPayloadStatusCodeYay",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" /> ingested the{" "}
+                          <R n="Payload" /> slice, and it contained data the
+                          {" "}
+                          <R n="wtp_server" /> did not have before.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "disinterested",
+                        "WtpResponsePutPayloadStatusCodeDisinterested",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="wtp_server" />{" "}
+                          was not interested in storing the <R n="Payload" />
+                          {" "}
+                          of this <R n="AuthorisedEntry" />.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "old_news",
+                        "WtpResponsePutPayloadStatusCodeOldNews",
+                      ],
+                      comment: (
+                        <>
+                          The request could be processed, and{" "}
+                          <R n="wtp_server" /> would have been interested in the
+                          {" "}
+                          <R n="Payload" />{" "}
+                          slice it received — if it had not stored that data
+                          already.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "no_fancy_k",
+                        "WtpResponsePutPayloadStatusCodeNoFancyK",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="Payload" /> slice was discarded, because the
+                          {" "}
+                          <R n="WtpRequestPutPartialVerification" /> set{" "}
+                          <R n="WtpPartialVerificationK" />{" "}
+                          to a value other than <Code>1</Code>. The{" "}
+                          <R n="wtp_feature_put_payload_fancy_k" /> of the{" "}
+                          <R n="WtpServerSetupMessage" />{" "}
+                          gives more information.
+                        </>
+                      ),
+                    },
+                    {
+                      tuple: true,
+                      id: [
+                        "want_earlier_slice",
+                        "WtpResponsePutPayloadStatusCodeWantEarlierSlice",
+                      ],
+                      comment: (
+                        <>
+                          The <R n="Payload" /> slice was discarded, because the
+                          {" "}
+                          <R n="wtp_server" />{" "}
+                          wishes to store only a single, contiguous prefix of
+                          the{" "}
+                          <R n="Payload" />, but the transmitted slice starts
+                          outsidethe prefix the <R n="wtp_server" />{" "}
+                          has so far. The response contains the offset starting
+                          from which the <R n="wtp_server" />{" "}
+                          would like to receive a new <R n="WtpRequestPut" />
+                          {" "}
+                          message.
+                        </>
+                      ),
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                Every <R n="WtpResponsePutPayloadStatusCode" /> but{" "}
+                <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />{" "}
+                marks the end of the response. If the{" "}
+                <R n="WtpResponsePutStatusCode" /> <Em>is</Em>{" "}
+                <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />, the
+                response continues with a <R n="U64" />{" "}
+                indicating the slice start (in a unit of raw bytes or Bab
+                chunks, depending on the{" "}
+                <R n="WtpRequestPutPartialVerification" />{" "}
+                of the request) starting from which the <R n="wtp_server" />
+                {" "}
+                would like to receive the <R n="Payload" />.
+              </P>
+
+              <P>
+                Bringing it all together:
+              </P>
+
+              <Pseudocode n="wtp_defs_ResponsePut">
+                <StructDef
+                  comment={
+                    <>
+                      Responds to a <R n="WtpRequestPut" /> message.
+                    </>
+                  }
+                  id={[
+                    "ResponsePut",
+                    "WtpResponsePut",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="wtp_request_id" />{" "}
+                            of the request to which this responds.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpResponsePutRequestId",
+                            "request_ids",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The status code for this response.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "status_code",
+                            "WtpResponsePutStatusCodeField",
+                            "status_codes",
+                          ],
+                          <R n="WtpResponsePutStatusCode" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The status code regarding whether the{" "}
+                            <R n="Payload" /> slice was stored. Must be{" "}
+                            <R n="wtp_request_put_payload_status_code_none" />
+                            {" "}
+                            if and only if the{" "}
+                            <R n="WtpResponsePutStatusCodeField" /> field is not
+                            {" "}
+                            <R n="WtpResponsePutStatusCodeYay" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_status_code",
+                            "WtpResponsePutPayloadStatusCodeField",
+                            "payload_status_codes",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpResponsePutPayloadStatusCode" />,
+                              <DefVariant
+                                n="wtp_request_put_payload_status_code_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The slice start (in a unit of raw bytes or Bab
+                            chunks, depending on the{" "}
+                            <R n="WtpRequestPutPartialVerification" />{" "}
+                            of the request) starting from which the{" "}
+                            <R n="wtp_server" /> would like to receive the{" "}
+                            <R n="Payload" /> again. Must be{" "}
+                            <R n="wtp_response_put_retry_at_offset_none" />{" "}
+                            if and only if{"  "}
+                            <R n="WtpResponsePutPayloadStatusCodeField" />{" "}
+                            field is not{" "}
+                            <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "retry_at_offset",
+                            "WtpResponsePutRetryAtOffset",
+                            "retry_at_offset",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="U64" />,
+                              <DefVariant
+                                n="wtp_response_put_retry_at_offset_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+            </Hsection>
           </Hsection>
 
           <Hsection n="wtp_encodings" title="Encodings">
             <P>
               <Alj inline>TODO</Alj>
             </P>
-          </Hsection>
-
-          <Hsection n="wtp_request_put" title={<Code>RequestPut</Code>}>
-            <P>
-              The third and final kind of request lets the <R n="wtp_client" />
-              {" "}
-              push a contiguous slice of the <R n="Payload" /> of an{" "}
-              <R n="AuthorisedEntry" /> to the <R n="wtp_server" />. The{" "}
-              <R n="Payload" />{" "}
-              slice might be empty, which amounts to pushing only the{" "}
-              <R n="AuthorisedEntry" /> itself.
-            </P>
-
-            <Pseudocode n="wtp_defs_RequestPut">
-              <StructDef
-                comment={
-                  <>
-                    Push a contiguous, possibly empty subslice of the{" "}
-                    <R n="Payload" /> of an <R n="AuthorisedEntry" /> to the
-                    {" "}
-                    <R n="wtp_server" />.
-                  </>
-                }
-                id={[
-                  "RequestPut",
-                  "WtpRequestPut",
-                ]}
-                fields={[
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The <R n="AuthorisedEntry" /> to push to the{" "}
-                          <R n="wtp_server" />.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "entry",
-                          "WtpRequestPutEntry",
-                          "entries",
-                        ],
-                        <R n="AuthorisedEntry" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The start offset (zero-indexed, inclusive) of the
-                          transmitted <R n="Payload" /> slice.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "slice_from",
-                          "WtpRequestPutSliceFrom",
-                          "slice_from",
-                        ],
-                        <R n="U64" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The length of the transmitted <R n="Payload" /> slice.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "slice_length",
-                          "WtpRequestPutSliceLength",
-                          "slice_length",
-                        ],
-                        <R n="U64" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          If this is{" "}
-                          <R n="wtp_request_put_partial_verification_options_none" />,
-                          then the <R n="WtpRequestPutSliceFrom" /> and{" "}
-                          <R n="WtpRequestPutSliceLength" />{" "}
-                          fields are number of bytes, and transmitted{" "}
-                          <R n="Payload" />{" "}
-                          slice is simply a sequence of raw bytes. If{" "}
-                          <R n="WtpPartialVerification" /> is given, however,
-                          {" "}
-                          <R n="WtpRequestPutSliceFrom" /> and{" "}
-                          <R n="WtpRequestPutSliceLength" /> are numbers of{" "}
-                          <AE href="https://bab-hash.org/spec#chunk">
-                            Bab chunks
-                          </AE>. Then, the transmitted <R n="Payload" />{" "}
-                          slice is not a raw subslice of the{" "}
-                          <R n="Payload" />, but part of a Bab verifiable
-                          stream. The details are described on the{" "}
-                          <R n="WtpPartialVerification" /> struct.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "partial_verification",
-                          "WtpRequestPutPartialVerification",
-                          "partial_verification",
-                        ],
-                        <ChoiceType
-                          types={[
-                            <R n="WtpPartialVerification" />,
-                            <DefVariant
-                              n="wtp_request_put_partial_verification_options_none"
-                              r="none"
-                            />,
-                          ]}
-                        />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The slice data, either as raw bytes or as a Bab
-                          stream. The length of this is given by (or can be
-                          derived from) <R n="WtpRequestPutSliceLength" />.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "slice_data",
-                          "WtpRequestPutSliceData",
-                          "slice_data",
-                        ],
-                        <SliceType>
-                          <R n="U8" />
-                        </SliceType>,
-                      ],
-                    },
-                  },
-                ]}
-              />
-            </Pseudocode>
-          </Hsection>
-
-          <Hsection n="wtp_response_put" title={<Code>ResponsePut</Code>}>
-            <P>
-              The response to a <R n="WtpRequestPut" /> message starts with the
-              {" "}
-              <R n="wtp_request_id" /> of the <R n="WtpRequestPut" />{" "}
-              message, followed by one of the following status codes:
-            </P>
-
-            <Pseudocode n="wtp_response_put_status_code_def">
-              <Enum
-                comment={
-                  <>
-                    The different status codes in a response to a{" "}
-                    <R n="WtpRequestPut" />{" "}
-                    message. If multiple codes would apply, the one listed
-                    earliest takes precedence.
-                  </>
-                }
-                id={[
-                  "ResponsePutStatusCode",
-                  "WtpResponsePutStatusCode",
-                  "ResponsePutStatusCodes",
-                ]}
-                variants={[
-                  {
-                    tuple: true,
-                    id: [
-                      "nope",
-                      "WtpResponsePutStatusCodeNope",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" />{" "}
-                        chose to not meaningfully answer this request. The{" "}
-                        <R n="wtp_feature_put" /> of the{" "}
-                        <R n="WtpServerSetupMessage" />{" "}
-                        may or may not provide more information.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "too_annoying",
-                      "WtpResponsePutStatusCodeTooAnnoying",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" />{" "}
-                        chose to not meaningfully answer this request, because
-                        it does not want to spend its resources on this{" "}
-                        <R n="wtp_client" />{" "}
-                        right now. Intended for rate-limiting.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "yay",
-                      "WtpResponsePutStatusCodeYay",
-                    ],
-                    comment: (
-                      <>
-                        The request could be processed, and the{" "}
-                        <R n="wtp_server" /> was interested in the{" "}
-                        <R n="AuthorisedEntry" /> it received.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "disinterested",
-                      "WtpResponsePutStatusCodeDisinterested",
-                    ],
-                    comment: (
-                      <>
-                        The request could be processed, but the{" "}
-                        <R n="wtp_server" /> was not interested in the{" "}
-                        <R n="AuthorisedEntry" /> it received.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "old_news",
-                      "WtpResponsePutStatusCodeOldNews",
-                    ],
-                    comment: (
-                      <>
-                        The request could be processed, and <R n="wtp_server" />
-                        {" "}
-                        would have been interested in the{" "}
-                        <R n="AuthorisedEntry" />{" "}
-                        it received — if it had not stored that data already.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "very_old_news",
-                      "WtpResponsePutStatusCodeVeryOldNews",
-                    ],
-                    comment: (
-                      <>
-                        The request could be processed, but the received{" "}
-                        <R n="AuthorisedEntry" />{" "}
-                        had to be deleted immediately due to{" "}
-                        <R n="prefix_pruning" />.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "unauthorised",
-                      "WtpResponsePutStatusCodeUnauthorised",
-                    ],
-                    comment: (
-                      <>
-                        <P>
-                          The <R n="AuthorisationToken" /> of the{" "}
-                          <R n="WtpRequestPutEntry" /> was invalid.
-                        </P>
-                      </>
-                    ),
-                  },
-                ]}
-              />
-            </Pseudocode>
-
-            <P>
-              Every <R n="WtpResponsePutStatusCode" /> but{" "}
-              <R n="WtpResponsePutStatusCodeYay" />{" "}
-              marks the end of the response. If the{" "}
-              <R n="WtpResponsePutStatusCode" /> <Em>is</Em>{" "}
-              <R n="WtpResponsePutStatusCodeYay" />, the response continues with
-              a secondary status code to indicate whether the requested{" "}
-              <R n="Payload" /> slice can be served:
-            </P>
-
-            <Pseudocode n="wtp_response_put_payload_status_code_def">
-              <Enum
-                comment={
-                  <>
-                    The different status codes indicating whether a{" "}
-                    <R n="Payload" /> slice was ingested in response to a{" "}
-                    <R n="WtpRequestPut" />{" "}
-                    message. If multiple codes would apply, the one listed
-                    earliest takes precedence.
-                  </>
-                }
-                id={[
-                  "ResponsePutPayloadStatusCode",
-                  "WtpResponsePutPayloadStatusCode",
-                  "ResponsePutPayloadStatusCodes",
-                ]}
-                variants={[
-                  {
-                    tuple: true,
-                    id: [
-                      "nope",
-                      "WtpResponsePutPayloadStatusCodeNope",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" /> chose to not ingest the{" "}
-                        <R n="Payload" /> slice. The{" "}
-                        <R n="wtp_feature_put_payload" /> of the{" "}
-                        <R n="WtpServerSetupMessage" />{" "}
-                        may or may not provide more information.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "too_annoying",
-                      "WtpResponsePutPayloadStatusCodeTooAnnoying",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" /> chose to not ingest the{" "}
-                        <R n="Payload" />{" "}
-                        slice, because it does not want to spend its resources
-                        on this <R n="wtp_client" />{" "}
-                        right now. Intended for rate-limiting.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "yay",
-                      "WtpResponsePutPayloadStatusCodeYay",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" /> ingested the <R n="Payload" />
-                        {" "}
-                        slice, and it contained data the <R n="wtp_server" />
-                        {" "}
-                        did not have before.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "disinterested",
-                      "WtpResponsePutPayloadStatusCodeDisinterested",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="wtp_server" />{" "}
-                        was not interested in storing the <R n="Payload" />{" "}
-                        of this <R n="AuthorisedEntry" />.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "old_news",
-                      "WtpResponsePutPayloadStatusCodeOldNews",
-                    ],
-                    comment: (
-                      <>
-                        The request could be processed, and <R n="wtp_server" />
-                        {" "}
-                        would have been interested in the <R n="Payload" />{" "}
-                        slice it received — if it had not stored that data
-                        already.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "no_raw_slices",
-                      "WtpResponsePutPayloadStatusCodeNoRawSlices",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="Payload" /> slice was discarded, because the
-                        {" "}
-                        <R n="WtpRequestPutPartialVerification" /> was{" "}
-                        <R n="wtp_request_put_partial_verification_options_none" />.
-                        The <R n="wtp_feature_put_payload_raw_slices" /> of the
-                        {" "}
-                        <R n="WtpServerSetupMessage" /> gives more information.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "no_authenticated_slices",
-                      "WtpResponsePutPayloadStatusCodeNoAuthenticatedSlices",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="Payload" /> slice was discarded, because the
-                        {" "}
-                        <R n="WtpRequestPutPartialVerification" /> was not{" "}
-                        <R n="wtp_request_put_partial_verification_options_none" />.
-                        The{" "}
-                        <R n="wtp_feature_put_payload_authenticated_slices" />
-                        {" "}
-                        of the <R n="WtpServerSetupMessage" />{" "}
-                        gives more information.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "no_fancy_k",
-                      "WtpResponsePutPayloadStatusCodeNoFancyK",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="Payload" /> slice was discarded, because the
-                        {" "}
-                        <R n="WtpRequestPutPartialVerification" /> set{" "}
-                        <R n="WtpPartialVerificationK" /> to a value other than
-                        {" "}
-                        <Code>1</Code>. The{" "}
-                        <R n="wtp_feature_put_payload_fancy_k" /> of the{" "}
-                        <R n="WtpServerSetupMessage" /> gives more information.
-                      </>
-                    ),
-                  },
-                  {
-                    tuple: true,
-                    id: [
-                      "want_earlier_slice",
-                      "WtpResponsePutPayloadStatusCodeWantEarlierSlice",
-                    ],
-                    comment: (
-                      <>
-                        The <R n="Payload" /> slice was discarded, because the
-                        {" "}
-                        <R n="wtp_server" />{" "}
-                        wishes to store only a single, contiguous prefix of the
-                        {" "}
-                        <R n="Payload" />, but the transmitted slice starts
-                        outsidethe prefix the <R n="wtp_server" />{" "}
-                        has so far. The response contains the offset starting
-                        from which the <R n="wtp_server" />{" "}
-                        would like to receive a new <R n="WtpRequestPut" />{" "}
-                        message.
-                      </>
-                    ),
-                  },
-                ]}
-              />
-            </Pseudocode>
-
-            <P>
-              Every <R n="WtpResponsePutPayloadStatusCode" /> but{" "}
-              <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />{" "}
-              marks the end of the response. If the{" "}
-              <R n="WtpResponsePutStatusCode" /> <Em>is</Em>{" "}
-              <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />, the
-              response continues with a <R n="U64" />{" "}
-              indicating the slice start (in a unit of raw bytes or Bab chunks,
-              depending on the <R n="WtpRequestPutPartialVerification" />{" "}
-              of the request) starting from which the <R n="wtp_server" />{" "}
-              would like to receive the <R n="Payload" />.
-            </P>
-
-            <P>
-              Bringing it all together:
-            </P>
-
-            <Pseudocode n="wtp_defs_ResponsePut">
-              <StructDef
-                comment={
-                  <>
-                    Responds to a <R n="WtpRequestPut" /> message.
-                  </>
-                }
-                id={[
-                  "ResponsePut",
-                  "WtpResponsePut",
-                ]}
-                fields={[
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The <R n="wtp_request_id" />{" "}
-                          of the request to which this responds.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "request_id",
-                          "WtpResponsePutRequestId",
-                          "request_ids",
-                        ],
-                        <R n="U64" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The status code for this response.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "status_code",
-                          "WtpResponsePutStatusCodeField",
-                          "status_codes",
-                        ],
-                        <R n="WtpResponsePutStatusCode" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The status code regarding whether the{" "}
-                          <R n="Payload" /> slice was stored. Must be{" "}
-                          <R n="wtp_request_put_payload_status_code_none" />
-                          {" "}
-                          if and only if the{" "}
-                          <R n="WtpResponsePutStatusCodeField" /> field is not
-                          {" "}
-                          <R n="WtpResponsePutStatusCodeYay" />.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "payload_status_code",
-                          "WtpResponsePutPayloadStatusCodeField",
-                          "payload_status_codes",
-                        ],
-                        <ChoiceType
-                          types={[
-                            <R n="WtpResponsePutPayloadStatusCode" />,
-                            <DefVariant
-                              n="wtp_request_put_payload_status_code_none"
-                              r="none"
-                            />,
-                          ]}
-                        />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The slice start (in a unit of raw bytes or Bab chunks,
-                          depending on the{" "}
-                          <R n="WtpRequestPutPartialVerification" />{" "}
-                          of the request) starting from which the{" "}
-                          <R n="wtp_server" /> would like to receive the{" "}
-                          <R n="Payload" /> again. Must be{" "}
-                          <R n="wtp_response_put_retry_at_offset_none" />{" "}
-                          if and only if{"  "}
-                          <R n="WtpResponsePutPayloadStatusCodeField" />{" "}
-                          field is not{" "}
-                          <R n="WtpResponsePutPayloadStatusCodeWantEarlierSlice" />.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "retry_at_offset",
-                          "WtpResponsePutRetryAtOffset",
-                          "retry_at_offset",
-                        ],
-                        <ChoiceType
-                          types={[
-                            <R n="U64" />,
-                            <DefVariant
-                              n="wtp_response_put_retry_at_offset_none"
-                              r="none"
-                            />,
-                          ]}
-                        />,
-                      ],
-                    },
-                  },
-                ]}
-              />
-            </Pseudocode>
           </Hsection>
         </Hsection>
       </PageTemplate>
