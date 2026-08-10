@@ -11,7 +11,7 @@ fn main() {
     .path(path!("/"))
     .timestamp(17)
     .payload(b"bla")
-    .build().unwrap();
+    .build();
 
   // Check inclusion in some ranges of timestamps.
   assert!(entry.is_in(&TimeRange::new(5.into(), Some(19.into()))));

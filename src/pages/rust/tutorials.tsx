@@ -95,7 +95,7 @@ export function BasicRustSetupSection(
           within the newly created directory.
         </Li>
         <Li>
-          After than, run{" "}
+          After that, run{" "}
           <TerminalInput>{`cargo add ${deps.join(" ")}`}</TerminalInput>.
         </Li>
       </Ol>
