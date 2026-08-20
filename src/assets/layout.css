@@ -15,7 +15,6 @@ body.isTooltip {
 body:not(.isTooltip) {
     padding-left: 0.8rem;
     padding-right: 0.8rem;
-    padding-top: 4rem;
     padding-bottom: 2rem;
 }
 

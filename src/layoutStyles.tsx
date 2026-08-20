@@ -74,7 +74,6 @@ body.isTooltip {
 body:not(.isTooltip) {
     padding-left: ${paddingLeft}rem;
     padding-right: ${paddingRight}rem;
-    padding-top: 4rem;
     padding-bottom: 2rem;
 }
 

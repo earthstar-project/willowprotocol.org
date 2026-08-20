@@ -8,7 +8,7 @@ The macromania_bib package reexports the citations styles from https://github.co
 */
 
 import { bib } from "./bib.tsx";
-import { AE } from "./macros.tsx";
+import { AE, WbMegabar } from "./macros.tsx";
 import { Expression, Expressions } from "macromania";
 import { Dir, File, outCwd, renderOutFsPath } from "macromania-outfs";
 import { ConfigMarginalia, Marginale } from "macromania-marginalia";
@@ -173,6 +173,8 @@ export function PageTemplate(
                 />
               )
               : ""}
+
+            <WbMegabar location="sneakerweb" rootStyles="margin: 1rem 0;" />
 
             <Div id="wrapContent">
               <Main>
