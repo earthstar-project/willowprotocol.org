@@ -174,7 +174,7 @@ export function PageTemplate(
               )
               : ""}
 
-            <WbMegabar location="sneakerweb" rootStyles="margin: 1rem 0;" />
+            <WbMegabar location="sneakerweb" rootStyles="margin: 1rem 0; position: relative; z-index: 99;" />
 
             <Div id="wrapContent">
               <Main>
