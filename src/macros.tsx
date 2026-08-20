@@ -1,6 +1,17 @@
 import { Expression, Expressions } from "macromania";
 import { Wip } from "macromania-wip";
-import { A, Aside, Code, Div, Span } from "macromania-html";
+import {
+  A,
+  Aside,
+  Code,
+  Details,
+  Div,
+  Img,
+  Li,
+  Span,
+  Summary,
+  Ul,
+} from "macromania-html";
 import { M } from "macromania-katex";
 import { Def } from "macromania-defref";
 import { Shiki, ShikiProps } from "macromania-shiki";
@@ -505,4 +516,131 @@ export function TerminalOutput(
       />
     </Div>
   );
+}
+
+/**
+ * Megabar!!!
+ */
+export type MegabarLocation =
+  | "worm-blossom"
+  | "willow"
+  | "bab"
+  | "sneakerweb"
+  | "ufotofu"
+  | "openCollective";
+
+type MegabarProject = {
+  name: string;
+  colour: string;
+  description: string;
+  url: string;
+};
+
+const megabarProjects: Record<MegabarLocation, MegabarProject> = {
+  "worm-blossom": {
+    name: "worm-blossom.org",
+    colour: "pink",
+    description: "is a lovely blog",
+    url: "https://worm-blossom.org",
+  },
+  "willow": {
+    name: "Willow",
+    colour: "yellow",
+    description: "is a thoughtful p2p protocol",
+    url: "http://willowprotocol.org",
+  },
+  "bab": {
+    name: "Bab",
+    colour: "rgb(242, 203, 198)",
+    description: "is a verifiable streaming hash function",
+    url: "https://bab-hash.org",
+  },
+  "sneakerweb": {
+    name: "sneakerweb",
+    colour: "white",
+    description: "is a parallel web transported by physical media",
+    url: "https://sneakerweb.org",
+  },
+  "ufotofu": {
+    name: "ufotofu",
+    colour: "rgb(119, 181, 213)",
+    description: "is symmetric sinks and streams for Rust",
+    url: "https://worm-blossom.org/ufotofu/",
+  },
+  "openCollective": {
+    name: "Support us",
+    colour: "rgb(59, 221, 110)",
+    description: "on our OpenCollective",
+    url: "https://opencollective.com/worm-blossom",
+  },
+};
+
+export function WbMegabar(
+  { location, rootStyles }: { location: MegabarLocation; rootStyles?: string },
+) {
+  return (
+    <Details
+      style={`color: white; background: black; font-size: 16px; ${rootStyles}`}
+    >
+      <Summary style="border-bottom: 1px solid rgb(134, 134, 134); padding-bottom: 0.05rem; padding: 0.15rem;">
+        <MegabarSummary location={location} />
+      </Summary>
+
+      <Div style="display: flex; gap: 2ch; padding: 1rem;">
+        <Img
+          style="width: 100px;"
+          src="/assets/graphics/megabar/side_illo.png"
+        />
+        <Ul style="padding: 0; margin: 0; list-style: none; line-height: 1.2rem;">
+          {Object.keys(megabarProjects).filter((loc) => loc != location)
+            .map((loc) => <MegabarRow location={loc as MegabarLocation} />)}
+        </Ul>
+      </Div>
+    </Details>
+  );
+}
+
+function MegabarRow({ location }: { location: MegabarLocation }) {
+  const project = megabarProjects[location];
+
+  return (
+    <Li>
+      <A style={`color:${project.colour}`} href={project.url}>
+        {project.name}
+      </A>{" "}
+      {project.description}
+    </Li>
+  );
+}
+
+function MegabarSummary({ location }: { location: MegabarLocation }) {
+  switch (location) {
+    case "worm-blossom":
+      return (
+        <Div style="display: inline-flex; align-items: center; gap: 1ch;">
+          see what else
+          <Img
+            style="image-rendering: pixelated; width: 16px; height: 16px;"
+            src="https://worm-blossom.org/assets/favicon.png"
+          />{" "}
+          <Span style={`color: ${megabarProjects["worm-blossom"].colour}`}>
+            worm-blossom
+          </Span>{" "}
+          has made!
+        </Div>
+      );
+    default:
+      return (
+        <Div style="display: inline-flex; align-items: center; gap: 1ch;">
+          <Img
+            style="image-rendering: pixelated; width: 16px; height: 16px;"
+            src="https://worm-blossom.org/assets/favicon.png"
+          />{" "}
+          <A style={`color: ${megabarProjects["worm-blossom"].colour}`}>
+            worm-blossom
+          </A>{" "}
+          made this. come see what else we make!
+        </Div>
+      );
+  }
 }
