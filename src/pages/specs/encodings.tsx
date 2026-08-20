@@ -535,9 +535,8 @@ export const encodings = (
             </P>
             <Ul>
               <Li>
-                the unsigned little-endian 8-byte encoding of <R n="c64_n2" />
+                the unsigned big-endian 8-byte encoding of <R n="c64_n2" /> if
                 {" "}
-                if{" "}
                 <M post=",">
                   <R n="c64_t2" /> = 2^<Curly>
                     <R n="c64_tw2" />
@@ -546,9 +545,8 @@ export const encodings = (
                 </M>
               </Li>
               <Li>
-                the unsigned little-endian 4-byte encoding of <R n="c64_n2" />
+                the unsigned big-endian 4-byte encoding of <R n="c64_n2" /> if
                 {" "}
-                if{" "}
                 <M post=",">
                   <R n="c64_t2" /> = 2^<Curly>
                     <R n="c64_tw2" />
@@ -557,9 +555,8 @@ export const encodings = (
                 </M>
               </Li>
               <Li>
-                the unsigned little-endian 2-byte encoding of <R n="c64_n2" />
+                the unsigned big-endian 2-byte encoding of <R n="c64_n2" /> if
                 {" "}
-                if{" "}
                 <M post=",">
                   <R n="c64_t2" /> = 2^<Curly>
                     <R n="c64_tw2" />
@@ -568,9 +565,8 @@ export const encodings = (
                 </M>
               </Li>
               <Li>
-                the unsigned little-endian 1-byte encoding of <R n="c64_n2" />
+                the unsigned big-endian 1-byte encoding of <R n="c64_n2" /> if
                 {" "}
-                if{" "}
                 <M post=",">
                   <R n="c64_t2" /> = 2^<Curly>
                     <R n="c64_tw2" />
