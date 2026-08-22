@@ -3166,8 +3166,9 @@ export const encodings = (
               </P>
               <Ul>
                 <Li>
-                  the <R n="pi_path" /> of the <R n="PrivateInterest" />{" "}
-                  relates to the <Rs n="AreaPath" /> of the <R n="Area" />, and
+                  the <R n="pi_path" /> of the <R n="PrivateInterest" /> is{" "}
+                  <R n="path_related">related</R> to the <R n="AreaPath" />{" "}
+                  of the <R n="Area" />, and
                 </Li>
                 <Li>
                   the <R n="pi_ss" /> of the <R n="PrivateInterest" />{" "}
