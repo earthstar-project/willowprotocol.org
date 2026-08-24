@@ -2,6 +2,7 @@ import { Curly, NoWrap, Path } from "../../macros.tsx";
 import {
   ArbitraryBitsAreZero,
   Bitfield,
+  bitfieldArbitrary,
   bitfieldConditional,
   bitfieldConstant,
   bitfieldIff,
@@ -1177,6 +1178,94 @@ export const encodings = (
           </Hsection>
 
           <Hsection n="area_encodings" title="Area Encoding" shortTitle="Area">
+            <Hsection
+              n="encsec_EncodeArea"
+              title={<Code>EncodeArea</Code>}
+              noToc
+            >
+              <EncodingRelationTemplate
+                n="EncodeArea"
+                valType={<R n="Area" />}
+                bitfields={[
+                  bitfieldIff(
+                    <Code>
+                      <ValAccess field="AreaSubspace" /> == <R n="ss_any" />
+                    </Code>,
+                  ),
+                  bitfieldIff(
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>,
+                  ),
+                  bitfieldArbitrary(6),
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <>
+                        <Code>
+                          <ValAccess field="AreaSubspace" /> == <R n="ss_any" />
+                        </Code>
+                      </>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <ValAccess field="AreaSubspace" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <CodeFor enc="EncodePath">
+                    <ValAccess field="entry_path" />
+                  </CodeFor>,
+                  <C64Standalone>
+                    <AccessStruct field="TimeRangeStart">
+                      <ValAccess field="AreaTime" />
+                    </AccessStruct>
+                  </C64Standalone>,
+                  <EncConditional
+                    condition={
+                      <>
+                        <Code>
+                          <AccessStruct field="TimeRangeEnd">
+                            <ValAccess field="AreaTime" />
+                          </AccessStruct>{" "}
+                          != <R n="range_open" />
+                        </Code>
+                      </>
+                    }
+                  >
+                    <C64Standalone notStandalone>
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        - (1 +{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>)
+                      </Code>
+                    </C64Standalone>
+                  </EncConditional>,
+                ]}
+                canonic={{
+                  n: "encode_area",
+                  how: [
+                    <MinTags />,
+                    <ArbitraryBitsAreZero />,
+                    <CanonicSubencodings />,
+                  ],
+                }}
+              />
+            </Hsection>
+          </Hsection>
+
+          <Hsection
+            n="encsec_EncodeAreaInArea"
+            title={<Code>EncodeAreaInArea</Code>}
+            noToc
+          >
             <EncodingRelationRelativeTemplate
               n="EncodeAreaInArea"
               valType={<R n="Area" />}
