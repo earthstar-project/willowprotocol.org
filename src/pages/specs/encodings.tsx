@@ -2921,7 +2921,9 @@ export const encodings = (
                       notStandalone
                       relativeTo={
                         <>
-                          <RelName />
+                          the pair consisting of the <R n="Capability" /> of
+                          {" "}
+                          <R n="mae_prior" /> and of <R n="mae_entry" />
                         </>
                       }
                     >
@@ -2936,7 +2938,8 @@ export const encodings = (
                     notStandalone
                     relativeTo={
                       <>
-                        <RelName />
+                        the pair consisting of the <R n="Capability" /> of{" "}
+                        <R n="mae_prior" /> and of <R n="mae_entry" />
                       </>
                     }
                   >
