@@ -1200,7 +1200,13 @@ export const encodings = (
                       == <R n="range_open" />
                     </Code>,
                   ),
-                  bitfieldArbitrary(6),
+                  c64Tag(
+                    "time_start",
+                    6,
+                    <AccessStruct field="TimeRangeStart">
+                      <ValAccess field="AreaTime" />
+                    </AccessStruct>,
+                  ),
                 ]}
                 contents={[
                   <EncConditional
@@ -1219,11 +1225,7 @@ export const encodings = (
                   <CodeFor enc="EncodePath">
                     <ValAccess field="entry_path" />
                   </CodeFor>,
-                  <C64Standalone>
-                    <AccessStruct field="TimeRangeStart">
-                      <ValAccess field="AreaTime" />
-                    </AccessStruct>
-                  </C64Standalone>,
+                  <C64Encoding id="time_start" />,
                   <EncConditional
                     condition={
                       <>
@@ -1253,7 +1255,6 @@ export const encodings = (
                   n: "encode_area",
                   how: [
                     <MinTags />,
-                    <ArbitraryBitsAreZero />,
                     <CanonicSubencodings />,
                   ],
                 }}
