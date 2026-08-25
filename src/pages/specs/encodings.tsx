@@ -2984,7 +2984,7 @@ export const encodings = (
                   <ValName /> is{" "}
                   <AccessStruct field="entry_namespace_id">
                     <R n="comcap_entry" />
-                  </AccessStruct>, and the <R n="cap_granted_area" />of{" "}
+                  </AccessStruct>, and the <R n="cap_granted_area" /> of{" "}
                   <ValName /> <R n="area_include">includes</R>{" "}
                   <R n="mae_entry" />
                 </>
