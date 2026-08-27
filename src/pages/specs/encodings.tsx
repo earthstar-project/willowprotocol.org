@@ -1213,7 +1213,7 @@ export const encodings = (
                     condition={
                       <>
                         <Code>
-                          <ValAccess field="AreaSubspace" /> == <R n="ss_any" />
+                          <ValAccess field="AreaSubspace" /> != <R n="ss_any" />
                         </Code>
                       </>
                     }
@@ -1223,7 +1223,7 @@ export const encodings = (
                     </CodeFor>
                   </EncConditional>,
                   <CodeFor enc="EncodePath">
-                    <ValAccess field="entry_path" />
+                    <ValAccess field="AreaPath" />
                   </CodeFor>,
                   <C64Encoding id="time_start" />,
                   <EncConditional
@@ -1260,186 +1260,186 @@ export const encodings = (
                 }}
               />
             </Hsection>
-          </Hsection>
 
-          <Hsection
-            n="encsec_EncodeAreaInArea"
-            title={<Code>EncodeAreaInArea</Code>}
-            noToc
-          >
-            <EncodingRelationRelativeTemplate
-              n="EncodeAreaInArea"
-              valType={<R n="Area" />}
-              relToDescription={
-                <>
-                  <R n="Area" /> that <R n="area_include">includes</R>{" "}
-                  the other one
-                </>
-              }
-              preDefs={
-                <>
-                  <P>
-                    Let{" "}
-                    <DefValue n="aia_start_from_start" r="start_from_start" />
-                    {" "}
-                    and <DefValue n="aia_end_from_start" r="end_from_start" />
-                    {" "}
-                    be arbitrary <Rs n="Bool" />. If{" "}
-                    <AccessStruct field="TimeRangeEnd">
-                      <RelAccess field="AreaTime" />
-                    </AccessStruct>{" "}
-                    is <R n="range_open" />, then
-                  </P>
-                  <Ul>
-                    <Li>
-                      <R n="aia_start_from_start" /> must be{" "}
-                      <Code>true</Code>, and
-                    </Li>
-                    <Li>
-                      <R n="aia_end_from_start" /> must be <Code>false</Code>
+            <Hsection
+              n="encsec_EncodeAreaInArea"
+              title={<Code>EncodeAreaInArea</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodeAreaInArea"
+                valType={<R n="Area" />}
+                relToDescription={
+                  <>
+                    <R n="Area" /> that <R n="area_include">includes</R>{" "}
+                    the other one
+                  </>
+                }
+                preDefs={
+                  <>
+                    <P>
+                      Let{" "}
+                      <DefValue n="aia_start_from_start" r="start_from_start" />
                       {" "}
-                      if and only if{" "}
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>{" "}
-                      is <R n="range_open" />.
-                    </Li>
-                  </Ul>
-                </>
-              }
-              shortRelToDescription={<R n="Area" />}
-              bitfields={[
-                bitfieldIff(
-                  <Code>
-                    <ValAccess field="AreaSubspace" /> !={" "}
-                    <RelAccess field="AreaSubspace" />
-                  </Code>,
-                ),
-                bitfieldIff(
-                  <Code>
-                    <AccessStruct field="TimeRangeEnd">
-                      <ValAccess field="AreaTime" />
-                    </AccessStruct>{" "}
-                    == <R n="range_open" />
-                  </Code>,
-                ),
-                bitfieldIff(<R n="aia_start_from_start" />),
-                bitfieldIff(<R n="aia_end_from_start" />),
-                c64Tag(
-                  "start_diff",
-                  2,
-                  <>
-                    either{" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeStart">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeStart">
-                        <RelAccess field="AreaTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    (if <R n="aia_start_from_start" />), or{" "}
-                    <Code>
+                      and <DefValue n="aia_end_from_start" r="end_from_start" />
+                      {" "}
+                      be arbitrary <Rs n="Bool" />. If{" "}
                       <AccessStruct field="TimeRangeEnd">
                         <RelAccess field="AreaTime" />
                       </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeStart">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    (otherwise)
-                  </>,
-                ),
-                c64Tag(
-                  "end_diff",
-                  2,
-                  <>
-                    either{" "}
+                      is <R n="range_open" />, then
+                    </P>
+                    <Ul>
+                      <Li>
+                        <R n="aia_start_from_start" /> must be{" "}
+                        <Code>true</Code>, and
+                      </Li>
+                      <Li>
+                        <R n="aia_end_from_start" /> must be <Code>false</Code>
+                        {" "}
+                        if and only if{" "}
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        is <R n="range_open" />.
+                      </Li>
+                    </Ul>
+                  </>
+                }
+                shortRelToDescription={<R n="Area" />}
+                bitfields={[
+                  bitfieldIff(
                     <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeStart">
-                        <RelAccess field="AreaTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    (if <R n="aia_end_from_start" />), or{" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <RelAccess field="AreaTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="AreaTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    (otherwise). If{" "}
+                      <ValAccess field="AreaSubspace" /> !={" "}
+                      <RelAccess field="AreaSubspace" />
+                    </Code>,
+                  ),
+                  bitfieldIff(
                     <Code>
                       <AccessStruct field="TimeRangeEnd">
                         <ValAccess field="AreaTime" />
                       </AccessStruct>{" "}
                       == <R n="range_open" />
-                    </Code>, these two bits can be set arbitrarily instead
-                  </>,
-                ),
-              ]}
-              contents={[
-                <EncConditional
-                  condition={
+                    </Code>,
+                  ),
+                  bitfieldIff(<R n="aia_start_from_start" />),
+                  bitfieldIff(<R n="aia_end_from_start" />),
+                  c64Tag(
+                    "start_diff",
+                    2,
                     <>
+                      either{" "}
                       <Code>
-                        <ValAccess field="AreaSubspace" /> !={" "}
-                        <RelAccess field="AreaSubspace" />
-                      </Code>
-                    </>
-                  }
-                >
-                  <CodeFor notStandalone enc="encode_subspace_id">
-                    <ValAccess field="AreaSubspace" />
-                  </CodeFor>
-                </EncConditional>,
-                <C64Encoding id="start_diff" />,
-                <>
-                  <C64Encoding id="end_diff" noDot />, or the empty string if
-                  {" "}
-                  <Code>
-                    <AccessStruct field="TimeRangeEnd">
-                      <ValAccess field="AreaTime" />
-                    </AccessStruct>{" "}
-                    == <R n="range_open" />
-                  </Code>.
-                </>,
-                <CodeFor
-                  enc="EncodePathExtendsPath"
-                  relativeTo={<RelAccess field="AreaPath" />}
-                >
-                  <ValAccess field="AreaPath" />
-                </CodeFor>,
-              ]}
-              canonic={{
-                n: "encode_area_in_area",
-                how: [
-                  <MinTags />,
-                  <ArbitraryBitsAreZero />,
-                  <CanonicSubencodings />,
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      (if <R n="aia_start_from_start" />), or{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      (otherwise)
+                    </>,
+                  ),
+                  c64Tag(
+                    "end_diff",
+                    2,
+                    <>
+                      either{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      (if <R n="aia_end_from_start" />), or{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      (otherwise). If{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        == <R n="range_open" />
+                      </Code>, these two bits can be set arbitrarily instead
+                    </>,
+                  ),
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <>
+                        <Code>
+                          <ValAccess field="AreaSubspace" /> !={" "}
+                          <RelAccess field="AreaSubspace" />
+                        </Code>
+                      </>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <ValAccess field="AreaSubspace" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <C64Encoding id="start_diff" />,
                   <>
-                    choosing <R n="aia_start_from_start" />{" "}
-                    such that the value whose tag is given in bits 4, 5 is
-                    minimal (in case of a tie, choose{" "}
-                    <R n="aia_start_from_start" /> as <Code>false</Code>)
+                    <C64Encoding id="end_diff" noDot />, or the empty string if
+                    {" "}
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="AreaTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>.
                   </>,
-                  <>
-                    choosing <R n="aia_end_from_start" />{" "}
-                    such that the value whose tag is given in bits 6, 7, if any,
-                    is minimal (in case of a tie, choose{" "}
-                    <R n="aia_end_from_start" /> as <Code>false</Code>)
-                  </>,
-                ],
-              }}
-            />
+                  <CodeFor
+                    enc="EncodePathExtendsPath"
+                    relativeTo={<RelAccess field="AreaPath" />}
+                  >
+                    <ValAccess field="AreaPath" />
+                  </CodeFor>,
+                ]}
+                canonic={{
+                  n: "encode_area_in_area",
+                  how: [
+                    <MinTags />,
+                    <ArbitraryBitsAreZero />,
+                    <CanonicSubencodings />,
+                    <>
+                      choosing <R n="aia_start_from_start" />{" "}
+                      such that the value whose tag is given in bits 4, 5 is
+                      minimal (in case of a tie, choose{" "}
+                      <R n="aia_start_from_start" /> as <Code>false</Code>)
+                    </>,
+                    <>
+                      choosing <R n="aia_end_from_start" />{" "}
+                      such that the value whose tag is given in bits 6, 7, if
+                      any, is minimal (in case of a tie, choose{" "}
+                      <R n="aia_end_from_start" /> as <Code>false</Code>)
+                    </>,
+                  ],
+                }}
+              />
+            </Hsection>
           </Hsection>
 
           <Hsection
@@ -1447,398 +1447,516 @@ export const encodings = (
             title="3dRange Encoding"
             shortTitle="3dRange"
           >
-            <EncodingRelationRelativeTemplate
-              n="Encode3dRangeRelative3dRange"
-              valType={<R n="D3Range" />}
-              relToDescription={<R n="D3Range" />}
-              preDefs={
-                <>
-                  <P>
-                    Let{" "}
-                    <DefValue
-                      n="errr_path_start_rel"
-                      r="path_start_relative_to_start"
-                    />{" "}
-                    and{" "}
-                    <DefValue
-                      n="errr_path_end_rel"
-                      r="path_end_relative_to_start"
-                    />{" "}
-                    be <Code>true</Code> if{" "}
+            <Hsection
+              n="encsec_Encode3dRange"
+              title={<Code>Encode3dRange</Code>}
+              noToc
+            >
+              <EncodingRelationTemplate
+                n="Encode3dRange"
+                valType={<R n="D3Range" />}
+                bitfields={[
+                  bitfieldIff(
                     <Code>
-                      <RelAccess field="D3RangePath" />
-                    </Code>{" "}
-                    is an <R n="open_range" />, and arbitrary <Rs n="Bool" />
-                    {" "}
-                    otherwise.
-                  </P>
-
-                  <P>
-                    Let{" "}
-                    <DefValue
-                      n="errr_time_start_rel"
-                      r="time_start_relative_to_start"
-                    />{" "}
-                    and{" "}
-                    <DefValue
-                      n="errr_time_end_rel"
-                      r="time_end_relative_to_start"
-                    />{" "}
-                    be <Code>true</Code> if{" "}
-                    <Code>
-                      <RelAccess field="D3RangeTime" />
-                    </Code>{" "}
-                    is an <R n="open_range" />, and arbitrary <Rs n="Bool" />
-                    {" "}
-                    otherwise.
-                  </P>
-
-                  <P>
-                    Let{" "}
-                    <DefValue
-                      n="errr_start_time_diff"
-                      r="start_time_diff"
-                    />{" "}
-                    be the absolute value of{" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeStart">
-                        <ValAccess field="D3RangeTime" />
+                      <AccessStruct field="SubspaceRangeEnd">
+                        <ValAccess field="D3RangeSubspace" />
                       </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeStart">
-                        <RelAccess field="D3RangeTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    if <R n="errr_time_start_rel" />, and the absolute value of
-                    {" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeStart">
-                        <ValAccess field="D3RangeTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeEnd">
-                        <RelAccess field="D3RangeTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    otherwise.
-                  </P>
-
-                  <P>
-                    If{" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="D3RangeTime" />
-                      </AccessStruct>{" "}
-                      != <R n="range_open" />
-                    </Code>: let{" "}
-                    <DefValue
-                      n="errr_end_time_diff"
-                      r="end_time_diff"
-                    />{" "}
-                    be the absolute value of{" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="D3RangeTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeStart">
-                        <RelAccess field="D3RangeTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    if <R n="errr_time_end_rel" />, and the absolute value of
-                    {" "}
-                    <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="D3RangeTime" />
-                      </AccessStruct>{" "}
-                      -{" "}
-                      <AccessStruct field="TimeRangeEnd">
-                        <RelAccess field="D3RangeTime" />
-                      </AccessStruct>
-                    </Code>{" "}
-                    otherwise.
-                  </P>
-                </>
-              }
-              bitfields={[
-                {
-                  ...bitfieldConditional(
-                    2,
-                    [
-                      {
-                        code: (
-                          <>
-                            the bitstring <Code>01</Code> or <Code>11</Code>.
-                          </>
-                        ),
-                        condition: (
-                          <>
-                            <Code>
-                              <AccessStruct field="SubspaceRangeStart">
-                                <ValAccess field="D3RangeSubspace" />
-                              </AccessStruct>{" "}
-                              =={" "}
-                              <AccessStruct field="SubspaceRangeStart">
-                                <RelAccess field="D3RangeSubspace" />
-                              </AccessStruct>
-                            </Code>
-                          </>
-                        ),
-                      },
-                      {
-                        code: (
-                          <>
-                            the bitstring <Code>10</Code> or <Code>11</Code>.
-                          </>
-                        ),
-                        condition: (
-                          <>
-                            <Code>
-                              <AccessStruct field="SubspaceRangeStart">
-                                <ValAccess field="D3RangeSubspace" />
-                              </AccessStruct>{" "}
-                              =={" "}
-                              <AccessStruct field="SubspaceRangeEnd">
-                                <RelAccess field="D3RangeSubspace" />
-                              </AccessStruct>
-                            </Code>
-                          </>
-                        ),
-                      },
-                    ],
-                    <>
-                      the bitstring <Code>11</Code>.
-                    </>,
+                      == <R n="range_open" />
+                    </Code>,
                   ),
-                  id: "enc_subspace_start",
-                },
-                {
-                  ...bitfieldConditional(
-                    2,
-                    [
-                      {
-                        code: (
-                          <>
-                            the bitstring <Code>00</Code>.
-                          </>
-                        ),
-                        condition: (
-                          <>
-                            <Code>
-                              <AccessStruct field="SubspaceRangeEnd">
-                                <ValAccess field="D3RangeSubspace" />
-                              </AccessStruct>{" "}
-                              == <R n="range_open" />
-                            </Code>
-                          </>
-                        ),
-                      },
-                      {
-                        code: (
-                          <>
-                            the bitstring <Code>01</Code> or <Code>11</Code>.
-                          </>
-                        ),
-                        condition: (
-                          <>
-                            <Code>
-                              <AccessStruct field="SubspaceRangeEnd">
-                                <ValAccess field="D3RangeSubspace" />
-                              </AccessStruct>{" "}
-                              =={" "}
-                              <AccessStruct field="SubspaceRangeStart">
-                                <RelAccess field="D3RangeSubspace" />
-                              </AccessStruct>
-                            </Code>
-                          </>
-                        ),
-                      },
-                      {
-                        code: (
-                          <>
-                            the bitstring <Code>10</Code> or <Code>11</Code>.
-                          </>
-                        ),
-                        condition: (
-                          <>
-                            <Code>
-                              <AccessStruct field="SubspaceRangeEnd">
-                                <ValAccess field="D3RangeSubspace" />
-                              </AccessStruct>{" "}
-                              =={" "}
-                              <AccessStruct field="SubspaceRangeEnd">
-                                <RelAccess field="D3RangeSubspace" />
-                              </AccessStruct>
-                            </Code>
-                          </>
-                        ),
-                      },
-                    ],
-                    <>
-                      the bitstring <Code>11</Code>.
-                    </>,
+                  bitfieldIff(
+                    <Code>
+                      <AccessStruct field="PathRangeEnd">
+                        <ValAccess field="D3RangePath" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>,
                   ),
-                  id: "enc_subspace_end",
-                },
-                bitfieldIff(<R n="errr_path_start_rel" />),
-                bitfieldIff(
-                  <Code>
-                    <AccessStruct field="PathRangeEnd">
+                  bitfieldIff(
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="D3RangeTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>,
+                  ),
+                  c64Tag(
+                    "time_start",
+                    5,
+                    <AccessStruct field="TimeRangeStart">
+                      <ValAccess field="D3RangeTime" />
+                    </AccessStruct>,
+                  ),
+                ]}
+                contents={[
+                  <CodeFor enc="encode_subspace_id">
+                    <AccessStruct field="SubspaceRangeStart">
+                      <ValAccess field="D3RangeSubspace" />
+                    </AccessStruct>
+                  </CodeFor>,
+                  <EncConditional
+                    condition={
+                      <>
+                        <Code>
+                          <AccessStruct field="SubspaceRangeEnd">
+                            <ValAccess field="D3RangeSubspace" />
+                          </AccessStruct>{" "}
+                          != <R n="range_open" />
+                        </Code>
+                      </>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <AccessStruct field="SubspaceRangeEnd">
+                        <ValAccess field="D3RangeSubspace" />
+                      </AccessStruct>
+                    </CodeFor>
+                  </EncConditional>,
+                  <CodeFor enc="EncodePath">
+                    <AccessStruct field="PathRangeStart">
                       <ValAccess field="D3RangePath" />
-                    </AccessStruct>{" "}
-                    == <R n="range_open" />
-                  </Code>,
-                ),
-                bitfieldConditional(
-                  1,
-                  [{
-                    condition: (
+                    </AccessStruct>
+                  </CodeFor>,
+                  <EncConditional
+                    condition={
                       <>
                         <Code>
                           <AccessStruct field="PathRangeEnd">
                             <ValAccess field="D3RangePath" />
                           </AccessStruct>{" "}
-                          == <R n="range_open" />
+                          != <R n="range_open" />
                         </Code>
                       </>
-                    ),
-                    code: "arbitrary.",
-                  }],
-                  <>
-                    <Code>1</Code> iff <R n="errr_path_end_rel" />.
-                  </>,
-                ),
-                bitfieldIff(
-                  <Code>
-                    <AccessStruct field="TimeRangeEnd">
-                      <ValAccess field="D3RangeTime" />
-                    </AccessStruct>{" "}
-                    == <R n="range_open" />
-                  </Code>,
-                ),
-                // Second byte
-                bitfieldIff(<R n="errr_time_start_rel" />),
-                {
-                  ...bitfieldConditional(1, [
-                    {
-                      condition: (
-                        <>
-                          <R n="errr_time_start_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeStart">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {">"}{" "}
-                            <AccessStruct field="TimeRangeStart">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>1</Code>.
-                        </>
-                      ),
-                    },
-                    {
-                      condition: (
-                        <>
-                          <R n="errr_time_start_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeStart">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {"<"}{" "}
-                            <AccessStruct field="TimeRangeStart">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>0</Code>.
-                        </>
-                      ),
-                    },
-                    {
-                      condition: (
-                        <>
-                          not <R n="errr_time_start_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeStart">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {">"}{" "}
-                            <AccessStruct field="TimeRangeEnd">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>1</Code>.
-                        </>
-                      ),
-                    },
-                    {
-                      condition: (
-                        <>
-                          <R n="errr_time_start_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeStart">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {"<"}{" "}
-                            <AccessStruct field="TimeRangeEnd">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>0</Code>.
-                        </>
-                      ),
-                    },
-                  ], <>arbitrary.</>),
-                  comment: (
-                    <>
-                      Whether to add or subtract <R n="errr_start_time_diff" />
-                      {" "}
-                      to obtain the start of the time range.
-                    </>
-                  ),
-                },
-                c64Tag(
-                  "start_time_diff",
-                  2,
-                  <R n="errr_start_time_diff" />,
-                ),
-                bitfieldConditional(
-                  1,
-                  [{
-                    condition: (
+                    }
+                  >
+                    <CodeFor
+                      notStandalone
+                      enc="EncodePathRelativePath"
+                      relativeTo={
+                        <AccessStruct field="PathRangeStart">
+                          <ValAccess field="D3RangePath" />
+                        </AccessStruct>
+                      }
+                    >
+                      <AccessStruct field="PathRangeEnd">
+                        <ValAccess field="D3RangePath" />
+                      </AccessStruct>
+                    </CodeFor>
+                  </EncConditional>,
+                  <C64Encoding id="time_start" />,
+                  <EncConditional
+                    condition={
                       <>
                         <Code>
                           <AccessStruct field="TimeRangeEnd">
                             <ValAccess field="D3RangeTime" />
                           </AccessStruct>{" "}
-                          == <R n="range_open" />
+                          != <R n="range_open" />
                         </Code>
                       </>
-                    ),
-                    code: "arbitrary.",
-                  }],
+                    }
+                  >
+                    <C64Standalone notStandalone>
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        - (1 +{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>)
+                      </Code>
+                    </C64Standalone>
+                  </EncConditional>,
+                ]}
+                canonic={{
+                  n: "encode_3d_range",
+                  how: [
+                    <MinTags />,
+                    <CanonicSubencodings />,
+                  ],
+                }}
+              />
+            </Hsection>
+
+            <Hsection
+              n="encsec_Encode3dRangeRelative3dRange"
+              title={<Code>3dRangeRelative3dRange</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="Encode3dRangeRelative3dRange"
+                valType={<R n="D3Range" />}
+                relToDescription={<R n="D3Range" />}
+                preDefs={
                   <>
-                    <Code>1</Code> iff <R n="errr_time_end_rel" />.
-                  </>,
-                ),
-                {
-                  ...bitfieldConditional(
+                    <P>
+                      Let{" "}
+                      <DefValue
+                        n="errr_path_start_rel"
+                        r="path_start_relative_to_start"
+                      />{" "}
+                      and{" "}
+                      <DefValue
+                        n="errr_path_end_rel"
+                        r="path_end_relative_to_start"
+                      />{" "}
+                      be <Code>true</Code> if{" "}
+                      <Code>
+                        <RelAccess field="D3RangePath" />
+                      </Code>{" "}
+                      is an <R n="open_range" />, and arbitrary <Rs n="Bool" />
+                      {" "}
+                      otherwise.
+                    </P>
+
+                    <P>
+                      Let{" "}
+                      <DefValue
+                        n="errr_time_start_rel"
+                        r="time_start_relative_to_start"
+                      />{" "}
+                      and{" "}
+                      <DefValue
+                        n="errr_time_end_rel"
+                        r="time_end_relative_to_start"
+                      />{" "}
+                      be <Code>true</Code> if{" "}
+                      <Code>
+                        <RelAccess field="D3RangeTime" />
+                      </Code>{" "}
+                      is an <R n="open_range" />, and arbitrary <Rs n="Bool" />
+                      {" "}
+                      otherwise.
+                    </P>
+
+                    <P>
+                      Let{" "}
+                      <DefValue
+                        n="errr_start_time_diff"
+                        r="start_time_diff"
+                      />{" "}
+                      be the absolute value of{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      if{" "}
+                      <R n="errr_time_start_rel" />, and the absolute value of
+                      {" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeStart">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      otherwise.
+                    </P>
+
+                    <P>
+                      If{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        != <R n="range_open" />
+                      </Code>: let{" "}
+                      <DefValue
+                        n="errr_end_time_diff"
+                        r="end_time_diff"
+                      />{" "}
+                      be the absolute value of{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      if <R n="errr_time_end_rel" />, and the absolute value of
+                      {" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        -{" "}
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="D3RangeTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      otherwise.
+                    </P>
+                  </>
+                }
+                bitfields={[
+                  {
+                    ...bitfieldConditional(
+                      2,
+                      [
+                        {
+                          code: (
+                            <>
+                              the bitstring <Code>01</Code> or <Code>11</Code>.
+                            </>
+                          ),
+                          condition: (
+                            <>
+                              <Code>
+                                <AccessStruct field="SubspaceRangeStart">
+                                  <ValAccess field="D3RangeSubspace" />
+                                </AccessStruct>{" "}
+                                =={" "}
+                                <AccessStruct field="SubspaceRangeStart">
+                                  <RelAccess field="D3RangeSubspace" />
+                                </AccessStruct>
+                              </Code>
+                            </>
+                          ),
+                        },
+                        {
+                          code: (
+                            <>
+                              the bitstring <Code>10</Code> or <Code>11</Code>.
+                            </>
+                          ),
+                          condition: (
+                            <>
+                              <Code>
+                                <AccessStruct field="SubspaceRangeStart">
+                                  <ValAccess field="D3RangeSubspace" />
+                                </AccessStruct>{" "}
+                                =={" "}
+                                <AccessStruct field="SubspaceRangeEnd">
+                                  <RelAccess field="D3RangeSubspace" />
+                                </AccessStruct>
+                              </Code>
+                            </>
+                          ),
+                        },
+                      ],
+                      <>
+                        the bitstring <Code>11</Code>.
+                      </>,
+                    ),
+                    id: "enc_subspace_start",
+                  },
+                  {
+                    ...bitfieldConditional(
+                      2,
+                      [
+                        {
+                          code: (
+                            <>
+                              the bitstring <Code>00</Code>.
+                            </>
+                          ),
+                          condition: (
+                            <>
+                              <Code>
+                                <AccessStruct field="SubspaceRangeEnd">
+                                  <ValAccess field="D3RangeSubspace" />
+                                </AccessStruct>{" "}
+                                == <R n="range_open" />
+                              </Code>
+                            </>
+                          ),
+                        },
+                        {
+                          code: (
+                            <>
+                              the bitstring <Code>01</Code> or <Code>11</Code>.
+                            </>
+                          ),
+                          condition: (
+                            <>
+                              <Code>
+                                <AccessStruct field="SubspaceRangeEnd">
+                                  <ValAccess field="D3RangeSubspace" />
+                                </AccessStruct>{" "}
+                                =={" "}
+                                <AccessStruct field="SubspaceRangeStart">
+                                  <RelAccess field="D3RangeSubspace" />
+                                </AccessStruct>
+                              </Code>
+                            </>
+                          ),
+                        },
+                        {
+                          code: (
+                            <>
+                              the bitstring <Code>10</Code> or <Code>11</Code>.
+                            </>
+                          ),
+                          condition: (
+                            <>
+                              <Code>
+                                <AccessStruct field="SubspaceRangeEnd">
+                                  <ValAccess field="D3RangeSubspace" />
+                                </AccessStruct>{" "}
+                                =={" "}
+                                <AccessStruct field="SubspaceRangeEnd">
+                                  <RelAccess field="D3RangeSubspace" />
+                                </AccessStruct>
+                              </Code>
+                            </>
+                          ),
+                        },
+                      ],
+                      <>
+                        the bitstring <Code>11</Code>.
+                      </>,
+                    ),
+                    id: "enc_subspace_end",
+                  },
+                  bitfieldIff(<R n="errr_path_start_rel" />),
+                  bitfieldIff(
+                    <Code>
+                      <AccessStruct field="PathRangeEnd">
+                        <ValAccess field="D3RangePath" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>,
+                  ),
+                  bitfieldConditional(
+                    1,
+                    [{
+                      condition: (
+                        <>
+                          <Code>
+                            <AccessStruct field="PathRangeEnd">
+                              <ValAccess field="D3RangePath" />
+                            </AccessStruct>{" "}
+                            == <R n="range_open" />
+                          </Code>
+                        </>
+                      ),
+                      code: "arbitrary.",
+                    }],
+                    <>
+                      <Code>1</Code> iff <R n="errr_path_end_rel" />.
+                    </>,
+                  ),
+                  bitfieldIff(
+                    <Code>
+                      <AccessStruct field="TimeRangeEnd">
+                        <ValAccess field="D3RangeTime" />
+                      </AccessStruct>{" "}
+                      == <R n="range_open" />
+                    </Code>,
+                  ),
+                  // Second byte
+                  bitfieldIff(<R n="errr_time_start_rel" />),
+                  {
+                    ...bitfieldConditional(1, [
+                      {
+                        condition: (
+                          <>
+                            <R n="errr_time_start_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeStart">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {">"}{" "}
+                              <AccessStruct field="TimeRangeStart">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>1</Code>.
+                          </>
+                        ),
+                      },
+                      {
+                        condition: (
+                          <>
+                            <R n="errr_time_start_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeStart">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {"<"}{" "}
+                              <AccessStruct field="TimeRangeStart">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>0</Code>.
+                          </>
+                        ),
+                      },
+                      {
+                        condition: (
+                          <>
+                            not <R n="errr_time_start_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeStart">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {">"}{" "}
+                              <AccessStruct field="TimeRangeEnd">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>1</Code>.
+                          </>
+                        ),
+                      },
+                      {
+                        condition: (
+                          <>
+                            <R n="errr_time_start_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeStart">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {"<"}{" "}
+                              <AccessStruct field="TimeRangeEnd">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>0</Code>.
+                          </>
+                        ),
+                      },
+                    ], <>arbitrary.</>),
+                    comment: (
+                      <>
+                        Whether to add or subtract{" "}
+                        <R n="errr_start_time_diff" />{" "}
+                        to obtain the start of the time range.
+                      </>
+                    ),
+                  },
+                  c64Tag(
+                    "start_time_diff",
+                    2,
+                    <R n="errr_start_time_diff" />,
+                  ),
+                  bitfieldConditional(
                     1,
                     [{
                       condition: (
@@ -1852,186 +1970,155 @@ export const encodings = (
                         </>
                       ),
                       code: "arbitrary.",
-                    }, {
-                      condition: (
-                        <>
-                          <R n="errr_time_end_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeEnd">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {">"}{" "}
-                            <AccessStruct field="TimeRangeStart">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>1</Code>.
-                        </>
-                      ),
-                    }, {
-                      condition: (
-                        <>
-                          <R n="errr_time_end_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeEnd">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {"<"}{" "}
-                            <AccessStruct field="TimeRangeStart">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>0</Code>.
-                        </>
-                      ),
-                    }, {
-                      condition: (
-                        <>
-                          not <R n="errr_time_end_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeEnd">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {">"}{" "}
-                            <AccessStruct field="TimeRangeEnd">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>1</Code>.
-                        </>
-                      ),
-                    }, {
-                      condition: (
-                        <>
-                          <R n="errr_time_end_rel" />, and{" "}
-                          <Code>
-                            <AccessStruct field="TimeRangeEnd">
-                              <ValAccess field="D3RangeTime" />
-                            </AccessStruct>{" "}
-                            {"<"}{" "}
-                            <AccessStruct field="TimeRangeEnd">
-                              <RelAccess field="D3RangeTime" />
-                            </AccessStruct>
-                          </Code>
-                        </>
-                      ),
-                      code: (
-                        <>
-                          <Code>0</Code>.
-                        </>
-                      ),
                     }],
+                    <>
+                      <Code>1</Code> iff <R n="errr_time_end_rel" />.
+                    </>,
                   ),
-                  comment: (
-                    <>
-                      Whether to add or subtract <R n="errr_end_time_diff" />
-                      {" "}
-                      to obtain the end of the time range.
-                    </>
+                  {
+                    ...bitfieldConditional(
+                      1,
+                      [{
+                        condition: (
+                          <>
+                            <Code>
+                              <AccessStruct field="TimeRangeEnd">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              == <R n="range_open" />
+                            </Code>
+                          </>
+                        ),
+                        code: "arbitrary.",
+                      }, {
+                        condition: (
+                          <>
+                            <R n="errr_time_end_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeEnd">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {">"}{" "}
+                              <AccessStruct field="TimeRangeStart">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>1</Code>.
+                          </>
+                        ),
+                      }, {
+                        condition: (
+                          <>
+                            <R n="errr_time_end_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeEnd">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {"<"}{" "}
+                              <AccessStruct field="TimeRangeStart">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>0</Code>.
+                          </>
+                        ),
+                      }, {
+                        condition: (
+                          <>
+                            not <R n="errr_time_end_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeEnd">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {">"}{" "}
+                              <AccessStruct field="TimeRangeEnd">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>1</Code>.
+                          </>
+                        ),
+                      }, {
+                        condition: (
+                          <>
+                            <R n="errr_time_end_rel" />, and{" "}
+                            <Code>
+                              <AccessStruct field="TimeRangeEnd">
+                                <ValAccess field="D3RangeTime" />
+                              </AccessStruct>{" "}
+                              {"<"}{" "}
+                              <AccessStruct field="TimeRangeEnd">
+                                <RelAccess field="D3RangeTime" />
+                              </AccessStruct>
+                            </Code>
+                          </>
+                        ),
+                        code: (
+                          <>
+                            <Code>0</Code>.
+                          </>
+                        ),
+                      }],
+                    ),
+                    comment: (
+                      <>
+                        Whether to add or subtract <R n="errr_end_time_diff" />
+                        {" "}
+                        to obtain the end of the time range.
+                      </>
+                    ),
+                  },
+                  c64Tag(
+                    "end_time_diff",
+                    2,
+                    <R n="errr_end_time_diff" />,
                   ),
-                },
-                c64Tag(
-                  "end_time_diff",
-                  2,
-                  <R n="errr_end_time_diff" />,
-                ),
-              ]}
-              contents={[
-                <EncConditional
-                  condition={
-                    <>
-                      bits <Bitfield id="enc_subspace_start" /> are{" "}
-                      <Code>11</Code>
-                    </>
-                  }
-                >
-                  <CodeFor notStandalone enc="encode_subspace_id">
-                    <AccessStruct field="SubspaceRangeStart">
-                      <ValAccess field="D3RangeSubspace" />
-                    </AccessStruct>
-                  </CodeFor>
-                </EncConditional>,
-                <EncConditional
-                  condition={
-                    <>
-                      bits <Bitfield id="enc_subspace_end" /> are{" "}
-                      <Code>11</Code>
-                    </>
-                  }
-                >
-                  <CodeFor notStandalone enc="encode_subspace_id">
-                    <AccessStruct field="SubspaceRangeEnd">
-                      <ValAccess field="D3RangeSubspace" />
-                    </AccessStruct>
-                  </CodeFor>
-                </EncConditional>,
-                <EncConditional
-                  condition={
-                    <Code>
-                      <R n="errr_path_start_rel" />
-                    </Code>
-                  }
-                  otherwise={
-                    <>
-                      <CodeFor
-                        notStandalone
-                        enc="EncodePathRelativePath"
-                        relativeTo={
-                          <AccessStruct field="PathRangeEnd">
-                            <RelAccess field="D3RangePath" />
-                          </AccessStruct>
-                        }
-                      >
-                        <AccessStruct field="PathRangeStart">
-                          <ValAccess field="D3RangePath" />
-                        </AccessStruct>
-                      </CodeFor>
-                    </>
-                  }
-                >
-                  <CodeFor
-                    notStandalone
-                    enc="EncodePathRelativePath"
-                    relativeTo={
-                      <AccessStruct field="PathRangeStart">
-                        <RelAccess field="D3RangePath" />
-                      </AccessStruct>
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <>
+                        bits <Bitfield id="enc_subspace_start" /> are{" "}
+                        <Code>11</Code>
+                      </>
                     }
                   >
-                    <AccessStruct field="PathRangeStart">
-                      <ValAccess field="D3RangePath" />
-                    </AccessStruct>
-                  </CodeFor>
-                </EncConditional>,
-
-                <EncConditional
-                  condition={
-                    <>
-                      <Code>
-                        <AccessStruct field="PathRangeEnd">
-                          <RelAccess field="D3RangePath" />
-                        </AccessStruct>{" "}
-                        != <R n="range_open" />
-                      </Code>
-                    </>
-                  }
-                >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <AccessStruct field="SubspaceRangeStart">
+                        <ValAccess field="D3RangeSubspace" />
+                      </AccessStruct>
+                    </CodeFor>
+                  </EncConditional>,
+                  <EncConditional
+                    condition={
+                      <>
+                        bits <Bitfield id="enc_subspace_end" /> are{" "}
+                        <Code>11</Code>
+                      </>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <AccessStruct field="SubspaceRangeEnd">
+                        <ValAccess field="D3RangeSubspace" />
+                      </AccessStruct>
+                    </CodeFor>
+                  </EncConditional>,
                   <EncConditional
                     condition={
                       <Code>
-                        <R n="errr_path_end_rel" />
+                        <R n="errr_path_start_rel" />
                       </Code>
                     }
                     otherwise={
@@ -2045,7 +2132,7 @@ export const encodings = (
                             </AccessStruct>
                           }
                         >
-                          <AccessStruct field="PathRangeEnd">
+                          <AccessStruct field="PathRangeStart">
                             <ValAccess field="D3RangePath" />
                           </AccessStruct>
                         </CodeFor>
@@ -2061,27 +2148,79 @@ export const encodings = (
                         </AccessStruct>
                       }
                     >
-                      <AccessStruct field="PathRangeEnd">
+                      <AccessStruct field="PathRangeStart">
                         <ValAccess field="D3RangePath" />
                       </AccessStruct>
                     </CodeFor>
-                  </EncConditional>
-                </EncConditional>,
-                <C64Encoding id="start_time_diff" />,
-                <EncConditional
-                  condition={
-                    <Code>
-                      <AccessStruct field="TimeRangeEnd">
-                        <ValAccess field="D3RangeTime" />
-                      </AccessStruct>{" "}
-                      != <R n="range_open" />
-                    </Code>
-                  }
-                >
-                  <C64Encoding noDot id="end_time_diff" />
-                </EncConditional>,
-              ]}
-            />
+                  </EncConditional>,
+
+                  <EncConditional
+                    condition={
+                      <>
+                        <Code>
+                          <AccessStruct field="PathRangeEnd">
+                            <RelAccess field="D3RangePath" />
+                          </AccessStruct>{" "}
+                          != <R n="range_open" />
+                        </Code>
+                      </>
+                    }
+                  >
+                    <EncConditional
+                      condition={
+                        <Code>
+                          <R n="errr_path_end_rel" />
+                        </Code>
+                      }
+                      otherwise={
+                        <>
+                          <CodeFor
+                            notStandalone
+                            enc="EncodePathRelativePath"
+                            relativeTo={
+                              <AccessStruct field="PathRangeEnd">
+                                <RelAccess field="D3RangePath" />
+                              </AccessStruct>
+                            }
+                          >
+                            <AccessStruct field="PathRangeEnd">
+                              <ValAccess field="D3RangePath" />
+                            </AccessStruct>
+                          </CodeFor>
+                        </>
+                      }
+                    >
+                      <CodeFor
+                        notStandalone
+                        enc="EncodePathRelativePath"
+                        relativeTo={
+                          <AccessStruct field="PathRangeStart">
+                            <RelAccess field="D3RangePath" />
+                          </AccessStruct>
+                        }
+                      >
+                        <AccessStruct field="PathRangeEnd">
+                          <ValAccess field="D3RangePath" />
+                        </AccessStruct>
+                      </CodeFor>
+                    </EncConditional>
+                  </EncConditional>,
+                  <C64Encoding id="start_time_diff" />,
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <ValAccess field="D3RangeTime" />
+                        </AccessStruct>{" "}
+                        != <R n="range_open" />
+                      </Code>
+                    }
+                  >
+                    <C64Encoding noDot id="end_time_diff" />
+                  </EncConditional>,
+                ]}
+              />
+            </Hsection>
           </Hsection>
         </Hsection>
 
