@@ -2623,7 +2623,7 @@ export const encodings = (
                       </Li>
                       <Li>
                         a natural number (possibly zero) less than or equal to
-                        the lenght (i.e., the number of triplets) of the longest
+                        the length (i.e., the number of triplets) of the longest
                         common prefix of{" "}
                         <ValAccess field="communal_cap_delegations" /> and{" "}
                         <AccessStruct field="communal_cap_delegations">
@@ -2879,7 +2879,7 @@ export const encodings = (
                       </Li>
                       <Li>
                         a natural number (possibly zero) less than or equal to
-                        the lenght (i.e., the number of triplets) of the longest
+                        the length (i.e., the number of triplets) of the longest
                         common prefix of{" "}
                         <ValAccess field="owned_cap_delegations" /> and{" "}
                         <AccessStruct field="owned_cap_delegations">
