@@ -1121,7 +1121,7 @@ export const encodings = (
                     </CodeFor>
                   </EncConditional>,
                   <CodeFor
-                    enc="EncodePathRelativePath"
+                    enc="EncodePathExtendsPath"
                     relativeTo={<RelAccess field="AreaPath" />}
                   >
                     <ValAccess field="entry_path" />
