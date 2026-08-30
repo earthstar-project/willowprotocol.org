@@ -1032,6 +1032,110 @@ export const encodings = (
             </Hsection>
 
             <Hsection
+              n="encsec_EncodeEntryInNamespaceArea"
+              title={<Code>EncodeEntryInNamespaceArea</Code>}
+              noToc
+            >
+              <EncodingRelationRelativeTemplate
+                n="EncodeEntryInNamespaceArea"
+                valType={<R n="Entry" />}
+                relToDescription={
+                  <>
+                    <R n="Area" /> <R n="area_include">including</R> it, and the
+                    {" "}
+                    <R n="Entry" />’s <R n="entry_namespace_id" />
+                  </>
+                }
+                shortRelToDescription={
+                  <>
+                    <R n="Area" />
+                  </>
+                }
+                preDefs={
+                  <>
+                    <P>
+                      Let{" "}
+                      <DefValue
+                        n="einarea_time_rel"
+                        r="time_relative_to_start"
+                      />{" "}
+                      be <Code>true</Code> if{" "}
+                      <Code>
+                        <RelAccess field="AreaTime" />
+                      </Code>{" "}
+                      is an <R n="open_range" />, and an arbitrary{" "}
+                      <R n="Bool" /> otherwise.
+                      <Br />Let <DefValue n="einarea_time_diff" r="time_diff" />
+                      {" "}
+                      be{" "}
+                      <Code>
+                        <ValAccess field="entry_timestamp" /> -{" "}
+                        <AccessStruct field="TimeRangeStart">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      if{" "}
+                      <Code>
+                        <R n="einarea_time_rel" />
+                      </Code>, and{" "}
+                      <Code>
+                        <AccessStruct field="TimeRangeEnd">
+                          <RelAccess field="AreaTime" />
+                        </AccessStruct>{" "}
+                        - <ValAccess field="entry_timestamp" />
+                      </Code>{" "}
+                      otherwise.
+                    </P>
+                  </>
+                }
+                bitfields={[
+                  bitfieldIff(
+                    <Code>
+                      <ValAccess field="entry_subspace_id" /> !={" "}
+                      <RelAccess field="AreaSubspace" />
+                    </Code>,
+                  ),
+                  bitfieldIff(<R n="einarea_time_rel" />),
+                  c64Tag(
+                    "time_diff",
+                    3,
+                    <R n="einarea_time_diff" />,
+                  ),
+                  c64Tag(
+                    "payload_length",
+                    3,
+                    <ValAccess field="entry_payload_length" />,
+                  ),
+                ]}
+                contents={[
+                  <EncConditional
+                    condition={
+                      <Code>
+                        <ValAccess field="entry_subspace_id" /> !={" "}
+                        <RelAccess field="AreaSubspace" />
+                      </Code>
+                    }
+                  >
+                    <CodeFor notStandalone enc="encode_subspace_id">
+                      <ValAccess field="entry_subspace_id" />
+                    </CodeFor>
+                  </EncConditional>,
+                  <CodeFor
+                    enc="EncodePathRelativePath"
+                    relativeTo={<RelAccess field="AreaPath" />}
+                  >
+                    <ValAccess field="entry_path" />
+                  </CodeFor>,
+                  <C64Encoding id="time_diff" />,
+                  <C64Encoding id="payload_length" />,
+                  <CodeFor enc="encode_payload_digest">
+                    <ValAccess field="entry_payload_digest" />
+                  </CodeFor>,
+                ]}
+              />
+            </Hsection>
+
+            <Hsection
               n="encsec_EncodeEntryInNamespace3dRange"
               title={<Code>EncodeEntryInNamespace3dRange</Code>}
               noToc
@@ -1125,7 +1229,7 @@ export const encodings = (
                     condition={
                       <Code>
                         <ValAccess field="entry_subspace_id" /> !={" "}
-                        <RelAccess field="entry_subspace_id" />
+                        <RelAccess field="D3RangeSubspace" />
                       </Code>
                     }
                   >
@@ -2568,8 +2672,43 @@ export const encodings = (
         </Hsection>
 
         <Hsection n="enc_authorisation_tokens" title="Authorisation Tokens">
+          <EncodingRelationTemplate
+            n="EncodeMeadowcapAuthorisationToken"
+            valType={<R n="MeadowcapAuthorisationToken" />}
+            bitfields={[]}
+            contents={[
+              <CodeFor enc="EncodeMcCapability">
+                <ValAccess field="mcat_cap" />
+              </CodeFor>,
+              <CodeFor enc="encode_user_sig">
+                <ValAccess field="mcat_sig" />
+              </CodeFor>,
+            ]}
+          />
+
+          <EncodingRelationTemplate
+            n="EncodeMeadowcapAuthorisedEntry"
+            valType={<R n="AuthorisedEntry" />}
+            bitfields={[]}
+            contents={[
+              <CodeFor enc="EncodeMeadowcapAuthorisationToken">
+                the <R n="AuthorisationToken" /> of <ValName />
+              </CodeFor>,
+              <CodeFor
+                enc="EncodeEntryInNamespaceArea"
+                relativeTo={
+                  <>
+                    the <R n="AuthorisationToken" /> of <ValName />
+                  </>
+                }
+              >
+                the <R n="Entry" /> of <ValName />
+              </CodeFor>,
+            ]}
+          />
+
           <P>
-            Relative encodings for{" "}
+            We further define some relative encodings for{" "}
             <Rs n="MeadowcapAuthorisationToken" />, suitable for the{" "}
             <R n="EncodeAuthorisationToken" /> relation of{"  "}
             <R n="confidential_sync" />. It encodes{" "}
