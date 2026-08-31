@@ -174,7 +174,10 @@ export function PageTemplate(
               )
               : ""}
 
-            <WbMegabar location="willow" rootStyles="margin: 1rem 0; position: relative; z-index: 99;" />
+            <WbMegabar
+              location="willow"
+              rootStyles="position: absolute; top: 0; left: 0; right: 0; z-index: 99;"
+            />
 
             <Div id="wrapContent">
               <Main>
