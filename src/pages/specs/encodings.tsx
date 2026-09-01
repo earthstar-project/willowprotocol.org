@@ -2688,7 +2688,17 @@ export const encodings = (
 
           <EncodingRelationTemplate
             n="EncodeMeadowcapAuthorisedEntry"
-            valType={<R n="AuthorisedEntry" />}
+            valType={
+              <>
+                <R n="AuthorisedEntry" />
+              </>
+            }
+            valRestriction={
+              <>
+                , when using <R n="MeadowcapAuthorisationToken" />{" "}
+                as the type of <Rs n="AuthorisationToken" />
+              </>
+            }
             bitfields={[]}
             contents={[
               <CodeFor enc="EncodeMeadowcapAuthorisationToken">
@@ -2698,7 +2708,10 @@ export const encodings = (
                 enc="EncodeEntryInNamespaceArea"
                 relativeTo={
                   <>
-                    the <R n="AuthorisationToken" /> of <ValName />
+                    the <R n="granted_namespace" /> and <R n="granted_area" />
+                    {" "}
+                    of the <R n="mcat_cap" /> of the{" "}
+                    <R n="AuthorisationToken" /> of <ValName />
                   </>
                 }
               >
