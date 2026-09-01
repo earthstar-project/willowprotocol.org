@@ -6,11 +6,12 @@
     "jsr:@std/cli@*": "1.0.17",
     "jsr:@std/encoding@*": "1.0.10",
     "jsr:@std/fmt@0.221": "0.221.0",
-    "jsr:@std/fs@^1.0.18": "1.0.18",
+    "jsr:@std/fs@^1.0.18": "1.0.24",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
     "jsr:@std/internal@^1.0.6": "1.0.8",
     "jsr:@std/media-types@^1.1.0": "1.1.0",
-    "jsr:@std/path@^1.0.9": "1.0.9",
-    "jsr:@std/path@^1.1.0": "1.1.0",
+    "jsr:@std/path@^1.0.9": "1.1.5",
+    "jsr:@std/path@^1.1.5": "1.1.5",
     "npm:@bokuweb/zstd-wasm@^0.0.27": "0.0.27",
     "npm:citation-js@0.7.12": "0.7.12_@citation-js+core@0.7.11",
     "npm:citeproc@2.4.63": "2.4.63",
@@ -27,7 +28,7 @@
     "@std/assert@1.0.13": {
       "integrity": "ae0d31e41919b12c656c742b22522c32fb26ed0cba32975cb0de2a273cb68b29",
       "dependencies": [
-        "jsr:@std/internal"
+        "jsr:@std/internal@^1.0.6"
       ]
     },
     "@std/cli@1.0.17": {
@@ -39,14 +40,18 @@
     "@std/fmt@0.221.0": {
       "integrity": "379fed69bdd9731110f26b9085aeb740606b20428ce6af31ef6bd45ef8efa62a"
     },
-    "@std/fs@1.0.18": {
-      "integrity": "24bcad99eab1af4fde75e05da6e9ed0e0dce5edb71b7e34baacf86ffe3969f3a",
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
       "dependencies": [
-        "jsr:@std/path@^1.1.0"
+        "jsr:@std/internal@^1.0.14",
+        "jsr:@std/path@^1.1.5"
       ]
     },
     "@std/internal@1.0.8": {
       "integrity": "fc66e846d8d38a47cffd274d80d2ca3f0de71040f855783724bb6b87f60891f5"
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
     },
     "@std/media-types@1.1.0": {
       "integrity": "c9d093f0c05c3512932b330e3cc1fe1d627b301db33a4c2c2185c02471d6eaa4"
@@ -54,8 +59,11 @@
     "@std/path@1.0.9": {
       "integrity": "260a49f11edd3db93dd38350bf9cd1b4d1366afa98e81b86167b4e3dd750129e"
     },
-    "@std/path@1.1.0": {
-      "integrity": "ddc94f8e3c275627281cbc23341df6b8bcc874d70374f75fec2533521e3d6886"
+    "@std/path@1.1.5": {
+      "integrity": "ccea00982ea28c36becaf6e62f855406c76a8c32d462f66f415bbb7d83a271bc",
+      "dependencies": [
+        "jsr:@std/internal@^1.0.14"
+      ]
     }
   },
   "npm": {
@@ -485,6 +493,9 @@
       "integrity": "sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A=="
     }
   },
+  "redirects": {
+    "https://github.com/worm-blossom/macromania_temporary_monorepo/raw/main/macromania_webserverroot/mod.tsx": "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_webserverroot/mod.tsx"
+  },
   "remote": {
     "https://deno.land/std@0.140.0/_util/assert.ts": "e94f2eb37cebd7f199952e242c77654e43333c1ac4c5c700e929ea3aa5489f74",
     "https://deno.land/std@0.140.0/_util/os.ts": "3b4c6e27febd119d36a416d7a97bd3b0251b77c88942c8f16ee5953ea13e2e49",
@@ -817,7 +828,17 @@
     "https://deno.land/x/logging_utils@v10.0/deps.ts": "1b27dc43357ce3edb11d55d0d91e8c7c41868d64dcf09c31857e2936a9bec8e9",
     "https://deno.land/x/logging_utils@v10.0/mod.ts": "09bf55c9635878962fe5ddcc19d87d6cfdb62385ce062a49f9df1d098c513feb",
     "https://raw.githubusercontent.com/worm-blossom/macromania/main/mod.ts": "900e249de4874f1a3a1a4219e047d07af1fe40f0f406125b9538d1622742f284",
-    "https://raw.githubusercontent.com/worm-blossom/macromania/main/stack.ts": "722f5ba600251b39cda4a512c00d3d64bb147795e958fe319c29c25b56fbd0b3"
+    "https://raw.githubusercontent.com/worm-blossom/macromania/main/stack.ts": "722f5ba600251b39cda4a512c00d3d64bb147795e958fe319c29c25b56fbd0b3",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_config/deps.ts": "43caad374a8b1d9c91d624475103767484be1090948ea9dea9c045314947d320",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_config/mod.tsx": "72375a4a65765f673896530a37968938de111bb3713fd522271f8e231b343998",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_fs/deps.ts": "07784a04411d0609fc99e9729f7049589b48a456fcbaa0254cdb0d3a12e7642f",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_fs/mod.tsx": "255e35f4dd57d62162fee028f627edf27963dc366124427e4a37886d51c200e5",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_logger/deps.ts": "9e14aa02657dc4c524a88432b4c893ccfc63d58f94a5e08bb58a08da47503486",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_logger/mod.tsx": "e7800408481b6bc0da0ef28c6b38c36c8480149a2543c7b2b42f9791e9fd9fce",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_outfs/deps.ts": "f107a5db110b619eb966bb3ac4030b0b89834a1cb62162b6c6ecaf579653539c",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_outfs/mod.tsx": "0d1407b7016d08bc51803c5e237e5abd0008a3e024f7d2d365d9b9445b3b56ab",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_webserverroot/deps.ts": "91ed9fa93655d1910a900faad64e32e3f956a7d5725c5cbc80295d65280515a8",
+    "https://raw.githubusercontent.com/worm-blossom/macromania_temporary_monorepo/main/macromania_webserverroot/mod.tsx": "40614d8f65d3ffdda9d01da79489ef9a33216923ab4de7e960010d05715cafb1"
   },
   "workspace": {
     "dependencies": [
