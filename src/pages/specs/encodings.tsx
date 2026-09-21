@@ -3556,7 +3556,7 @@ export const encodings = (
                 </Li>
                 <Li>
                   the <R n="pi_ss" /> of the <R n="PrivateInterest" />{" "}
-                  is either equal to the <Rs n="AreaSubspace" /> of the{" "}
+                  is either equal to the <R n="AreaSubspace" /> of the{" "}
                   <R n="Area" />, or one of them is <R n="ss_any" />.
                 </Li>
               </Ul>
