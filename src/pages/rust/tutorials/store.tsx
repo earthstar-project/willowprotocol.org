@@ -297,10 +297,10 @@ export const tutorial_store = (
 
       <Hsection title="Query an area" n="tut-store-6">
         <P>
-          We're going to try and append some data to the <R n="Payload" />{" "}
-          of our{" "}
-          <R n="rs-willow25-authorisation-AuthorisedEntry" />, and then try to
-          retrieve it again.
+          Next we'll query a <R n="rs-willow25-groupings-Area" />{" "}
+          to see which stored{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" /> are{" "}
+          <R n="area_include">included</R> by it.
         </P>
 
         <P>
