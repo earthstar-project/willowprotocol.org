@@ -12,10 +12,10 @@ export const tutorial_groupings = (
       <P>
         In this tutorial you will construct and compare various{" "}
         <Rs n="grouping_entries">entry groupings</Rs> with the{" "}
-        <R n="rs-willow_data_model-groupings" /> APIs.
+        <R n="rs-willow25-groupings" /> APIs.
       </P>
     }
-    deps={["willow25", "willow_data_model"]}
+    deps={["willow25"]}
     otherPrereqs={
       <P>
         Additionally, knowledge of the <R n="rs-willow25-entry-Entry" />{" "}
@@ -28,8 +28,7 @@ export const tutorial_groupings = (
       <Hsection title="Range" n="tut-grouping-1">
         <P>
           Firstly we'll create a few{" "}
-          <R n="rs-willow_data_model-groupings-WillowRange">WillowRanges</R>
-          {" "}
+          <R n="rs-willow25-groupings-WillowRange">WillowRanges</R>{" "}
           and check whether they contain an <R n="rs-willow25-entry-Entry" />.
         </P>
 
@@ -93,8 +92,7 @@ export const tutorial_groupings = (
         <Ul>
           <Li>
             We created a few{" "}
-            <R n="rs-willow_data_model-groupings-WillowRange">WillowRanges</R>
-            {" "}
+            <R n="rs-willow25-groupings-WillowRange">WillowRanges</R>{" "}
             (by way of creating{" "}
             <R n="rs-willow25-groupings-TimeRange">TimeRanges</R>), created new
             intersecting ranges from them, and used the{" "}

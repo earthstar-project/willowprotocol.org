@@ -1,4 +1,4 @@
-import { Code, Li, P, Ul } from "macromania-html";
+import { Code, Em, Li, P, Ul } from "macromania-html";
 import { R } from "macromania-defref";
 import { Hsection } from "macromania-hsection";
 import { RustSample, TerminalInput, TerminalOutput } from "../../../macros.tsx";
@@ -11,16 +11,17 @@ export const tutorial_store = (
     preamble={
       <P>
         In this tutorial we will instantiate a{" "}
-        <R n="rs-willow_store_simple_sled-StoreSimpleSled" />{" "}
-        and use it to store and retrieve an <R n="rs-willow25-Entry" /> and its
+        <R n="rs-willow25-storage-MemoryStore" />{" "}
+        and use it to store and retrieve an <R n="rs-willow25-entry-Entry" />
         {" "}
-        <R n="Payload" />.
+        and its <R n="Payload" />.
       </P>
     }
-    deps={["willow25", "willow-store-simple-sled", "ufotofu", "smol"]}
+    deps={["willow25", "rand@0.8.0", "ufotofu", "smol", "bab_rs"]}
     otherPrereqs={
       <P>
-        Additionally, knowledge of the <R n="rs-willow25-Capability" />{" "}
+        Additionally, knowledge of the{" "}
+        <R n="rs-willow25-authorisation-WriteCapability" />{" "}
         API would be helpful. If you're not yet familiar, please see our{" "}
         <R n="tut-caps">dedicated tutorial for capabilities</R>.
       </P>
@@ -29,10 +30,7 @@ export const tutorial_store = (
     <>
       <Hsection title="Instantiate a store" n="tut-store-1">
         <P>
-          Firstly we'll instantiate a{" "}
-          <R n="rs-willow_store_simple_sled-StoreSimpleSled" /> in the directory
-          {" "}
-          <Code>./my_db</Code>.
+          Firstly we'll instantiate a <R n="rs-willow25-storage-MemoryStore" />.
         </P>
 
         <P>
@@ -44,22 +42,17 @@ export const tutorial_store = (
         <RustSample path={["src", "code_samples", "tut_store", "01.rs"]} />
 
         <P>
-          In your terminal, run{" "}
-          <TerminalInput>cargo run</TerminalInput>, and you should see the
-          following output:
+          Now we have a <R n="rs-willow25-storage-Store" />, ready to work with.
         </P>
-
-        <TerminalOutput
-          path={["src", "code_samples", "tut_store", "01_output.txt"]}
-        />
       </Hsection>
 
       <Hsection title="Ingest an entry" n="tut-store-2">
         <P>
           Next, we'll create a new{" "}
-          <R n="rs-willow25-Entry" />, use that to create an{" "}
-          <R n="rs-willow25-AuthorisedEntry" />, and ingest it into the
-          <R n="rs-willow_store_simple_sled-StoreSimpleSled" /> we instantiated.
+          <R n="rs-willow25-entry-Entry" />, use that to create an{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />, and insert it
+          into the
+          <R n="rs-willow25-storage-MemoryStore" /> we instantiated.
         </P>
 
         <P>
@@ -72,11 +65,11 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 0,
+                line: 3,
                 character: 0,
               },
               end: {
-                line: 5,
+                line: 4,
                 character: 0,
               },
               properties: {
@@ -85,11 +78,11 @@ export const tutorial_store = (
             },
             {
               start: {
-                line: 25,
+                line: 11,
                 character: 0,
               },
               end: {
-                line: 66,
+                line: 37,
                 character: 0,
               },
               properties: {
@@ -107,30 +100,13 @@ export const tutorial_store = (
 
         <TerminalOutput
           path={["src", "code_samples", "tut_store", "02_output.txt"]}
-          decorations={[
-            {
-              start: {
-                line: 1,
-                character: 0,
-              },
-              end: {
-                line: 2,
-                character: 26,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-          ]}
         />
       </Hsection>
 
-      <Hsection title="Append a payload" n="tut-store-3">
+      <Hsection title="Retrieve the entry" n="tut-store-3">
         <P>
-          Next, we'll try and retrieve the payload of the{" "}
-          <R n="rs-willow25-Entry" />{" "}
-          we just ingested, append some data to its payload, and then try to
-          retrieve it again.
+          Next, we'll try and retrieve the{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" /> we just inserted.
         </P>
 
         <P>
@@ -143,24 +119,11 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 0,
+                line: 38,
                 character: 0,
               },
               end: {
-                line: 1,
-                character: 0,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-            {
-              start: {
-                line: 68,
-                character: 0,
-              },
-              end: {
-                line: 87,
+                line: 50,
                 character: 0,
               },
               properties: {
@@ -181,12 +144,12 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 3,
+                line: 1,
                 character: 0,
               },
               end: {
-                line: 5,
-                character: 20,
+                line: 1,
+                character: 26,
               },
               properties: {
                 class: "addition",
@@ -196,10 +159,12 @@ export const tutorial_store = (
         />
       </Hsection>
 
-      <Hsection title="Query an area" n="tut-store-4">
+      <Hsection title="Try to retrieve the payload" n="tut-store-4">
         <P>
-          Next, we'll query an <R n="rs-willow25-Area" />{" "}
-          within the store and iterate through the results we get.
+          Next, we'll <Em>try</Em> and retrieve the <R n="Payload" /> of the
+          {" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />{" "}
+          we've successfully inserted.
         </P>
 
         <P>
@@ -212,24 +177,11 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 0,
-                character: 14,
-              },
-              end: {
-                line: 0,
-                character: 22,
-              },
-              properties: {
-                class: "addition",
-              },
-            },
-            {
-              start: {
-                line: 88,
+                line: 52,
                 character: 0,
               },
               end: {
-                line: 103,
+                line: 70,
                 character: 0,
               },
               properties: {
@@ -250,12 +202,12 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 6,
+                line: 2,
                 character: 0,
               },
               end: {
-                line: 6,
-                character: 27,
+                line: 3,
+                character: 39,
               },
               properties: {
                 class: "addition",
@@ -263,12 +215,21 @@ export const tutorial_store = (
             },
           ]}
         />
+
+        <P>
+          Our vec is empty! We never appended the corresponding{" "}
+          <R n="Payload" /> for this{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />. So let's do that
+          next.
+        </P>
       </Hsection>
 
-      <Hsection title="Forget an entry" n="tut-store-5">
+      <Hsection title="Append a payload (and retrieve it)" n="tut-store-5">
         <P>
-          Finally, we'll forget the <R n="rs-willow25-Entry" />{" "}
-          we ingested earlier.
+          We're going to try and append some data to the <R n="Payload" />{" "}
+          of our{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />, and then try to
+          retrieve it again.
         </P>
 
         <P>
@@ -281,11 +242,24 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
-                line: 104,
+                line: 0,
                 character: 0,
               },
               end: {
-                line: 118,
+                line: 2,
+                character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+            {
+              start: {
+                line: 73,
+                character: 0,
+              },
+              end: {
+                line: 103,
                 character: 0,
               },
               properties: {
@@ -306,7 +280,122 @@ export const tutorial_store = (
           decorations={[
             {
               start: {
+                line: 4,
+                character: 0,
+              },
+              end: {
+                line: 6,
+                character: 20,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+      </Hsection>
+
+      <Hsection title="Query an area" n="tut-store-6">
+        <P>
+          We're going to try and append some data to the <R n="Payload" />{" "}
+          of our{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />, and then try to
+          retrieve it again.
+        </P>
+
+        <P>
+          Make the following changes to
+          <Code>src/main.rs</Code>:
+        </P>
+
+        <RustSample
+          path={["src", "code_samples", "tut_store", "06.rs"]}
+          decorations={[
+            {
+              start: {
+                line: 104,
+                character: 0,
+              },
+              end: {
+                line: 120,
+                character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+
+        <P>
+          In your terminal, run{" "}
+          <TerminalInput>cargo run</TerminalInput>, and you should see the
+          following output:
+        </P>
+
+        <TerminalOutput
+          path={["src", "code_samples", "tut_store", "06_output.txt"]}
+          decorations={[
+            {
+              start: {
                 line: 7,
+                character: 0,
+              },
+              end: {
+                line: 7,
+                character: 72,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+      </Hsection>
+
+      <Hsection title="Forget an entry" n="tut-store-7">
+        <P>
+          Finally, we're going to forget the{" "}
+          <R n="rs-willow25-authorisation-AuthorisedEntry" />{" "}
+          we inserted, and then try to retrieve it again.
+        </P>
+
+        <P>
+          Make the following changes to
+          <Code>src/main.rs</Code>:
+        </P>
+
+        <RustSample
+          path={["src", "code_samples", "tut_store", "07.rs"]}
+          decorations={[
+            {
+              start: {
+                line: 120,
+                character: 0,
+              },
+              end: {
+                line: 142,
+                character: 0,
+              },
+              properties: {
+                class: "addition",
+              },
+            },
+          ]}
+        />
+
+        <P>
+          In your terminal, run{" "}
+          <TerminalInput>cargo run</TerminalInput>, and you should see the
+          following output:
+        </P>
+
+        <TerminalOutput
+          path={["src", "code_samples", "tut_store", "07_output.txt"]}
+          decorations={[
+            {
+              start: {
+                line: 8,
                 character: 0,
               },
               end: {
@@ -323,41 +412,43 @@ export const tutorial_store = (
 
       <Hsection title="Summary" n="tut-store-summary">
         <P>
-          In this tutorial, we explored{" "}
-          <R n="rs-willow_data_model-Store" />'s APIs via{" "}
-          <R n="rs-willow_store_simple_sled-StoreSimpleSled" />:
+          In this tutorial, we explored the <R n="rs-willow25-storage-Store" />
+          {" "}
+          API:
         </P>
         <Ul>
           <Li>
-            We created a <R n="rs-willow_store_simple_sled-StoreSimpleSled" />
+            We instantiated a <R n="rs-willow25-storage-MemoryStore" />.
           </Li>
 
           <Li>
             We created an{" "}
-            <R n="rs-willow25-Entry" />, authorised it, and ingested in the
-            store with <R n="rs-willow_data_model-Store-ingest_entry" />.
+            <R n="rs-willow25-entry-Entry" />, authorised it with a{" "}
+            <R n="rs-willow25-authorisation-WriteCapability" />, and inserted in
+            the store with <R n="rs-willow25-storage-Store-insert_entry" />.
           </Li>
 
           <Li>
-            We appended data to a payload and retrieved that payload.
+            We saw what happened when we try to fetch a <R n="Payload" /> with
+            {" "}
+            <R n="rs-willow25-storage-PayloadPrefixStore-append_to_payload_prefix" />
+            {" "}
+            we hadn't appended any data to.
           </Li>
 
           <Li>
-            We queried an <R n="rs-willow25-Area" /> using{" "}
-            <R n="rs-willow_data_model-Store-query_area" />{" "}
-            and iterated through the results.
+            We queried an <R n="rs-willow25-groupings-Area" /> using{" "}
+            <R n="rs-willow25-storage-Store-get_area" />{" "}
+            and counted the results.
           </Li>
 
           <Li>
-            We used <R n="rs-willow_data_model-Store-forget_area" /> the{" "}
-            <R n="rs-willow25-Entry" /> we originally ingested.
+            We used <R n="rs-willow25-storage-Store-forget_entry" />{" "}
+            to forget the <R n="rs-willow25-authorisation-AuthorisedEntry" />
+            {" "}
+            we originally inserted.
           </Li>
         </Ul>
-
-        <P>
-          We've now practiced everything we need to move on to the next
-          tutorial: <R n="tut-drop">Create and ingest a sidedrop.</R>.
-        </P>
       </Hsection>
     </>
   </TutorialTemplate>

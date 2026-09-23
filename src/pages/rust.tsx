@@ -7,10 +7,6 @@ import { Hsection } from "macromania-hsection";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale } from "macromania-marginalia";
 
-const rustdocs_willow_data_model = JSON.parse(
-  await Deno.readTextFile("./rustdocs/source_json/willow_data_model.json"),
-);
-
 const rustdocs_willow25 = JSON.parse(
   await Deno.readTextFile("./rustdocs/source_json/willow25.json"),
 );
@@ -22,16 +18,6 @@ export const rust = (
       headingId="rust"
       heading="Willow in Rust"
     >
-      <DefsRustDocs
-        crate="willow_data_model"
-        json={rustdocs_willow_data_model}
-        prefix="rs-"
-        typeClass="rustic type"
-        functionClass="rustic function"
-        interfaceClass="rustic interface"
-        depsCss={[{ dep: ["pseudocode.css"] }]}
-        cachingPath={["rustdocs", "cached_defs"]}
-      />
       <DefsRustDocs
         crate="willow25"
         json={rustdocs_willow25}
@@ -80,12 +66,13 @@ export const rust = (
           <Li>
             <R n="tut-caps">Create and use capabilities</R>
           </Li>
+          <Li>
+            <R n="tut-store">Work with a Store</R>
+          </Li>
           {
             /* <omnomnom>
 
-            <Li>
-              <R n="tut-store">Work with a Store</R>
-            </Li>
+
             <Li>
               <R n="tut-drop">Create and ingest a sidedrop</R>
             </Li>

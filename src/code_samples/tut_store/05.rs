@@ -1,122 +1,105 @@
-use ufotofu::{Producer, producer::FromSlice};
-use willow_25::{
-    AccessMode, Area, AreaSubspace, AuthorisationToken, AuthorisedEntry, Capability, Entry,
-    NamespaceId25, Path, PayloadDigest25, Range, SubspaceId25,
-    data_model::{EntryIngestionSuccess, EntryOrigin, QueryIgnoreParams, Store},
-};
-use willow_store_simple_sled::StoreSimpleSled;
+use bab_rs::generic::storage::verifiable_streaming::SliceStreamingOptions;
+use ufotofu::producer::clone_from_slice;
+use willow25::prelude::*;
+use willow25::storage::MemoryStore;
+
+use rand::rngs::OsRng;
+use ufotofu::prelude::*;
 
 fn main() {
-    // Instantiate a store
-    let namespace_id = NamespaceId25::new_communal();
-    let db = sled::open("my_db").unwrap();
+    // Store operations are async
+    smol::block_on(async {
+        // Instantiate an in-memory store.
+        let mut store = MemoryStore::new();
 
-    let store = StoreSimpleSled::<
-        1024,
-        1024,
-        1024,
-        NamespaceId25,
-        SubspaceId25,
-        PayloadDigest25,
-        AuthorisationToken,
-    >::new(&namespace_id, db)
-    .unwrap();
-    
-    println!("Instantiated the store!");
+        // Create an entry and authorise it.
+        let mut csprng = OsRng;
 
-    // Create an entry and authorise it
-    let (alfie_id, alfie_secret) = SubspaceId25::new();
+        let (alfie_id, alfie_secret) = randomly_generate_subspace(&mut csprng);
+        let communal_namespace_id = NamespaceId::from_bytes(&[17; 32]);
 
-    let write_cap =
-        Capability::new_communal(namespace_id.clone(), alfie_id.clone(), AccessMode::Write)
+        let communal_cap =
+            WriteCapability::new_communal(communal_namespace_id.clone(), alfie_id.clone());
+
+        let entry_communal = Entry::builder()
+            .namespace_id(communal_namespace_id.clone())
+            .subspace_id(alfie_id.clone())
+            .path(path!("/ideas"))
+            .timestamp(12345)
+            .payload(b"chocolate with mustard")
+            .build();
+
+        // Authorise the entry using the communal
+        // capability and Alfie's secret.
+        let communal_authed = entry_communal
+            .into_authorised_entry(&communal_cap, &alfie_secret)
             .unwrap();
 
-    let path = Path::from_slices(&["ideas", "clock"]).unwrap();
-    let payload = b"An emoji clock";
-    let digest = PayloadDigest25::new_from_slice(payload);
-
-    let entry = Entry::new(
-        namespace_id.clone(),
-        alfie_id.clone(),
-        path.clone(),
-        100,
-        payload.len() as u64,
-        digest.clone(),
-    );
-
-    let token = write_cap.authorisation_token(&entry, alfie_secret).unwrap();
-
-    let authed_entry = AuthorisedEntry::new(entry, token).unwrap();
-
-    smol::block_on(async {
-        // Ingest an entry...
-        if let Ok(EntryIngestionSuccess::Success) = store
-            .ingest_entry(authed_entry, false, EntryOrigin::Local)
-            .await
-        {
-            println!("We ingested the entry!")
-        }
+        // Insert an entry
+        store.insert_entry(communal_authed).await.unwrap();
+        println!("Successully inserted entry");
 
         // ... and retrieve it.
         if let Some(_entry) = store
-            .entry(&alfie_id, &path, QueryIgnoreParams::default())
+            .get_entry(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+            )
             .await
             .unwrap()
         {
             println!("We got our entry back out!")
         }
 
-        // Try to retrieve its payload...
-        match store.payload(&alfie_id, &path, 0, None).await {
-            Ok(_payload) => println!("We have the payload!"),
-            Err(_) => println!("We haven't ingested the payload yet!"),
-        }
+        // Retrieve the payload
+        let mut vec: Vec<u8> = vec![];
+        let mut vec_consumer = (&mut vec).into_consumer();
 
-        // ... append some data to the payload...
-        if let Ok(_success) = store
-            .append_payload(&alfie_id, &path, Some(digest), &mut FromSlice::new(payload))
+        store
+            .get_payload_slice(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+                0,
+                u64::MAX,
+                &mut vec_consumer,
+            )
             .await
-        {
-            println!("Appended the payload!")
-        }
+            .unwrap();
 
-        // ... and try to retrieve it again.
-        match store.payload(&alfie_id, &path, 0, None).await {
-            Ok(_payload) => println!("We have the payload!"),
-            Err(_) => println!("We haven't ingested the payload yet!"),
-        }
+        println!("{:?}", vec_consumer);
+        println!("Oops, we didn't append the payload yet!");
 
-        // Query by area
-        let ideas_area = Area::new(
-            AreaSubspace::Id(alfie_id.clone()),
-            path.clone(),
-            Range::new_open(0),
-        );
+        // Append the payload
+        let mut payload_producer = clone_from_slice(b"chocolate with mustard");
 
-        if let Ok(mut entry_producer) = store
-            .query_area(&ideas_area, QueryIgnoreParams::default())
+        store
+            .append_to_payload_prefix(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                &mut payload_producer,
+                SliceStreamingOptions::default(),
+            )
             .await
-        {
-            while let Ok(_lengthy_authed_entry) = entry_producer.produce_item().await {
-                println!("Found an entry in the area!")
-            }
-        }
+            .unwrap();
 
-        // Forget an entry
+        println!("We appended the payload");
 
-        if let Ok(forgotten_count) = store.forget_area(&ideas_area, None).await {
-            println!("Forgot {forgotten_count} entry(s)!")
-        }
-
-        if store
-            .entry(&alfie_id, &path, QueryIgnoreParams::default())
+        // Retrieve the payload... again.
+        store
+            .get_payload_slice(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+                0,
+                u64::MAX,
+                &mut vec_consumer,
+            )
             .await
-            .unwrap()
-            .is_none()
-        {
-            println!("Our entry was forgotten!")
-        }
-    });
+            .unwrap();
 
-    std::fs::remove_dir_all("my_db").unwrap();
+        println!("{:?}", vec_consumer);
+        println!("That's more like it.");
+    })
 }
