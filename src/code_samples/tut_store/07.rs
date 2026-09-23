@@ -1,3 +1,5 @@
+use bab_rs::generic::storage::verifiable_streaming::SliceStreamingOptions;
+use ufotofu::producer::clone_from_slice;
 use willow25::prelude::*;
 use willow25::storage::MemoryStore;
 
@@ -68,5 +70,75 @@ fn main() {
 
         println!("{:?}", vec_consumer);
         println!("Oops, we didn't append the payload yet!");
+
+        // Append the payload
+        let mut payload_producer = clone_from_slice(b"chocolate with mustard");
+
+        store
+            .append_to_payload_prefix(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                &mut payload_producer,
+                SliceStreamingOptions::default(),
+            )
+            .await
+            .unwrap();
+
+        println!("We appended the payload");
+
+        // Retrieve the payload... again.
+        store
+            .get_payload_slice(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+                0,
+                u64::MAX,
+                &mut vec_consumer,
+            )
+            .await
+            .unwrap();
+
+        println!("{:?}", vec_consumer);
+        println!("That's more like it.");
+
+        // Query by area
+        let entry_vec = Vec::new();
+        let mut entry_consumer = entry_vec.into_consumer();
+
+        let alfie_area = Area::new_subspace_area(alfie_id.clone());
+
+        store
+            .get_area(&communal_namespace_id, &alfie_area, &mut entry_consumer)
+            .await
+            .unwrap();
+
+        println!(
+            "Fetched our entry from the area! Our vec has this many entries inside: {:?}",
+            entry_consumer.as_slice().len()
+        );
+
+        // Forget our entry
+        store
+            .forget_entry(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+            )
+            .await
+            .unwrap();
+
+        if store
+            .get_entry(
+                &communal_namespace_id,
+                &(alfie_id.clone(), path!("/ideas")),
+                None,
+            )
+            .await
+            .unwrap()
+            .is_none()
+        {
+            println!("Our entry was forgotten!")
+        }
     })
 }

@@ -1,7 +1,4 @@
-Instantiated the store!
-We ingested the entry!
+Successully inserted entry
 We got our entry back out!
-We have the payload!
-Appended the payload!
-We have the payload!
-Found an entry in the area!
+IntoConsumerMut([])
+Oops, we didn't append the payload yet!
