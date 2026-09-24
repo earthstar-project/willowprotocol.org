@@ -62,17 +62,11 @@ export const wtp = (
           <P>
             The <R n="data_model">Willow data model</R>{" "}
             specifies how to arrange data, but it does not prescribe how peers
-            can exchange it. The{" "}
+            can exchange <Rs n="Entry" /> and their <Rs n="Payload" />. The{" "}
             <Def n="wtp" r="WTP">
               Willow Transfer Protocol
             </Def>{" "}
-            is a fairly simple protocol with HTTP-inspired<Marginale>
-              While the semantics are reminiscent of HTTP, the <R n="wtp" />
-              {" "}
-              and HTTP wire encodings are completely unrelated.
-            </Marginale>{" "}
-            GET and PUT-like requests to allow a client to access and write
-            Willow data.
+            fills that gap.
           </P>
 
           <P>
@@ -82,86 +76,52 @@ export const wtp = (
         </PreviewScope>
 
         <Hsection n="wtp_intro" title="Introduction">
-          <PreviewScope>
-            <P>
-              The <R n="wtp" /> is an asymmetric protocol in which a{" "}
-              <Def n="wtp_client" r="client" rs="server" />{" "}
-              proactively sends requests to a purely reactive{" "}
-              <Def n="wtp_server" r="server" rs="servers" />, who replies with a
-              single response to each request. The <R n="wtp_client" />{" "}
-              implicitly trusts the <R n="wtp_server" />{" "}
-              to be allowed to know about all the metadata of its requests, such
-              as <Rs n="NamespaceId" />, <Rs n="SubspaceId" />,{" "}
-              <Rs n="Path" />, or <Rs n="AuthorisationToken" />. The{" "}
-              <R n="wtp_server" />, however, does not need to trust the{" "}
-              <R n="wtp_client" /> at all — the <R n="wtp_client" />{" "}
-              must prove its access rights for all its requests.
-            </P>
-
-            <P>
-              The <R n="wtp_client" /> can request individual <Rs n="Entry" />
-              {" "}
-              and optionally their{" "}
-              <Rs n="Payload" />, it can also request data by{" "}
-              <R n="AreaOfInterest" /> or{" "}
-              <R n="D3Range" />, it can request metadata for a purely{" "}
-              <R n="wtp_client" />-driven{" "}
-              <R n="d3_range_based_set_reconciliation">
-                range-based set reconciliation
-              </R>, and it can send new <Rs n="Entry" /> and their{" "}
-              <Rs n="Payload" /> to the <R n="wtp_server" />. The{" "}
-              <R n="wtp_server" />{" "}
-              does not need to do anything but to reply to incoming requests —
-              and it can always reply that it refused to do what was requested.
-              The <R n="wtp_server" />{" "}
-              needs to maintain only a small, constant amount of state per
-              session (typically eclipsed by the state required for maintaining
-              the network connection itself).
-            </P>
-          </PreviewScope>
-
           <P>
-            Whereas the <R n="willow_confidential_sync">Confidential Sync protocol</R>{" "}
-            assembles some sophisticated techniques to allow for high
-            confidentiality between completely untrusted peers, supports
-            bidirectional eager forwarding of novel information, and multiplexes
-            several independent data streams, the <R n="wtp" />{" "}
-            makes simplifying trust assumptions, has an unidirectionally flow of
-            initiative, and places responsibility for avoiding head-of-line
-            blocking on the{" "}
-            <R n="wtp_client" />. In exchange, it goes easy on the computational
-            resources of the{" "}
-            <R n="wtp_server" />, and it is actually enjoyable and
-            straightforward to implement.
+            The <R n="wtp" />{" "}
+            is a message-based protocol where two peer can send and request{" "}
+            <Rs n="Entry" /> and <Rs n="Payload" />{" "}
+            to and from each other. Requests can be both one-shot or stay open,
+            allowing for eager streaming of changes if desired.
           </P>
 
           <P>
-            Partial implementations of the <R n="wtp" />{" "}
-            can meaningfully interact with fully-featured ones. The{" "}
-            <R n="wtp_client" />{" "}
-            need not be able to process replies to types of requests it never
-            makes. The <R n="wtp_server" />{" "}
-            can refuse to process any incoming request, and it can communicate
-            when the reason is due to unimplemented features. This allows the
+            In addition to requesting individual{" "}
+            <Rs n="Entry" />, peers can also query for whole <Rs n="Area" /> or
             {" "}
-            <R n="wtp_client" />{" "}
-            to adapt its behaviour and to refrain from issuing requests the{" "}
-            <R n="wtp_server" /> does not support.
+            <Rs n="D3Range" />. Peers can further request that requests for
+            groupings containing many <Rs n="Entry" />{" "}
+            are answered not with those <Rs n="Entry" />{" "}
+            but merely with a hash of those <Rs n="Entry" />{" "}
+            — a mechanism that enables{" "}
+            <R n="d3_range_based_set_reconciliation">
+              3d range-based set reconciliation
+            </R>.
+          </P>
+
+          <P>
+            Requests for <Rs n="Entry" />{" "}
+            must be accompanied by read capabilities, peers should never send
+            data to peers who are not authorised to access that data. Metadata,
+            such as capabilities themselves, or requests for sepcific groupings
+            of <Rs n="Entry" />{" "}
+            are transmitted naively, however; peers must be mindful of possibly
+            leaking information this way.
+          </P>
+
+          <P>
+            The WTP is flexible in how much state peers need to maintain. For
+            every message that acts as a response which refers back to the state
+            set up by some request, there is also an alternate encoding in which
+            the response is fully self-contained. Peers can choose for
+            themselves whether to operate in a bandwidth-efficient stateful way
+            or in a more bandwidth-costly but stateless way.
           </P>
 
           <P>
             The <R n="wtp" />{" "}
             runs over any reliable, ordered, bidirectional, byte-oriented
-            communication channel. If the <R n="wtp_client" />{" "}
-            plans on working with non-public data, the communication channel
-            must be confidential and it must be impossible for an active
-            attacker to inpersonate the trusted <R n="wtp_server" />. If the
-            {" "}
-            <R n="wtp_client" />{" "}
-            only works with public data, the channel is allowed to be
-            non-confidential. Eavesdroppers might then learn about the{" "}
-            <R n="wtp_client" />’s interests; it is up to the{" "}
-            <R n="wtp_client" /> to gauge whether that is acceptable.
+            communication channel. We highly recommend encrypting the
+            communication, and provide a recommended scheme for doing so.
           </P>
         </Hsection>
 
@@ -225,22 +185,23 @@ export const wtp = (
 
         <Hsection n="wtp_protocol" title="Protocol">
           <P>
-            The <R n="wtp" />{" "}
-            is message-based. The first message sent by each peer is a dedicated
-            setup message. After having sent its setup message, the{" "}
-            <R n="wtp_client" />{" "}
-            can send any number of request messages, in arbitrary order. The
+            The <R n="wtp" /> starts with the{" "}
+            <R n="handshake_and_encryption">handshake specified here</R>, whose
+            parameter instantiation must use <R n="wtp_receiver" /> as the type
             {" "}
-            <R n="wtp_server" />{" "}
-            replies to each request message with exactly one response message.
+            <R n="hs_pk" />. After the handshake, further communication may or
+            may not be{" "}
+            <R n="transport_encryption">encrypted as specified</R>; peers should
+            encrypt if and only if the underlying communication channel is
+            unencrypted. All communication after the handshake is message-based.
           </P>
 
           <P>
             Peers might receive invalid messages, both syntactically (i.e.,
             invalid encodings) and semantically (i.e., logically inconsistent
             messages). In both cases, the peer to detect this behaviour must
-            abort the sync session. We indicate such situations by writing that
-            something{" "}
+            abort the communication session. We indicate such situations by
+            writing that something{" "}
             <Quotes>is an error</Quotes>. Whenever we state that a message must
             fulfil some criteria, but a peer receives a message that does not
             fulfil these criteria, that is an error.
