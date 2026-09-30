@@ -102,7 +102,7 @@ export const wtp = (
             Requests for <Rs n="Entry" />{" "}
             must be accompanied by read capabilities, peers should never send
             data to peers who are not authorised to access that data. Metadata,
-            such as capabilities themselves, or requests for sepcific groupings
+            such as capabilities themselves, or requests for specific groupings
             of <Rs n="Entry" />{" "}
             are transmitted naively, however; peers must be mindful of possibly
             leaking information this way.
@@ -207,538 +207,40 @@ export const wtp = (
             fulfil these criteria, that is an error.
           </P>
 
-          <P>
-            We define all messages as purely logical data types first, with the
-            actual wire encoding defined <R n="wtp_encodings">last</R>.
-          </P>
-
-          <Hsection n="wtp_setup" title="Setup Messages">
-            <PreviewScope>
-              <P>
-                We start the message descriptions with the setup messages. The
-                {" "}
-                <R n="WtpServerSetupMessage" /> contains a{" "}
-                <DefValue n="wtp_challenge" r="challenge" rs="challenges" />, a
-                128-bit random number for which the <R n="wtp_client" />{" "}
-                must provide a valid signature in its own setup message. The
-                {" "}
-                <R n="WtpServerSetupMessage" />{" "}
-                also contains some (non-binding) information about which{" "}
-                <R n="wtp" /> features the <R n="wtp_server" />{" "}
-                implements. For each feature, the <R n="wtp_server" />{" "}
-                supplies an <R n="Availability" />:
-              </P>
-            </PreviewScope>
-
-            <Pseudocode n="wtp_availability_def">
-              <Enum
-                comment={
-                  <>
-                    Information about the degree to which the{" "}
-                    <R n="wtp_server" />{" "}
-                    implements and provides a feature of the <R n="wtp" />.
-                  </>
-                }
-                id={[
-                  "Availability",
-                  "Availability",
-                  "Availability",
-                ]}
-                variants={[
-                  {
-                    tuple: true,
-                    comment: (
-                      <>
-                        The <R n="wtp_server" />{" "}
-                        does not want to supply any information about this
-                        feature. Reasons might include reducing the surface for
-                        fingerprinting particular implementations or
-                        deployments, or perhaps the implementer did not want to
-                        spend time on providing accurate information.
-                      </>
-                    ),
-                    id: ["WontTell", "AvailabilityWontTell"],
-                  },
-                  {
-                    tuple: true,
-                    comment: (
-                      <>
-                        The feature is not available to this{" "}
-                        <R n="wtp_client" /> at all. Perhaps the{" "}
-                        <R n="wtp_server" /> does not implement it, perhaps the
-                        {" "}
-                        <R n="wtp_server" />{" "}
-                        does not want to spend the required resources for this
-                        {" "}
-                        <R n="wtp_client" />. No matter why, the{" "}
-                        <R n="wtp_client" />{" "}
-                        need not bother make requests which rely on this
-                        feature.
-                      </>
-                    ),
-                    id: ["Unavailable", "AvailabilityUnavailable"],
-                  },
-                  {
-                    tuple: true,
-                    comment: (
-                      <>
-                        The feature may or may not be available, depending on
-                        some unspecified factor such as perhaps the{" "}
-                        <R n="namespace" />, <R n="subspace" />{" "}
-                        or other request data, or perhaps the weather. When
-                        making requests which rely on this feature, the{" "}
-                        <R n="wtp_client" />{" "}
-                        should know that it may or may not get the response it
-                        hoped for.
-                      </>
-                    ),
-                    id: ["Depends", "AvailabilityDepends"],
-                  },
-                  {
-                    tuple: true,
-                    comment: (
-                      <>
-                        The feature is available. The <R n="wtp_client" />{" "}
-                        should assume that requests which rely on this feature
-                        will get a satisfactory reply.
-                      </>
-                    ),
-                    id: ["Available", "AvailabilityAvailable"],
-                  },
-                ]}
-              />
-            </Pseudocode>
-
+          <Hsection n="wtp_messages" title="Messages">
             <P>
-              The <R n="WtpServerSetupMessage" /> consists of the{" "}
-              <R n="wtp_challenge" /> plus the <R n="Availability" />{" "}
-              information for various features:
-            </P>
-
-            <Pseudocode n="wtp_defs_server_setup_message">
-              <StructDef
-                comment={
-                  <>
-                    The first message sent by the{" "}
-                    <R n="wtp_server" />. The various <Rs n="Availability" />
-                    {" "}
-                    serve as optimisation hints for the{" "}
-                    <R n="wtp_client" />, but they are not binding: the{" "}
-                    <R n="wtp_server" /> might claim that a feature is{" "}
-                    <R n="AvailabilityAvailable" />, yet later reply to a
-                    request that the feature is unsupported. Such behaviour is
-                    obviously not ideal, but not expressly forbidden.
-                  </>
-                }
-                id={["ServerSetupMessage", "WtpServerSetupMessage"]}
-                fields={[
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The <R n="wtp_challenge" /> for the{" "}
-                          <R n="wtp_client" /> in this <R n="wtp" />{" "}
-                          session. This must be a nonce, sending the same{" "}
-                          <R n="wtp_challenge" /> twice might allow a malicious
-                          {" "}
-                          <R n="wtp_client" /> to sidestep access control. The
-                          {" "}
-                          <R n="wtp_challenge" />{" "}
-                          is sufficiently large that generating a random number
-                          for each connection keeps things secure.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "challenge",
-                          "WtpServerSetupMessageChallenge",
-                          "challenges",
-                        ],
-                        <ArrayType count="16">
-                          <R n="U8" />
-                        </ArrayType>,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" />{" "}
-                          supports properly responding to{" "}
-                          <R n="WtpRequestGet" /> messages.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get",
-                          "wtp_feature_get",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
-                          <Rs n="Payload" /> via responses to{" "}
-                          <R n="WtpRequestGet" /> messages.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_payload",
-                          "wtp_feature_get_payload",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
-                          raw, byte-indexed <Rs n="Payload" />{" "}
-                          slices in its responses to <R n="WtpRequestGet" />
-                          {" "}
-                          messages (as opposed to Bab-based authenticated
-                          slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_raw_slices",
-                          "wtp_feature_get_raw_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
-                          Bab authenticated <Rs n="Payload" />{" "}
-                          slices in its responses to <R n="WtpRequestGet" />
-                          {" "}
-                          messages (as opposed to raw, byte-indexed slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_authenticated_slices",
-                          "wtp_feature_get_authenticated_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports serving{" "}
-                          Bab authenticated <Rs n="Payload" />{" "}
-                          slices in its responses to <R n="WtpRequestGet" />
-                          {" "}
-                          messages with a <R n="WtpPartialVerificationK" />{" "}
-                          other than <Code>1</Code>.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_get_fancy_k",
-                          "wtp_feature_get_fancy_k",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  // {
-                  //   commented: {
-                  //     comment: (
-                  //       <>
-                  //         Whether the <R n="wtp_server" />{" "}
-                  //         supports sending transformed <R n="Payload" />{" "}
-                  //         <Rs n="WtpChunk" />. If this feature is{" "}
-                  //         <R n="AvailabilityUnavailable" />, the{" "}
-                  //         <R n="wtp_client" />{" "}
-                  //         can possibly fall back to requesting raw, byte-indexed
-                  //         {" "}
-                  //         <R n="Payload" />, foregoing incremental
-                  //         authentication of the <R n="Payload" />{" "}
-                  //         slices it receives.
-                  //       </>
-                  //     ),
-                  //     dedicatedLine: true,
-                  //     segment: [
-                  //       [
-                  //         "availability_send_transformed_payloads",
-                  //         "wtp_availability_send_transformed_payloads",
-                  //       ],
-                  //       <R n="Availability" />,
-                  //     ],
-                  //   },
-                  // },
-                  // {
-                  //   commented: {
-                  //     comment: (
-                  //       <>
-                  //         Whether the <R n="wtp_server" />{" "}
-                  //         supports sending raw, byte-indexed{" "}
-                  //         <Rs n="Payload" />. If this feature is{" "}
-                  //         <R n="AvailabilityUnavailable" />, the{" "}
-                  //         <R n="wtp_client" /> should request transformed{" "}
-                  //         <R n="Payload" /> <Rs n="WtpChunk" />{" "}
-                  //         instead. If both this feature and the{" "}
-                  //         <R n="wtp_availability_send_transformed_payloads" />
-                  //         {" "}
-                  //         feature are <R n="AvailabilityUnavailable" />, the
-                  //         {" "}
-                  //         <R n="wtp_server" /> signals that it does not send
-                  //         {" "}
-                  //         <Rs n="Payload" /> at all.
-                  //       </>
-                  //     ),
-                  //     dedicatedLine: true,
-                  //     segment: [
-                  //       [
-                  //         "availability_raw_payloads",
-                  //         "wtp_availability_raw_payloads",
-                  //       ],
-                  //       <R n="Availability" />,
-                  //     ],
-                  //   },
-                  // },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports storing the
-                          {" "}
-                          <Rs n="AuthorisedEntry" /> of{"  "}
-                          <R n="WtpRequestPut" /> messages.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_put",
-                          "wtp_feature_put",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" /> supports storing the
-                          {" "}
-                          <R n="Payload" /> slices of <R n="WtpRequestPut" />
-                          {" "}
-                          messages.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_put_payload",
-                          "wtp_feature_put_payload",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" />{" "}
-                          supports storing raw, byte-indexed <R n="Payload" />
-                          {" "}
-                          slices of <R n="WtpRequestPut" />{" "}
-                          messages (as opposed to Bab-based authenticated
-                          slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_put_raw_slices",
-                          "wtp_feature_put_payload_raw_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" />{" "}
-                          supports storing Bab authenticated <R n="Payload" />
-                          {" "}
-                          slices of <R n="WtpRequestPut" />{" "}
-                          messages (as opposed to raw, byte-indexed slices).
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_put_authenticated_slices",
-                          "wtp_feature_put_payload_authenticated_slices",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          Whether the <R n="wtp_server" />{" "}
-                          supports storing Bab authenticated <R n="Payload" />
-                          {" "}
-                          slices of <R n="WtpRequestPut" /> messages with a{" "}
-                          <R n="WtpPartialVerificationK" /> other than{" "}
-                          <Code>1</Code>.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "feature_put_fancy_k",
-                          "wtp_feature_put_payload_fancy_k",
-                        ],
-                        <R n="Availability" />,
-                      ],
-                    },
-                  },
-                ]}
-              />
-            </Pseudocode>
-
-            <P>
-              The first message sent by the <R n="wtp_client" /> consists of a
-              {" "}
-              <R n="wtp_receiver" />, and a signature with that{" "}
-              <R n="wtp_receiver" /> over the previously received{" "}
-              <R n="WtpServerSetupMessageChallenge" /> issued by the{" "}
-              <R n="wtp_server" />. This <R n="wtp_receiver" /> must be the{" "}
-              <R n="access_receiver" /> of every <R n="WtpReadCapability" />
-              {" "}
-              which the <R n="wtp_client" /> will supply over the course of this
-              {" "}
-              <R n="wtp" /> session. This <R n="wtp_receiver" />{" "}
-              is one of the few pieces of state the <R n="wtp_server" />{" "}
-              must maintain for the duration of the <R n="wtp" /> session.
-            </P>
-
-            <Pseudocode n="wtp_defs_client_setup_message">
-              <StructDef
-                comment={
-                  <>
-                    The first message sent by the{" "}
-                    <R n="wtp_client" />. If the underlying{" "}
-                    <R n="signature_scheme" /> is secure, a valid{" "}
-                    <R n="WtpClientSetupMessage" /> can only be sent after the
-                    {" "}
-                    <R n="wtp_client" /> has received the{" "}
-                    <R n="WtpServerSetupMessage" /> message.
-                  </>
-                }
-                id={["ClientSetupMessage", "WtpClientSetupMessage"]}
-                fields={[
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          The single <R n="wtp_receiver" /> of every{" "}
-                          <R n="WtpReadCapability" /> the <R n="wtp_client" />
-                          {" "}
-                          will send in this <R n="wtp" /> session.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "read_capability_receiver",
-                          "WtpClientSetupMessageReadCapabilityReceiver",
-                          "read_capability_receivers",
-                        ],
-                        <R n="wtp_receiver" />,
-                      ],
-                    },
-                  },
-                  {
-                    commented: {
-                      comment: (
-                        <>
-                          A <R n="dss_signature" /> issued by the{" "}
-                          <R n="WtpClientSetupMessageReadCapabilityReceiver" />
-                          {" "}
-                          over the <R n="WtpServerSetupMessageChallenge" />{" "}
-                          of the previously received{" "}
-                          <R n="WtpServerSetupMessage" />.
-                        </>
-                      ),
-                      dedicatedLine: true,
-                      segment: [
-                        [
-                          "signature",
-                          "WtpClientSetupMessageSignature",
-                        ],
-                        <R n="wtp_signature" />,
-                      ],
-                    },
-                  },
-                ]}
-              />
-            </Pseudocode>
-          </Hsection>
-
-          <Hsection
-            n="wtp_requests_and_responses"
-            title="Requests and Responses"
-          >
-            <P>
-              Now, we describe the requests the <R n="wtp_client" />{" "}
-              can make, and the corresponding responses with which the{" "}
-              <R n="wtp_server" /> can reply.
+              We define all messages as purely logical data types first, with
+              the actual wire encoding defined <R n="wtp_encodings">last</R>.
             </P>
 
             <PreviewScope>
               <P>
-                The <R n="wtp_server" />{" "}
-                can reply to requests in arbitrary order. To map responses to
-                requests, each request is implictly assigned an unsigned 64-bit
-                {" "}
-                <DefType n="wtp_request_id" r="RequestId" />: the{" "}
-                <Sidenote
-                  note={
-                    <>
-                      The <R n="WtpClientSetupMessage" /> does <Em>not</Em>{" "}
-                      count.
-                    </>
-                  }
+                The WTP uses unsigned 64-bit{" "}
+                <DefType
+                  n="WtpMessageId"
+                  r="WtpMessageId"
+                  rs="WtpMessageIds"
                 >
-                  first
-                </Sidenote>{" "}
-                request sent by the <R n="wtp_client" /> has{" "}
-                <R n="wtp_request_id" /> zero, the next has{" "}
-                <R n="wtp_request_id" /> one, and so on. When{" "}
+                  WtpMessageIds
+                </DefType>{" "}
+                to identify messages. They are, however, optional on a
+                per-message basis. Each message indicates whether it has a{" "}
+                <R n="WtpMessageId" /> or not. A message without a{" "}
+                <R n="WtpMessageId" />{" "}
+                cannot be referenced by any other messages. This means that the
+                peers need not maintain any state for such a message.
+              </P>
+
+              <P>
+                For messages that do have a <R n="WtpMessageId" />, these{" "}
+                <Rs n="WtpMessageId" />{" "}
+                are assigned implicitly: each peer maintains an unsigned 64-bit
+                counter, initialised to zero. When sending a message that
+                indicates that it has a{" "}
+                <R n="WtpMessageId" />, the current value of the counter becomes
+                its{" "}
+                <R n="WtpMessageId" />, and then the counter is increased by
+                one. If the counter would{" "}
                 <Sidenote
                   note={
                     <>
@@ -750,24 +252,251 @@ export const wtp = (
                     </>
                   }
                 >
-                  reaching
-                </Sidenote>{" "}
-                <M post=",">
-                  2^<Curly>64</Curly>
-                </M>{" "}
-                instead continue with <R n="wtp_request_id" /> zero again.
+                  overflow
+                </Sidenote>, it is set to zero again.
+              </P>
+
+              <P>
+                Some message types <Em>never</Em> have a{" "}
+                <R n="WtpMessageId" />; these are exactly the message types that
+                do not have a boolean flag whether the message should be
+                assigned a <R n="WtpMessageId" /> or not.
               </P>
             </PreviewScope>
 
             <P>
-              There are three different kinds of requests, and three different
-              kinds of request-specific responses. The responses each consist of
-              the <R n="wtp_request_id" />{" "}
-              of the request to which they reply, followed by a
-              (request-specific) status code, followed by the (request-specific)
-              response data — if the status code indicated success.
+              The different message kinds are the following:
             </P>
 
+            <Ul>
+              <Li>
+                <R n="WtpSendEntry" />: for sending <Rs n="AuthorisedEntry" />.
+              </Li>
+              <Li>
+                <R n="WtpSendPayloadSlice" />: for sending (parts of){" "}
+                <Rs n="Payload" />.
+              </Li>
+              <Li>
+                <R n="WtpRequestEntries" />: for requesting one or more{" "}
+                <Rs n="AuthorisedEntry" />{" "}
+                from the peer, together with some metadata that allows for{" "}
+                <R n="d3_range_based_set_reconciliation">
+                  3d range-based set reconciliation
+                </R>.
+              </Li>
+              <Li>
+                <R n="WtpRespondToRequestEntries" />: for indicating how an
+                incoming <R n="WtpRequestEntries" /> message is processed.
+              </Li>
+              <Li>
+                <R n="WtpRequestPayloadSlice" />: for requesting (part of) the
+                {" "}
+                <R n="Payload" /> of a specific <R n="Entry" />.
+              </Li>
+              <Li>
+                <R n="WtpRespondToRequestPayloadSlice" />: for indicating how an
+                incoming <R n="WtpRequestPayloadSlice" /> message is processed.
+              </Li>
+              <Li>
+                <R n="WtpCancelOwnRequest" />: for indicating that a peer is not
+                interested anymore in the response(s) to a{" "}
+                <R n="WtpRequestEntries" /> or <R n="WtpRequestPayloadSlice" />
+                {" "}
+                message it had sent earlier.
+              </Li>
+            </Ul>
+
+            <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
+              <P>
+                The <R n="WtpSendEntry" /> messages let peers transmit{" "}
+                <Rs n="LengthyAuthorisedEntry" />. They may specifically
+                indicate a <R n="WtpRequestEntries" />{" "}
+                message they are responding to, or they can be sent as
+                standalone messages.
+              </P>
+
+              <P>
+                Note that the <R n="lengthy_entry_available" />{" "}
+                field of the transmitted <R n="LengthyAuthorisedEntry" />{" "}
+                gives the length of the available prefix in Bab chunks, not in
+                bytes.
+              </P>
+
+              <Pseudocode n="wtp_defs_SendEntry">
+                <StructDef
+                  comment={
+                    <>
+                      Transmit a{" "}
+                      <R n="LengthyAuthorisedEntry" />, optionally in response
+                      to a specific <R n="WtpRequestEntries" /> message.
+                    </>
+                  }
+                  id={[
+                    "SendEntry",
+                    "WtpSendEntry",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            this is in response to, or{" "}
+                            <R n="wtp_send_entry_none" />{" "}
+                            if this message is standalone. It is an error if
+                            this is a <R n="WtpMessageId" />{" "}
+                            but the corresponding message is not a{" "}
+                            <R n="WtpRequestEntries" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "responds_to",
+                            "WtpSendEntryRespondsTo",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpMessageId" />,
+                              <DefVariant
+                                n="wtp_send_entry_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="LengthyAuthorisedEntry" />{" "}
+                            to transmit, with the{" "}
+                            <R n="lengthy_entry_available" />{" "}
+                            field giving the length of the available prefix in
+                            Bab chunks, not in bytes.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "entry",
+                            "WtpSendEntryEntry",
+                            "entries",
+                          ],
+                          <R n="LengthyAuthorisedEntry" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+            </Hsection>
+
+            <Hsection
+              n="wtp_send_payload_slice"
+              title={<Code>SendPayloadSlice</Code>}
+            >
+              <P>
+                The <R n="WtpSendPayloadSlice" />{" "}
+                messages let peers transmit (parts of){" "}
+                <Rs n="Payload" />. They may specifically indicate a{" "}
+                <R n="WtpRequestPayloadSlice" /> or <R n="WtpRequestEntries" />
+                {" "}
+                message they are responding to, or they can be sent as
+                standalone messages.
+              </P>
+
+              <Pseudocode n="wtp_defs_SendPayloadSlice">
+                <StructDef
+                  comment={
+                    <>
+                      Transmit a (subslice of a){"  "}
+                      <R n="Payload" />, optionally in response to a specific
+                      {" "}
+                      <R n="WtpRequestPayloadSlice" /> or{" "}
+                      <R n="WtpRequestEntries" /> message.
+                    </>
+                  }
+                  id={[
+                    "SendPayloadSlice",
+                    "WtpSendPayloadSlice",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestPayloadSlice" /> or{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            this is in response to, or{" "}
+                            <R n="wtp_send_entry_none" />{" "}
+                            if this message is standalone. It is an error if
+                            this is a <R n="WtpMessageId" />{" "}
+                            but the corresponding message is not a{" "}
+                            <R n="WtpRequestPayloadSlice" /> or{" "}
+                            <R n="WtpRequestEntries" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "responds_to",
+                            "WtpSendPayloadSliceRespondsTo",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpMessageId" />,
+                              <DefVariant
+                                n="wtp_send_payload_slice_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    // {
+                    //   commented: {
+                    //     comment: (
+                    //       <>
+                    //         The <R n="LengthyAuthorisedEntry" />{" "}
+                    //         to transmit, with the{" "}
+                    //         <R n="lengthy_entry_available" />{" "}
+                    //         field giving the length of the available prefix in
+                    //         Bab chunks, not in bytes.
+                    //       </>
+                    //     ),
+                    //     dedicatedLine: true,
+                    //     segment: [
+                    //       [
+                    //         "entry",
+                    //         "WtpSendEntryEntry",
+                    //         "entries",
+                    //       ],
+                    //       <R n="LengthyAuthorisedEntry" />,
+                    //     ],
+                    //   },
+                    // },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                When sent as a response, many of the fields can be derived from
+                context and are thus omitted from the actual message encoding.
+                TODO
+              </P>
+            </Hsection>
+          </Hsection>
+
+          <Hsection
+            n="wtp_requests_and_responses"
+            title="Requests and Responses"
+          >
             <Hsection
               n="wtp_request_get"
               title={<Code>RequestGet</Code>}
@@ -781,7 +510,8 @@ export const wtp = (
                 itself.
               </P>
 
-              <Pseudocode n="wtp_defs_RequestGet">
+              {
+                /* <Pseudocode n="wtp_defs_RequestGet">
                 <StructDef
                   comment={
                     <>
@@ -1214,7 +944,8 @@ export const wtp = (
                     },
                   ]}
                 />
-              </Pseudocode>
+              </Pseudocode> */
+              }
             </Hsection>
 
             <Hsection
