@@ -270,13 +270,6 @@ export const wtp = (
 
             <Ul>
               <Li>
-                <R n="WtpSendEntry" />: for sending <Rs n="AuthorisedEntry" />.
-              </Li>
-              <Li>
-                <R n="WtpSendPayloadSlice" />: for sending (parts of){" "}
-                <Rs n="Payload" />.
-              </Li>
-              <Li>
                 <R n="WtpRequestEntries" />: for requesting one or more{" "}
                 <Rs n="AuthorisedEntry" />{" "}
                 from the peer, together with some metadata that allows for{" "}
@@ -304,7 +297,185 @@ export const wtp = (
                 {" "}
                 message it had sent earlier.
               </Li>
+              <Li>
+                <R n="WtpSendEntry" />: for sending <Rs n="AuthorisedEntry" />.
+              </Li>
+              <Li>
+                <R n="WtpSendPayloadSlice" />: for sending (parts of){" "}
+                <Rs n="Payload" />.
+              </Li>
             </Ul>
+
+            <Hsection
+              n="wtp_request_entries"
+              title={<Code>RequestEntries</Code>}
+            >
+              <P>
+                The <R n="WtpRequestEntries" /> messages let peers request{" "}
+                <Rs n="Entry" /> in a grouping (<R n="AreaOfInterest" /> or{" "}
+                <R n="D3Range" />). The basic information consists of the
+                grouping, a <R n="NamespaceId" />, and a{" "}
+                <R n="WtpReadCapability" />{" "}
+                authenticating the request. The message carries various further
+                options to make it more expressive.
+              </P>
+
+              <P>
+                First, additional options for requesting the payloads of the
+                {" "}
+                <Rs n="Entry" />{" "}
+                in the grouping: a payload length threshold up to which the
+                receiver should automatically send the payloads without further
+                requests, and the value <Code>k</Code> for the Bab{" "}
+                <AE href="https://bab-hash.org/spec#kgrouped">
+                  k-grouping
+                </AE>{" "}
+                used when sending these payloads.
+              </P>
+
+              <P>
+                Second, options regarding streaming responses. The responses
+                always concern the entries the receiver has at the point of
+                responding, but an additional flag can indicate that the request
+                is long-running, asking the the receiver to keep forwarding new
+                {" "}
+                <Rs n="Entry" />{" "}
+                it obtains in the future. For the immediate response, the
+                requester can also ask for the <Rs n="Entry" />{" "}
+                to be sent in sorted<Marginale>
+                  In set reconciliation, the part where a peer sends everything
+                  they had in a range except for the items they just received
+                  can be implemented more efficiently if the received items
+                  arrive in sorted order.
+                </Marginale>{" "}
+                order.
+              </P>
+
+              <P>
+                Third, and finally, options pertaining to{" "}
+                <Marginale>
+                  This specification assumes familiarity with our{" "}
+                  <R n="d3_range_based_set_reconciliation">
+                    page on 3d range-based set reconciliation
+                  </R>.
+                </Marginale>
+                <R n="d3_range_based_set_reconciliation">
+                  3d range-based set reconciliation
+                </R>:
+              </P>
+
+              <Ul>
+                <Li>
+                  The sender can attach the <R n="WtpFingerprint" />{" "}
+                  over their own <Rs n="LengthyAuthorisedEntry" />{" "}
+                  in the requested grouping — the receiver can then compute the
+                  fingerprint over <Em>their</Em>{" "}
+                  <Rs n="LengthyAuthorisedEntry" />{" "}
+                  and skip sending anything in case of a match.
+                </Li>
+                <Li>
+                  The sender can specify a maximum <R n="Entry" />{" "}
+                  count and a maximum total <R n="Payload" /> size. If the{" "}
+                  <Rs n="Entry" />{" "}
+                  of the receiver exceeds those thresholds, the receiver should
+                  answer with a summary (<R n="WtpFingerprint" />, number of
+                  {" "}
+                  <Rs n="Entry" />, and their total <R n="Payload" />{" "}
+                  size) instead of the data itself.
+                </Li>
+                <Li>
+                  The sender can allow the receiver to respond (if the count or
+                  size thresholds are exceeded) not with metadata but to instead
+                  partition the requested grouping into smaller{" "}
+                  <Rs n="D3Range" /> and respond with{" "}
+                  <Rs n="WtpRequestEntries" />{" "}
+                  messages of its own; this implements the symmetric,
+                  collaborative drilling-down to differences of RBSR. Such
+                  responses state which message they are responding to, as well
+                  as the original non-response message that kicked things off —
+                  this lets peers efficiently track progress on their original
+                  requests.
+                </Li>
+              </Ul>
+
+              <P>
+                TODO: struct definition goes here.
+              </P>
+
+              {
+                /* <Pseudocode n="wtp_defs_SendEntry">
+                <StructDef
+                  comment={
+                    <>
+                      Transmit a{" "}
+                      <R n="LengthyAuthorisedEntry" />, optionally in response
+                      to a specific <R n="WtpRequestEntries" /> message.
+                    </>
+                  }
+                  id={[
+                    "SendEntry",
+                    "WtpSendEntry",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            this is in response to, or{" "}
+                            <R n="wtp_send_entry_none" />{" "}
+                            if this message is standalone. It is an error if
+                            this is a <R n="WtpMessageId" />{" "}
+                            but the corresponding message is not a{" "}
+                            <R n="WtpRequestEntries" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "responds_to",
+                            "WtpSendEntryRespondsTo",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpMessageId" />,
+                              <DefVariant
+                                n="wtp_send_entry_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="LengthyAuthorisedEntry" />{" "}
+                            to transmit, with the{" "}
+                            <R n="lengthy_entry_available" />{" "}
+                            field giving the length of the available prefix in
+                            Bab chunks, not in bytes.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "entry",
+                            "WtpSendEntryEntry",
+                            "entries",
+                          ],
+                          <R n="LengthyAuthorisedEntry" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode> */
+              }
+            </Hsection>
 
             <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
               <P>
@@ -400,8 +571,12 @@ export const wtp = (
               title={<Code>SendPayloadSlice</Code>}
             >
               <P>
-                The <R n="WtpSendPayloadSlice" />{" "}
-                messages let peers transmit (parts of){" "}
+                The <R n="WtpSendPayloadSlice" /> messages let peers transmit
+                {" "}
+                <AE href="https://bab-hash.org/spec#slice_streaming">
+                  verifiable slice streams
+                </AE>{" "}
+                for (parts of){" "}
                 <Rs n="Payload" />. They may specifically indicate a{" "}
                 <R n="WtpRequestPayloadSlice" /> or <R n="WtpRequestEntries" />
                 {" "}
@@ -413,7 +588,11 @@ export const wtp = (
                 <StructDef
                   comment={
                     <>
-                      Transmit a (subslice of a){"  "}
+                      Transmit a Bab{" "}
+                      <AE href="https://bab-hash.org/spec#slice_streaming">
+                        verifiable
+                      </AE>{" "}
+                      (subslice of a){"  "}
                       <R n="Payload" />, optionally in response to a specific
                       {" "}
                       <R n="WtpRequestPayloadSlice" /> or{" "}
@@ -459,28 +638,108 @@ export const wtp = (
                         ],
                       },
                     },
-                    // {
-                    //   commented: {
-                    //     comment: (
-                    //       <>
-                    //         The <R n="LengthyAuthorisedEntry" />{" "}
-                    //         to transmit, with the{" "}
-                    //         <R n="lengthy_entry_available" />{" "}
-                    //         field giving the length of the available prefix in
-                    //         Bab chunks, not in bytes.
-                    //       </>
-                    //     ),
-                    //     dedicatedLine: true,
-                    //     segment: [
-                    //       [
-                    //         "entry",
-                    //         "WtpSendEntryEntry",
-                    //         "entries",
-                    //       ],
-                    //       <R n="LengthyAuthorisedEntry" />,
-                    //     ],
-                    //   },
-                    // },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The start (in Bab chunks) of the slice to transmit.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "start",
+                            "WtpSendPayloadSliceStart",
+                            "starts",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The length (in Bab chunks) of the slice to transmit.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "length",
+                            "WtpSendPayloadSliceLength",
+                            "lengths",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The value <Code>k</Code> for the Bab{" "}
+                            <AE href="https://bab-hash.org/spec#kgrouped">
+                              k-grouping
+                            </AE>{" "}
+                            used in the verifiable slice stream transmitted in
+                            this message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "k",
+                            "WtpSendPayloadSliceK",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The{" "}
+                            <AE href="https://bab-hash.org/spec#left_skip">
+                              <Code>left_skip</Code>
+                            </AE>{" "}
+                            for the verifiable slice stream transmitted in this
+                            message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "left_skip",
+                            "WtpSendPayloadSliceLeftSkip",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The{" "}
+                            <AE href="https://bab-hash.org/spec#right_skip">
+                              <Code>right_skip</Code>
+                            </AE>{" "}
+                            for the verifiable slice stream transmitted in this
+                            message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "right_skip",
+                            "WtpSendPayloadSliceRightSkip",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
                   ]}
                 />
               </Pseudocode>
@@ -495,7 +754,7 @@ export const wtp = (
 
           <Hsection
             n="wtp_requests_and_responses"
-            title="Requests and Responses"
+            title="Old Outdated Stuff: Requests and Responses"
           >
             <Hsection
               n="wtp_request_get"
