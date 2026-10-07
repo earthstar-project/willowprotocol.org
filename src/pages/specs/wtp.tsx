@@ -840,6 +840,157 @@ export const wtp = (
               </P>
             </Hsection>
 
+            <Hsection
+              n="wtp_respond_to_request_entries"
+              title={<Code>RespondToRequestEntries</Code>}
+            >
+              <P>
+                The <R n="WtpRespondToRequestEntries" />{" "}
+                messages let peers respond to <R n="WtpRequestEntries" />{" "}
+                messages. Somewhat unconventionally, a single{" "}
+                <R n="WtpRequestEntries" /> is not responded to by a single{" "}
+                <R n="WtpRespondToRequestEntries" />. Instead, the process of
+                fully responding to a <R n="WtpRequestEntries" />{" "}
+                is a sequence of steps, forming a (simple and small) state
+                machine. <R n="WtpRequestEntries" />{" "}
+                messages indicate transitions in that state machine. When we
+                write that a particular kind of{" "}
+                <R n="WtpRespondToRequestEntries" />{" "}
+                <Quotes>terminates the response</Quotes>, that means that a
+                final state has been reached, the request has been completely
+                responded to and will not be interacted with again. Both peers
+                can then clear up any state associated with that request.
+              </P>
+
+              <Pseudocode n="wtp_defs_RespondToRequestEntries">
+                <StructDef
+                  comment={
+                    <>
+                      Indicate progress through the process of responding to a
+                      {" "}
+                      <R n="WtpRequestEntries" /> message.
+                    </>
+                  }
+                  id={[
+                    "RespondToRequestEntries",
+                    "WtpRespondToRequestEntries",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            message this is a response to.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpRespondToRequestEntriesRequestId",
+                            "request_id",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The transition in the reponse state machine.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "response",
+                            "WtpRespondToRequestEntriesResponse",
+                            "responses",
+                          ],
+                          <R n="WtpResponseForRequestEntries" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                The state transitions are straightforward. After receiving a
+                {" "}
+                <R n="WtpRequestEntries" /> message, there are four options:
+              </P>
+
+              <Ul>
+                <Li>
+                  The first option does not involve{" "}
+                  <R n="WtpRespondToRequestEntries" />{" "}
+                  messages at all: if you reply with other{" "}
+                  <R n="WtpRespondToRequestEntries" />{" "}
+                  messages instead, the response is terminated once the final
+                  such message (with the{" "}
+                  <R n="WtpRequestEntriesProvenanceIsFinalResponse" />{" "}
+                  flag set to <Code>true</Code>) has been sent.
+                </Li>
+                <Li>
+                  The second option is the{" "}
+                  <R n="WtpRespondToRequestEntriesNope" />{" "}
+                  transition, which indicates that the request will not be
+                  processed (any further) and immediately terminates the
+                  response. This transition can be taken at any time, not only
+                  as the very first transition.
+                </Li>
+                <Li>
+                  The third option is the{" "}
+                  <R n="WtpRespondToRequestEntriesMetadata" />{" "}
+                  transition, which carries metadata summarising the grouping
+                  and then terminates the response.
+                </Li>
+                <Li>
+                  The final option is the{" "}
+                  <R n="WtpRespondToRequestEntriesImmediateEntries" />{" "}
+                  transition which moves to a new state. In this state, you can
+                  send <R n="WtpSendEntry" /> and <R n="WtpSendPayloadSlice" />
+                  {" "}
+                  messages pertaiing to the request.
+                </Li>
+              </Ul>
+
+              <P>
+                After sending a{" "}
+                <R n="WtpRespondToRequestEntriesImmediateEntries" />{" "}
+                response, there are two further transitions. One is the{" "}
+                <R n="WtpRespondToRequestEntriesDone" />{" "}
+                transition, indicating that all entries and payloads have been
+                sent and terminating the response. The other option is the{" "}
+                <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                transition. It must only be taken if the request did not set the
+                {" "}
+                <R n="WtpREquestEntriesIsOneshot" /> flag.
+              </P>
+
+              <P>
+                After a <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                transition, you can continue sending <R n="WtpSendEntry" /> and
+                {" "}
+                <R n="WtpSendPayloadSlice" />{" "}
+                messages, with the difference that these are now encoded
+                relative to the <R n="WtpRequestEntriesProvenanceRoot" />{" "}
+                request and need not adhere to any promises of a particular
+                order of entry transmissions any longer. The intuition is that
+                the switch from{" "}
+                <R n="WtpRespondToRequestEntriesImmediateEntries" /> to{" "}
+                <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                marks going from sending the collection of stored entries to
+                forwarding live updates. Finally, the{" "}
+                <R n="WtpRespondToRequestEntriesDone" />{" "}
+                transition can be used to terminate the response.
+              </P>
+            </Hsection>
+
             <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
               <P>
                 The <R n="WtpSendEntry" /> messages let peers transmit{" "}
