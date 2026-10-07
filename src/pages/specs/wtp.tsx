@@ -312,7 +312,20 @@ export const wtp = (
             >
               <P>
                 The <R n="WtpRequestEntries" /> messages let peers request{" "}
-                <Rs n="Entry" /> in a grouping (<R n="AreaOfInterest" /> or{" "}
+                <Rs n="Entry" /> in a{" "}
+                <Sidenote
+                  note={
+                    <>
+                      This message type can also be used for requesting
+                      individual <Rs n="Entry" />: for each <R n="Entry" />{" "}
+                      there exists a <R n="D3Range" />{" "}
+                      that does not contain any other <Rs n="Entry" />.
+                    </>
+                  }
+                >
+                  grouping
+                </Sidenote>{" "}
+                (<R n="AreaOfInterest" /> or{" "}
                 <R n="D3Range" />). The basic information consists of the
                 grouping, a <R n="NamespaceId" />, and a{" "}
                 <R n="WtpReadCapability" />{" "}
@@ -398,50 +411,209 @@ export const wtp = (
                 </Li>
               </Ul>
 
-              <P>
-                TODO: struct definition goes here.
-              </P>
-
-              {
-                /* <Pseudocode n="wtp_defs_SendEntry">
+              <Pseudocode n="wtp_defs_RequestEntries">
                 <StructDef
                   comment={
                     <>
-                      Transmit a{" "}
-                      <R n="LengthyAuthorisedEntry" />, optionally in response
-                      to a specific <R n="WtpRequestEntries" /> message.
+                      Request{" "}
+                      <Rs n="LengthyAuthorisedEntry" />, optionally as part of
+                      {" "}
+                      <R n="d3_range_based_set_reconciliation">
+                        3d range-based set reconciliation
+                      </R>.
                     </>
                   }
                   id={[
-                    "SendEntry",
-                    "WtpSendEntry",
+                    "RequestEntries",
+                    "WtpRequestEntries",
                   ]}
                   fields={[
                     {
                       commented: {
                         comment: (
                           <>
-                            The <R n="WtpMessageId" /> of the{" "}
-                            <R n="WtpRequestEntries" />{" "}
-                            this is in response to, or{" "}
-                            <R n="wtp_send_entry_none" />{" "}
-                            if this message is standalone. It is an error if
-                            this is a <R n="WtpMessageId" />{" "}
-                            but the corresponding message is not a{" "}
-                            <R n="WtpRequestEntries" /> message.
+                            Whether this message is assigned a{" "}
+                            <R n="WtpMessageId" /> or not.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
-                            "responds_to",
-                            "WtpSendEntryRespondsTo",
+                            "has_id",
+                            "WtpRequestEntriesHasId",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            A valid <R n="WtpReadCapability" /> whose{" "}
+                            <R n="access_receiver" /> is the{" "}
+                            <R n="wtp_receiver" />{" "}
+                            authenticated in the opening handshake
+                            (<R n="ini_spk" /> for the <R n="pio_initiator" />,
+                            {" "}
+                            <R n="res_spk" /> for the{" "}
+                            <R n="pio_responder" />), whose{" "}
+                            <R n="granted_area" /> includes the{" "}
+                            <R n="WtpRequestEntriesGrouping" />{" "}
+                            of the request, and whose{" "}
+                            <R n="granted_namespace" /> is the{" "}
+                            <R n="WtpRequestEntriesNamespaceId" />{" "}
+                            of the request.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "read_capability",
+                            "WtpRequestEntriesReadCapability",
+                            "read_capabilities",
+                          ],
+                          <R n="WtpReadCapability" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="namespace" /> in which to request entries.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "namespace_id",
+                            "WtpRequestEntriesNamespaceId",
+                            "namespace_ids",
+                          ],
+                          <R n="NamespaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The grouping in which to request entries.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "grouping",
+                            "WtpRequestEntriesGrouping",
+                            "groupings",
                           ],
                           <ChoiceType
                             types={[
-                              <R n="WtpMessageId" />,
+                              <R n="AreaOfInterest" />,
+                              <R n="D3Range" />,
+                            ]}
+                          />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The receiver should include <Rs n="Payload" />{" "}
+                            of this length or less in the responses, whereas
+                            larger <Rs n="Payload" /> should be excluded.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_lazyness_threshold",
+                            "WtpRequestEntriesPayloadLazynessThreshold",
+                            "payload_lazyness_thresholds",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The value <Code>k</Code> for Bab{" "}
+                            <AE href="https://bab-hash.org/spec#kgrouped">
+                              k-grouping
+                            </AE>{" "}
+                            when sending <Rs n="Payload" />{" "}
+                            in response to this request.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "k",
+                            "WtpRequestEntriesK",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            <P>
+                              If true, the receiver should send all matching
+                              entries it has and then signal the end of the
+                              response. If false, the receiver should keep
+                              sending new matching entries as it obtains them.
+                            </P>
+                            <P>
+                              If the response consists of metadata (or a set of
+                              {" "}
+                              <Rs n="WtpRequestEntries" /> messages as{" "}
+                              <Quotes>counter-requests</Quotes>{" "}
+                              for set reconciliation), this flag is ignored;
+                              such responses are always fire-and-forget.
+                            </P>
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "is_oneshot",
+                            "WtpRequestEntriesIsOneshot",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The fingerprint over all{" "}
+                            <Rs n="LengthyAuthorisedEntry" /> the{" "}
+                            <Em>sender</Em>{" "}
+                            of the message has in the grouping. Or simply{" "}
+                            <R n="wtp_request_entries_fingerprint_none" />{" "}
+                            if the sender does not want to compute this.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "own_fingerprint",
+                            "WtpRequestEntriesOwnFingerprint",
+                            "own_fingerprints",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpFingerprint" />,
                               <DefVariant
-                                n="wtp_send_entry_none"
+                                n="wtp_request_entries_fingerprint_none"
                                 r="none"
                               />,
                             ]}
@@ -453,28 +625,219 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
-                            The <R n="LengthyAuthorisedEntry" />{" "}
-                            to transmit, with the{" "}
-                            <R n="lengthy_entry_available" />{" "}
-                            field giving the length of the available prefix in
-                            Bab chunks, not in bytes.
+                            If the receiver has this many or more entries in the
+                            requested grouping, they should reply with metadata
+                            (or partition the grouping and send{" "}
+                            <Rs n="WtpRequestEntries" />{" "}
+                            message of their own, depending on{" "}
+                            <R n="WtpRequestEntriesAllowSymmetricRbsr" />)
+                            instead of sending the entries.
                           </>
                         ),
                         dedicatedLine: true,
                         segment: [
                           [
-                            "entry",
-                            "WtpSendEntryEntry",
-                            "entries",
+                            "threshold_count",
+                            "WtpRequestEntriesThresholdCount",
+                            "threshold_counts",
                           ],
-                          <R n="LengthyAuthorisedEntry" />,
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            If the receiver has entries in the requested
+                            grouping whose total <R n="entry_payload_length" />
+                            {" "}
+                            (the actual field of the{" "}
+                            <R n="Entry" />, not the length of the{" "}
+                            <R n="Payload" /> prefix that is actually available)
+                            {" "}
+                            is equal to or greater than this, they should reply
+                            with metadata (or partition the grouping and send
+                            {" "}
+                            <Rs n="WtpRequestEntries" />{" "}
+                            message of their own, depending on{" "}
+                            <R n="WtpRequestEntriesAllowSymmetricRbsr" />)
+                            instead of sending the entries.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "threshold_size",
+                            "WtpRequestEntriesThresholdSize",
+                            "threshold_sizes",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            If true, when the{" "}
+                            <R n="WtpRequestEntriesThresholdCount" /> or{" "}
+                            <R n="WtpRequestEntriesThresholdSize" />{" "}
+                            are exceeded by the receiver, they should partition
+                            the grouping into smaller subgroupings and send
+                            their own <R n="WtpRequestEntries" />{" "}
+                            messages instead of responding with metadata.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "allow_symmetric_rbsr",
+                            "WtpRequestEntriesAllowSymmetricRbsr",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            If this message is sent as a response to another
+                            {" "}
+                            <R n="WtpRequestEntries" /> as per that message’s
+                            {" "}
+                            <R n="WtpRequestEntriesAllowSymmetricRbsr" />{" "}
+                            flag, and that prior message has a{" "}
+                            <R n="WtpMessageId" />, then this field conveys
+                            further information about what is being responded
+                            to. Otherwise, it must be{" "}
+                            <R n="wtp_request_entries_provenance_none" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "provenance",
+                            "WtpRequestEntriesProvenanceField",
+                          ],
+                          <ChoiceType
+                            types={[
+                              <R n="WtpRequestEntriesProvenance" />,
+                              <DefVariant
+                                n="wtp_request_entries_provenance_none"
+                                r="none"
+                              />,
+                            ]}
+                          />,
                         ],
                       },
                     },
                   ]}
                 />
-              </Pseudocode> */
-              }
+                <Loc />
+                <StructDef
+                  comment={
+                    <>
+                      Provenance metadata when sending a{" "}
+                      <R n="WtpRequestEntries" /> message in response to another
+                      {" "}
+                      <R n="WtpRequestEntries" />{" "}
+                      message. This information is not required for the
+                      correctness of set reconciliation, but it allows peers to
+                      efficiently track progress. It is also important for the
+                      encoding of long-running (i.e.,
+                      non-<R n="WtpRequestEntriesIsOneshot">oneshot</R>)
+                      responses.
+                    </>
+                  }
+                  id={[
+                    "RequestEntriesProvenance",
+                    "WtpRequestEntriesProvenance",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            this is in response to. It is an error if this{" "}
+                            <R n="WtpMessageId" /> is not the id of a{" "}
+                            <R n="WtpRequestEntries" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "parent",
+                            "WtpRequestEntriesProvenanceParent",
+                            "parents",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether this message is the final{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            message among those sent in response to the same
+                            {" "}
+                            <R n="WtpRequestEntriesProvenanceParent" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "is_final_response",
+                            "WtpRequestEntriesProvenanceIsFinalResponse",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" />{" "}
+                            of the root message of the tree of responses, i.e.,
+                            the id you arrive at by transitively following the
+                            {" "}
+                            <R n="WtpRequestEntriesProvenanceParent" />{" "}
+                            ids until you reach a <R n="WtpRequestEntries" />
+                            {" "}
+                            message that was not in response to any other{" "}
+                            <R n="WtpRequestEntries" /> message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "root",
+                            "WtpRequestEntriesProvenanceRoot",
+                            "roots",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                <Alj inline>
+                  (Design note: there's also the <Code>preferred_ordering</Code>
+                  {" "}
+                  enum from the Rust code sketch, but that is likely to be
+                  obsoleted by the future canonical AreaSlice ordering, turning
+                  this into a boolean.)
+                </Alj>
+              </P>
             </Hsection>
 
             <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
