@@ -937,7 +937,7 @@ export const wtp = (
                 </Li>
                 <Li>
                   The second option is the{" "}
-                  <R n="WtpRespondToRequestEntriesNope" />{" "}
+                  <R n="WtpResponseForRequestEntriesNope" />{" "}
                   transition, which indicates that the request will not be
                   processed (any further) and immediately terminates the
                   response. This transition can be taken at any time, not only
@@ -945,13 +945,13 @@ export const wtp = (
                 </Li>
                 <Li>
                   The third option is the{" "}
-                  <R n="WtpRespondToRequestEntriesMetadata" />{" "}
+                  <R n="WtpResponseForRequestEntriesMetadata" />{" "}
                   transition, which carries metadata summarising the grouping
                   and then terminates the response.
                 </Li>
                 <Li>
                   The final option is the{" "}
-                  <R n="WtpRespondToRequestEntriesImmediateEntries" />{" "}
+                  <R n="WtpResponseForRequestEntriesImmediateEntries" />{" "}
                   transition which moves to a new state. In this state, you can
                   send <R n="WtpSendEntry" /> and <R n="WtpSendPayloadSlice" />
                   {" "}
@@ -961,19 +961,19 @@ export const wtp = (
 
               <P>
                 After sending a{" "}
-                <R n="WtpRespondToRequestEntriesImmediateEntries" />{" "}
+                <R n="WtpResponseForRequestEntriesImmediateEntries" />{" "}
                 response, there are two further transitions. One is the{" "}
-                <R n="WtpRespondToRequestEntriesDone" />{" "}
+                <R n="WtpResponseForRequestEntriesDone" />{" "}
                 transition, indicating that all entries and payloads have been
                 sent and terminating the response. The other option is the{" "}
-                <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                <R n="WtpResponseForRequestEntriesLiveEntries" />{" "}
                 transition. It must only be taken if the request did not set the
                 {" "}
-                <R n="WtpREquestEntriesIsOneshot" /> flag.
+                <R n="WtpRequestEntriesIsOneshot" /> flag.
               </P>
 
               <P>
-                After a <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                After a <R n="WtpResponseForRequestEntriesLiveEntries" />{" "}
                 transition, you can continue sending <R n="WtpSendEntry" /> and
                 {" "}
                 <R n="WtpSendPayloadSlice" />{" "}
@@ -982,13 +982,215 @@ export const wtp = (
                 request and need not adhere to any promises of a particular
                 order of entry transmissions any longer. The intuition is that
                 the switch from{" "}
-                <R n="WtpRespondToRequestEntriesImmediateEntries" /> to{" "}
-                <R n="WtpRespondToRequestEntriesLiveEntries" />{" "}
+                <R n="WtpResponseForRequestEntriesImmediateEntries" /> to{" "}
+                <R n="WtpResponseForRequestEntriesLiveEntries" />{" "}
                 marks going from sending the collection of stored entries to
                 forwarding live updates. Finally, the{" "}
-                <R n="WtpRespondToRequestEntriesDone" />{" "}
+                <R n="WtpResponseForRequestEntriesDone" />{" "}
                 transition can be used to terminate the response.
               </P>
+
+              <P>
+                <Alj inline>diagram of the state machine goes here</Alj>
+              </P>
+
+              <Pseudocode n="wtp_defs_WtpResponseForRequestEntries">
+                <Enum
+                  comment={
+                    <>
+                      The different transitions in the state machine that
+                      describes the process of responding to a{" "}
+                      <R n="WtpRequestEntries" /> message.
+                    </>
+                  }
+                  id={[
+                    "ResponseForRequestEntries",
+                    "WtpResponseForRequestEntries",
+                  ]}
+                  variants={[
+                    {
+                      comment: (
+                        <>
+                          Indicates that the <R n="WtpRequestEntries" />{" "}
+                          message will not be processed (any further).
+                          Terminates the response.
+                        </>
+                      ),
+                      id: [
+                        "Nope",
+                        "WtpResponseForRequestEntriesNope",
+                      ],
+                      fields: [
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                If{" "}
+                                <Code>true</Code>, indicates that the other peer
+                                might have better luck if they tried the same
+                                request at a later time, preferrably with
+                                exponential backoff between tries. If{" "}
+                                <Code>false</Code>, the other peer need not
+                                bother trying again.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "retry",
+                                "WtpResponseForRequestEntriesNopeRetry",
+                              ],
+                              <R n="Bool" />,
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Responds to the <R n="WtpRequestEntries" />{" "}
+                          message by supplying metadata about the grouping.
+                          Terminates the response.
+                        </>
+                      ),
+                      id: [
+                        "Metadata",
+                        "WtpResponseForRequestEntriesMetadata",
+                      ],
+                      fields: [
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                The <R n="WtpFingerprint" /> over the{" "}
+                                <Rs n="LengthyAuthorisedEntry" />{" "}
+                                the sender has in the grouping.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "fingerprint",
+                                "WtpResponseForRequestEntriesMetadataFingerprint",
+                              ],
+                              <R n="WtpFingerprint" />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                The number of entries the sender has in the
+                                grouping.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "count",
+                                "WtpResponseForRequestEntriesMetadataCount",
+                              ],
+                              <R n="U64" />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                The sum of the <Rs n="entry_payload_size" />
+                                {" "}
+                                of the entries the sender has in the grouping
+                                (the length as given by the <Rs n="Entry" />
+                                {" "}
+                                themselves, <Em>not</Em> how many{" "}
+                                <R n="Payload" />{" "}
+                                bytes are actually locally available).
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "size",
+                                "WtpResponseForRequestEntriesMetadataSize",
+                              ],
+                              <R n="U64" />,
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that the responder will reply with{" "}
+                          <R n="WtpSendEntry" /> and{" "}
+                          <R n="WtpSendPayloadSlice" /> messages.
+                        </>
+                      ),
+                      id: [
+                        "ImmediateEntries",
+                        "WtpResponseForRequestEntriesImmediateEntries",
+                      ],
+                      fields: [
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                <Alj inline>
+                                  TODO, the mechanics here depend on the
+                                  supported orderings, which in turn depend on
+                                  changes brought on by AreaSlices.
+                                </Alj>
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "will_sort",
+                                "WtpResponseForRequestEntriesImmediateEntriesWillSort",
+                              ],
+                              <R n="Bool" />,
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that further entries and payloads will be
+                          transmitted without ordering guarantees and encoded
+                          relative to the{" "}
+                          <R n="WtpRequestEntriesProvenanceRoot" />{" "}
+                          request rather than the actual request being responded
+                          to.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "LiveEntries",
+                        "WtpResponseForRequestEntriesLiveEntries",
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that no more entries or payloads will be
+                          transmitted. Terminates the response.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "Done",
+                        "WtpResponseForRequestEntriesDone",
+                      ],
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
 
             <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
