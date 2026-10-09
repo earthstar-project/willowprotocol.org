@@ -63,9 +63,10 @@ export const wtp = (
         htmlTitle="Willow Transfer Protocol"
         headingId="wtp_spec"
         heading="Willow Transfer Protocol"
+        bibliography
         toc
-        status="sketch"
-        statusDate="29.01.2026"
+        status="proposal"
+        statusDate="16.10.2026"
         parentId="specifications"
       >
         <PreviewScope>
@@ -315,7 +316,8 @@ export const wtp = (
                 message it had sent earlier.
               </Li>
               <Li>
-                <R n="WtpRegulateAppetite" />: for dynamically changing the{" "}
+                <R n="WtpUpdatePayloadLazyness" />: for dynamically changing the
+                {" "}
                 <R n="entry_payload_length" />{" "}
                 up to which responses to a long-lived{" "}
                 <R n="WtpRequestEntries" /> request should eagerly include the
@@ -548,9 +550,8 @@ export const wtp = (
                         dedicatedLine: true,
                         segment: [
                           [
-                            "payload_lazyness_threshold",
-                            "WtpRequestEntriesPayloadLazynessThreshold",
-                            "payload_lazyness_thresholds",
+                            "payload_lazyness",
+                            "WtpRequestEntriesPayloadLazyness",
                           ],
                           <R n="U64" />,
                         ],
@@ -908,7 +909,7 @@ export const wtp = (
                           [
                             "request_id",
                             "WtpRespondToRequestEntriesRequestId",
-                            "request_id",
+                            "request_ids",
                           ],
                           <R n="WtpMessageId" />,
                         ],
@@ -1512,7 +1513,7 @@ export const wtp = (
                           [
                             "request_id",
                             "WtpRespondToRequestPayloadSliceRequestId",
-                            "request_id",
+                            "request_ids",
                           ],
                           <R n="WtpMessageId" />,
                         ],
@@ -1957,17 +1958,126 @@ export const wtp = (
               title={<Code>CancelOwnRequest</Code>}
             >
               <P>
-                <Alj inline>TODO</Alj>
+                The <R n="WtpCancelOwnRequest" />{" "}
+                messages let peers signal that they are no longer interested in
+                the response(s) to a <R n="WtpRequestEntries" /> or{" "}
+                <R n="WtpRequestPayloadSlice" />{" "}
+                message that they themselves had originally sent.
               </P>
+
+              <Pseudocode n="wtp_defs_CancelOwnRequest">
+                <StructDef
+                  comment={
+                    <>
+                      Notify the receiver that the sender is no longer
+                      interested in the response(s) to a{" "}
+                      <R n="WtpRequestEntries" /> or{" "}
+                      <R n="WtpRequestPayloadSlice" />{" "}
+                      message the sender of this message had originally sent.
+                    </>
+                  }
+                  id={[
+                    "CancelOwnRequest",
+                    "WtpCancelOwnRequest",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" /> or{" "}
+                            <R n="WtpRequestPayloadSlice" />{" "}
+                            message this is cancelling.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpCancelOwnRequestRequestId",
+                            "request_ids",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
 
             <Hsection
-              n="wtp_regulate_appetite"
-              title={<Code>RegulateAppetite</Code>}
+              n="wtp_update_payload_lazyness"
+              title={<Code>UpdatePayloadLazyness</Code>}
             >
               <P>
-                <Alj inline>TODO</Alj>
+                The <R n="WtpUpdatePayloadLazyness" />{" "}
+                messages let peers adjust the{" "}
+                <R n="WtpRequestEntriesPayloadLazyness" /> of a{" "}
+                <R n="WtpRequestEntries" />{" "}
+                message they had previously sent. This allows peers to implement
+                the Plumtree algorithm<Bib item="leitao2007epidemic" />.
               </P>
+
+              <Pseudocode n="wtp_defs_UpdatePayloadLazyness">
+                <StructDef
+                  comment={
+                    <>
+                      Adjust the <R n="WtpRequestEntriesPayloadLazyness" /> of a
+                      {" "}
+                      <R n="WtpRequestEntries" />{" "}
+                      message the sender of this message had previously sent.
+                    </>
+                  }
+                  id={[
+                    "UpdatePayloadLazyness",
+                    "WtpUpdatePayloadLazyness",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestEntries" />{" "}
+                            message this is adjusting.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpUpdatePayloadLazynessRequestId",
+                            "request_ids",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The value to set the{" "}
+                            <R n="WtpRequestEntriesPayloadLazyness" />{" "}
+                            of the addressed <R n="WtpRequestEntries" />{" "}
+                            message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_lazyness",
+                            "WtpUpdatePayloadLazynessPayloadLazyness",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
           </Hsection>
 

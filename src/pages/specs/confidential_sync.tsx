@@ -55,7 +55,6 @@ export const confidential_sync = (
         headingId="willow_confidential_sync"
         heading="Willow Confidential Sync"
         toc
-        bibliography
         status="proposal"
         statusDate="21.11.2025"
         parentId="specifications"
@@ -223,8 +222,10 @@ export const confidential_sync = (
               for eager or lazy <R n="Payload" /> transmission based on{" "}
               <Rs n="entry_payload_length" /> for each{" "}
               <R n="aoi_intersection" />. These preferences are expressive
-              enough to implement the plumtree
-              algorithm<Bib item="leitao2007epidemic" />.
+              enough to implement the{" "}
+              <AE href="https://www.dpss.inesc-id.pt/~ler/reports/srds07.pdf">
+                Plumtree algorithm
+              </AE>.
             </P>
 
             <P>
@@ -2045,7 +2046,9 @@ export const confidential_sync = (
                   <R n="DataSendEntry">pushes</R> in some overlap of two{" "}
                   <Rs n="read_capability" />, or whether to omit the{" "}
                   <Rs n="Payload" />. This allows peers to implement the
-                  Plumtree algorithm<Bib item="leitao2007epidemic" />.
+                  <AE href="https://www.dpss.inesc-id.pt/~ler/reports/srds07.pdf">
+                    Plumtree algorithm
+                  </AE>.
                 </P>
 
                 <Pseudocode n="sync_defs_DataSetEagerness">
@@ -3564,7 +3567,9 @@ export const confidential_sync = (
           </Hsection>
         </Hsection>
         <Img
-          src={<ResolveAsset asset={["sync", "confidential_sync_emblem.png"]} />}
+          src={
+            <ResolveAsset asset={["sync", "confidential_sync_emblem.png"]} />
+          }
           alt={`A Confidential Sync emblem: A stylised drawing of a grapevine next to hand-lettered typewriter style rendition of 'Confidential Sync'.`}
         />
       </PageTemplate>
