@@ -1472,8 +1472,210 @@ export const wtp = (
               title={<Code>RespondToRequestPayloadSlice</Code>}
             >
               <P>
-                <Alj inline>TODO</Alj>
+                The <R n="WtpRespondToRequestPayloadSlice" />{" "}
+                messages let peers respond to <R n="WtpRequestPayloadSlice" />
+                {" "}
+                messages. Analogous to <R n="WtpRespondToRequestEntries" />{" "}
+                messages, the actual <R n="Payload" />{" "}
+                slice data is carried by different messages
+                (<R n="WtpSendPayloadSlice" />), the{" "}
+                <R n="WtpRespondToRequestPayloadSlice" />{" "}
+                merely handle error reporting and request termination by
+                stepping through a simple state machine.
               </P>
+
+              <Pseudocode n="wtp_defs_RespondToRequestPayloadSlice">
+                <StructDef
+                  comment={
+                    <>
+                      Indicate progress through the process of responding to a
+                      {" "}
+                      <R n="WtpRequestPayloadSlice" /> message.
+                    </>
+                  }
+                  id={[
+                    "RespondToRequestPayloadSlice",
+                    "WtpRespondToRequestPayloadSlice",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="WtpMessageId" /> of the{" "}
+                            <R n="WtpRequestPayloadSlice" />{" "}
+                            message this is a response to.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "request_id",
+                            "WtpRespondToRequestPayloadSliceRequestId",
+                            "request_id",
+                          ],
+                          <R n="WtpMessageId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The transition in the reponse state machine.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "response",
+                            "WtpRespondToRequestPayloadSliceResponse",
+                            "responses",
+                          ],
+                          <R n="WtpResponseForRequestPayloadSlice" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
+
+              <P>
+                The state transitions are very simple. The{" "}
+                <R n="WtpResponseForRequestPayloadSliceNope" />{" "}
+                transition, which indicates that the request will not be
+                processed (any further) and immediately terminates the response.
+                This transition can be taken at any time, not only as the very
+                first transition.
+              </P>
+
+              <P>
+                The <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                transition indicates that the responder has the <R n="Entry" />
+                {" "}
+                whose <R n="Payload" />{" "}
+                (subslice) was requested. After doing the{" "}
+                <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                transition, the responder can then send{" "}
+                <R n="WtpSendPayloadSlice" /> messages to fulfil the request.
+              </P>
+
+              <P>
+                Finally, the <R n="WtpResponseForRequestPayloadSliceDone" />
+                {" "}
+                transition can be taken after the{" "}
+                <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                transition to signal that no more slices will be transmitted,
+                terminating the response. If the responder has the{" "}
+                <R n="Entry" /> but not its <R n="Payload" />{" "}
+                (or at least not the requested slice), the{" "}
+                <R n="WtpResponseForRequestPayloadSliceDone" />{" "}
+                transition can be sent immediately after the{" "}
+                <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                transition, and likewise if the <R n="Payload" /> of the{" "}
+                <R n="Entry" /> is the empty string.
+              </P>
+
+              <P>
+                Alternatively, the{" "}
+                <R n="WtpResponseForRequestPayloadSliceDone" />{" "}
+                transition can be taken <Em>before</Em> the{" "}
+                <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                transition, signalling that the responder does not have the{" "}
+                <R n="Entry" /> matching the request.
+              </P>
+
+              <P>
+                <Alj inline>diagram of the state machine goes here</Alj>
+              </P>
+
+              <Pseudocode n="wtp_defs_WtpResponseForRequestPayloadSlice">
+                <Enum
+                  comment={
+                    <>
+                      The different transitions in the state machine that
+                      describes the process of responding to a{" "}
+                      <R n="WtpRequestPayloadSlice" /> message.
+                    </>
+                  }
+                  id={[
+                    "ResponseForRequestPayloadSlice",
+                    "WtpResponseForRequestPayloadSlice",
+                  ]}
+                  variants={[
+                    {
+                      comment: (
+                        <>
+                          Indicates that the <R n="WtpRequestPayloadSlice" />
+                          {" "}
+                          message will not be processed (any further).
+                          Terminates the response.
+                        </>
+                      ),
+                      id: [
+                        "Nope",
+                        "WtpResponseForRequestPayloadSliceNope",
+                      ],
+                      fields: [
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                If{" "}
+                                <Code>true</Code>, indicates that the other peer
+                                might have better luck if they tried the same
+                                request at a later time, preferrably with
+                                exponential backoff between tries. If{" "}
+                                <Code>false</Code>, the other peer need not
+                                bother trying again.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "retry",
+                                "WtpResponseForRequestPayloadSliceNopeRetry",
+                              ],
+                              <R n="Bool" />,
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that the responder has a matching{" "}
+                          <R n="Entry" />.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "Found",
+                        "WtpResponseForRequestPayloadSliceFound",
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates either that the responder has no matching
+                          {" "}
+                          <R n="Entry" /> (if sent before a{" "}
+                          <R n="WtpResponseForRequestPayloadSliceFound" />{" "}
+                          transition), or that the responder has transmitted as
+                          much of the requested <R n="Payload" />{" "}
+                          slice as possible.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "Done",
+                        "WtpResponseForRequestPayloadSliceDone",
+                      ],
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
 
             <Hsection n="wtp_send_entry" title={<Code>SendEntry</Code>}>
