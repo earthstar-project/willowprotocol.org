@@ -421,7 +421,7 @@ export const wtp = (
                   size thresholds are exceeded) not with metadata but to instead
                   partition the requested grouping into smaller{" "}
                   <Rs n="D3Range" /> and respond with{" "}
-                  <Rs n="WtpRequestEntries" />{" "}
+                  <R n="WtpRequestEntries" />{" "}
                   messages of its own; this implements the symmetric,
                   collaborative drilling-down to differences of RBSR. Such
                   responses state which message they are responding to, as well
@@ -592,7 +592,7 @@ export const wtp = (
                             <P>
                               If the response consists of metadata (or a set of
                               {" "}
-                              <Rs n="WtpRequestEntries" /> messages as{" "}
+                              <R n="WtpRequestEntries" /> messages as{" "}
                               <Quotes>counter-requests</Quotes>{" "}
                               for set reconciliation), this flag is ignored;
                               such responses are always fire-and-forget.
@@ -647,7 +647,7 @@ export const wtp = (
                             If the receiver has this many or more entries in the
                             requested grouping, they should reply with metadata
                             (or partition the grouping and send{" "}
-                            <Rs n="WtpRequestEntries" />{" "}
+                            <R n="WtpRequestEntries" />{" "}
                             message of their own, depending on{" "}
                             <R n="WtpRequestEntriesAllowSymmetricRbsr" />)
                             instead of sending the entries.
@@ -678,7 +678,7 @@ export const wtp = (
                             is equal to or greater than this, they should reply
                             with metadata (or partition the grouping and send
                             {" "}
-                            <Rs n="WtpRequestEntries" />{" "}
+                            <R n="WtpRequestEntries" />{" "}
                             message of their own, depending on{" "}
                             <R n="WtpRequestEntriesAllowSymmetricRbsr" />)
                             instead of sending the entries.
