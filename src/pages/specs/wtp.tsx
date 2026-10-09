@@ -11,7 +11,17 @@ import {
   Vermillion,
 } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
-import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  Code,
+  Em,
+  Figcaption,
+  Figure,
+  I,
+  Img,
+  Li,
+  P,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -1108,7 +1118,7 @@ export const wtp = (
                           commented: {
                             comment: (
                               <>
-                                The sum of the <Rs n="entry_payload_size" />
+                                The sum of the <Rs n="entry_payload_length" />
                                 {" "}
                                 of the entries the sender has in the grouping
                                 (the length as given by the <Rs n="Entry" />
@@ -1206,8 +1216,255 @@ export const wtp = (
               title={<Code>RequestPayloadSlice</Code>}
             >
               <P>
-                <Alj inline>TODO</Alj>
+                The <R n="WtpRequestPayloadSlice" />{" "}
+                messages let peers request a slice of the <R n="Payload" />{" "}
+                of a specific <R n="Entry" />. <I>Specific</I> here{" "}
+                means that not only its <R n="entry_namespace_id" />,{" "}
+                <R n="entry_subspace_id" />, and <R n="entry_path" />{" "}
+                are used to address it, but also its{" "}
+                <R n="entry_payload_digest" />.
               </P>
+
+              <Pseudocode n="wtp_defs_RequestPayloadSlice">
+                <StructDef
+                  comment={
+                    <>
+                      Request a verifiable Bab stream for a slice of the{" "}
+                      <R n="Payload" /> of a specific <R n="Entry" />.
+                    </>
+                  }
+                  id={[
+                    "RequestPayloadSlice",
+                    "WtpRequestPayloadSlice",
+                  ]}
+                  fields={[
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether this message is assigned a{" "}
+                            <R n="WtpMessageId" /> or not.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "has_id",
+                            "WtpRequestPayloadSliceHasId",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            A valid <R n="WtpReadCapability" /> whose{" "}
+                            <R n="access_receiver" /> is the{" "}
+                            <R n="wtp_receiver" />{" "}
+                            authenticated in the opening handshake
+                            (<R n="ini_spk" /> for the <R n="pio_initiator" />,
+                            {" "}
+                            <R n="res_spk" /> for the{" "}
+                            <R n="pio_responder" />), whose{" "}
+                            <R n="granted_area" />{" "}
+                            <R n="area_include">includes</R> the <R n="Entry" />
+                            {" "}
+                            whose <R n="Payload" /> (slice) is requested.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "read_capability",
+                            "WtpRequestPayloadSliceReadCapability",
+                            "read_capabilities",
+                          ],
+                          <R n="WtpReadCapability" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_namespace_id" /> of the{" "}
+                            <R n="Entry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "namespace_id",
+                            "WtpRequestPayloadSliceNamespaceId",
+                            "namespace_ids",
+                          ],
+                          <R n="NamespaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_subspace_id" /> of the{" "}
+                            <R n="Entry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "subspace_id",
+                            "WtpRequestPayloadSliceSubspaceId",
+                            "subspace_ids",
+                          ],
+                          <R n="SubspaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_path" /> of the <R n="Entry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "path",
+                            "WtpRequestPayloadSlicePath",
+                            "paths",
+                          ],
+                          <R n="Path" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_payload_digest" /> of the{" "}
+                            <R n="Entry" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_digest",
+                            "WtpRequestPayloadSlicePayloadDigest",
+                            "payload_digests",
+                          ],
+                          <R n="PayloadDigest" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The start index (in Bab chunks) of the slice to
+                            request.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "start",
+                            "WtpRequestPayloadSliceStart",
+                            "starts",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The length (in Bab chunks) of the slice to request.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "length",
+                            "WtpRequestPayloadSliceLength",
+                            "lengths",
+                          ],
+                          <R n="U64" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The value <Code>k</Code> for the Bab{" "}
+                            <AE href="https://bab-hash.org/spec#kgrouped">
+                              k-grouping
+                            </AE>{" "}
+                            to request for the verifiable slice stream.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "k",
+                            "WtpRequestPayloadSliceK",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The{" "}
+                            <AE href="https://bab-hash.org/spec#left_skip">
+                              <Code>left_skip</Code>
+                            </AE>{" "}
+                            for the verifiable slice stream requested by this
+                            message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "left_skip",
+                            "WtpRequestPayloadSliceLeftSkip",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The{" "}
+                            <AE href="https://bab-hash.org/spec#right_skip">
+                              <Code>right_skip</Code>
+                            </AE>{" "}
+                            for the verifiable slice stream requested by this
+                            message.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "right_skip",
+                            "WtpRequestPayloadSliceRightSkip",
+                          ],
+                          <R n="U8" />,
+                        ],
+                      },
+                    },
+                  ]}
+                />
+              </Pseudocode>
             </Hsection>
 
             <Hsection
@@ -1489,7 +1746,7 @@ export const wtp = (
               <P>
                 When sent as a response, many of the fields can be derived from
                 context and are thus omitted from the actual message encoding.
-                TODO
+                <Alj inline>TODO</Alj>
               </P>
             </Hsection>
 
