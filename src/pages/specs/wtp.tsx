@@ -1947,9 +1947,135 @@ export const wtp = (
               </Pseudocode>
 
               <P>
-                When sent as a response, many of the fields can be derived from
-                context and are thus omitted from the actual message encoding.
-                <Alj inline>TODO</Alj>
+                When sent as a response, many of the fields can often be derived
+                from context and are thus omitted from the actual message
+                encoding. Specifically:
+              </P>
+
+              <P>
+                For the first <R n="WtpSendPayloadSlice" />{" "}
+                message sent in response to a <R n="WtpRequestPayloadSlice" />
+                {" "}
+                message, after a <R n="WtpRespondToRequestPayloadSlice" />{" "}
+                message with <R n="WtpRespondToRequestPayloadSliceResponse" />
+                {" "}
+                <R n="WtpResponseForRequestPayloadSliceFound" /> for that{" "}
+                <R n="WtpRequestPayloadSlice" />{" "}
+                message, the following fields of the{" "}
+                <R n="WtpSendPayloadSlice" /> message are predetermined:
+              </P>
+
+              <Ul>
+                <Li>
+                  <R n="WtpSendPayloadSliceStart" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceStart" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceK" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceK" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceLeftSkip" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceRightSkip" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message, and
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceRightSkip" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceRightSkip" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message.
+                </Li>
+              </Ul>
+
+              <P>
+                For every subsequent <R n="WtpSendPayloadSlice" />{" "}
+                message pertaining to the same <R n="WtpRequestPayloadSlice" />
+                {" "}
+                message, the <R n="WtpSendPayloadSliceStart" />{" "}
+                is the sum of the <R n="WtpSendPayloadSliceStart" /> and the
+                {" "}
+                <R n="WtpSendPayloadSliceLength" /> of the preceding{" "}
+                <R n="WtpSendPayloadSlice" /> message pertaining to the same
+                {" "}
+                <R n="WtpRequestPayloadSlice" /> message, and the{" "}
+                <R n="WtpSendPayloadSliceLeftSkip" />{" "}
+                is maximal so that only the verification metadata is contained
+                in the transmitted slice stream that has not been covered by
+                previous <R n="WtpSendPayloadSlice" /> messages yet.
+              </P>
+
+              <P>
+                In other words, the predetermined values make it so that peers
+                always respond with exactly the verifiable slice stream that was
+                requested, split over arbitrarily many slices<Marginale>
+                  This is so that peers cannot be forced to send huge individual
+                  messages.
+                </Marginale>{" "}
+                of arbitrary lengths.
+              </P>
+
+              <P>
+                When sending a <R n="WtpSendPayloadSlice" />{" "}
+                message in response to a <R n="WtpRequestEntries" />{" "}
+                message, after having sent a{" "}
+                <R n="WtpRespondToRequestEntries" /> message with{" "}
+                <R n="WtpRespondToRequestEntriesResponse" />{" "}
+                <R n="WtpResponseForRequestEntriesImmediateEntries" /> or{" "}
+                <R n="WtpResponseForRequestEntriesLiveEntries" /> for that{" "}
+                <R n="WtpRequestEntries" />{" "}
+                message, and then having sent at least one{" "}
+                <R n="WtpSendEntry" /> message in response to that same{" "}
+                <R n="WtpRequestEntries" /> message, some fields of the{" "}
+                <R n="WtpSendPayloadSlice" /> are predetermined. For the first
+                {" "}
+                <R n="WtpSendPayloadSlice" /> per <R n="WtpSendEntry" />{" "}
+                message:
+              </P>
+
+              <Ul>
+                <Li>
+                  <R n="WtpSendPayloadSliceStart" /> must be zero,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceK" /> must be the{" "}
+                  <R n="WtpRequestEntriesK" /> of the{" "}
+                  <R n="WtpRequestEntries" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceLeftSkip" /> must be zero, and
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceRightSkip" /> must be zero.
+                </Li>
+              </Ul>
+
+              <P>
+                For every subsequent <R n="WtpSendPayloadSlice" />{" "}
+                message pertaining to the same <R n="Payload" />{" "}
+                message,<Marginale>
+                  This is fully analogous to sneding multiple{" "}
+                  <R n="WtpSendPayloadSlice" /> messages in response to the same
+                  {" "}
+                  <R n="WtpRequestPayloadSlice" /> message.
+                </Marginale>{" "}
+                the <R n="WtpSendPayloadSliceStart" /> is the sum of the{" "}
+                <R n="WtpSendPayloadSliceStart" /> and the{" "}
+                <R n="WtpSendPayloadSliceLength" /> of the preceding{" "}
+                <R n="WtpSendPayloadSlice" /> message pertaining to that same
+                {" "}
+                <R n="Payload" />, and the <R n="WtpSendPayloadSliceLeftSkip" />
+                {" "}
+                is maximal so that only the verification metadata is contained
+                in the transmitted slice stream that has not been covered by
+                previous <R n="WtpSendPayloadSlice" /> messages yet.
+              </P>
+
+              <P>
+                <Alj inline>
+                  TODO: (when not sending as a response,) the message must
+                  specicify the entry whose payload is being delivered.
+                </Alj>
               </P>
             </Hsection>
 
