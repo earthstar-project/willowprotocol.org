@@ -1844,6 +1844,85 @@ export const wtp = (
                       commented: {
                         comment: (
                           <>
+                            The <R n="entry_namespace_id" /> of the{" "}
+                            <R n="Entry" /> whose <R n="Payload" />{" "}
+                            (slice) is sent.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "namespace_id",
+                            "WtpSendPayloadSliceNamespaceId",
+                            "namespace_ids",
+                          ],
+                          <R n="NamespaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_subspace_id" /> of the{" "}
+                            <R n="Entry" /> whose <R n="Payload" />{" "}
+                            (slice) is sent.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "subspace_id",
+                            "WtpSendPayloadSliceSubspaceId",
+                            "subspace_ids",
+                          ],
+                          <R n="SubspaceId" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_path" /> of the <R n="Entry" />{" "}
+                            whose <R n="Payload" /> (slice) is sent.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "path",
+                            "WtpSendPayloadSlicePath",
+                            "paths",
+                          ],
+                          <R n="Path" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The <R n="entry_payload_digest" /> of the{" "}
+                            <R n="Entry" /> whose <R n="Payload" />{" "}
+                            (slice) is sent.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "payload_digest",
+                            "WtpSendPayloadSlicePayloadDigest",
+                            "payload_digests",
+                          ],
+                          <R n="PayloadDigest" />,
+                        ],
+                      },
+                    },
+                    {
+                      commented: {
+                        comment: (
+                          <>
                             The start (in Bab chunks) of the slice to transmit.
                           </>
                         ),
@@ -1942,6 +2021,27 @@ export const wtp = (
                         ],
                       },
                     },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            The bytes making up the verifiable slice stream for
+                            the indicated slice of the <R n="Payload" />.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "bytes",
+                            "WtpSendPayloadSliceBytes",
+                            "bytes",
+                          ],
+                          <SliceType>
+                            <R n="U8" />
+                          </SliceType>,
+                        ],
+                      },
+                    },
                   ]}
                 />
               </Pseudocode>
@@ -1966,6 +2066,26 @@ export const wtp = (
               </P>
 
               <Ul>
+                <Li>
+                  <R n="WtpSendPayloadSliceNamespaceId" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceNamespaceId" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSliceSubspaceId" /> must be the{" "}
+                  <R n="WtpRequestPayloadSliceSubspaceId" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSlicePath" /> must be the{" "}
+                  <R n="WtpRequestPayloadSlicePath" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
+                <Li>
+                  <R n="WtpSendPayloadSlicePayloadDigest" /> must be the{" "}
+                  <R n="WtpRequestPayloadSlicePayloadDigest" /> of the{" "}
+                  <R n="WtpRequestPayloadSlice" /> message,
+                </Li>
                 <Li>
                   <R n="WtpSendPayloadSliceStart" /> must be the{" "}
                   <R n="WtpRequestPayloadSliceStart" /> of the{" "}
@@ -2002,7 +2122,8 @@ export const wtp = (
                 <R n="WtpSendPayloadSliceLeftSkip" />{" "}
                 is maximal so that only the verification metadata is contained
                 in the transmitted slice stream that has not been covered by
-                previous <R n="WtpSendPayloadSlice" /> messages yet.
+                previous <R n="WtpSendPayloadSlice" />{" "}
+                messages yet, and the other predetermined fields stay the same.
               </P>
 
               <P>
@@ -2034,6 +2155,14 @@ export const wtp = (
               </P>
 
               <Ul>
+                <Li>
+                  <R n="WtpSendPayloadSliceNamespaceId" />,{" "}
+                  <R n="WtpSendPayloadSliceSubspaceId" />,{" "}
+                  <R n="WtpSendPayloadSlicePath" />, and{" "}
+                  <R n="WtpSendPayloadSlicePayloadDigest" />{" "}
+                  must be equal to those of the <R n="WtpSendEntryEntry" />{" "}
+                  of the <R n="WtpSendEntry" /> message,
+                </Li>
                 <Li>
                   <R n="WtpSendPayloadSliceStart" /> must be zero,
                 </Li>
@@ -2068,14 +2197,8 @@ export const wtp = (
                 {" "}
                 is maximal so that only the verification metadata is contained
                 in the transmitted slice stream that has not been covered by
-                previous <R n="WtpSendPayloadSlice" /> messages yet.
-              </P>
-
-              <P>
-                <Alj inline>
-                  TODO: (when not sending as a response,) the message must
-                  specicify the entry whose payload is being delivered.
-                </Alj>
+                previous <R n="WtpSendPayloadSlice" />{" "}
+                messages yet, and the other predetermined fields stay the same.
               </P>
             </Hsection>
 
