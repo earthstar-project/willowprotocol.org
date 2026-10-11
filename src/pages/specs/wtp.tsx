@@ -1036,6 +1036,24 @@ export const wtp = (
                 <Alj inline>diagram of the state machine goes here</Alj>
               </P>
 
+              <P>
+                The <R n="WtpResponseForRequestEntriesImmediateEntries" />{" "}
+                transition serves a second purpose: it can optionally let the
+                sender of the transition request the{" "}
+                <Rs n="LengthyAuthorisedEntry" />{" "}
+                the other peer has in the same grouping.<Marginale>
+                  This makes the set reconciliation symmetric: <Em>both</Em>
+                  {" "}
+                  peers should send their items in each small range.
+                </Marginale>{" "}
+                The receiver is encouraged to wait with its response until a
+                subsequent <R n="WtpResponseForRequestEntriesLiveEntries" /> or
+                {" "}
+                <R n="WtpResponseForRequestEntriesDone" />{" "}
+                transition and to omit from its response those entries sent by
+                the other peer.
+              </P>
+
               <Pseudocode n="wtp_defs_WtpResponseForRequestEntries">
                 <Enum
                   comment={
@@ -1195,6 +1213,57 @@ export const wtp = (
                                 "WtpResponseForRequestEntriesImmediateEntriesWillSort",
                               ],
                               <R n="Bool" />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                <P>
+                                  Whether this message should serve as an
+                                  implicit <R n="WtpRequestEntries" />{" "}
+                                  message in addition to the regular state
+                                  transition semantics.
+                                </P>
+                                <P>
+                                  If this is{" "}
+                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_none" />,
+                                  it does not serve as an implicit{" "}
+                                  <R n="WtpRequestEntries" />{" "}
+                                  message. If this is not{" "}
+                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_none" />,
+                                  then both peers should act as if this message
+                                  was a <R n="WtpRequestEntries" />{" "}
+                                  message whose fields are equal to that of the
+                                  {" "}
+                                  <R n="WtpRequestEntries" />{" "}
+                                  message to whose response this state
+                                  transition belongs, except that the{" "}
+                                  <R n="WtpRequestEntriesK" />{" "}
+                                  field is set to the value of this (i.e.,{" "}
+                                  <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricRequest" />)
+                                  field. In particular, both peers must allocate
+                                  a <R n="WtpMessageId" />{" "}
+                                  for this implicit message.
+                                </P>
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "symmetric_request",
+                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricRequest",
+                              ],
+                              <ChoiceType
+                                types={[
+                                  <R n="U8" />,
+                                  <DefVariant
+                                    n="wtp_response_for_request_entries_immediate_entries_symmetric_none"
+                                    r="none"
+                                  />,
+                                ]}
+                              />,
                             ],
                           },
                         },
