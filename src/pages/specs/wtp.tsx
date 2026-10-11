@@ -844,6 +844,29 @@ export const wtp = (
                         ],
                       },
                     },
+                    {
+                      commented: {
+                        comment: (
+                          <>
+                            Whether the root message of the tree of response was
+                            originally sent by the same peer as this very
+                            message. This flag disambiguates the{" "}
+                            <R n="WtpRequestEntriesProvenanceRoot" />{" "}
+                            field; unlike all other fields in the protocol it is
+                            not clear from context alone whose peer’s message is
+                            being referred to.
+                          </>
+                        ),
+                        dedicatedLine: true,
+                        segment: [
+                          [
+                            "is_root_by_sender",
+                            "WtpRequestEntriesProvenanceIsRootBySender",
+                          ],
+                          <R n="Bool" />,
+                        ],
+                      },
+                    },
                   ]}
                 />
               </Pseudocode>
