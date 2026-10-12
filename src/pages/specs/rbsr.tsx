@@ -675,7 +675,7 @@ export const rbsr = (
             must map distinct sets of <Rs n="LengthyAuthorisedEntry" />{" "}
             to distinct <Rs n="d3rbsr_fp" />{" "}
             with high probability, even when facing maliciously crafted input
-            sets. The "range-based set reconciliation paper surveys suitable,
+            sets. The range-based set reconciliation paper surveys suitable,
             cryptographically secure hash functions in section
             5B<Bib item="meyer2023range" />. All but the Cayley hashes use
             commutative <R n="d3rbsr_fp_combine" />{" "}
