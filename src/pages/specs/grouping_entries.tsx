@@ -966,7 +966,7 @@ export const grouping_entries = (
                           <Li>
                             the <R n="entry_timestamp" /> of the <R n="Entry" />
                             {" "}
-                            is equal the <R n="Timestamp" /> in{" "}
+                            is equal to the <R n="Timestamp" /> in{" "}
                             <R n="ReconciliationRangeStart" />, and the{" "}
                             <R n="entry_path" /> of the <R n="Entry" />{" "}
                             is strictly greater (lexicographically) than the
@@ -977,9 +977,9 @@ export const grouping_entries = (
                           <Li>
                             the <R n="entry_timestamp" /> and{" "}
                             <R n="entry_path" /> of the <R n="Entry" />{" "}
-                            are equal the <R n="Timestamp" /> and <R n="Path" />
-                            {" "}
-                            in <R n="ReconciliationRangeStart" />, and the{" "}
+                            are equal to the <R n="Timestamp" /> and{" "}
+                            <R n="Path" /> in{" "}
+                            <R n="ReconciliationRangeStart" />, and the{" "}
                             <R n="entry_subspace_id" /> of the <R n="Entry" />
                             {" "}
                             is greater than or equal to the <R n="SubspaceId" />
@@ -1027,7 +1027,7 @@ export const grouping_entries = (
                           <Li>
                             the <R n="entry_timestamp" /> of the <R n="Entry" />
                             {" "}
-                            is equal the <R n="Timestamp" /> in{" "}
+                            is equal to the <R n="Timestamp" /> in{" "}
                             <R n="ReconciliationRangeEnd" />, and the{" "}
                             <R n="entry_path" /> of the <R n="Entry" />{" "}
                             is strictly less (lexicographically) than the{" "}
@@ -1037,9 +1037,9 @@ export const grouping_entries = (
                           <Li>
                             the <R n="entry_timestamp" /> and{" "}
                             <R n="entry_path" /> of the <R n="Entry" />{" "}
-                            are equal the <R n="Timestamp" /> and <R n="Path" />
-                            {" "}
-                            in <R n="ReconciliationRangeEnd" />, and the{" "}
+                            are equal to the <R n="Timestamp" /> and{" "}
+                            <R n="Path" /> in{" "}
+                            <R n="ReconciliationRangeEnd" />, and the{" "}
                             <R n="entry_subspace_id" /> of the <R n="Entry" />
                             {" "}
                             is strictly less than the <R n="SubspaceId" /> in
@@ -1070,6 +1070,251 @@ export const grouping_entries = (
               ]}
             />
           </Pseudocode>
+
+          <P>
+            By replacing the <R n="TimeRange" /> component of <R n="Area" />
+            {" "}
+            with a <R n="ReconciliationRange" />{" "}
+            (and updating all related definitions appropriately), we obtain the
+            type of <Rs n="AreaSlice" />:
+          </P>
+
+          <Pseudocode n="area_slice_def">
+            <StructDef
+              comment={
+                <>
+                  A splittable grouping of <Rs n="Entry" />.
+                </>
+              }
+              id={["AreaSlice", "AreaSlice", "AreaSlices"]}
+              fields={[
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        To be <R n="area_slice_include">included</R> in this
+                        {" "}
+                        <R n="AreaSlice" />, an <R n="Entry" />’s{" "}
+                        <R n="entry_subspace_id" /> must be equal to the{" "}
+                        <R n="AreaSliceSubspace" />, unless it is{" "}
+                        <R n="ss_any" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["subspace_id", "AreaSliceSubspace", "subspace_ids"],
+                      <ChoiceType
+                        types={[<R n="SubspaceId" />, <R n="ss_any" />]}
+                      />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        To be <R n="area_slice_include">included</R> in this
+                        {" "}
+                        <R n="AreaSlice" />, an <R n="Entry" />’s{" "}
+                        <R n="entry_path" /> must be{" "}
+                        <R n="path_prefix">prefixed</R> by the{" "}
+                        <R n="AreaSlicePath" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["path", "AreaSlicePath", "paths"],
+                      <R n="Path" />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        To be <R n="area_slice_include">included</R> in this
+                        {" "}
+                        <R n="AreaSlice" />, an <R n="Entry" /> must be{" "}
+                        <R n="range_include">included</R> in the{" "}
+                        <R n="AreaSliceReconciliationRange" />.
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      [
+                        "reconciliation_range",
+                        "AreaSliceReconciliationRange",
+                        "reconciliation_ranges",
+                      ],
+                      <R n="ReconciliationRange" />,
+                    ],
+                  },
+                },
+              ]}
+            />
+          </Pseudocode>
+
+          <PreviewScope>
+            <P>
+              An <R n="AreaSlice" /> <DefValue n="area_slice_include_a" r="a" />
+              {" "}
+              <Def n="area_slice_include" r="include">includes</Def> an{" "}
+              <R n="Entry" /> <DefValue n="area_slice_include_e" r="e" /> if
+            </P>
+
+            <Ul>
+              <Li>
+                <Code>
+                  <AccessStruct field="AreaSliceSubspace">
+                    <R n="area_slice_include_a" />
+                  </AccessStruct>{" "}
+                  == <R n="ss_any" /> or{" "}
+                  <AccessStruct field="AreaSliceSubspace">
+                    <R n="area_slice_include_a" />
+                  </AccessStruct>{" "}
+                  =={" "}
+                  <AccessStruct field="entry_subspace_id">
+                    <R n="area_slice_include_e" />
+                  </AccessStruct>
+                </Code>,
+              </Li>
+              <Li>
+                <AccessStruct field="AreaSlicePath">
+                  <R n="area_slice_include_a" />
+                </AccessStruct>{" "}
+                is a <R n="path_prefix" /> of{" "}
+                <AccessStruct field="entry_path">
+                  <R n="area_slice_include_e" />
+                </AccessStruct>, and
+              </Li>
+              <Li>
+                <AccessStruct field="AreaSlicePath">
+                  <R n="AreaSliceReconciliationRange" />
+                </AccessStruct>{" "}
+                <R n="range_include">includes</R>{" "}
+                <AccessStruct field="entry_timestamp">
+                  <R n="area_slice_include_e" />
+                </AccessStruct>.
+              </Li>
+            </Ul>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              An <R n="AreaSlice" />{" "}
+              <Def n="area_slice_include_area" r="include">includes</Def>{" "}
+              another <R n="AreaSlice" /> if the first <R n="AreaSlice" />{" "}
+              <R n="area_slice_include">includes</R> all <Rs n="Entry" />{" "}
+              that the second <R n="AreaSlice" />{" "}
+              <R n="area_slice_include">includes</R>. In particular, every{" "}
+              <R n="AreaSlice" /> <R n="area_slice_include_area">includes</R>
+              {" "}
+              itself.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              The <Def n="full_area_slice" r="full AreaSlice" /> is the{" "}
+              <R n="AreaSlice" /> whose <R n="AreaSliceSubspace" /> is{" "}
+              <R n="ss_any" />, whose <R n="AreaSlicePath" /> is the empty{" "}
+              <R n="Path" />, and whose <R n="AreaSliceReconciliationRange" />
+              {" "}
+              is the <R n="open_range">open</R> <R n="ReconciliationRange" />
+              {" "}
+              whose <R n="ReconciliationRangeStart" /> is the triple of the{" "}
+              <R n="Timestamp" /> zero, the empty{" "}
+              <R n="Path" />, and the minimal <R n="SubspaceId" />. It{" "}
+              <R n="area_slice_include">includes</R> all <Rs n="Entry" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              The <Def n="subspace_area_slice" r="subspace AreaSlice" /> of the
+              {" "}
+              <R n="SubspaceId" />{" "}
+              <DefValue n="subspaceareaslice_sub" r="sub" /> is the{" "}
+              <R n="AreaSlice" /> whose <R n="AreaSliceSubspace" /> is{" "}
+              <R n="subspaceareaslice_sub" />, whose <R n="AreaSlicePath" />
+              {" "}
+              is the empty <R n="Path" />, and whose{" "}
+              <R n="AreaSliceReconciliationRange" /> is the{" "}
+              <R n="open_range">open</R> <R n="ReconciliationRange" /> whose
+              {" "}
+              <R n="ReconciliationRangeStart" /> is the triple of the{" "}
+              <R n="Timestamp" /> zero, the empty{" "}
+              <R n="Path" />, and the minimal <R n="SubspaceId" /> It{" "}
+              <R n="area_slice_include">includes</R> exactly the{" "}
+              <Rs n="Entry" /> with <R n="entry_subspace_id" />{" "}
+              <R n="subspacearea_sub" />.
+            </P>
+          </PreviewScope>
+
+          <PreviewScope>
+            <P>
+              If two <Rsb n="AreaSlice" /> overlap, the overlap is again an{" "}
+              <R n="AreaSlice" />. Let{" "}
+              <DefValue n="area_slice_inter_a1" r="a1" /> and{" "}
+              <DefValue n="area_slice_inter_a2" r="a2" /> be{" "}
+              <Rsb n="AreaSlice" />. If there exists at least one{" "}
+              <R n="Entry" /> <R n="area_slice_include">included</R> in both
+              {" "}
+              <R n="area_slice_inter_a1" />, and{" "}
+              <R n="area_slice_inter_a2" />, then we define the{" "}
+              <Def
+                n="area_slice_intersection"
+                r="intersection"
+                rs="intersections"
+              >
+                (nonempty) intersection
+              </Def>{" "}
+              of <R n="area_slice_inter_a1" />, and{" "}
+              <R n="area_slice_inter_a2" /> as the <R n="AreaSlice" /> whose
+            </P>
+
+            <Ul>
+              <Li>
+                <R n="AreaSliceSubspace" /> is{" "}
+                <AccessStruct field="AreaSliceSubspace">
+                  <R n="area_slice_inter_a1" />
+                </AccessStruct>{" "}
+                if{" "}
+                <AccessStruct field="AreaSliceSubspace">
+                  <R n="area_slice_inter_a1" />
+                </AccessStruct>{" "}
+                is not <R n="ss_any" />, or{" "}
+                <AccessStruct field="AreaSliceSubspace">
+                  <R n="area_slice_inter_a2" />
+                </AccessStruct>{" "}
+                otherwise, whose
+              </Li>
+              <Li>
+                <R n="AreaSlicePath" /> is the longer of{" "}
+                <AccessStruct field="AreaSlicePath">
+                  <R n="area_slice_inter_a1" />
+                </AccessStruct>{" "}
+                and<Marginale>
+                  One is a prefix of the other, otherwise the intersection would
+                  be empty.
+                </Marginale>{" "}
+                <AccessStruct field="AreaSlicePath">
+                  <R n="area_slice_inter_a2" />
+                </AccessStruct>, and whose
+              </Li>
+              <Li>
+                <R n="AreaSliceReconciliationRange" /> is the{" "}
+                <R n="range_intersection" /> of{" "}
+                <AccessStruct field="AreaSliceReconciliationRange">
+                  <R n="area_slice_inter_a1" />
+                </AccessStruct>{" "}
+                and{" "}
+                <AccessStruct field="AreaSliceReconciliationRange">
+                  <R n="area_slice_inter_a2" />
+                </AccessStruct>.
+              </Li>
+            </Ul>
+          </PreviewScope>
         </Hsection>
       </PageTemplate>
     </File>
