@@ -126,7 +126,7 @@ export const grouping_entries = (
           </Figure>
 
           <P>
-            The Willow protocols use three types of <Rs n="range" />:
+            The Willow protocols use three types of basic <Rs n="range" />:
           </P>
 
           <Pseudocode n="ranges_defs">
@@ -725,8 +725,7 @@ export const grouping_entries = (
                         <R n="entry_timestamp" /> must be among the{" "}
                         <R n="aoi_count" /> <R n="entry_newer">newest</R>{" "}
                         <Rs n="Entry" />. If the <R n="aoi_count" /> is{" "}
-                        <M>0</M>, then no{" "}
-                        <Rs n="Entry" /> are excluded instead.
+                        <M>0</M>, then no <Rs n="Entry" /> are excluded instead.
                       </>
                     ),
                     dedicatedLine: true,
@@ -864,6 +863,30 @@ export const grouping_entries = (
               </Li>
             </Ul>
           </PreviewScope>
+        </Hsection>
+
+        <Hsection n="area_slices" title="AreaSlices">
+          <P>
+            Some recursive algorithms (specifically:{" "}
+            <R n="d3_range_based_set_reconciliation">
+              range-based set reconciliation
+            </R>) require us to split a grouping of <Rs n="Entry" />{" "}
+            into subgroupings containing roughly equal numbers of{" "}
+            <Rs n="Entry" />. Unfortunately, this is not always possible with
+            {" "}
+            <Rs n="Area" />. Imagine, for example, a <R n="store" /> with many
+            {" "}
+            <Rs n="Entry" /> of equal <Rs n="entry_path" /> and{" "}
+            <Rs n="entry_timestamp" /> but different{" "}
+            <Rs n="entry_subspace_id" />. There exist <Rs n="Area" />{" "}
+            that contain all these{" "}
+            <Rs n="Entry" />, but it would be impossible to define two{" "}
+            <Rs n="Area" /> which each contain roughly half of the{" "}
+            <Rs n="Entry" />. In this section, we define a grouping that
+            combines some of the advantages of <Rs n="Area" />{" "}
+            with the ability to be split into roughly equally-filled
+            subgroupings.
+          </P>
         </Hsection>
       </PageTemplate>
     </File>
