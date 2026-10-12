@@ -918,7 +918,7 @@ export const grouping_entries = (
               <Rs n="Entry" /> are called{" "}
               <Def
                 n="reconciliation_equivalent"
-                r="reconciliation-requivalent"
+                r="reconciliation-equivalent"
               />. Note that any two <Rs n="Entry" /> of equal{" "}
               <Rs n="entry_namespace_id" /> which do not{" "}
               <R n="prefix_pruning">prefix-prune</R> each other are not{" "}
