@@ -870,16 +870,6 @@ export const wtp = (
                   ]}
                 />
               </Pseudocode>
-
-              <P>
-                <Alj inline>
-                  (Design note: there's also the <Code>preferred_ordering</Code>
-                  {" "}
-                  enum from the Rust code sketch, but that is likely to be
-                  obsoleted by the future canonical AreaSlice ordering, turning
-                  this into a boolean.)
-                </Alj>
-              </P>
             </Hsection>
 
             <Hsection
@@ -1195,27 +1185,27 @@ export const wtp = (
                         "WtpResponseForRequestEntriesImmediateEntries",
                       ],
                       fields: [
-                        {
-                          commented: {
-                            comment: (
-                              <>
-                                <Alj inline>
-                                  TODO, the mechanics here depend on the
-                                  supported orderings, which in turn depend on
-                                  changes brought on by AreaSlices.
-                                </Alj>
-                              </>
-                            ),
-                            dedicatedLine: true,
-                            segment: [
-                              [
-                                "will_sort",
-                                "WtpResponseForRequestEntriesImmediateEntriesWillSort",
-                              ],
-                              <R n="Bool" />,
-                            ],
-                          },
-                        },
+                        // {
+                        //   commented: {
+                        //     comment: (
+                        //       <>
+                        //         <Alj inline>
+                        //           TODO, the mechanics here depend on the
+                        //           supported orderings, which in turn depend on
+                        //           changes brought on by AreaSlices.
+                        //         </Alj>
+                        //       </>
+                        //     ),
+                        //     dedicatedLine: true,
+                        //     segment: [
+                        //       [
+                        //         "will_sort",
+                        //         "WtpResponseForRequestEntriesImmediateEntriesWillSort",
+                        //       ],
+                        //       <R n="Bool" />,
+                        //     ],
+                        //   },
+                        // },
                         {
                           commented: {
                             comment: (
