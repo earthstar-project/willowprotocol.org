@@ -1228,23 +1228,64 @@ export const wtp = (
                                 </P>
                                 <P>
                                   If this is{" "}
-                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_none" />,
+                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none" />,
                                   it does not serve as an implicit{" "}
                                   <R n="WtpRequestEntries" />{" "}
                                   message. If this is not{" "}
-                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_none" />,
+                                  <R n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none" />,
                                   then both peers should act as if this message
                                   was a <R n="WtpRequestEntries" />{" "}
                                   message whose fields are equal to that of the
                                   {" "}
                                   <R n="WtpRequestEntries" />{" "}
                                   message to whose response this state
-                                  transition belongs, except that the{" "}
-                                  <R n="WtpRequestEntriesK" />{" "}
-                                  field is set to the value of this (i.e.,{" "}
-                                  <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricRequest" />)
-                                  field. In particular, both peers must allocate
-                                  a <R n="WtpMessageId" />{" "}
+                                  transition belongs, except that
+                                </P>
+
+                                <Ul>
+                                  <Li>
+                                    the{" "}
+                                    <R n="WtpRequestEntriesReadCapability" />
+                                    {" "}
+                                    field is set to the value of this (i.e.,
+                                    {" "}
+                                    <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricCapability" />)
+                                    field,
+                                  </Li>
+                                  <Li>
+                                    the{" "}
+                                    <R n="WtpRequestEntriesOwnFingerprint" />
+                                    {" "}
+                                    field is set to{" "}
+                                    <R n="wtp_request_entries_fingerprint_none" />,
+                                  </Li>
+                                  <Li>
+                                    <R n="WtpRequestEntriesThresholdCount" />
+                                    {" "}
+                                    and <R n="WtpRequestEntriesThresholdSize" />
+                                    {" "}
+                                    are set to <Code>2^64 - 1</Code>,
+                                  </Li>
+                                  <Li>
+                                    the <R n="WtpRequestEntriesProvenance" />
+                                    {" "}
+                                    is updated correctly as responding to the
+                                    {" "}
+                                    <R n="WtpRequestEntries" />{" "}
+                                    message to whose response this state
+                                    transition belongs, and
+                                  </Li>
+                                  <Li>
+                                    with the remaining fields of this enum
+                                    variant optionally overriding some further
+                                    fields of the implicit{" "}
+                                    <R n="WtpRequestEntries" /> message.
+                                  </Li>
+                                </Ul>
+
+                                <P>
+                                  In particular, both peers must allocate a{" "}
+                                  <R n="WtpMessageId" />{" "}
                                   for this implicit message.
                                 </P>
                               </>
@@ -1252,18 +1293,119 @@ export const wtp = (
                             dedicatedLine: true,
                             segment: [
                               [
-                                "symmetric_request",
-                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricRequest",
+                                "symmetric_capability",
+                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricCapability",
+                              ],
+                              <ChoiceType
+                                types={[
+                                  <R n="WtpReadCapability" />,
+                                  <DefVariant
+                                    n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none"
+                                    r="none"
+                                  />,
+                                ]}
+                              />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                If this is not{" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_lazyness_none" />,
+                                it it gives the value of the{" "}
+                                <R n="WtpRequestEntriesPayloadLazyness" />{" "}
+                                field of the implicit{" "}
+                                <R n="WtpRequestEntries" /> message. Must be
+                                {" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_k_none" />
+                                {" "}
+                                if{" "}
+                                <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricCapability" />
+                                {" "}
+                                is{" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none" />.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "symmetric_payload_lazyness",
+                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricPayloadLazyness",
+                              ],
+                              <ChoiceType
+                                types={[
+                                  <R n="U64" />,
+                                  <DefVariant
+                                    n="wtp_response_for_request_entries_immediate_entries_symmetric_lazyness_none"
+                                    r="none"
+                                  />,
+                                ]}
+                              />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                If this is not{" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_k_none" />,
+                                it it gives the value of the{" "}
+                                <R n="WtpRequestEntriesK" />{" "}
+                                field of the implicit{" "}
+                                <R n="WtpRequestEntries" /> message. Must be
+                                {" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_k_none" />
+                                {" "}
+                                if{" "}
+                                <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricCapability" />
+                                {" "}
+                                is{" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none" />.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "symmetric_k",
+                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricK",
                               ],
                               <ChoiceType
                                 types={[
                                   <R n="U8" />,
                                   <DefVariant
-                                    n="wtp_response_for_request_entries_immediate_entries_symmetric_none"
+                                    n="wtp_response_for_request_entries_immediate_entries_symmetric_k_none"
                                     r="none"
                                   />,
                                 ]}
                               />,
+                            ],
+                          },
+                        },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                Gives the value of the{" "}
+                                <R n="WtpRequestEntriesIsOneshot" />{" "}
+                                field of the implicit{" "}
+                                <R n="WtpRequestEntries" /> message. Ignored if
+                                {" "}
+                                <R n="WtpResponseForRequestEntriesImmediateEntriesSymmetricCapability" />
+                                {" "}
+                                is{" "}
+                                <R n="wtp_response_for_request_entries_immediate_entries_symmetric_capability_none" />.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "symmetric_is_oneshot",
+                                "WtpResponseForRequestEntriesImmediateEntriesSymmetricIsOneshot",
+                              ],
+                              <R n="Bool" />,
                             ],
                           },
                         },
