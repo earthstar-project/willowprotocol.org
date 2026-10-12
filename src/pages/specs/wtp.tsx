@@ -99,7 +99,7 @@ export const wtp = (
             In addition to requesting individual{" "}
             <Rs n="Entry" />, peers can also query for whole <Rs n="Area" /> or
             {" "}
-            <Rs n="D3Range" />. Peers can further request that requests for
+            <Rs n="AreaSlice" />. Peers can further request that requests for
             groupings containing many <Rs n="Entry" />{" "}
             are answered not with those <Rs n="Entry" />{" "}
             but merely with a hash of those <Rs n="Entry" />{" "}
@@ -332,21 +332,8 @@ export const wtp = (
             >
               <P>
                 The <R n="WtpRequestEntries" /> messages let peers request{" "}
-                <Rs n="Entry" /> in a{" "}
-                <Sidenote
-                  note={
-                    <>
-                      This message type can also be used for requesting
-                      individual <Rs n="Entry" />: for each <R n="Entry" />{" "}
-                      there exists a <R n="D3Range" />{" "}
-                      that does not contain any other <Rs n="Entry" />.
-                    </>
-                  }
-                >
-                  grouping
-                </Sidenote>{" "}
-                (<R n="AreaOfInterest" /> or{" "}
-                <R n="D3Range" />). The basic information consists of the
+                <Rs n="Entry" /> in a grouping (<R n="AreaOfInterest" /> or{" "}
+                <R n="AreaSlice" />). The basic information consists of the
                 grouping, a <R n="NamespaceId" />, and a{" "}
                 <R n="WtpReadCapability" />{" "}
                 authenticating the request. The message carries various further
@@ -420,7 +407,7 @@ export const wtp = (
                   The sender can allow the receiver to respond (if the count or
                   size thresholds are exceeded) not with metadata but to instead
                   partition the requested grouping into smaller{" "}
-                  <Rs n="D3Range" /> and respond with{" "}
+                  <Rs n="AreaSlice" /> and respond with{" "}
                   <R n="WtpRequestEntries" />{" "}
                   messages of its own; this implements the symmetric,
                   collaborative drilling-down to differences of RBSR. Such
@@ -532,7 +519,7 @@ export const wtp = (
                           <ChoiceType
                             types={[
                               <R n="AreaOfInterest" />,
-                              <R n="D3Range" />,
+                              <R n="AreaSlice" />,
                             ]}
                           />,
                         ],
@@ -870,16 +857,6 @@ export const wtp = (
                   ]}
                 />
               </Pseudocode>
-
-              <P>
-                <Alj inline>
-                  (Design note: there's also the <Code>preferred_ordering</Code>
-                  {" "}
-                  enum from the Rust code sketch, but that is likely to be
-                  obsoleted by the future canonical AreaSlice ordering, turning
-                  this into a boolean.)
-                </Alj>
-              </P>
             </Hsection>
 
             <Hsection
@@ -1199,11 +1176,9 @@ export const wtp = (
                           commented: {
                             comment: (
                               <>
-                                <Alj inline>
-                                  TODO, the mechanics here depend on the
-                                  supported orderings, which in turn depend on
-                                  changes brought on by AreaSlices.
-                                </Alj>
+                                Whether to promise that the immediate entries
+                                will be transmitted in sorted order, according
+                                to the <R n="reconciliation_order" />.
                               </>
                             ),
                             dedicatedLine: true,
@@ -1221,7 +1196,7 @@ export const wtp = (
                             comment: (
                               <>
                                 <P>
-                                  Whether this message should serve as an
+                                  Whether this message should also serve as an
                                   implicit <R n="WtpRequestEntries" />{" "}
                                   message in addition to the regular state
                                   transition semantics.
