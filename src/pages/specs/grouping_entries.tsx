@@ -10,6 +10,7 @@ import {
   DefType,
   DefValue,
   StructDef,
+  Tuple,
 } from "macromania-rustic";
 import { ChoiceType } from "macromania-rustic";
 import { PreviewScope } from "macromania-previews";
@@ -867,6 +868,12 @@ export const grouping_entries = (
 
         <Hsection n="area_slices" title="AreaSlices">
           <P>
+            <Marginale>
+              We have taken the concept of the <R n="AreaSlice" /> from{" "}
+              <Alj inline>
+                TODO give attribution to Elvio here once the paper is online
+              </Alj>.
+            </Marginale>
             Some recursive algorithms (specifically:{" "}
             <R n="d3_range_based_set_reconciliation">
               range-based set reconciliation
@@ -887,6 +894,182 @@ export const grouping_entries = (
             with the ability to be split into roughly equally-filled
             subgroupings.
           </P>
+
+          <P>
+            The underlying problem is that the <Rs n="TimeRange" /> of{" "}
+            <Rs n="Area" /> are too coarse to simply leave the{" "}
+            <R n="AreaSubspace" /> and <R n="AreaPath" />{" "}
+            unchanged and simply split the time range. The solution is simple:
+            to replace the <R n="TimeRange" />{" "}
+            with a more expressive kind of range that is able to split arbitrary
+            subsets of a <R n="store" />{" "}
+            in half. To this end, we start by defining a total order on all{" "}
+            <Rs n="Entry" />.
+          </P>
+
+          <PreviewScope>
+            <P>
+              The <Def n="reconciliation_order" r="reconciliation order" />{" "}
+              is the partial order on <Rs n="Entry" /> which compares by{" "}
+              <R n="entry_timestamp" /> first, breaking ties by comparing{" "}
+              <R n="entry_path" /> second, and finally comparing the{" "}
+              <R n="entry_subspace_id" />{" "}
+              if necessary. If all three are equal, then the two{" "}
+              <Rs n="Entry" /> are called{" "}
+              <Def
+                n="reconciliation_equivalent"
+                r="reconciliation-requivalent"
+              />. Note that any two <Rs n="Entry" /> of equal{" "}
+              <Rs n="entry_namespace_id" /> which do not{" "}
+              <R n="prefix_pruning">prefix-prune</R> each other are not{" "}
+              <R n="reconciliation_equivalent" />. In other words, the{" "}
+              <R n="reconciliation_order" /> induces a total order on any{" "}
+              <R n="store" />.
+            </P>
+          </PreviewScope>
+
+          <P>
+            This definition naturally gives rise to ranges over this order:
+          </P>
+
+          <Pseudocode n="reconciliation_range_defs">
+            <StructDef
+              comment={
+                <>
+                  A <R n="range" /> over the <R n="reconciliation_order" />.
+                </>
+              }
+              id={[
+                "ReconciliationRange",
+                "ReconciliationRange",
+                "ReconciliationRanges",
+              ]}
+              fields={[
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        <P>
+                          For an <R n="Entry" /> to be{" "}
+                          <R n="range_include">included</R> in the{" "}
+                          <R n="range" />, one of the following has to hold:
+                        </P>
+
+                        <Ul>
+                          <Li>
+                            the <R n="entry_timestamp" /> of the <R n="Entry" />
+                            {" "}
+                            is strictly greater than the <R n="Timestamp" /> in
+                            {" "}
+                            <R n="ReconciliationRangeStart" />,
+                          </Li>
+                          <Li>
+                            the <R n="entry_timestamp" /> of the <R n="Entry" />
+                            {" "}
+                            is equal the <R n="Timestamp" /> in{" "}
+                            <R n="ReconciliationRangeStart" />, and the{" "}
+                            <R n="entry_path" /> of the <R n="Entry" />{" "}
+                            is strictly greater (lexicographically) than the
+                            {" "}
+                            <R n="Path" /> in{" "}
+                            <R n="ReconciliationRangeStart" />, or
+                          </Li>
+                          <Li>
+                            the <R n="entry_timestamp" /> and{" "}
+                            <R n="entry_path" /> of the <R n="Entry" />{" "}
+                            are equal the <R n="Timestamp" /> and <R n="Path" />
+                            {" "}
+                            in <R n="ReconciliationRangeStart" />, and the{" "}
+                            <R n="entry_subspace_id" /> of the <R n="Entry" />
+                            {" "}
+                            is greater than or equal to the <R n="SubspaceId" />
+                            {" "}
+                            in <R n="ReconciliationRangeStart" />,
+                          </Li>
+                        </Ul>
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["start", "ReconciliationRangeStart"],
+                      <Tuple
+                        fields={[
+                          <R n="Timestamp" />,
+                          <R n="Path" />,
+                          <R n="SubspaceId" />,
+                        ]}
+                      />,
+                    ],
+                  },
+                },
+                {
+                  commented: {
+                    comment: (
+                      <>
+                        <P>
+                          For an <R n="Entry" /> to be{" "}
+                          <R n="range_include">included</R> in the{" "}
+                          <R n="range" />, one of the following has to hold:
+                        </P>
+
+                        <Ul>
+                          <Li>
+                            <R n="ReconciliationRangeEnd" /> is{" "}
+                            <R n="range_open" />,
+                          </Li>
+                          <Li>
+                            the <R n="entry_timestamp" /> of the <R n="Entry" />
+                            {" "}
+                            is strictly less than the <R n="Timestamp" /> in
+                            {" "}
+                            <R n="ReconciliationRangeEnd" />,
+                          </Li>
+                          <Li>
+                            the <R n="entry_timestamp" /> of the <R n="Entry" />
+                            {" "}
+                            is equal the <R n="Timestamp" /> in{" "}
+                            <R n="ReconciliationRangeEnd" />, and the{" "}
+                            <R n="entry_path" /> of the <R n="Entry" />{" "}
+                            is strictly less (lexicographically) than the{" "}
+                            <R n="Path" /> in{" "}
+                            <R n="ReconciliationRangeEnd" />, or
+                          </Li>
+                          <Li>
+                            the <R n="entry_timestamp" /> and{" "}
+                            <R n="entry_path" /> of the <R n="Entry" />{" "}
+                            are equal the <R n="Timestamp" /> and <R n="Path" />
+                            {" "}
+                            in <R n="ReconciliationRangeEnd" />, and the{" "}
+                            <R n="entry_subspace_id" /> of the <R n="Entry" />
+                            {" "}
+                            is strictly less than the <R n="SubspaceId" /> in
+                            {" "}
+                            <R n="ReconciliationRangeEnd" />,
+                          </Li>
+                        </Ul>
+                      </>
+                    ),
+                    dedicatedLine: true,
+                    segment: [
+                      ["end", "ReconciliationRangeEnd"],
+                      <ChoiceType
+                        types={[
+                          <Tuple
+                            fields={[
+                              <R n="Timestamp" />,
+                              <R n="Path" />,
+                              <R n="SubspaceId" />,
+                            ]}
+                          />,
+                          <R n="range_open" />,
+                        ]}
+                      />,
+                    ],
+                  },
+                },
+              ]}
+            />
+          </Pseudocode>
         </Hsection>
       </PageTemplate>
     </File>
