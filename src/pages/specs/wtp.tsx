@@ -104,8 +104,8 @@ export const wtp = (
             are answered not with those <Rs n="Entry" />{" "}
             but merely with a hash of those <Rs n="Entry" />{" "}
             — a mechanism that enables{" "}
-            <R n="d3_range_based_set_reconciliation">
-              3d range-based set reconciliation
+            <R n="region_based_set_reconciliation">
+              region-based set reconciliation
             </R>.
           </P>
 
@@ -182,7 +182,7 @@ export const wtp = (
               A type{" "}
               <DefType n="WtpFingerprint" r="Fingerprint" rs="Fingerprints" />
               {" "}
-              of <Rs n="d3rbsr_fp" /> (i.e., of hashes of{" "}
+              of <Rs n="rbsr_fp" /> (i.e., of hashes of{" "}
               <Rs n="LengthyAuthorisedEntry" />), and a hash function{" "}
               <DefFunction
                 n="wtp_hash_lengthy_authorised_entries"
@@ -284,8 +284,8 @@ export const wtp = (
                 <R n="WtpRequestEntries" />: for requesting one or more{" "}
                 <Rs n="AuthorisedEntry" />{" "}
                 from the peer, together with some metadata that allows for{" "}
-                <R n="d3_range_based_set_reconciliation">
-                  3d range-based set reconciliation
+                <R n="region_based_set_reconciliation">
+                  region-based set reconciliation
                 </R>.
               </Li>
               <Li>
@@ -375,12 +375,12 @@ export const wtp = (
                 Third, and finally, options pertaining to{" "}
                 <Marginale>
                   This specification assumes familiarity with our{" "}
-                  <R n="d3_range_based_set_reconciliation">
-                    page on 3d range-based set reconciliation
+                  <R n="region_based_set_reconciliation">
+                    page on region-based set reconciliation
                   </R>.
                 </Marginale>
-                <R n="d3_range_based_set_reconciliation">
-                  3d range-based set reconciliation
+                <R n="region_based_set_reconciliation">
+                  region-based set reconciliation
                 </R>:
               </P>
 
@@ -425,8 +425,8 @@ export const wtp = (
                       Request{" "}
                       <Rs n="LengthyAuthorisedEntry" />, optionally as part of
                       {" "}
-                      <R n="d3_range_based_set_reconciliation">
-                        3d range-based set reconciliation
+                      <R n="region_based_set_reconciliation">
+                        region-based set reconciliation
                       </R>.
                     </>
                   }

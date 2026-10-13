@@ -875,8 +875,8 @@ export const grouping_entries = (
               </Alj>.
             </Marginale>
             Some recursive algorithms (specifically:{" "}
-            <R n="d3_range_based_set_reconciliation">
-              range-based set reconciliation
+            <R n="region_based_set_reconciliation">
+              region-based set reconciliation
             </R>) require us to split a grouping of <Rs n="Entry" />{" "}
             into subgroupings containing roughly equal numbers of{" "}
             <Rs n="Entry" />. Unfortunately, this is not always possible with
