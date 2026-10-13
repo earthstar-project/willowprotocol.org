@@ -985,13 +985,13 @@ export const wtp = (
                 </Li>
                 <Li>
                   The third option is the{" "}
-                  <R n="WtpResponseForRequestEntriesMatchingFingerprint" />,
-                  which signals that the locally computed{" "}
+                  <R n="WtpResponseForRequestEntriesDone" />{" "}
+                  transition, which signals that the locally computed{" "}
                   <R n="WtpFingerprint" />{" "}
                   over the requested grouping equals the{" "}
                   <R n="WtpRequestEntriesOwnFingerprint" /> field of the{" "}
                   <R n="WtpRequestEntries" />{" "}
-                  message, and terminates the response.
+                  message and terminates the response.
                 </Li>
                 <Li>
                   The fourth option is the{" "}
@@ -1005,7 +1005,7 @@ export const wtp = (
                   transition which moves to a new state. In this state, you can
                   send <R n="WtpSendEntry" /> and <R n="WtpSendPayloadSlice" />
                   {" "}
-                  messages pertaiing to the request.
+                  messages pertaining to the request.
                 </Li>
               </Ul>
 
@@ -1112,23 +1112,6 @@ export const wtp = (
                             ],
                           },
                         },
-                      ],
-                    },
-                    {
-                      comment: (
-                        <>
-                          Indicates that the peer has the same{" "}
-                          <R n="WtpFingerprint" /> in the grouping as the{" "}
-                          <R n="WtpRequestEntriesOwnFingerprint" /> field of the
-                          {" "}
-                          <R n="WtpRequestEntries" />{" "}
-                          message. Terminates the response.
-                        </>
-                      ),
-                      tuple: true,
-                      id: [
-                        "MatchingFingerprint",
-                        "WtpResponseForRequestEntriesMatchingFingerprint",
                       ],
                     },
                     {
