@@ -571,8 +571,8 @@ export const grouping_entries = (
                 </AccessStruct>, and
               </Li>
               <Li>
-                <AccessStruct field="AreaPath">
-                  <R n="AreaTime" />
+                <AccessStruct field="AreaTime">
+                  <R n="area_include_a" />
                 </AccessStruct>{" "}
                 <R n="range_include">includes</R>{" "}
                 <AccessStruct field="entry_timestamp">
@@ -1206,13 +1206,11 @@ export const grouping_entries = (
                 </AccessStruct>, and
               </Li>
               <Li>
-                <AccessStruct field="AreaSlicePath">
-                  <R n="AreaSliceReconciliationRange" />
+                <AccessStruct field="AreaSliceReconciliationRange">
+                  <R n="area_slice_include_a" />
                 </AccessStruct>{" "}
                 <R n="range_include">includes</R>{" "}
-                <AccessStruct field="entry_timestamp">
-                  <R n="area_slice_include_e" />
-                </AccessStruct>.
+                <R n="area_slice_include_e" />.
               </Li>
             </Ul>
           </PreviewScope>
@@ -1262,7 +1260,7 @@ export const grouping_entries = (
               {" "}
               <R n="ReconciliationRangeStart" /> is the triple of the{" "}
               <R n="Timestamp" /> zero, the empty{" "}
-              <R n="Path" />, and the minimal <R n="SubspaceId" /> It{" "}
+              <R n="Path" />, and the minimal <R n="SubspaceId" />. It{" "}
               <R n="area_slice_include">includes</R> exactly the{" "}
               <Rs n="Entry" /> with <R n="entry_subspace_id" />{" "}
               <R n="subspacearea_sub" />.
