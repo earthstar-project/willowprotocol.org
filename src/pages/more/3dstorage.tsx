@@ -75,25 +75,50 @@ export const threedstorage = (
             >
               <R n="Area" />
             </Sidenote>.
+          </P>
 
-            <P>
-              As for the requirements of syncing, we shall use{" "}
-              <R n="confidential_sync" />{" "}
-              as a (somewhat demanding) baseline. The Confidential Sync protocol
-              needs to compute <Rs n="Fingerprint" /> for arbitrary{" "}
-              <Rs n="D3Range" />, to split arbitrary <Rs n="D3Range" />{" "}
-              into multiple, roughly equally-sized subranges, and to constrain
-              {" "}
-              <Rs n="Area" /> to a number of newest <Rs n="Entry" />{" "}
-              (to work with <Rs n="AreaOfInterest" />).
-            </P>
+          <P>
+            As for the requirements of syncing, we shall use the{" "}
+            <R n="wtp">Willow Transport Protocol (WTP)</R>{" "}
+            as a baseline. The WTP needs to compute <Rs n="Fingerprint" />{" "}
+            for arbitrary <Rs n="AreaSlice" />, to split arbitrary{" "}
+            <Rs n="AreaSlice" />{" "}
+            into multiple, roughly equally-sized subranges, and to constrain
+            {" "}
+            <Rs n="Area" /> to a number of newest <Rs n="Entry" /> (to work with
+            {" "}
+            <Rs n="AreaOfInterest" />).
+          </P>
 
-            <P>
-              This gives us a fairly compact feature set, revolving around
-              spatially constrained access to a three-dimensional arrangement of
-              {" "}
-              <Rs n="Entry" />.
-            </P>
+          <P>
+            This gives us a fairly compact feature set, revolving around
+            spatially constrained access to a three-dimensional arrangement of
+            {" "}
+            <Rs n="Entry" />.
+          </P>
+
+          <P>
+            There are two general approaches to working with{" "}
+            <Rs n="AreaSlice" />. One is to convert each <R n="AreaSlice" />
+            {" "}
+            into a small number (at most five) of <Rs n="D3Range" />{" "}
+            and to then employ standard three-dimensional data structures; we
+            give a brief introduction to such datastructures{" "}
+            <R n="d3storage_multidimensions">below</R>.
+          </P>
+
+          <P>
+            Alternatively, a database can use denormalisation to maintain a
+            bounded number of one-dimensional indexes that together suffice to
+            serve arbitrary <R n="AreaSlice" />{" "}
+            queries. The denormalisation is explained in{" "}
+            <Bib item="amparore2026areaslices" />, and is the main reason for
+            why the Willow protocols favour <Rs n="AreaSlice" /> over{" "}
+            <R n="D3Range" /> in its{" "}
+            <R n="rbsr" />. Another alternative might be to denormalice{" "}
+            <Rs n="subspace" />{" "}
+            and to then use a two-dimensional search tree for handling{" "}
+            <Rs n="Path" /> and <Rs n="Timestamp" />.
           </P>
         </Hsection>
 
@@ -209,24 +234,7 @@ export const threedstorage = (
             computation. Similarly, storing the total number of items in each
             node allows for efficiently working with{" "}
             <Rs n="AreaOfInterest" />, and can guide the splitting of{" "}
-            <Rs n="D3Range" />{" "}
-            for set reconciliation. Adopting the corresponding one-dimensional
-            algorithms to the multidimensional tree structures is far from
-            trivial, but ultimately doable. At the end of the day, a Willow
-            implementation will thus rise and fall with the quality of its
-            three-dimensional range queries.
-          </P>
-
-          <P>
-            Engineering a three-dimensional data store is no easy feat, but the
-            existence of numerous production-quality systems for working with
-            multidimensional data shows that it is feasible. The whole design of
-            Willow rests on this assumption, as well as on the assumption that
-            three-dimensional data organisation suffices for building useful
-            applications. While knowing full well that most contemporary
-            peer-to-peer projects settle for more simple and less expressive
-            data models, we believe that Willow hits a sweet(er) spot between
-            expressivity and implementability.
+            <Rs n="D3Range" /> for <R n="rbsr" />.
           </P>
         </Hsection>
 

@@ -1,5 +1,15 @@
 import { Dir, File } from "macromania-outfs";
-import { Code, Em, Figcaption, Figure, Img, Li, P, Ul } from "macromania-html";
+import {
+  A,
+  Code,
+  Em,
+  Figcaption,
+  Figure,
+  Img,
+  Li,
+  P,
+  Ul,
+} from "macromania-html";
 import { ResolveAsset } from "macromania-assets";
 import { Marginale, Sidenote } from "macromania-marginalia";
 import { Hsection } from "macromania-hsection";
@@ -870,9 +880,17 @@ export const grouping_entries = (
           <P>
             <Marginale>
               We have taken the concept of the <R n="AreaSlice" /> from{" "}
-              <Alj inline>
-                TODO give attribution to Elvio here once the paper is online
-              </Alj>.
+              <A
+                clazz="greenlink"
+                href={
+                  <ResolveAsset
+                    asset={["references", "amparore2026areaslices.pdf"]}
+                  />
+                }
+              >
+                a lovely paper
+              </A>{" "}
+              by Elvio Amparore. Thank you Elvio for this research.
             </Marginale>
             Some recursive algorithms (specifically:{" "}
             <R n="region_based_set_reconciliation">

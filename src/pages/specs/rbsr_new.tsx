@@ -2,6 +2,7 @@ import { Dir, File } from "macromania-outfs";
 import { AE, Alj, Gwil, Vermillion } from "../../macros.tsx";
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
+  A,
   Code,
   Figcaption,
   Figure,
@@ -242,6 +243,20 @@ export const rbsr = (
         </Figure>
 
         <P>
+          <Marginale>
+            The reasons for using <Rs n="AreaSlice" />{" "}
+            as the grouping for the reconciliation process are given in{" "}
+            <A
+              clazz="greenlink"
+              href={
+                <ResolveAsset
+                  asset={["references", "amparore2026areaslices.pdf"]}
+                />
+              }
+            >
+              this paper by Elvio Amparore
+            </A>.
+          </Marginale>
           <Def
             n="rbsr"
             r="region-based set reconciliation"

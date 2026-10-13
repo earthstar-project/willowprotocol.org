@@ -623,7 +623,10 @@ li.deprecated-page {
     a[data-ref].hsection {
         color: rgb(115, 145, 121);
     }
+}
 
+a.greenlink {
+   color: var(--dark-green); 
 }
 
 /*********/
