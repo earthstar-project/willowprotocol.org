@@ -88,6 +88,14 @@ export const wtp = (
 
         <Hsection n="wtp_intro" title="Introduction">
           <P>
+            {
+              /* <Marginale inlineable>
+              <Img
+                src={<ResolveAsset asset={["sync", "syncing.png"]} />}
+                alt={`An ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualisations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.`}
+              />
+            </Marginale> */
+            }
             The <R n="wtp" />{" "}
             is a message-based protocol where two peer can send and request{" "}
             <Rs n="Entry" /> and <Rs n="Payload" />{" "}
@@ -99,13 +107,13 @@ export const wtp = (
             In addition to requesting individual{" "}
             <Rs n="Entry" />, peers can also query for whole <Rs n="Area" /> or
             {" "}
-            <Rs n="D3Range" />. Peers can further request that requests for
+            <Rs n="AreaSlice" />. Peers can further request that requests for
             groupings containing many <Rs n="Entry" />{" "}
             are answered not with those <Rs n="Entry" />{" "}
             but merely with a hash of those <Rs n="Entry" />{" "}
             — a mechanism that enables{" "}
-            <R n="d3_range_based_set_reconciliation">
-              3d range-based set reconciliation
+            <R n="region_based_set_reconciliation">
+              region-based set reconciliation
             </R>.
           </P>
 
@@ -182,7 +190,7 @@ export const wtp = (
               A type{" "}
               <DefType n="WtpFingerprint" r="Fingerprint" rs="Fingerprints" />
               {" "}
-              of <Rs n="d3rbsr_fp" /> (i.e., of hashes of{" "}
+              of <Rs n="rbsr_fp" /> (i.e., of hashes of{" "}
               <Rs n="LengthyAuthorisedEntry" />), and a hash function{" "}
               <DefFunction
                 n="wtp_hash_lengthy_authorised_entries"
@@ -284,8 +292,8 @@ export const wtp = (
                 <R n="WtpRequestEntries" />: for requesting one or more{" "}
                 <Rs n="AuthorisedEntry" />{" "}
                 from the peer, together with some metadata that allows for{" "}
-                <R n="d3_range_based_set_reconciliation">
-                  3d range-based set reconciliation
+                <R n="region_based_set_reconciliation">
+                  region-based set reconciliation
                 </R>.
               </Li>
               <Li>
@@ -332,21 +340,8 @@ export const wtp = (
             >
               <P>
                 The <R n="WtpRequestEntries" /> messages let peers request{" "}
-                <Rs n="Entry" /> in a{" "}
-                <Sidenote
-                  note={
-                    <>
-                      This message type can also be used for requesting
-                      individual <Rs n="Entry" />: for each <R n="Entry" />{" "}
-                      there exists a <R n="D3Range" />{" "}
-                      that does not contain any other <Rs n="Entry" />.
-                    </>
-                  }
-                >
-                  grouping
-                </Sidenote>{" "}
-                (<R n="AreaOfInterest" /> or{" "}
-                <R n="D3Range" />). The basic information consists of the
+                <Rs n="Entry" /> in a grouping (<R n="AreaOfInterest" /> or{" "}
+                <R n="AreaSlice" />). The basic information consists of the
                 grouping, a <R n="NamespaceId" />, and a{" "}
                 <R n="WtpReadCapability" />{" "}
                 authenticating the request. The message carries various further
@@ -388,12 +383,12 @@ export const wtp = (
                 Third, and finally, options pertaining to{" "}
                 <Marginale>
                   This specification assumes familiarity with our{" "}
-                  <R n="d3_range_based_set_reconciliation">
-                    page on 3d range-based set reconciliation
+                  <R n="region_based_set_reconciliation">
+                    page on region-based set reconciliation
                   </R>.
                 </Marginale>
-                <R n="d3_range_based_set_reconciliation">
-                  3d range-based set reconciliation
+                <R n="region_based_set_reconciliation">
+                  region-based set reconciliation
                 </R>:
               </P>
 
@@ -420,7 +415,7 @@ export const wtp = (
                   The sender can allow the receiver to respond (if the count or
                   size thresholds are exceeded) not with metadata but to instead
                   partition the requested grouping into smaller{" "}
-                  <Rs n="D3Range" /> and respond with{" "}
+                  <Rs n="AreaSlice" /> and respond with{" "}
                   <R n="WtpRequestEntries" />{" "}
                   messages of its own; this implements the symmetric,
                   collaborative drilling-down to differences of RBSR. Such
@@ -438,8 +433,8 @@ export const wtp = (
                       Request{" "}
                       <Rs n="LengthyAuthorisedEntry" />, optionally as part of
                       {" "}
-                      <R n="d3_range_based_set_reconciliation">
-                        3d range-based set reconciliation
+                      <R n="region_based_set_reconciliation">
+                        region-based set reconciliation
                       </R>.
                     </>
                   }
@@ -532,7 +527,7 @@ export const wtp = (
                           <ChoiceType
                             types={[
                               <R n="AreaOfInterest" />,
-                              <R n="D3Range" />,
+                              <R n="AreaSlice" />,
                             ]}
                           />,
                         ],
@@ -870,6 +865,19 @@ export const wtp = (
                   ]}
                 />
               </Pseudocode>
+
+              <P>
+                Note that the symmetric nature of <R n="rbsr" />{" "}
+                can lead to redundancies: if both peers send{" "}
+                <R n="WtpRequestEntries" />{" "}
+                messages for the same grouping and then both are recursively
+                split and reconciled, a lot of work is unnecessarily duplicated.
+                We recommend employing some sort of symmetry-breaking. For
+                example, the peer who initiated the connection could be
+                responsible for detecting duplicates and stopping to process
+                redundant messages (if both peers did this simultaneously, then
+                symmetric requests would end up being dropped completely).
+              </P>
             </Hsection>
 
             <Hsection
@@ -953,7 +961,7 @@ export const wtp = (
               <P>
                 The state transitions are straightforward. After receiving a
                 {" "}
-                <R n="WtpRequestEntries" /> message, there are four options:
+                <R n="WtpRequestEntries" /> message, there are five options:
               </P>
 
               <Ul>
@@ -969,7 +977,7 @@ export const wtp = (
                 </Li>
                 <Li>
                   The second option is the{" "}
-                  <R n="WtpResponseForRequestEntriesNope" />{" "}
+                  <R n="WtpResponseForRequestEntriesDecline" />{" "}
                   transition, which indicates that the request will not be
                   processed (any further) and immediately terminates the
                   response. This transition can be taken at any time, not only
@@ -977,6 +985,16 @@ export const wtp = (
                 </Li>
                 <Li>
                   The third option is the{" "}
+                  <R n="WtpResponseForRequestEntriesMatchingFingerprint" />,
+                  which signals that the locally computed{" "}
+                  <R n="WtpFingerprint" />{" "}
+                  over the requested grouping equals the{" "}
+                  <R n="WtpRequestEntriesOwnFingerprint" /> field of the{" "}
+                  <R n="WtpRequestEntries" />{" "}
+                  message, and terminates the response.
+                </Li>
+                <Li>
+                  The fourth option is the{" "}
                   <R n="WtpResponseForRequestEntriesMetadata" />{" "}
                   transition, which carries metadata summarising the grouping
                   and then terminates the response.
@@ -1067,8 +1085,8 @@ export const wtp = (
                         </>
                       ),
                       id: [
-                        "Nope",
-                        "WtpResponseForRequestEntriesNope",
+                        "Decline",
+                        "WtpResponseForRequestEntriesDecline",
                       ],
                       fields: [
                         {
@@ -1088,12 +1106,29 @@ export const wtp = (
                             segment: [
                               [
                                 "retry",
-                                "WtpResponseForRequestEntriesNopeRetry",
+                                "WtpResponseForRequestEntriesDeclineRetry",
                               ],
                               <R n="Bool" />,
                             ],
                           },
                         },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that the peer has the same{" "}
+                          <R n="WtpFingerprint" /> in the grouping as the{" "}
+                          <R n="WtpRequestEntriesOwnFingerprint" /> field of the
+                          {" "}
+                          <R n="WtpRequestEntries" />{" "}
+                          message. Terminates the response.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "MatchingFingerprint",
+                        "WtpResponseForRequestEntriesMatchingFingerprint",
                       ],
                     },
                     {
@@ -1185,33 +1220,31 @@ export const wtp = (
                         "WtpResponseForRequestEntriesImmediateEntries",
                       ],
                       fields: [
-                        // {
-                        //   commented: {
-                        //     comment: (
-                        //       <>
-                        //         <Alj inline>
-                        //           TODO, the mechanics here depend on the
-                        //           supported orderings, which in turn depend on
-                        //           changes brought on by AreaSlices.
-                        //         </Alj>
-                        //       </>
-                        //     ),
-                        //     dedicatedLine: true,
-                        //     segment: [
-                        //       [
-                        //         "will_sort",
-                        //         "WtpResponseForRequestEntriesImmediateEntriesWillSort",
-                        //       ],
-                        //       <R n="Bool" />,
-                        //     ],
-                        //   },
-                        // },
+                        {
+                          commented: {
+                            comment: (
+                              <>
+                                Whether to promise that the immediate entries
+                                will be transmitted in sorted order, according
+                                to the <R n="reconciliation_order" />.
+                              </>
+                            ),
+                            dedicatedLine: true,
+                            segment: [
+                              [
+                                "will_sort",
+                                "WtpResponseForRequestEntriesImmediateEntriesWillSort",
+                              ],
+                              <R n="Bool" />,
+                            ],
+                          },
+                        },
                         {
                           commented: {
                             comment: (
                               <>
                                 <P>
-                                  Whether this message should serve as an
+                                  Whether this message should also serve as an
                                   implicit <R n="WtpRequestEntries" />{" "}
                                   message in addition to the regular state
                                   transition semantics.
@@ -1767,7 +1800,7 @@ export const wtp = (
 
               <P>
                 The state transitions are very simple. The{" "}
-                <R n="WtpResponseForRequestPayloadSliceNope" />{" "}
+                <R n="WtpResponseForRequestPayloadSliceDecline" />{" "}
                 transition, which indicates that the request will not be
                 processed (any further) and immediately terminates the response.
                 This transition can be taken at any time, not only as the very
@@ -1838,8 +1871,8 @@ export const wtp = (
                         </>
                       ),
                       id: [
-                        "Nope",
-                        "WtpResponseForRequestPayloadSliceNope",
+                        "Decline",
+                        "WtpResponseForRequestPayloadSliceDecline",
                       ],
                       fields: [
                         {
@@ -1859,7 +1892,7 @@ export const wtp = (
                             segment: [
                               [
                                 "retry",
-                                "WtpResponseForRequestPayloadSliceNopeRetry",
+                                "WtpResponseForRequestPayloadSliceDeclineRetry",
                               ],
                               <R n="Bool" />,
                             ],

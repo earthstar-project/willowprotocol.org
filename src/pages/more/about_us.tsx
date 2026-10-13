@@ -6,7 +6,7 @@ import { ResolveAsset } from "macromania-assets";
 import { PreviewScope } from "macromania-previews";
 import { Hsection } from "macromania-hsection";
 import { Marginale } from "macromania-marginalia";
-import { Def, R, Rb } from "macromania-defref";
+import { Def, R, Rb, Rs } from "macromania-defref";
 
 export const about_us = (
   <Dir name="about-us">
@@ -24,7 +24,10 @@ export const about_us = (
             />
           </Marginale>
           Willow started as a{" "}
-          <A href={<ResolveAsset asset={["about", "soilsun.md"]} />}>
+          <A
+            clazz="greenlink"
+            href={<ResolveAsset asset={["about", "soilsun.md"]} />}
+          >
             minimalistic reimagining
           </A>{" "}
           of{" "}
@@ -122,6 +125,27 @@ export const about_us = (
             </AE>{" "}
             as a better choice than UNIX time for how to interpret timestamps.
             Thank you.
+          </P>
+
+          <P>
+            <AE href="https://scholar.google.com/citations?user=JpAo_YcAAAAJ">
+              Elvio Amparore
+            </AE>{" "}
+            came up with{" "}
+            <A
+              clazz="greenlink"
+              href={
+                <ResolveAsset
+                  asset={["references", "amparore2026areaslices.pdf"]}
+                />
+              }
+            >
+              the denormalisation scheme
+            </A>{" "}
+            to efficiently answer <R n="Area" />{" "}
+            queries with a set of one-dimensional database indexes, and
+            introduced the concept of <Rs n="AreaSlice" /> for efficient{" "}
+            <R n="rbsr" /> using those one-dimensional indexes. Thank you.
           </P>
 
           <P>

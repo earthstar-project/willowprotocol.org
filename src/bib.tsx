@@ -496,9 +496,56 @@ export const bib: BibItemDeclaration[] = [
     blurb: (
       <>
         <P>
-        Resource Description Framework (RDF) was designed with the initial goal of developing metadata for the Internet. While the Internet is a conglomeration of many interconnected networks and computers, most of today's best RDF storage solutions are confined to a single node. Working on a single node has significant scalability issues, especially considering the magnitude of modern day data. In this paper we introduce a scalable RDF data management system that uses Accumulo, a Google Bigtable variant. We introduce storage methods, indexing schemes, and query processing techniques that scale to billions of triples across multiple nodes, while providing fast and easy access to the data through conventional query mechanisms such as SPARQL. Our performance evaluation shows that in most cases, our system outperforms existing distributed RDF solutions, even systems much more complex than ours.
+          Resource Description Framework (RDF) was designed with the initial
+          goal of developing metadata for the Internet. While the Internet is a
+          conglomeration of many interconnected networks and computers, most of
+          today's best RDF storage solutions are confined to a single node.
+          Working on a single node has significant scalability issues,
+          especially considering the magnitude of modern day data. In this paper
+          we introduce a scalable RDF data management system that uses Accumulo,
+          a Google Bigtable variant. We introduce storage methods, indexing
+          schemes, and query processing techniques that scale to billions of
+          triples across multiple nodes, while providing fast and easy access to
+          the data through conventional query mechanisms such as SPARQL. Our
+          performance evaluation shows that in most cases, our system
+          outperforms existing distributed RDF solutions, even systems much more
+          complex than ours.
+        </P>
+      </>
+    ),
+  },
+  {
+    item: `@inproceedings{punnoose2012rya,
+  title={Rya: a scalable RDF triple store for the clouds},
+  author={Punnoose, Roshan and Crainiceanu, Adina and Rapp, David},
+  booktitle={Proceedings of the 1st International Workshop on Cloud Intelligence},
+  pages={1--8},
+  year={2012}
+}
+
+`,
+    asset: ["references", "punnoose2012rya.pdf"],
+    blurb: (
+      <>
+        <P>
+          Resource Description Framework (RDF) was designed with the initial
+          goal of developing metadata for the Internet. While the Internet is a
+          conglomeration of many interconnected networks and computers, most of
+          today's best RDF storage solutions are confined to a single node.
+          Working on a single node has significant scalability issues,
+          especially considering the magnitude of modern day data. In this paper
+          we introduce a scalable RDF data management system that uses Accumulo,
+          a Google Bigtable variant. We introduce storage methods, indexing
+          schemes, and query processing techniques that scale to billions of
+          triples across multiple nodes, while providing fast and easy access to
+          the data through conventional query mechanisms such as SPARQL. Our
+          performance evaluation shows that in most cases, our system
+          outperforms existing distributed RDF solutions, even systems much more
+          complex than ours.
         </P>
       </>
     ),
   },
 ];
+
+// amparore2026areaslices
