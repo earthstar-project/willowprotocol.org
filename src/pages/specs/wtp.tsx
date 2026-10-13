@@ -1045,7 +1045,7 @@ export const wtp = (
                 <Img
                   clazz="wide"
                   src={<ResolveAsset asset={["wtp", "state_machine_1.png"]} />}
-                  alt={`Aaaa`}
+                  alt={`A depiction of the transitions as a finite state machine, according to the description above.`}
                 />
               </Figure>
 
@@ -1833,7 +1833,7 @@ export const wtp = (
 
               <Img
                 src={<ResolveAsset asset={["wtp", "state_machine_2.png"]} />}
-                alt={`Aaaa`}
+                alt={`A depiction of the transitions as a finite state machine, according to the description above.`}
               />
 
               <Pseudocode n="wtp_defs_WtpResponseForRequestPayloadSlice">
