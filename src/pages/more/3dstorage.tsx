@@ -115,7 +115,7 @@ export const threedstorage = (
             <Bib item="amparore2026areaslices" />, and is the main reason for
             why the Willow protocols favour <Rs n="AreaSlice" /> over{" "}
             <R n="D3Range" /> in its{" "}
-            <R n="rbsr" />. Another alternative might be to denormalice{" "}
+            <R n="rbsr" />. Another alternative might be to denormalise{" "}
             <Rs n="subspace" />{" "}
             and to then use a two-dimensional search tree for handling{" "}
             <Rs n="Path" /> and <Rs n="Timestamp" />.
