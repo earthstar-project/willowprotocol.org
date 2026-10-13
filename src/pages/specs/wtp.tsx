@@ -977,7 +977,7 @@ export const wtp = (
                 </Li>
                 <Li>
                   The second option is the{" "}
-                  <R n="WtpResponseForRequestEntriesNope" />{" "}
+                  <R n="WtpResponseForRequestEntriesDecline" />{" "}
                   transition, which indicates that the request will not be
                   processed (any further) and immediately terminates the
                   response. This transition can be taken at any time, not only
@@ -1085,8 +1085,8 @@ export const wtp = (
                         </>
                       ),
                       id: [
-                        "Nope",
-                        "WtpResponseForRequestEntriesNope",
+                        "Decline",
+                        "WtpResponseForRequestEntriesDecline",
                       ],
                       fields: [
                         {
@@ -1106,7 +1106,7 @@ export const wtp = (
                             segment: [
                               [
                                 "retry",
-                                "WtpResponseForRequestEntriesNopeRetry",
+                                "WtpResponseForRequestEntriesDeclineRetry",
                               ],
                               <R n="Bool" />,
                             ],
@@ -1800,7 +1800,7 @@ export const wtp = (
 
               <P>
                 The state transitions are very simple. The{" "}
-                <R n="WtpResponseForRequestPayloadSliceNope" />{" "}
+                <R n="WtpResponseForRequestPayloadSliceDecline" />{" "}
                 transition, which indicates that the request will not be
                 processed (any further) and immediately terminates the response.
                 This transition can be taken at any time, not only as the very
@@ -1871,8 +1871,8 @@ export const wtp = (
                         </>
                       ),
                       id: [
-                        "Nope",
-                        "WtpResponseForRequestPayloadSliceNope",
+                        "Decline",
+                        "WtpResponseForRequestPayloadSliceDecline",
                       ],
                       fields: [
                         {
@@ -1892,7 +1892,7 @@ export const wtp = (
                             segment: [
                               [
                                 "retry",
-                                "WtpResponseForRequestPayloadSliceNopeRetry",
+                                "WtpResponseForRequestPayloadSliceDeclineRetry",
                               ],
                               <R n="Bool" />,
                             ],
