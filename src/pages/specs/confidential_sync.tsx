@@ -74,6 +74,17 @@ export const confidential_sync = (
 
         <Hsection n="sync_intro" title="Introduction">
           <P>
+            <Wip inline fg="#000000" bg="#f7e4a5ff">
+              Design on this specification are paused, we are focussing on the
+              {" "}
+              <R n="wtp">Willow Tansport Protocol</R>{" "}
+              first. A lot of the designs in this document are outdated; we will
+              eventually draft a new Confidential Sync spec that incorporates
+              learnings from the Willow Transport Protocol.
+            </Wip>
+          </P>
+
+          <P>
             <Marginale inlineable>
               <Img
                 src={<ResolveAsset asset={["sync", "syncing.png"]} />}
