@@ -88,12 +88,14 @@ export const wtp = (
 
         <Hsection n="wtp_intro" title="Introduction">
           <P>
-            {/* <Marginale inlineable>
+            {
+              /* <Marginale inlineable>
               <Img
                 src={<ResolveAsset asset={["sync", "syncing.png"]} />}
                 alt={`An ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualisations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.`}
               />
-            </Marginale> */}
+            </Marginale> */
+            }
             The <R n="wtp" />{" "}
             is a message-based protocol where two peer can send and request{" "}
             <Rs n="Entry" /> and <Rs n="Payload" />{" "}
@@ -863,6 +865,19 @@ export const wtp = (
                   ]}
                 />
               </Pseudocode>
+
+              <P>
+                Note that the symmetric nature of <R n="rbsr" />{" "}
+                can lead to redundancies: if both peers send{" "}
+                <R n="WtpRequestEntries" />{" "}
+                messages for the same grouping and then both are recursively
+                split and reconciled, a lot of work is unnecessarily duplicated.
+                We recommend employing some sort of symmetry-breaking. For
+                example, the peer who initiated the connection could be
+                responsible for detecting duplicates and stopping to process
+                redundant messages (if both peers did this simultaneously, then
+                symmetric requests would end up being dropped completely).
+              </P>
             </Hsection>
 
             <Hsection
@@ -946,7 +961,7 @@ export const wtp = (
               <P>
                 The state transitions are straightforward. After receiving a
                 {" "}
-                <R n="WtpRequestEntries" /> message, there are four options:
+                <R n="WtpRequestEntries" /> message, there are five options:
               </P>
 
               <Ul>
@@ -970,6 +985,16 @@ export const wtp = (
                 </Li>
                 <Li>
                   The third option is the{" "}
+                  <R n="WtpResponseForRequestEntriesMatchingFingerprint" />,
+                  which signals that the locally computed{" "}
+                  <R n="WtpFingerprint" />{" "}
+                  over the requested grouping equals the{" "}
+                  <R n="WtpRequestEntriesOwnFingerprint" /> field of the{" "}
+                  <R n="WtpRequestEntries" />{" "}
+                  message, and terminates the response.
+                </Li>
+                <Li>
+                  The fourth option is the{" "}
                   <R n="WtpResponseForRequestEntriesMetadata" />{" "}
                   transition, which carries metadata summarising the grouping
                   and then terminates the response.
@@ -1087,6 +1112,23 @@ export const wtp = (
                             ],
                           },
                         },
+                      ],
+                    },
+                    {
+                      comment: (
+                        <>
+                          Indicates that the peer has the same{" "}
+                          <R n="WtpFingerprint" /> in the grouping as the{" "}
+                          <R n="WtpRequestEntriesOwnFingerprint" /> field of the
+                          {" "}
+                          <R n="WtpRequestEntries" />{" "}
+                          message. Terminates the response.
+                        </>
+                      ),
+                      tuple: true,
+                      id: [
+                        "MatchingFingerprint",
+                        "WtpResponseForRequestEntriesMatchingFingerprint",
                       ],
                     },
                     {
