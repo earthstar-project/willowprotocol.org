@@ -13,6 +13,7 @@ import {
 import { PageTemplate } from "../../pageTemplate.tsx";
 import {
   Code,
+  Div,
   Em,
   Figcaption,
   Figure,
@@ -1040,9 +1041,13 @@ export const wtp = (
                 transition can be used to terminate the response.
               </P>
 
-              <P>
-                <Alj inline>diagram of the state machine goes here</Alj>
-              </P>
+              <Figure>
+                <Img
+                  clazz="wide"
+                  src={<ResolveAsset asset={["wtp", "state_machine_1.png"]} />}
+                  alt={`Aaaa`}
+                />
+              </Figure>
 
               <P>
                 The <R n="WtpResponseForRequestEntriesImmediateEntries" />{" "}
@@ -1826,9 +1831,10 @@ export const wtp = (
                 <R n="Entry" /> matching the request.
               </P>
 
-              <P>
-                <Alj inline>diagram of the state machine goes here</Alj>
-              </P>
+              <Img
+                src={<ResolveAsset asset={["wtp", "state_machine_2.png"]} />}
+                alt={`Aaaa`}
+              />
 
               <Pseudocode n="wtp_defs_WtpResponseForRequestPayloadSlice">
                 <Enum
