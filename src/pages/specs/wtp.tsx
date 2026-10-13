@@ -88,6 +88,12 @@ export const wtp = (
 
         <Hsection n="wtp_intro" title="Introduction">
           <P>
+            <Marginale inlineable>
+              <Img
+                src={<ResolveAsset asset={["sync", "syncing.png"]} />}
+                alt={`An ornamental drawing of two Willow data stores. Each store is a three-dimensional space, alluding to the path/time/subspace visualisations in the data model specification. Within each data store, a box-shaped area is highlighted. Between these highlighted areas flows a bidirectional stream of documents. Alfie, Betty, and Dalton lounge around the drawing.`}
+              />
+            </Marginale>
             The <R n="wtp" />{" "}
             is a message-based protocol where two peer can send and request{" "}
             <Rs n="Entry" /> and <Rs n="Payload" />{" "}
