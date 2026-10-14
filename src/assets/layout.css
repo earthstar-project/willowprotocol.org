@@ -52,7 +52,7 @@ body:not(.isTooltip) {
     #wrapContent {
         width: 52rem;
 
-        >*:not(section, main), section>*:not(section, main, #sim-data-model)  {
+        >*:not(section, main), section>*:not(section, main, #sim-data-model, section figure.wide)  {
             max-width: 32rem;
         }
 

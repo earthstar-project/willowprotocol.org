@@ -143,7 +143,7 @@ export const willow_compared = (
               laudable feature
             </AE>, but it precludes the option of concurrent writes from
             multiple devices. With{" "}
-            <R n="d3rbsr" />, Willow can achieve efficient data synchronisation
+            <R n="rbsr" />, Willow can achieve efficient data synchronisation
             without the need to restrict updates to a linear sequence. We do not
             need to enforce linearity to keep sync complexity manageable, so we
             opt for effortless multi-writer support instead.

@@ -117,7 +117,7 @@ body:not(.isTooltip) {
     #wrapContent {
         width: ${maxMain + paddingMarginalia + marginalia}rem;
 
-        >*:not(section, main), section>*:not(section, main, #sim-data-model)  {
+        >*:not(section, main), section>*:not(section, main, #sim-data-model, section figure.wide)  {
             max-width: ${maxMain}rem;
         }
 
