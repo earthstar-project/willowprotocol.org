@@ -86,7 +86,7 @@ export const drop_format = (
           </P>
 
           <P>
-            <Marginale inlineable>
+            <Marginale>
               <Img
                 src={
                   <ResolveAsset asset={["dropformat", "example_flow.png"]} />
