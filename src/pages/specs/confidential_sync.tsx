@@ -75,7 +75,7 @@ export const confidential_sync = (
         <Hsection n="sync_intro" title="Introduction">
           <P>
             <Wip inline fg="#000000" bg="#f7e4a5ff">
-              Design on this specification are paused, we are focussing on the
+              Design on this specification is paused, we are focussing on the
               {" "}
               <R n="wtp">Willow Tansport Protocol</R>{" "}
               first. A lot of the designs in this document are outdated; we will
@@ -2895,7 +2895,11 @@ export const confidential_sync = (
                       "max_count",
                       2,
                       <>
-                        <ValAccess field="PioBindReadCapabilityMaxCount" />
+                        <ValAccess field="PioBindReadCapabilityMaxCount" />{" "}
+                        + 1 modulo{" "}
+                        <M>
+                          2^<Curly>64</Curly>
+                        </M>
                       </>,
                     ),
                     c64Tag(

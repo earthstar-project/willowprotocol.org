@@ -736,7 +736,11 @@ export const grouping_entries = (
                         <R n="entry_timestamp" /> must be among the{" "}
                         <R n="aoi_count" /> <R n="entry_newer">newest</R>{" "}
                         <Rs n="Entry" />. If the <R n="aoi_count" /> is{" "}
-                        <M>0</M>, then no <Rs n="Entry" /> are excluded instead.
+                        <M>
+                          2^<Curly>64</Curly> - 1
+                        </M>{" "}
+                        (the greatest possible <R n="U64" />), then no{" "}
+                        <Rs n="Entry" /> are excluded.
                       </>
                     ),
                     dedicatedLine: true,
