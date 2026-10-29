@@ -6,6 +6,7 @@ import {
   bitfieldConditional,
   bitfieldConstant,
   bitfieldIff,
+  bitfieldIfOrArbitrary,
   C64Encoding,
   C64Standalone,
   c64Tag,
@@ -962,13 +963,13 @@ export const encodings = (
                   </>
                 }
                 bitfields={[
-                  bitfieldIff(
+                  bitfieldIfOrArbitrary(
                     <Code>
                       <ValAccess field="entry_namespace_id" /> !={" "}
                       <RelAccess field="entry_namespace_id" />
                     </Code>,
                   ),
-                  bitfieldIff(
+                  bitfieldIfOrArbitrary(
                     <Code>
                       <ValAccess field="entry_subspace_id" /> !={" "}
                       <RelAccess field="entry_subspace_id" />
@@ -994,10 +995,9 @@ export const encodings = (
                 contents={[
                   <EncConditional
                     condition={
-                      <Code>
-                        <ValAccess field="entry_namespace_id" /> !={" "}
-                        <RelAccess field="entry_namespace_id" />
-                      </Code>
+                      <>
+                        bit <Code>0</Code> is <Code>1</Code>
+                      </>
                     }
                   >
                     <CodeFor notStandalone enc="encode_namespace_id">
@@ -1006,10 +1006,9 @@ export const encodings = (
                   </EncConditional>,
                   <EncConditional
                     condition={
-                      <Code>
-                        <ValAccess field="entry_subspace_id" /> !={" "}
-                        <RelAccess field="entry_subspace_id" />
-                      </Code>
+                      <>
+                        bit <Code>1</Code> is <Code>1</Code>
+                      </>
                     }
                   >
                     <CodeFor notStandalone enc="encode_subspace_id">
@@ -1089,7 +1088,7 @@ export const encodings = (
                   </>
                 }
                 bitfields={[
-                  bitfieldIff(
+                  bitfieldIfOrArbitrary(
                     <Code>
                       <ValAccess field="entry_subspace_id" /> !={" "}
                       <RelAccess field="AreaSubspace" />
@@ -1110,10 +1109,9 @@ export const encodings = (
                 contents={[
                   <EncConditional
                     condition={
-                      <Code>
-                        <ValAccess field="entry_subspace_id" /> !={" "}
-                        <RelAccess field="AreaSubspace" />
-                      </Code>
+                      <>
+                        bit <Code>0</Code> is <Code>1</Code>
+                      </>
                     }
                   >
                     <CodeFor notStandalone enc="encode_subspace_id">
@@ -1267,7 +1265,7 @@ export const encodings = (
                 }
                 shortRelToDescription={<R n="Area" />}
                 bitfields={[
-                  bitfieldIff(
+                  bitfieldIfOrArbitrary(
                     <Code>
                       <ValAccess field="AreaSubspace" /> !={" "}
                       <RelAccess field="AreaSubspace" />
@@ -1348,10 +1346,9 @@ export const encodings = (
                   <EncConditional
                     condition={
                       <>
-                        <Code>
-                          <ValAccess field="AreaSubspace" /> !={" "}
-                          <RelAccess field="AreaSubspace" />
-                        </Code>
+                        <>
+                          bit <Code>0</Code> is <Code>1</Code>
+                        </>
                       </>
                     }
                   >
@@ -2757,7 +2754,7 @@ export const encodings = (
               }
               shortRelToDescription={<R n="PrivateAreaContext" />}
               bitfields={[
-                bitfieldIff(
+                bitfieldIfOrArbitrary(
                   <Code>
                     <ValAccess field="AreaSubspace" /> !={" "}
                     <AccessStruct field="AreaSubspace">
@@ -2845,17 +2842,11 @@ export const encodings = (
                 <EncConditional
                   condition={
                     <>
+                      bit <Code>0</Code> is <Code>1</Code> and{" "}
                       <Code>
-                        <ValAccess field="AreaSubspace" /> !={" "}
-                        <R n="range_open" />
-                      </Code>{" "}
-                      and{" "}
-                      <Code>
-                        <ValAccess field="AreaSubspace" /> !={" "}
-                        <AccessStruct field="AreaSubspace">
-                          <RelAccess field="PrivateAreaContextRel" />
-                        </AccessStruct>
+                        <ValAccess field="AreaSubspace" /> != <R n="ss_any" />
                       </Code>
+                      {" "}
                     </>
                   }
                 >
@@ -3465,7 +3456,7 @@ export const encodings = (
                 </>
               }
               bitfields={[
-                bitfieldIff(
+                bitfieldIfOrArbitrary(
                   <Code>
                     <ValAccess field="entry_subspace_id" /> !={" "}
                     <AccessStruct field="SubspaceRangeStart">
@@ -3489,10 +3480,9 @@ export const encodings = (
               contents={[
                 <EncConditional
                   condition={
-                    <Code>
-                      <ValAccess field="entry_subspace_id" /> !={" "}
-                      <RelAccess field="D3RangeSubspace" />
-                    </Code>
+                    <>
+                      bit <Code>0</Code> is <Code>1</Code>
+                    </>
                   }
                 >
                   <CodeFor notStandalone enc="encode_subspace_id">

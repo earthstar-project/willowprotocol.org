@@ -973,6 +973,22 @@ export function bitfieldIff(
 }
 
 /**
+ * Returns a `BitfieldDef` for a `1` bit if some condition holds, or arbitrary otherwise.
+ */
+export function bitfieldIfOrArbitrary(
+  condition: Expressions,
+): BitfieldDef {
+  return {
+    count: 1,
+    content: (
+      <>
+        <Code>1</Code> if <exps x={condition} />, arbitrary otherwise.
+      </>
+    ),
+  };
+}
+
+/**
  * Returns a `BitfieldDef` for `count` many bits that can be set arbitrarily.
  */
 export function bitfieldArbitrary(
