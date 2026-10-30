@@ -1096,9 +1096,8 @@ export const grouping_entries = (
           <P>
             By replacing the <R n="TimeRange" /> component of <R n="Area" />
             {" "}
-            with a <R n="ReconciliationRange" />{" "}
-            (and updating all related definitions appropriately), we obtain the
-            type of <Rs n="AreaSlice" />:
+            with a <R n="ReconciliationRange" />, we obtain the type of{" "}
+            <Rs n="AreaSlice" />:
           </P>
 
           <Pseudocode n="area_slice_def">
@@ -1157,7 +1156,8 @@ export const grouping_entries = (
                         To be <R n="area_slice_include">included</R> in this
                         {" "}
                         <R n="AreaSlice" />, an <R n="Entry" /> must be{" "}
-                        <R n="range_include">included</R> in the{" "}
+                        <R n="range_include">included</R> in this{" "}
+                        <R n="area_slice_range_normalised" />{" "}
                         <R n="AreaSliceReconciliationRange" />.
                       </>
                     ),
@@ -1175,6 +1175,23 @@ export const grouping_entries = (
               ]}
             />
           </Pseudocode>
+
+          <PreviewScope>
+            <P>
+              The <R n="AreaSliceReconciliationRange" /> of each{" "}
+              <R n="AreaSlice" /> must be{" "}
+              <Def n="area_slice_range_normalised" r="normalised">
+                normalised
+              </Def>{" "}
+              with respect to the <R n="AreaSlice" />: its{" "}
+              <R n="Path">Path(s)</R> must be <Rs n="path_extension" /> of the
+              {" "}
+              <R n="AreaSlice" /> <R n="AreaSlicePath" />, and its{" "}
+              <R n="SubspaceId">SubspaceId(s)</R> must be equal to the{" "}
+              <R n="AreaSlice" /> <R n="AreaSliceSubspace" />{" "}
+              (unless the latter is <R n="ss_any" />).
+            </P>
+          </PreviewScope>
 
           <PreviewScope>
             <P>
@@ -1263,8 +1280,8 @@ export const grouping_entries = (
               <R n="open_range">open</R> <R n="ReconciliationRange" /> whose
               {" "}
               <R n="ReconciliationRangeStart" /> is the triple of the{" "}
-              <R n="Timestamp" /> zero, the empty{" "}
-              <R n="Path" />, and the minimal <R n="SubspaceId" />. It{" "}
+              <R n="Timestamp" /> zero, the empty <R n="Path" />, and{" "}
+              <R n="subspaceareaslice_sub" />. It{" "}
               <R n="area_slice_include">includes</R> exactly the{" "}
               <Rs n="Entry" /> with <R n="entry_subspace_id" />{" "}
               <R n="subspacearea_sub" />.

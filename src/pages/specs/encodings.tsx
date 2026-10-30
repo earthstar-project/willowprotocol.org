@@ -1399,6 +1399,258 @@ export const encodings = (
           </Hsection>
         </Hsection>
 
+        <Hsection
+          n="area_slice_encodings"
+          title="AreaSlice Encoding"
+          shortTitle="AreaSlice"
+        >
+          <Hsection
+            n="encsec_EncodeAreaSlice"
+            title={<Code>EncodeAreaSlice</Code>}
+            noToc
+          >
+            <EncodingRelationTemplate
+              n="EncodeAreaSlice"
+              valType={<R n="AreaSlice" />}
+              bitfields={[
+                bitfieldIff(
+                  <Code>
+                    <ValAccess field="AreaSliceSubspace" /> == <R n="ss_any" />
+                  </Code>,
+                ),
+                bitfieldIff(
+                  <Code>
+                    <AccessStruct field="ReconciliationRangeEnd">
+                      <ValAccess field="AreaSliceReconciliationRange" />
+                    </AccessStruct>{" "}
+                    == <R n="range_open" />
+                  </Code>,
+                ),
+                bitfieldIfOrArbitrary(
+                  <>
+                    the <R n="Path" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    is not the empty <R n="Path" />
+                  </>,
+                ),
+                bitfieldIfOrArbitrary(
+                  <>
+                    <Code>
+                      <ValAccess field="AreaSliceSubspace" /> =={" "}
+                      <R n="ss_any" />
+                    </Code>{" "}
+                    and the <R n="SubspaceId" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    is not the least <R n="SubspaceId" />
+                  </>,
+                ),
+                bitfieldIfOrArbitrary(
+                  <>
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeEnd">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>{" "}
+                      != <R n="range_open" />
+                    </Code>{" "}
+                    and the <R n="Path" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    is not the empty <R n="Path" />
+                  </>,
+                ),
+                bitfieldIfOrArbitrary(
+                  <>
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeEnd">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>{" "}
+                      != <R n="range_open" />
+                    </Code>,{" "}
+                    <Code>
+                      <ValAccess field="AreaSliceSubspace" /> =={" "}
+                      <R n="ss_any" />
+                    </Code>, and and the <R n="SubspaceId" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>{" "}
+                    is not the least <R n="SubspaceId" />
+                  </>,
+                ),
+                c64Tag(
+                  "time_start",
+                  2,
+                  <>
+                    the <R n="Timestamp" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>
+                  </>,
+                ),
+              ]}
+              contents={[
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <ValAccess field="AreaSliceSubspace" /> !={" "}
+                        <R n="ss_any" />
+                      </Code>
+                    </>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    <ValAccess field="AreaSliceSubspace" />
+                  </CodeFor>
+                </EncConditional>,
+                <CodeFor enc="EncodePath">
+                  <ValAccess field="AreaSlicePath" />
+                </CodeFor>,
+                <C64Encoding id="time_start" />,
+                <EncConditional
+                  condition={
+                    <>
+                      <>
+                        bit <Code>2</Code> is <Code>1</Code>
+                      </>
+                    </>
+                  }
+                >
+                  <CodeFor
+                    notStandalone
+                    enc="EncodePathExtendsPath"
+                    relativeTo={
+                      <Code>
+                        <ValAccess field="AreaSlicePath" />
+                      </Code>
+                    }
+                  >
+                    the <R n="Path" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <>
+                        bit <Code>3</Code> is <Code>1</Code>
+                      </>
+                    </>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    the <R n="SubspaceId" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeStart">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <Code>
+                        <AccessStruct field="ReconciliationRangeEnd">
+                          <ValAccess field="AreaSliceReconciliationRange" />
+                        </AccessStruct>{" "}
+                        != <R n="range_open" />
+                      </Code>
+                    </>
+                  }
+                >
+                  <C64Standalone notStandalone>
+                    <>
+                      the <R n="Timestamp" /> of{" "}
+                      <Code>
+                        <AccessStruct field="ReconciliationRangeEnd">
+                          <ValAccess field="AreaSliceReconciliationRange" />
+                        </AccessStruct>
+                      </Code>{" "}
+                      minus (1 plus the <R n="Timestamp" /> of{" "}
+                      <Code>
+                        <AccessStruct field="ReconciliationRangeStart">
+                          <ValAccess field="AreaSliceReconciliationRange" />
+                        </AccessStruct>)
+                      </Code>
+                    </>
+                  </C64Standalone>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <>
+                        bit <Code>4</Code> is <Code>1</Code>
+                      </>
+                    </>
+                  }
+                >
+                  <CodeFor
+                    notStandalone
+                    enc="EncodePathExtendsPath"
+                    relativeTo={
+                      <Code>
+                        <ValAccess field="AreaSlicePath" />
+                      </Code>
+                    }
+                  >
+                    the <R n="Path" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeEnd">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>
+                  </CodeFor>
+                </EncConditional>,
+                <EncConditional
+                  condition={
+                    <>
+                      <>
+                        bit <Code>5</Code> is <Code>1</Code>
+                      </>
+                    </>
+                  }
+                >
+                  <CodeFor notStandalone enc="encode_subspace_id">
+                    the <R n="SubspaceId" /> of{" "}
+                    <Code>
+                      <AccessStruct field="ReconciliationRangeEnd">
+                        <ValAccess field="AreaSliceReconciliationRange" />
+                      </AccessStruct>
+                    </Code>
+                  </CodeFor>
+                </EncConditional>,
+              ]}
+              canonic={{
+                n: "encode_area_slice",
+                how: [
+                  <MinTags />,
+                  <ArbitraryBitsAreZero />,
+                  <CanonicSubencodings />,
+                ],
+              }}
+            />
+          </Hsection>
+        </Hsection>
+
         <Hsection n="enc_capabilities" title="Capabilities">
           <P>
             Encodings for <R n="meadowcap" /> and{" "}
