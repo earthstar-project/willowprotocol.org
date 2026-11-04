@@ -116,7 +116,7 @@ const exp = (
 
     <Dir name="build">
       <ServerOptimisations>
-        <ServerRoot url="https://nimble-mooncake-fde330.netlify.app/">
+        <ServerRoot url="https://willowprotocol.org/">
           <Dir name="assets">
             {/* See https://github.com/worm-blossom/macromania-assets */}
             <Assets

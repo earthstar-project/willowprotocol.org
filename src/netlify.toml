@@ -1,4 +1,4 @@
 [[headers]]
 for = "/*" # you can configure the correct paths here
 [headers.values]
-  access-control-allow-origin = "https://nimble-mooncake-fde330.netlify.app" # see a list of allowed values here: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+  access-control-allow-origin = "https:/willowprotocol.org"
