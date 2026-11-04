@@ -1,3 +1,5 @@
+** Repository moved to https://codeberg.org/worm-blossom/willowprotocol.org **
+
 # Willow-Specs
 
 Source code for the specifications of [Willow](https://willowprotocol.org/).
