@@ -1010,7 +1010,7 @@ export const data_model = (
         </Hsection>
 
         <Img
-          src="/assets/emblem.png"
+          src={<ResolveAsset asset={["emblems", "a.png"]} />}
           alt={`A Willow emblem: a stylised drawing of a Willow’s branch tipping into a water surface, next to a hand-lettered display of the word "Willow".`}
         />
       </PageTemplate>
