@@ -116,7 +116,7 @@ const exp = (
 
     <Dir name="build">
       <ServerOptimisations>
-        <ServerRoot url="https://willowprotocol.org/">
+        <ServerRoot url="https://nimble-mooncake-fde330.netlify.app/">
           <Dir name="assets">
             {/* See https://github.com/worm-blossom/macromania-assets */}
             <Assets
@@ -248,4 +248,6 @@ const exp = (
   </Config>
 );
 
-ctx.evaluate(exp);
+await ctx.evaluate(exp);
+
+await Deno.copyFile("./src/netlify.toml", "./build/netlify.toml");
